@@ -58,6 +58,8 @@ import { useEffect } from 'react'
 
 const clientSideEmotionCache = createEmotionCache()
 
+// teste
+
 // ** Pace Loader
 if (themeConfig.routingLoader) {
     Router.events.on('routeChangeStart', () => {
