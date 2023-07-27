@@ -84,8 +84,8 @@ const FormHeader = ({
             icon: (
                 <LayoutReport
                     titleButton={<Icon icon='material-symbols:print' />}
-                    title={dataReports[0].title}
-                    content={dataReports[0].component}
+                    title={dataReports?.[0].title}
+                    content={dataReports?.[0].component}
                 />
             ),
             function: handleClick
