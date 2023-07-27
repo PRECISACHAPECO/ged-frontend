@@ -11,40 +11,12 @@ import Select from 'src/components/Form/Select'
 import DateField from 'src/components/Form/DateField'
 
 const Fields = ({ register, errors, setValue, fields, values, disabled, control, setCopiedDataContext }) => {
+    console.log('🚀 ~ Filds errors:', errors)
     const [dateStatus, setDateStatus] = useState({})
     const [watchRegistroEstabelecimento, setWatchRegistroEstabelecimento] = useState(null)
     const { loggedUnity, user } = useContext(AuthContext)
     const router = Router
     const staticUrl = backRoute(router.pathname)
-
-    console.log('🚀 ~ watchRegistroEstabelecimento:', watchRegistroEstabelecimento)
-
-    // const itializeValues = () => {
-    //     //? Inicializa os valores do formulário
-    //     fields?.map((field, index) => {
-    //         if (field.tipo == 'int') {
-    //             setValue(`header.${field.tabela}`, values?.[field.tabela] ? values?.[field.tabela] : null)
-    //         } else {
-    //             if (field.tipo == 'date') {
-    //                 setDateFormat('dataPassado', field?.nomeColuna, values?.[field?.nomeColuna], 365)
-    //             } else {
-    //                 if (staticUrl == '/formularios/fornecedor' && user.papelID == 2) {
-    //                     const result =
-    //                         values?.[field.nomeColuna] === null && loggedUnity?.[field.nomeColuna]
-    //                             ? (setCopiedDataContext(true), loggedUnity?.[field.nomeColuna])
-    //                             : values?.[field.nomeColuna]
-    //                     setValue(`header.${field.nomeColuna}`, result)
-    //                 } else {
-    //                     setValue(`header.${field.nomeColuna}`, values?.[field.nomeColuna])
-    //                 }
-
-    //                 console.log('nome da coluna', field.nomeColuna)
-    //                 console.log('valor do campo', values?.[field.nomeColuna])
-    //             }
-    //         }
-    //     })
-    //     setWatchRegistroEstabelecimento(values?.registroestabelecimento ? values?.registroestabelecimento?.id : null)
-    // }
 
     const setDateFormat = (type, name, value, numDays) => {
         const newDate = new Date(value)
@@ -88,7 +60,7 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                 disabled={disabled}
                                 register={register}
                                 setValue={setValue}
-                                errors={errors?.header?.[field.tabela]}
+                                errors={errors?.fields?.[field.tabela]}
                                 handleRegistroEstabelecimento={setWatchRegistroEstabelecimento}
                             />
                         )}
@@ -103,7 +75,7 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                 value={field?.[field.nomeColuna]}
                                 type={field.nomeColuna}
                                 name={`fields[${index}].${field.nomeColuna}`}
-                                errors={errors?.header?.[field.nomeColuna]}
+                                errors={errors?.fields?.[field.nomeColuna]}
                                 control={control}
                                 setDateFormat={setDateFormat}
                                 typeValidation='dataPassado'
@@ -126,7 +98,8 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                     type={field.nomeColuna}
                                     disabled={disabled}
                                     register={register}
-                                    errors={errors?.header?.[field.nomeColuna]}
+                                    // errors field[index] nomeColuna
+                                    errors={errors?.fields?.[index]?.[field.nomeColuna]}
                                 />
                             )}
                     </>

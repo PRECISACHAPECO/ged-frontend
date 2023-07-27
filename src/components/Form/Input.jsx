@@ -18,6 +18,7 @@ const Input = ({
     register,
     errors
 }) => {
+    console.log('🚀 ~ Input errors:', errors)
     const inputRef = useRef(null)
 
     return (

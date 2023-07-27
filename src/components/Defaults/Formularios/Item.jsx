@@ -8,7 +8,6 @@ import Select from 'src/components/Form/Select'
 import DateField from 'src/components/Form/DateField'
 
 const Item = ({ blockIndex, index, values, register, control, errors, setValue, disabled }) => {
-    console.log('🚀 ~ Item values:', values)
     const [dateStatus, setDateStatus] = useState({})
 
     const setDateFormat = (type, name, value, numDays) => {

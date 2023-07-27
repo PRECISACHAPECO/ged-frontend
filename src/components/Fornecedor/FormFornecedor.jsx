@@ -1,10 +1,6 @@
 // import * as React from 'react'
-import { useState, useEffect, useContext, useRef, use } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
-import axios from 'axios'
-import upload from 'src/icon/Upload'
+import { useState, useEffect, useContext } from 'react'
+import { useForm } from 'react-hook-form'
 
 //* Default Form Components
 import Fields from 'src/components/Defaults/Formularios/Fields'
@@ -15,24 +11,7 @@ import CardAnexo from 'src/components/Anexos/CardAnexo'
 import { RouteContext } from 'src/context/RouteContext'
 import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
 
-import {
-    Alert,
-    Autocomplete,
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CardHeader,
-    FormControl,
-    FormControlLabel,
-    Grid,
-    ListItem,
-    ListItemButton,
-    Radio,
-    RadioGroup,
-    TextField,
-    Typography
-} from '@mui/material'
+import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
@@ -40,26 +19,15 @@ import FormHeader from 'src/components/Defaults/FormHeader'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { AuthContext } from 'src/context/AuthContext'
 import Loading from 'src/components/Loading'
-import { toastMessage, formType, statusDefault, dateConfig } from 'src/configs/defaultConfigs'
-import { formatDate } from 'src/configs/conversions'
+import { toastMessage, statusDefault } from 'src/configs/defaultConfigs'
 import toast from 'react-hot-toast'
-import { Checkbox } from '@mui/material'
 import { SettingsContext } from 'src/@core/context/settingsContext'
-import { cnpjMask, cellPhoneMask, cepMask, ufMask } from 'src/configs/masks'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
 
-// Date
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import dayjs from 'dayjs'
-import 'dayjs/locale/pt-br' // import locale
-import DialogForm from '../Defaults/Dialogs/Dialog'
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
-import Upload from 'src/icon/Upload'
 
 const FormFornecedor = ({ id }) => {
     const { setId } = useContext(RouteContext)
@@ -93,14 +61,10 @@ const FormFornecedor = ({ id }) => {
         messageType: 'info'
     })
 
-    //! Se perder Id, copia do localstorage
-    const { setTitle, setStorageId, getStorageId } = useContext(ParametersContext)
+    const { setTitle } = useContext(ParametersContext)
     const router = Router
-
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
-
-    const { settings } = useContext(SettingsContext)
 
     const {
         watch,
@@ -365,7 +329,9 @@ const FormFornecedor = ({ id }) => {
 
         //? Header
         fieldsState.forEach((field, index) => {
-            const fieldName = field.tabela ? `header.${field.tabela}` : `header.${field.nomeColuna}`
+            const fieldName = field.tabela ? `fields[${index}].${field.tabela}` : `fields[${index}].${field.nomeColuna}`
+            console.log('🚀 ~ checkErrors: fieldName:', fieldName)
+
             const fieldValue = getValues(fieldName)
             if (field.obrigatorio === 1 && !fieldValue) {
                 setError(fieldName, {
@@ -403,7 +369,7 @@ const FormFornecedor = ({ id }) => {
         //? Form Fornecedor não tem página NOVO
         type == 'edit' ? getData() : noPermissions()
         verifyFormPending()
-    }, [id])
+    }, [id, isLoadingSave])
 
     useEffect(() => {
         checkErrors()
@@ -672,6 +638,7 @@ const FormFornecedor = ({ id }) => {
                                 indexGrupo={indexGrupo}
                                 handleFileSelect={handleFileSelect}
                                 handleRemoveAnexo={handleRemoveAnexo}
+                                disabled={!canEdit.status}
                             />
                         ))}
 

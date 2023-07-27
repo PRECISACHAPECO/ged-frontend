@@ -26,7 +26,6 @@ const Select = ({
     errors,
     handleRegistroEstabelecimento
 }) => {
-    console.log('Select => value: ', value)
     return (
         <Grid item xs={xs} md={md} sx={{ my: 1 }}>
             <FormControl fullWidth>
