@@ -332,7 +332,7 @@ const FormUnidade = ({ id }) => {
                             register={register}
                             errors={errors?.fields?.tituloRelatorio}
                         />
-                        <Grid item xs={12} md={4} sx={{ my: 1, position: 'relative' }} onClick={handleFileClick}>
+                        <Grid item xs={12} md={4} sx={{ my: 1, position: 'relative' }}>
                             <input
                                 type='file'
                                 ref={fileInputRef}
@@ -340,6 +340,7 @@ const FormUnidade = ({ id }) => {
                                 onChange={handleFileSelect}
                             />
                             <Button
+                                onClick={handleFileClick}
                                 variant='contained'
                                 sx={{ padding: 4, width: '100%' }}
                                 startIcon={<Icon icon='material-symbols:upload' />}
@@ -360,12 +361,15 @@ const FormUnidade = ({ id }) => {
 
                         {/* Mostra a imagem se ela foi salva no banco de dados */}
                         {type === 'edit' && data && data.fields.cabecalhoRelatorio && (
-                            <Grid item xs={12} md={4} sx={{ my: 1 }} onClick={{}}>
-                                <img
-                                    src={data.fields.cabecalhoRelatorio}
-                                    className='w-[150px] h-[150px]'
-                                    alt='Imagem relatório'
-                                />
+                            <Grid item xs={12} md={4} sx={{ my: 1, cursor: 'pointer' }}>
+                                <div className='cursor-pointer'>
+                                    <img
+                                        onClick={() => window.open(data.fields.cabecalhoRelatorio, '_blank')}
+                                        src={data.fields.cabecalhoRelatorio}
+                                        className='w-[150px] h-[150px] bg-cover border border-black/20 rounded-full cursor-pointer'
+                                        alt='Imagem relatório'
+                                    />
+                                </div>
                             </Grid>
                         )}
                     </Grid>
