@@ -1,14 +1,14 @@
 import Router from 'next/router'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 import { api } from 'src/configs/api'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
-import { Card, CardContent, Grid, Typography } from '@mui/material'
+import { Button, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material'
+import Icon from 'src/@core/components/icon'
 import { useForm } from 'react-hook-form'
 import Loading from 'src/components/Loading'
 import toast from 'react-hot-toast'
 import DialogForm from 'src/components/Defaults/Dialogs/Dialog'
-import { formType } from 'src/configs/defaultConfigs'
 import FormHeader from '../../Defaults/FormHeader'
 import { toastMessage } from 'src/configs/defaultConfigs'
 import { formatDate } from 'src/configs/conversions'
@@ -22,11 +22,16 @@ const FormUnidade = ({ id }) => {
 
     const [open, setOpen] = useState(false)
     const [data, setData] = useState()
+    const [fileSelect, setFileSelect] = useState()
+    const [fileCurrent, setFileCurrent] = useState()
     //* Componente é chamado na tela da unidade e Meus dados do fornecedor
     // const id = paramId ?? loggedUnity.unidadeID //? se nao tem id é fornecedor, então pega id da unidade logada pelo fornecedor
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
+    const fileInputRef = useRef(null)
+
+    console.log('data', data)
 
     const {
         trigger,
@@ -63,17 +68,32 @@ const FormUnidade = ({ id }) => {
             ...datas.fields,
             dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD')
         }
+        delete data.cabecalhoRelatorioTitle
+        const formData = new FormData()
+        formData.append('fileReport', fileSelect)
 
         try {
             if (type === 'new') {
-                await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
+                await api.post(`${backRoute(staticUrl)}/new/insertData`, data).then(response => {
+                    const id = response.data
+                    //? Faz uma nova requisição para salvar a imagem
+                    if (fileSelect) {
+                        api.post(`${backRoute(staticUrl)}/updateData/report/${id}`, formData)
+                    }
                     router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
                     setId(response.data)
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
-                await api.post(`${staticUrl}/updateData/${id}`, values)
-                toast.success(toastMessage.successUpdate)
+                await api.post(`${staticUrl}/updateData/${id}`, data)
+                if (fileSelect) {
+                    await api.post(`${staticUrl}/updateData/report/${id}`, formData)
+                    toast.success(toastMessage.successUpdate)
+                }
+                if (!fileSelect) {
+                    toast.success(toastMessage.successUpdate)
+                }
+                getData()
             }
         } catch (error) {
             if (error.response && error.response.status === 409) {
@@ -111,6 +131,18 @@ const FormUnidade = ({ id }) => {
         }
     }
 
+    // Quando clicar no botão de foto, o input de foto é clicado abrindo o seletor de arquivos
+    const handleFileClick = () => {
+        fileInputRef.current.click()
+    }
+
+    // Seleciona imagem, a mesma vai ser aplicada ao cabeçalho dos relatórios
+    const handleFileSelect = async event => {
+        const selectedFile = event.target.files[0]
+        setFileSelect(selectedFile)
+        setFileCurrent(selectedFile?.name)
+    }
+
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     const getData = async () => {
         if (type == 'edit') {
@@ -118,6 +150,8 @@ const FormUnidade = ({ id }) => {
                 const response = await api.get(`${staticUrl}/${id}`)
                 reset(response.data)
                 setData(response.data)
+                setFileCurrent(response.data.fields.cabecalhoRelatorioTitle)
+                console.log('getadata', response.data)
             } catch (error) {
                 console.log(error)
             }
@@ -285,6 +319,59 @@ const FormUnidade = ({ id }) => {
                     </CardContent>
                 </form>
             </Card>
+            <Card sx={{ mt: 4 }}>
+                <CardHeader title='Dados do relatório' />
+                <CardContent>
+                    <Grid container spacing={4}>
+                        <Input
+                            xs={12}
+                            md={4}
+                            title='Titulo do relatório'
+                            name='fields.tituloRelatorio'
+                            required={false}
+                            register={register}
+                            errors={errors?.fields?.tituloRelatorio}
+                        />
+                        <Grid item xs={12} md={4} sx={{ my: 1, position: 'relative' }} onClick={handleFileClick}>
+                            <input
+                                type='file'
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                onChange={handleFileSelect}
+                            />
+                            <Button
+                                variant='contained'
+                                sx={{ padding: 4, width: '100%' }}
+                                startIcon={<Icon icon='material-symbols:upload' />}
+                            >
+                                {!data?.fields?.cabecalhoRelatorio && !fileSelect?.name
+                                    ? 'Nenhum arquivo selecionado'
+                                    : 'Trocar Imagem'}
+                            </Button>
+                            {fileCurrent && (
+                                <p
+                                    className='absolute top-[72px] text-slate-800 left-4 text-[10px] w-[800px]'
+                                    style={{ textTransform: 'none' }}
+                                >
+                                    {fileCurrent}
+                                </p>
+                            )}
+                        </Grid>
+
+                        {/* Mostra a imagem se ela foi salva no banco de dados */}
+                        {type === 'edit' && data && data.fields.cabecalhoRelatorio && (
+                            <Grid item xs={12} md={4} sx={{ my: 1 }} onClick={{}}>
+                                <img
+                                    src={data.fields.cabecalhoRelatorio}
+                                    className='w-[150px] h-[150px]'
+                                    alt='Imagem relatório'
+                                />
+                            </Grid>
+                        )}
+                    </Grid>
+                </CardContent>
+            </Card>
+
             {type === 'edit' && data && (
                 <Typography variant='caption' sx={{ display: 'flex', justifyContent: 'end', p: 4 }}>
                     Data de cadastro:
