@@ -70,7 +70,7 @@ const FormHeader = ({
             type: 'submit',
             variant: 'contained',
             disabled: disabled || disabledSubmit,
-            icon: 'material-symbols:save',
+            icon: <Icon icon='material-symbols:save' />,
             function: handleSubmit
         },
         {
@@ -81,7 +81,13 @@ const FormHeader = ({
             type: 'button',
             variant: 'outlined',
             disabled: disabled || disabledPrint,
-            icon: 'material-symbols:print',
+            icon: (
+                <LayoutReport
+                    titleButton={<Icon icon='material-symbols:print' />}
+                    title={dataReports[0].title}
+                    content={dataReports[0].component}
+                />
+            ),
             function: handleClick
         },
         {
@@ -92,7 +98,7 @@ const FormHeader = ({
             type: 'button',
             variant: 'outlined',
             disabled: false,
-            icon: 'ion:arrow-up',
+            icon: <Icon icon='ion:arrow-up' />,
             function: backToTop
         },
         {
@@ -103,7 +109,7 @@ const FormHeader = ({
             type: 'button',
             variant: 'outlined',
             disabled: false,
-            icon: 'material-symbols:arrow-back-rounded',
+            icon: <Icon icon='material-symbols:arrow-back-rounded' />,
             function: previousPage
         }
     ]
@@ -280,7 +286,7 @@ const FormHeader = ({
                                             type={item.type}
                                             disabled={item.disabled}
                                         >
-                                            <Icon icon={item.icon} />
+                                            {item.icon}
                                         </Fab>
                                     </div>
                                 </Tooltip>
