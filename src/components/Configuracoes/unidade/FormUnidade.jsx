@@ -75,7 +75,6 @@ const FormUnidade = ({ id }) => {
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, data).then(response => {
-                    console.log(response.data)
                     const id = response.data
                     //? Faz uma nova requisição para salvar a imagem
                     if (fileSelect) {
