@@ -235,6 +235,7 @@ const FormFornecedor = ({ id }) => {
         try {
             setLoading(true)
             if (id) {
+                console.log('🚀 ~ Busca fornecedor:', id, loggedUnity.unidadeID)
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
                     console.log('getData: ', response.data)
 
