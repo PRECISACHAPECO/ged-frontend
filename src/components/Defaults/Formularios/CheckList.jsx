@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel, ListItem, ListItemButton, Typography } from '@mui/material'
 
-const CheckList = ({ title, values, name, changeCategory, register, isDisabled }) => {
+const CheckList = ({ title, values, name, changeCategory, register, disabled }) => {
     return (
         <>
             <ListItem disablePadding>
@@ -25,7 +25,7 @@ const CheckList = ({ title, values, name, changeCategory, register, isDisabled }
                                 control={
                                     <Checkbox
                                         name={`${name}[${index}].checked`}
-                                        disabled={isDisabled ? true : false}
+                                        disabled={disabled ? true : false}
                                         {...register(`${name}[${index}].checked`)}
                                         defaultChecked={value.checked == 1 ? true : false}
                                         onClick={event =>

@@ -7,8 +7,7 @@ import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import DateField from 'src/components/Form/DateField'
 
-const Item = ({ blockIndex, index, values, register, errors, setValue, disabled }) => {
-    console.log('🚀 ~ values:', values)
+const Item = ({ blockIndex, index, values, register, control, errors, setValue, disabled }) => {
     const [dateStatus, setDateStatus] = useState({})
 
     const setDateFormat = (type, name, value, numDays) => {
@@ -30,7 +29,16 @@ const Item = ({ blockIndex, index, values, register, errors, setValue, disabled 
     }, [])
 
     return (
-        <Grid index={index} container spacing={4} sx={{ mb: 4 }}>
+        <Grid
+            index={index}
+            container
+            spacing={4}
+            sx={{
+                mb: 4,
+                display: 'flex',
+                alignItems: 'center'
+            }}
+        >
             {/* Hidden do itemID */}
             <input
                 type='hidden'
@@ -64,6 +72,7 @@ const Item = ({ blockIndex, index, values, register, errors, setValue, disabled 
                             idName={'alternativaID'}
                             value={values.resposta}
                             disabled={disabled}
+                            control={control}
                             register={register}
                             setValue={setValue}
                             errors={errors?.blocos?.[blockIndex]?.itens[index]?.resposta}

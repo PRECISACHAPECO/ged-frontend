@@ -17,6 +17,7 @@ const Select = ({
     limitTags,
     value,
     required,
+    control,
 
     disabled,
     register,

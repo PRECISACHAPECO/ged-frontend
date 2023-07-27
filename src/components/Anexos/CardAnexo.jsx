@@ -5,10 +5,8 @@ import { SettingsContext } from 'src/@core/context/settingsContext'
 import IconCloudUpload from 'src/icon/IconUpload'
 import IconFilePdf from '../../icon/IconPdf'
 
-const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo }) => {
+const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, disabled }) => {
     const [selectedItem, setSelectedItem] = useState(null)
-    console.log('🚀 ~ selectedItem:', selectedItem)
-
     const { settings } = useContext(SettingsContext)
     const mode = settings.mode
 
@@ -45,10 +43,13 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo }) =
                                 </div>
                                 <div
                                     className='flex justify-center items-center cursor-pointer p-1 h-[150px] w-full '
+                                    disabled={disabled}
                                     onClick={() => {
                                         item.anexo && item.anexo.path && item.anexo.exist
                                             ? window.open(item.anexo.path, '_blank')
-                                            : handleAvatarClick(item)
+                                            : !disabled
+                                            ? handleAvatarClick(item)
+                                            : null
                                     }}
                                 >
                                     <div
@@ -62,19 +63,7 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo }) =
                                             {item.anexo && item.anexo.exist ? (
                                                 <div>
                                                     <div className='flex items-center gap-2'>
-                                                        {/* <p className='text-5xl'>PDF</p> */}
                                                         <IconFilePdf className='text-6xl fill-red-500' />
-                                                        {/* <img
-                                                            width={22}
-                                                            height={22}
-                                                            alt='invoice.pdf'
-                                                            src='/images/icons/file-icons/pdf.png'
-                                                        />
-                                                        <Typography variant='body2'>{`${item.anexo.nome} (${(
-                                                            item.anexo.size /
-                                                            1024 /
-                                                            1024
-                                                        ).toFixed(2)}mb)`}</Typography> */}
                                                     </div>
                                                 </div>
                                             ) : (
@@ -106,7 +95,7 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo }) =
                                         <IconButton
                                             color='error'
                                             onClick={() => handleRemoveAnexo(item)}
-                                            disabled={!item.anexo?.exist}
+                                            disabled={!item.anexo?.exist || disabled}
                                         >
                                             <Icon icon='tabler:trash-filled' />
                                         </IconButton>

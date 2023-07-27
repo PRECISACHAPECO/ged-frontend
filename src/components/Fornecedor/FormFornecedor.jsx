@@ -1,10 +1,6 @@
 // import * as React from 'react'
-import { useState, useEffect, useContext, useRef, use } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
-import axios from 'axios'
-import upload from 'src/icon/Upload'
+import { useState, useEffect, useContext } from 'react'
+import { useForm } from 'react-hook-form'
 
 //* Default Form Components
 import Fields from 'src/components/Defaults/Formularios/Fields'
@@ -12,56 +8,29 @@ import Input from 'src/components/Form/Input'
 import CheckList from 'src/components/Defaults/Formularios/CheckList'
 import Block from 'src/components/Defaults/Formularios/Block'
 import CardAnexo from 'src/components/Anexos/CardAnexo'
+import { RouteContext } from 'src/context/RouteContext'
 import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
 
-import {
-    Alert,
-    Autocomplete,
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CardHeader,
-    FormControl,
-    FormControlLabel,
-    Grid,
-    ListItem,
-    ListItemButton,
-    Radio,
-    RadioGroup,
-    TextField,
-    Typography
-} from '@mui/material'
+import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
-import { backRoute, generateReport } from 'src/configs/defaultConfigs'
+import { backRoute } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
 import FormHeader from 'src/components/Defaults/FormHeader'
 import { ParametersContext } from 'src/context/ParametersContext'
-import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
 import Loading from 'src/components/Loading'
-import { toastMessage, formType, statusDefault, dateConfig } from 'src/configs/defaultConfigs'
-import { formatDate } from 'src/configs/conversions'
+import { toastMessage, statusDefault } from 'src/configs/defaultConfigs'
 import toast from 'react-hot-toast'
-import { Checkbox } from '@mui/material'
 import { SettingsContext } from 'src/@core/context/settingsContext'
-import { cnpjMask, cellPhoneMask, cepMask, ufMask } from 'src/configs/masks'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
 
-// Date
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import dayjs from 'dayjs'
-import 'dayjs/locale/pt-br' // import locale
-import DialogForm from '../Defaults/Dialogs/Dialog'
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
-import Upload from 'src/icon/Upload'
 
 const FormFornecedor = ({ id }) => {
+    const { setId } = useContext(RouteContext)
     const { user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false) //? loading de carregamento da página
     const [isLoadingSave, setLoadingSave] = useState(false) //? dependencia do useEffect pra atualizar a página após salvar
@@ -92,23 +61,15 @@ const FormFornecedor = ({ id }) => {
         messageType: 'info'
     })
 
-    //! Se perder Id, copia do localstorage
-    const { setTitle, setStorageId, getStorageId } = useContext(ParametersContext)
+    const { setTitle } = useContext(ParametersContext)
     const router = Router
-    const { setId } = useContext(RouteContext)
-    // if (!id) id = getStorageId()
-    // useEffect(() => {
-    //     setStorageId(id)
-    // }, [])
-
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
-
-    const { settings } = useContext(SettingsContext)
 
     const {
         watch,
         register,
+        reset,
         control,
         getValues,
         clearErrors,
@@ -117,18 +78,6 @@ const FormFornecedor = ({ id }) => {
         handleSubmit,
         formState: { errors }
     } = useForm()
-
-    const initializeValues = values => {
-        // Seta itens no formulário
-        values?.blocos?.map((block, indexBlock) => {
-            block?.itens?.map((item, indexItem) => {
-                if (item?.resposta) {
-                    setValue(`blocos[${indexBlock}].itens[${indexItem}].resposta`, item?.resposta)
-                }
-            })
-        })
-        setValue()
-    }
 
     const verifyFormPending = async () => {
         try {
@@ -223,8 +172,7 @@ const FormFornecedor = ({ id }) => {
     const dataReports = [
         {
             id: 1,
-            title: 'Formulário do fornecedor',
-            titleButton: 'Imprimir',
+            name: 'Formulário do fornecedor',
             component: <ReportFornecedor params={{ id: id }} />,
             route: '/relatorio/fornecedor/dadosFornecedor',
             papelID: user.papelID,
@@ -284,12 +232,11 @@ const FormFornecedor = ({ id }) => {
     }
 
     const getData = () => {
-        console.log('🚀 ~ loggedUnity.unidadeID:', loggedUnity.unidadeID)
         try {
             setLoading(true)
             if (id) {
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
-                    console.log('getData: ', response.data.grupoAnexo)
+                    console.log('getData: ', response.data)
 
                     setFields(response.data.fields)
                     setCategorias(response.data.categorias)
@@ -299,13 +246,15 @@ const FormFornecedor = ({ id }) => {
                     setAllBlocks(response.data.blocos)
                     setVisibleBlocks(response.data.blocos, response.data.categorias)
 
-                    setData(response.data.data)
+                    // setData(response.data.data)
                     setGrupoAnexo(response.data.grupoAnexo)
 
                     setInfo(response.data.info)
                     setUnidade(response.data.unidade)
 
-                    initializeValues(response.data)
+                    // initializeValues(response.data)
+                    //* Insere os dados no formulário
+                    reset(response.data)
 
                     let objStatus = statusDefault[response.data.info.status]
                     setStatus(objStatus)
@@ -351,18 +300,15 @@ const FormFornecedor = ({ id }) => {
         }
 
         const data = {
-            forms: {
-                ...values,
-                header: {
-                    ...values.header
-                }
-            },
+            form: values,
             auth: {
                 usuarioID: user.usuarioID,
                 papelID: user.papelID,
                 unidadeID: loggedUnity.unidadeID
             }
         }
+        console.log('🚀 ~ onSubmit:', data.form)
+        // return
 
         try {
             setLoadingSave(true)
@@ -383,7 +329,9 @@ const FormFornecedor = ({ id }) => {
 
         //? Header
         fieldsState.forEach((field, index) => {
-            const fieldName = field.tabela ? `header.${field.tabela}` : `header.${field.nomeColuna}`
+            const fieldName = field.tabela ? `fields[${index}].${field.tabela}` : `fields[${index}].${field.nomeColuna}`
+            console.log('🚀 ~ checkErrors: fieldName:', fieldName)
+
             const fieldValue = getValues(fieldName)
             if (field.obrigatorio === 1 && !fieldValue) {
                 setError(fieldName, {
@@ -570,7 +518,6 @@ const FormFornecedor = ({ id }) => {
                             disabledSubmit={blocks.length === 0 ? true : false}
                             disabledPrint={blocks.length === 0 ? true : false}
                             btnPrint
-                            generateReport={generateReport}
                             dataReports={dataReports}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             handleSend={handleSendForm}
@@ -617,12 +564,12 @@ const FormFornecedor = ({ id }) => {
 
                             {/* Header */}
                             <Fields
+                                fields={fieldsState}
                                 register={register}
                                 errors={errors}
                                 setValue={setValue}
+                                control={control}
                                 watch={watch}
-                                fields={fieldsState}
-                                values={data}
                                 disabled={!canEdit.status}
                                 setCopiedDataContext={setCopiedDataContext}
                             />
@@ -674,6 +621,7 @@ const FormFornecedor = ({ id }) => {
                                 index={indexBloco}
                                 blockKey={`parFornecedorBlocoID`}
                                 values={bloco}
+                                control={control}
                                 register={register}
                                 setValue={setValue}
                                 errors={errors}
@@ -690,6 +638,7 @@ const FormFornecedor = ({ id }) => {
                                 indexGrupo={indexGrupo}
                                 handleFileSelect={handleFileSelect}
                                 handleRemoveAnexo={handleRemoveAnexo}
+                                disabled={!canEdit.status}
                             />
                         ))}
 
@@ -702,15 +651,15 @@ const FormFornecedor = ({ id }) => {
                                         <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 2 }}>
                                             Observações (campo de uso exclusivo da validadora)
                                         </Typography>
-                                        {/* <Input
+                                        <Input
                                             title='Observação (opcional)'
-                                            name='obs'
+                                            name='info.obs'
                                             multiline
                                             rows={4}
                                             value={info.obs}
                                             disabled={!canEdit.status}
                                             register={register}
-                                        /> */}
+                                        />
                                     </FormControl>
                                 </Grid>
                             </Grid>

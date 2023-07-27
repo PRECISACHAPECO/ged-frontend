@@ -10,39 +10,13 @@ import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import DateField from 'src/components/Form/DateField'
 
-const Fields = ({ register, errors, setValue, fields, values, disabled, setCopiedDataContext }) => {
+const Fields = ({ register, errors, setValue, fields, values, disabled, control, setCopiedDataContext }) => {
+    console.log('🚀 ~ Filds errors:', errors)
     const [dateStatus, setDateStatus] = useState({})
     const [watchRegistroEstabelecimento, setWatchRegistroEstabelecimento] = useState(null)
     const { loggedUnity, user } = useContext(AuthContext)
     const router = Router
     const staticUrl = backRoute(router.pathname)
-
-    const itializeValues = () => {
-        //? Inicializa os valores do formulário
-        fields?.map((field, index) => {
-            if (field.tipo == 'int') {
-                setValue(`header.${field.tabela}`, values?.[field.tabela] ? values?.[field.tabela] : null)
-            } else {
-                if (field.tipo == 'date') {
-                    setDateFormat('dataPassado', field.nomeColuna, values?.[field.nomeColuna], 365)
-                } else {
-                    if (staticUrl == '/formularios/fornecedor' && user.papelID == 2) {
-                        const result =
-                            values?.[field.nomeColuna] === null && loggedUnity?.[field.nomeColuna]
-                                ? (setCopiedDataContext(true), loggedUnity?.[field.nomeColuna])
-                                : values?.[field.nomeColuna]
-                        setValue(`header.${field.nomeColuna}`, result)
-                    } else {
-                        setValue(`header.${field.nomeColuna}`, values?.[field.nomeColuna])
-                    }
-
-                    console.log('nome da coluna', field.nomeColuna)
-                    console.log('valor do campo', values?.[field.nomeColuna])
-                }
-            }
-        })
-        setWatchRegistroEstabelecimento(values?.registroestabelecimento ? values?.registroestabelecimento?.id : null)
-    }
 
     const setDateFormat = (type, name, value, numDays) => {
         const newDate = new Date(value)
@@ -54,8 +28,17 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, setCopie
         }))
     }
 
+    const setRegistroEstabelecimento = () => {
+        fields &&
+            fields.map((field, index) => {
+                if (field?.nomeColuna == 'registroEstabelecimentoID') {
+                    setWatchRegistroEstabelecimento(field?.[field.tabela]?.id > 0 ? field?.[field.tabela].id : null)
+                }
+            })
+    }
+
     useEffect(() => {
-        itializeValues()
+        setRegistroEstabelecimento()
     }, [])
 
     return (
@@ -69,14 +52,15 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, setCopie
                                 xs={12}
                                 md={3}
                                 title={field.nomeCampo}
-                                name={`header.${field.tabela}`}
+                                name={`fields[${index}].${field.tabela}`}
+                                type={field.tabela}
                                 options={field.options}
-                                value={values?.[field.tabela]}
+                                value={field?.[field.tabela]}
                                 mask={field.tabela}
                                 disabled={disabled}
                                 register={register}
                                 setValue={setValue}
-                                errors={errors?.header?.[field.tabela]}
+                                errors={errors?.fields?.[field.tabela]}
                                 handleRegistroEstabelecimento={setWatchRegistroEstabelecimento}
                             />
                         )}
@@ -88,10 +72,11 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, setCopie
                                 md={3}
                                 title='Data da avaliação'
                                 disabled={disabled}
-                                value={values?.[field.nomeColuna]}
+                                value={field?.[field.nomeColuna]}
                                 type={field.nomeColuna}
-                                name={`header.${field.nomeColuna}`}
-                                errors={errors?.header?.[field.nomeColuna]}
+                                name={`fields[${index}].${field.nomeColuna}`}
+                                errors={errors?.fields?.[field.nomeColuna]}
+                                control={control}
                                 setDateFormat={setDateFormat}
                                 typeValidation='dataPassado'
                                 daysValidation={365}
@@ -108,12 +93,13 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, setCopie
                                     xs={12}
                                     md={3}
                                     title={field.nomeCampo}
-                                    name={`header.${field.nomeColuna}`}
-                                    value={values?.[field.nomeColuna]}
+                                    name={`fields[${index}].${field.nomeColuna}`}
+                                    value={field?.[field.nomeColuna]}
                                     type={field.nomeColuna}
                                     disabled={disabled}
                                     register={register}
-                                    errors={errors?.header?.[field.nomeColuna]}
+                                    // errors field[index] nomeColuna
+                                    errors={errors?.fields?.[index]?.[field.nomeColuna]}
                                 />
                             )}
                     </>
