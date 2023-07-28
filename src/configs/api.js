@@ -5,5 +5,5 @@ import axios from 'axios';
 export const api = axios.create({
     baseURL: process.env.NODE_ENV === 'development'
         ? 'http://localhost:3333/api/'
-        : 'https://demo.gedagro.com.br/api/'
+        : 'https://app.gedagro.com.br/api/'
 });
