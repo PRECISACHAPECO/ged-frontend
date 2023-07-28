@@ -37,6 +37,7 @@ const DialogFormConclusion = ({
     btnConfirm,
     listErrors
 }) => {
+    console.log('🚀 ~ DialogFormConclusion title:', title)
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState({})
 
@@ -117,7 +118,7 @@ const DialogFormConclusion = ({
                                 handleClose(), conclusionForm(result)
                             }}
                         >
-                            Concluir Formulário
+                            Concluir
                         </Button>
                     )}
                 </DialogActions>

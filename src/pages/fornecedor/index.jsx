@@ -22,6 +22,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import InputAdornment from '@mui/material/InputAdornment'
 import Typography from '@mui/material/Typography'
 import MuiFormControlLabel from '@mui/material/FormControlLabel'
+import { RouteContext } from 'src/context/RouteContext'
 
 //* CNPJ Mask
 import { cnpjMask } from '../../configs/masks'
@@ -129,6 +130,7 @@ const FornecedorPage = ({ units }) => {
     // ** Hooks
     const auth = useAuth()
     const { user } = useContext(AuthContext)
+    const { setId } = useContext(RouteContext)
 
     const theme = useTheme()
     const bgColors = useBgColor()
@@ -151,7 +153,7 @@ const FornecedorPage = ({ units }) => {
 
     const onSubmit = data => {
         const { cnpj, password } = data
-        console.log('login fornecedor', cnpj, password)
+        setId(null)
         auth.loginFornecedor({ cnpj, password, rememberMe }, error => {
             setError('cnpj', {
                 type: 'manual',

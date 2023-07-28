@@ -14,8 +14,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { AuthContext } from 'src/context/AuthContext'
-import { ParametersContext } from 'src/context/ParametersContext'
-
+import { RouteContext } from 'src/context/RouteContext'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -36,10 +35,10 @@ const UserDropdown = props => {
     // ** Props
     const { settings } = props
     const { user } = useContext(AuthContext)
-    const { setId } = useContext(ParametersContext)
 
     // ** States
     const [anchorEl, setAnchorEl] = useState(null)
+    const { setId } = useContext(RouteContext)
 
     // ** Hooks
     const router = useRouter()
@@ -77,6 +76,7 @@ const UserDropdown = props => {
     const handleLogout = () => {
         logout()
         handleDropdownClose()
+        setId(null)
     }
 
 

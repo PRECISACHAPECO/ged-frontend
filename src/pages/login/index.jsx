@@ -24,6 +24,7 @@ import Typography from '@mui/material/Typography'
 import MuiFormControlLabel from '@mui/material/FormControlLabel'
 import { cpfMask } from 'src/configs/masks'
 import { validationCPF } from 'src/configs/validations'
+import { RouteContext } from 'src/context/RouteContext'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -128,6 +129,7 @@ const LoginPage = ({ units }) => {
     const [openModalSelectUnit, setOpenModalSelectUnit] = useState(false)
     // Dados do usuário
     const [data, setData] = useState({})
+    const { setId } = useContext(RouteContext)
     // Unidade selecionada
     const [selectedUnit, setSelectedUnit] = useState(null)
     const router = Router
@@ -157,6 +159,7 @@ const LoginPage = ({ units }) => {
         const { cpf, password } = data
         const verifyUnits = true
         setData(data)
+        setId(null)
         auth.login({ cpf, password, rememberMe, verifyUnits }, error => {
             setError('cpf', {
                 type: 'manual',
@@ -178,6 +181,8 @@ const LoginPage = ({ units }) => {
         const { cpf, password } = data
         const verifyUnits = false
         setOpenModalSelectUnit(false)
+
+        setId(null)
 
         setLoggedUnity(selectedUnit)
         localStorage.setItem('loggedUnity', JSON.stringify(selectedUnit))

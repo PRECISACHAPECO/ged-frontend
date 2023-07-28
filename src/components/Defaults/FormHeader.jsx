@@ -19,7 +19,11 @@ const FormHeader = ({
     btnStatus,
     handleSubmit,
     disabledSubmit,
+
     handleSend,
+    iconConclusion,
+    titleConclusion,
+
     disabledSend,
     handleBtnStatus,
     btnDelete,
@@ -244,9 +248,9 @@ const FormHeader = ({
                             size='medium'
                             color='primary'
                             disabled={disabled || disabledSend}
-                            startIcon={<Icon icon='carbon:send-filled' />}
+                            startIcon={<Icon icon={iconConclusion ?? 'carbon:send-filled'} />}
                         >
-                            Concluir Formulário
+                            {titleConclusion}
                         </Button>
                     )}
 
