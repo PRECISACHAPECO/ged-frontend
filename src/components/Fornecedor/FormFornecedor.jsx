@@ -44,6 +44,7 @@ const FormFornecedor = ({ id }) => {
     const [grupoAnexo, setGrupoAnexo] = useState([])
     const [allBlocks, setAllBlocks] = useState([])
     const [blocks, setBlocks] = useState([])
+    console.log('🚀 ~ blocks:', blocks)
     const [info, setInfo] = useState('')
     const [openModal, setOpenModal] = useState(false)
     const [unidade, setUnidade] = useState(null)
@@ -229,6 +230,16 @@ const FormFornecedor = ({ id }) => {
         }
 
         return true // Se chegou até aqui, os arrays contêm os mesmos valores
+    }
+
+    const activeBlock = parFornecedorBlocoID => {
+        let active = false
+        blocks.forEach(block => {
+            if (block.parFornecedorBlocoID == parFornecedorBlocoID) {
+                active = true
+            }
+        })
+        return active
     }
 
     const getData = () => {
@@ -614,21 +625,23 @@ const FormFornecedor = ({ id }) => {
                         </CardContent>
                     </Card>
 
-                    {/* Blocos */}
-                    {blocks &&
-                        blocks.map((bloco, indexBloco) => (
-                            <Block
-                                key={indexBloco}
-                                index={indexBloco}
-                                blockKey={`parFornecedorBlocoID`}
-                                values={bloco}
-                                control={control}
-                                register={register}
-                                setValue={setValue}
-                                errors={errors}
-                                disabled={!canEdit.status}
-                            />
-                        ))}
+                    {/* Blocos (varre todos e verifica se bloco atual contém no array de blocos disponiveis, necessario varrer todos pra manter o index correto) */}
+                    {allBlocks &&
+                        allBlocks.map((bloco, indexBloco) =>
+                            activeBlock(bloco.parFornecedorBlocoID) ? (
+                                <Block
+                                    key={indexBloco}
+                                    index={indexBloco}
+                                    blockKey={`parFornecedorBlocoID`}
+                                    values={bloco}
+                                    control={control}
+                                    register={register}
+                                    setValue={setValue}
+                                    errors={errors}
+                                    disabled={!canEdit.status}
+                                />
+                            ) : null
+                        )}
 
                     {/* Grupo de anexos */}
                     {grupoAnexo &&

@@ -2,6 +2,8 @@ import { Autocomplete, Card, CardContent, FormControl, Grid, TextField, Typograp
 import Item from 'src/components/Defaults/Formularios/Item'
 
 const Block = ({ index, values, blockKey, register, control, setValue, errors, disabled }) => {
+    console.log('🚀 ~ BLOCK:', index, values)
+
     return (
         <>
             <Card key={index} sx={{ mt: 4 }}>
