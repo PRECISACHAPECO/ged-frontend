@@ -139,7 +139,10 @@ const FormUnidade = ({ id }) => {
         const selectedFile = event.target.files[0]
         setFileSelect(selectedFile)
         setFileCurrent(selectedFile?.name)
+        toast.success('Imagem pré selecionada, confirme para salvar')
     }
+
+    const imageUrl = data?.fields?.cabecalhoRelatorio || 'https://gedagro.com.br/images/report.png'
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     const getData = async () => {
@@ -320,30 +323,18 @@ const FormUnidade = ({ id }) => {
             <Card sx={{ mt: 4 }}>
                 <CardHeader title='Dados do relatório' />
                 <CardContent>
-                    <Grid container spacing={4} sx={{ mt: 2 }}>
-                        {/* Mostra a imagem se ela foi salva no banco de dados */}
-                        <Grid xs={12} md={2} sx={{ ml: 4 }}>
-                            <div className='cursor-pointer w-[90%] h-full'>
-                                <Avatar
-                                    onClick={() => window.open(data?.fields?.cabecalhoRelatorio, '_blank')}
-                                    variant='rounded'
-                                    alt='magem relatório'
-                                    sx={{ width: '100%', height: '100%', cursor: 'pointer' }}
-                                    src={data?.fields?.cabecalhoRelatorio}
-                                />
-                            </div>
-                        </Grid>
-                        <Grid sx={12} md={8}>
+                    <Grid container spacing={4}>
+                        <Grid item xs={12} md={8}>
                             <Input
                                 xs={12}
-                                md={4}
+                                md={12}
                                 title='Titulo do relatório'
                                 name='fields.tituloRelatorio'
                                 required={false}
                                 register={register}
                                 errors={errors?.fields?.tituloRelatorio}
                             />
-                            <Grid item xs={12} md={4} sx={{ my: 1, position: 'relative' }}>
+                            <Grid item xs={12} md={12} sx={{ my: 1, position: 'relative' }}>
                                 <input
                                     type='file'
                                     ref={fileInputRef}
@@ -369,6 +360,26 @@ const FormUnidade = ({ id }) => {
                                     </p>
                                 )}
                             </Grid>
+                        </Grid>
+                        {/* Imagem */}
+                        <Grid item xs={12} md={4}>
+                            <div
+                                className={`${
+                                    data?.fields?.cabecalhoRelatorio ? 'cursor-pointer ' : ''
+                                }  w-full h-full border border-black/10 rounded-2xl`}
+                            >
+                                <Avatar
+                                    onClick={() => {
+                                        data?.fields?.cabecalhoRelatorio
+                                            ? window.open(data?.fields?.cabecalhoRelatorio, '_blank')
+                                            : null
+                                    }}
+                                    variant='rounded'
+                                    alt='magem relatório'
+                                    sx={{ width: '100%', height: '100%' }}
+                                    src={imageUrl}
+                                />
+                            </div>
                         </Grid>
                     </Grid>
                 </CardContent>

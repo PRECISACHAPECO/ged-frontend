@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Document, Page, Text, View } from '@react-pdf/renderer'
+import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
 import GenerateReport from 'src/components/Reports'
 import { styles } from './Style'
+import getHeader from './getHeader'
 
-const Layout = ({ title, titleButton, content }) => {
+const Layout = ({ title, titleButton, unidadeID, content }) => {
+    const data = getHeader(unidadeID)
+    console.log('data', data)
     return (
         <>
             <GenerateReport
@@ -13,7 +16,11 @@ const Layout = ({ title, titleButton, content }) => {
                         <Page size='A4' style={styles.page}>
                             {/* Header */}
                             <View style={styles.header}>
-                                <Text style={styles.title}>{title}</Text>
+                                <Text></Text>
+                                <Text style={styles.title}>
+                                    {data?.unidade?.tituloRelatorio ?? 'Cabeçalho não definido'}
+                                </Text>
+                                <Image src={data?.unidade?.url} />
                             </View>
 
                             {/* Content */}

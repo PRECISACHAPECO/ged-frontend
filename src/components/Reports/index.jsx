@@ -5,7 +5,7 @@ const GenerateReport = ({ title, component }) => {
         <BlobProvider document={component}>
             {({ blob, url, loading, error }) => (
                 <a href={url} target='_blank' rel='noopener noreferrer'>
-                    {title ?? 'Relatório'}
+                    {title ?? 'Imprimir'}
                 </a>
             )}
         </BlobProvider>
