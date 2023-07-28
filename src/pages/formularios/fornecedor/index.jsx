@@ -32,7 +32,7 @@ const Fornecedor = () => {
         setOpen(true)
     }
 
-    const makeFornecedor = async (cnpj, gruposAnexo, email) => {
+    const makeFornecedor = async (cnpj, nomeFornecedor, gruposAnexo, email) => {
         try {
             setLoadingSave(true)
             await api
@@ -41,6 +41,7 @@ const Fornecedor = () => {
                     unidadeID: loggedUnity.unidadeID,
                     papelID: user.papelID,
                     cnpj: cnpj,
+                    nomeFornecedor: nomeFornecedor,
                     gruposAnexo: gruposAnexo
                 })
                 .then(response => {

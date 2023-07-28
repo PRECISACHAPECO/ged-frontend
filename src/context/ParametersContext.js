@@ -4,7 +4,7 @@ const ParametersContext = createContext({})
 
 const ParametersProvider = ({ children }) => {
     const [title, setTitle] = useState('Home')
-    const [pageSize, setPageSize] = useState(10)
+    const [pageSize, setPageSize] = useState(50)
     const [searchText, setSearchText] = useState('')
     const [filteredData, setFilteredData] = useState([])
     const [data, setData] = useState([])
