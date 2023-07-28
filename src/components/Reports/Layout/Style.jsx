@@ -20,7 +20,8 @@ export const styles = StyleSheet.create({
         height: 50,
         width: '92%',
         display: 'flex',
-        justifyContent: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center'
     },
 

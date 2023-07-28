@@ -36,7 +36,7 @@ const FormHeader = ({
     type
 }) => {
     const router = Router
-    const { user, routes } = useContext(AuthContext)
+    const { user, routes, loggedUnity } = useContext(AuthContext)
     const { setId } = useContext(RouteContext)
     const [isVisible, setIsVisible] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
@@ -88,7 +88,7 @@ const FormHeader = ({
             icon: (
                 <LayoutReport
                     titleButton={<Icon icon='material-symbols:print' />}
-                    title={dataReports?.[0].title}
+                    title='Imprimir'
                     content={dataReports?.[0].component}
                 />
             ),
