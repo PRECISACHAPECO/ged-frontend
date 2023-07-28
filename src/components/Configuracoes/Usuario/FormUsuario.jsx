@@ -51,7 +51,6 @@ import Input from 'src/components/Form/Input'
 import DateField from 'src/components/Form/DateField'
 
 const FormUsuario = ({ id }) => {
-    console.log('🚀 ~ id:', id)
     const { setId } = useContext(RouteContext)
     const { user, setUser, loggedUnity } = useContext(AuthContext)
 
@@ -77,8 +76,6 @@ const FormUsuario = ({ id }) => {
         register
     } = useForm({})
 
-    console.log('errors: ', errors)
-
     data &&
         data.units &&
         data.units.map((unit, index) => {
@@ -103,7 +100,6 @@ const FormUsuario = ({ id }) => {
 
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async values => {
-        console.log('🚀 ~ onSubmit:', values)
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
@@ -172,7 +168,6 @@ const FormUsuario = ({ id }) => {
     // Ao selecionar a foto, ela é enviada para o servidor e salva no banco de dados, como resposta atualiza a foto atual
     const handleFileSelect = async event => {
         const selectedFile = event.target.files[0]
-        console.log('🚀 ~ selectedFile:', selectedFile)
         if (selectedFile) {
             const formData = new FormData()
             formData.append('photoProfile', selectedFile)
@@ -180,8 +175,6 @@ const FormUsuario = ({ id }) => {
                 .post(`${staticUrl}/photo-profile/${id}`, formData)
                 .then(response => {
                     setPhotoProfile(response.data)
-                    console.log('id', id)
-                    console.log('user.usuarioID', user.usuarioID)
                     if (user.usuarioID == id) {
                         setUser({ ...user, imagem: response.data })
                     }
@@ -216,8 +209,6 @@ const FormUsuario = ({ id }) => {
                     setData(response.data)
                     setPhotoProfile(response.data.imagem)
                     reset(response.data) //* Insere os dados no formulário
-
-                    console.log('🚀 ~ getData:', response.data)
                 })
             } catch (error) {
                 console.log(error)

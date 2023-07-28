@@ -3,7 +3,7 @@ import { useEffect, useState, useContext, useRef } from 'react'
 import { api } from 'src/configs/api'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
-import { Button, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material'
+import { Avatar, Button, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import { useForm } from 'react-hook-form'
 import Loading from 'src/components/Loading'
@@ -31,8 +31,6 @@ const FormUnidade = ({ id }) => {
     const staticUrl = router.pathname
     const fileInputRef = useRef(null)
 
-    console.log('data', data)
-
     const {
         trigger,
         handleSubmit,
@@ -48,7 +46,6 @@ const FormUnidade = ({ id }) => {
             //? Obter apenas núemros da string
             const cepNumber = cep.replace(/\D/g, '')
             api.get('https://viacep.com.br/ws/' + cepNumber + '/json/').then(response => {
-                console.log('busca cep', response.data)
                 if (response.data.localidade) {
                     setValue('fields.logradouro', response.data.logradouro)
                     setValue('fields.bairro', response.data.bairro)
@@ -69,6 +66,7 @@ const FormUnidade = ({ id }) => {
             dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD')
         }
         delete data.cabecalhoRelatorioTitle
+        delete data.cabecalhoRelatorio
         const formData = new FormData()
         formData.append('fileReport', fileSelect)
 
@@ -151,7 +149,6 @@ const FormUnidade = ({ id }) => {
                 reset(response.data)
                 setData(response.data)
                 setFileCurrent(response.data.fields.cabecalhoRelatorioTitle)
-                console.log('getadata', response.data)
             } catch (error) {
                 console.log(error)
             }
@@ -319,55 +316,60 @@ const FormUnidade = ({ id }) => {
                     </CardContent>
                 </form>
             </Card>
+
             <Card sx={{ mt: 4 }}>
                 <CardHeader title='Dados do relatório' />
                 <CardContent>
-                    <Grid container spacing={4}>
-                        <Input
-                            xs={12}
-                            md={4}
-                            title='Titulo do relatório'
-                            name='fields.tituloRelatorio'
-                            required={false}
-                            register={register}
-                            errors={errors?.fields?.tituloRelatorio}
-                        />
-                        <Grid item xs={12} md={4} sx={{ my: 1, position: 'relative' }} onClick={handleFileClick}>
-                            <input
-                                type='file'
-                                ref={fileInputRef}
-                                style={{ display: 'none' }}
-                                onChange={handleFileSelect}
-                            />
-                            <Button
-                                variant='contained'
-                                sx={{ padding: 4, width: '100%' }}
-                                startIcon={<Icon icon='material-symbols:upload' />}
-                            >
-                                {!data?.fields?.cabecalhoRelatorio && !fileSelect?.name
-                                    ? 'Nenhum arquivo selecionado'
-                                    : 'Trocar Imagem'}
-                            </Button>
-                            {fileCurrent && (
-                                <p
-                                    className='absolute top-[72px] text-slate-800 left-4 text-[10px] w-[800px]'
-                                    style={{ textTransform: 'none' }}
-                                >
-                                    {fileCurrent}
-                                </p>
-                            )}
-                        </Grid>
-
+                    <Grid container spacing={4} sx={{ mt: 2 }}>
                         {/* Mostra a imagem se ela foi salva no banco de dados */}
-                        {type === 'edit' && data && data.fields.cabecalhoRelatorio && (
-                            <Grid item xs={12} md={4} sx={{ my: 1 }} onClick={{}}>
-                                <img
-                                    src={data.fields.cabecalhoRelatorio}
-                                    className='w-[150px] h-[150px]'
-                                    alt='Imagem relatório'
+                        <Grid xs={12} md={2} sx={{ ml: 4 }}>
+                            <div className='cursor-pointer w-[90%] h-full'>
+                                <Avatar
+                                    onClick={() => window.open(data?.fields?.cabecalhoRelatorio, '_blank')}
+                                    variant='rounded'
+                                    alt='magem relatório'
+                                    sx={{ width: '100%', height: '100%', cursor: 'pointer' }}
+                                    src={data?.fields?.cabecalhoRelatorio}
                                 />
+                            </div>
+                        </Grid>
+                        <Grid sx={12} md={8}>
+                            <Input
+                                xs={12}
+                                md={4}
+                                title='Titulo do relatório'
+                                name='fields.tituloRelatorio'
+                                required={false}
+                                register={register}
+                                errors={errors?.fields?.tituloRelatorio}
+                            />
+                            <Grid item xs={12} md={4} sx={{ my: 1, position: 'relative' }}>
+                                <input
+                                    type='file'
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={handleFileSelect}
+                                />
+                                <Button
+                                    onClick={handleFileClick}
+                                    variant='contained'
+                                    sx={{ padding: 4, width: '100%', mt: 6 }}
+                                    startIcon={<Icon icon='material-symbols:upload' />}
+                                >
+                                    {!data?.fields?.cabecalhoRelatorio && !fileSelect?.name
+                                        ? 'Nenhum arquivo selecionado'
+                                        : 'Trocar Imagem'}
+                                </Button>
+                                {fileCurrent && (
+                                    <p
+                                        className='absolute top-[79px] text-slate-800 left-0 text-[10px] w-[800px]'
+                                        style={{ textTransform: 'none' }}
+                                    >
+                                        {fileCurrent}
+                                    </p>
+                                )}
                             </Grid>
-                        )}
+                        </Grid>
                     </Grid>
                 </CardContent>
             </Card>
