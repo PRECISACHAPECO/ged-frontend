@@ -1,13 +1,9 @@
 import Router from 'next/router'
 import { useEffect, useState, useContext, useRef } from 'react'
-import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
-import { dateConfig } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
 import Icon from 'src/@core/components/icon'
 import Loading from 'src/components/Loading'
-import { cpfMask } from 'src/configs/masks'
-import { validationCPF } from 'src/configs/validations'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
@@ -348,21 +344,6 @@ const FormUsuario = ({ id }) => {
                                             register={register}
                                             error={errors.nome}
                                         />
-                                        {/* <DateField
-                                        xs={12}
-                                        md={3}
-                                        title='Data de Nascimento'
-                                        // disabled={disabled}
-                                        value={dayjs(new Date(data?.dataNascimento))}
-                                        type={null}
-                                        name='dataNascimento'
-                                        errors={errors.dataNascimento}
-                                        typeValidation='dataPassado'
-                                        daysValidation={365}
-                                        // dateStatus={dateStatus}
-                                        register={register}
-                                    /> */}
-
                                         <Grid item xs={12} md={4}>
                                             <FormControl fullWidth>
                                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
