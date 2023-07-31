@@ -6,7 +6,7 @@ import { cnpjMask, cellPhoneMask, cepMask, ufMask } from 'src/configs/masks'
 import Select from 'src/components/Form/Select'
 import Input from 'src/components/Form/Input'
 
-const Product = ({ field, data, indexData, disabled, register, setValue, errors }) => {
+const Product = ({ field, data, indexData, disabled, control, register, setValue, errors }) => {
     console.log('product errors: ', errors)
 
     return (
@@ -46,7 +46,7 @@ const Product = ({ field, data, indexData, disabled, register, setValue, errors 
                     value={data?.[field.nomeColuna]}
                     type={field.nomeColuna}
                     disabled={disabled}
-                    register={register}
+                    control={control}
                     errors={errors?.produtos?.[indexData]?.[field.nomeColuna]}
                 />
             )}

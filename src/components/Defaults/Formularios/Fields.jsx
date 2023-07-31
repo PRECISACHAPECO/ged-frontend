@@ -37,6 +37,21 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
             })
     }
 
+    const getMaskForField = fieldName => {
+        switch (fieldName) {
+            case 'telefone':
+            case 'telefone1':
+            case 'telefone2':
+                return 'telefone'
+            case 'cep':
+                return 'cep'
+            case 'cnpj':
+                return 'cnpj'
+            default:
+                return null
+        }
+    }
+
     useEffect(() => {
         setRegistroEstabelecimento()
     }, [])
@@ -96,8 +111,9 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                     name={`fields[${index}].${field.nomeColuna}`}
                                     value={field?.[field.nomeColuna]}
                                     type={field.nomeColuna}
+                                    mask={getMaskForField(field.nomeColuna)}
                                     disabled={disabled}
-                                    register={register}
+                                    control={control}
                                     // errors field[index] nomeColuna
                                     errors={errors?.fields?.[index]?.[field.nomeColuna]}
                                 />

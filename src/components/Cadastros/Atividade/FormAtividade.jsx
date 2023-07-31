@@ -30,8 +30,9 @@ const FormAtividade = ({ id }) => {
         trigger,
         handleSubmit,
         reset,
-        formState: { errors },
-        register
+        register,
+        control,
+        formState: { errors }
     } = useForm()
 
     //? Envia dados para a api
@@ -133,7 +134,7 @@ const FormAtividade = ({ id }) => {
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
-                                    register={register}
+                                    control={control}
                                     errors={errors?.fields?.nome}
                                 />
                                 <Check

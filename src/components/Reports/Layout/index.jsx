@@ -6,7 +6,7 @@ import getHeader from './getHeader'
 
 const Layout = ({ title, titleButton, unidadeID, content }) => {
     const data = getHeader(unidadeID)
-    console.log('data', data)
+
     return (
         <>
             <GenerateReport
@@ -16,11 +16,31 @@ const Layout = ({ title, titleButton, unidadeID, content }) => {
                         <Page size='A4' style={styles.page}>
                             {/* Header */}
                             <View style={styles.header}>
-                                <Text></Text>
-                                <Text style={styles.title}>
-                                    {data?.unidade?.tituloRelatorio ?? 'Cabeçalho não definido'}
-                                </Text>
-                                <Image src={data?.unidade?.url} />
+                                {/* Vazio... */}
+                                <View style={{ width: '30%' }}>
+                                    <Text></Text>
+                                </View>
+                                {/* Descrição */}
+                                <View style={{ width: '32%', textAlign: 'center' }}>
+                                    <Text style={styles.title}>
+                                        {data?.unidade?.tituloRelatorio ?? 'Cabeçalho não definido'}
+                                    </Text>
+                                </View>
+                                {/* Imagem */}
+                                <View style={{ width: '30%' }}>
+                                    {data?.unidade?.url ? (
+                                        <Image
+                                            src={data?.unidade?.url}
+                                            style={{
+                                                aspectRatio: 1,
+                                                height: '100%',
+                                                marginLeft: 'auto' // Alinha a imagem à direita
+                                            }}
+                                        />
+                                    ) : (
+                                        ''
+                                    )}
+                                </View>
                             </View>
 
                             {/* Content */}

@@ -22,7 +22,7 @@ const FormItem = ({ id }) => {
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
-    const { title } = useContext(ParametersContext)
+    const { title, setSubtitle } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
 
     const {
@@ -30,6 +30,7 @@ const FormItem = ({ id }) => {
         handleSubmit,
         setValue,
         reset,
+        control,
         formState: { errors },
         register
     } = useForm()
@@ -91,6 +92,7 @@ const FormItem = ({ id }) => {
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     useEffect(() => {
+        setSubtitle(`ID: ${id}`)
         getData()
 
         //? Seta error nos campos obrigatórios
@@ -123,7 +125,7 @@ const FormItem = ({ id }) => {
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
-                                    register={register}
+                                    control={control}
                                     errors={errors?.fields?.nome}
                                 />
                                 <Check

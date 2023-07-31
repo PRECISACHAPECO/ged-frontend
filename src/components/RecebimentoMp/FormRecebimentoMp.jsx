@@ -100,6 +100,7 @@ const FormRecebimentoMp = ({ id }) => {
         register,
         getValues,
         setValue,
+        control,
         handleSubmit,
         clearErrors,
         setError,
@@ -489,6 +490,7 @@ const FormRecebimentoMp = ({ id }) => {
                                 register={register}
                                 errors={errors}
                                 setValue={setValue}
+                                control={control}
                                 fields={fieldsState}
                                 values={data}
                                 disabled={!canEdit.status}
@@ -521,6 +523,7 @@ const FormRecebimentoMp = ({ id }) => {
                                                     indexData={indexData}
                                                     disabled={!canEdit.status}
                                                     register={register}
+                                                    control={control}
                                                     setValue={setValue}
                                                     errors={errors}
                                                 />
@@ -566,6 +569,7 @@ const FormRecebimentoMp = ({ id }) => {
                                 blockKey={`parRecebimentompBlocoID`}
                                 values={bloco}
                                 register={register}
+                                control={control}
                                 setValue={setValue}
                                 errors={errors}
                                 isDisabled={!canEdit.status}
@@ -590,7 +594,7 @@ const FormRecebimentoMp = ({ id }) => {
                                                     rows={4}
                                                     value={info.obs}
                                                     disabled={!canEdit.status}
-                                                    register={register}
+                                                    control={control}
                                                 />
                                             </FormControl>
                                         </Grid>

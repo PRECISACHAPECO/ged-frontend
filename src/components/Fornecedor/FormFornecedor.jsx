@@ -263,7 +263,6 @@ const FormFornecedor = ({ id }) => {
                     setInfo(response.data.info)
                     setUnidade(response.data.unidade)
 
-                    // initializeValues(response.data)
                     //* Insere os dados no formulário
                     reset(response.data)
 
@@ -341,8 +340,6 @@ const FormFornecedor = ({ id }) => {
         //? Header
         fieldsState.forEach((field, index) => {
             const fieldName = field.tabela ? `fields[${index}].${field.tabela}` : `fields[${index}].${field.nomeColuna}`
-            console.log('🚀 ~ checkErrors: fieldName:', fieldName)
-
             const fieldValue = getValues(fieldName)
             if (field.obrigatorio === 1 && !fieldValue) {
                 setError(fieldName, {
@@ -355,18 +352,20 @@ const FormFornecedor = ({ id }) => {
         })
 
         //? Blocos
-        blocks.forEach((block, indexBlock) => {
-            block.itens.forEach((item, indexItem) => {
-                const fieldValue = getValues(`blocos[${indexBlock}].itens[${indexItem}].resposta`)
-                if (item?.obrigatorio === 1 && !fieldValue) {
-                    setError(`blocos[${indexBlock}].itens[${indexItem}].resposta`, {
-                        type: 'manual',
-                        message: 'Campo obrigatário'
-                    })
-                    arrErrors.push(item?.nome)
-                    hasErrors = true
-                }
-            })
+        allBlocks.forEach((block, indexBlock) => {
+            activeBlock(block.parFornecedorBlocoID)
+                ? block.itens.forEach((item, indexItem) => {
+                      const fieldValue = getValues(`blocos[${indexBlock}].itens[${indexItem}].resposta`)
+                      if (item?.obrigatorio === 1 && !fieldValue) {
+                          setError(`blocos[${indexBlock}].itens[${indexItem}].resposta`, {
+                              type: 'manual',
+                              message: 'Campo obrigatário'
+                          })
+                          arrErrors.push(item?.nome)
+                          hasErrors = true
+                      }
+                  })
+                : null
         })
 
         setListErrors({
@@ -673,7 +672,7 @@ const FormFornecedor = ({ id }) => {
                                             rows={4}
                                             value={info.obs}
                                             disabled={!canEdit.status}
-                                            register={register}
+                                            control={control}
                                         />
                                     </FormControl>
                                 </Grid>

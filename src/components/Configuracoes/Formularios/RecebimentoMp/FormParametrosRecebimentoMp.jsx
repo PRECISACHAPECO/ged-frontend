@@ -55,6 +55,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
         setValue,
         register,
         reset,
+        control,
         handleSubmit,
         formState: { errors }
     } = useForm()
@@ -352,7 +353,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                             name={`blocks.[${index}].dados.ordem`}
                                             value={block.dados.ordem}
                                             required={true}
-                                            register={register}
+                                            control={control}
                                             errors={errors?.blocks?.[index]?.dados?.ordem}
                                         />
 
@@ -363,7 +364,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                             name={`blocks.[${index}].dados.nome`}
                                             value={block.dados.nome}
                                             required={true}
-                                            register={register}
+                                            control={control}
                                             errors={errors?.blocks?.[index]?.dados?.nome}
                                         />
 
@@ -412,7 +413,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                         name={`blocks.[${index}].itens.[${indexItem}].ordem`}
                                                         value={item.ordem}
                                                         required={true}
-                                                        register={register}
+                                                        control={control}
                                                         errors={errors?.blocks?.[index]?.itens?.[indexItem]?.ordem}
                                                     />
 
@@ -545,7 +546,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                             value={orientacoes?.obs}
                                             multiline
                                             rows={4}
-                                            register={register}
+                                            control={control}
                                         />
                                     </Grid>
                                 </Grid>

@@ -29,8 +29,9 @@ const FormApresentacao = ({ id }) => {
         trigger,
         handleSubmit,
         reset,
-        formState: { errors },
-        register
+        register,
+        control,
+        formState: { errors }
     } = useForm()
 
     //? Envia dados para a api
@@ -128,7 +129,7 @@ const FormApresentacao = ({ id }) => {
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
-                                    register={register}
+                                    control={control}
                                     errors={errors?.fields?.nome}
                                 />
                                 <Check

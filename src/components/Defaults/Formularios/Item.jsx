@@ -104,7 +104,7 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
                             value={values.resposta}
                             multiline
                             disabled={disabled}
-                            register={register}
+                            control={control}
                             errors={errors?.blocos?.[blockIndex]?.itens[index]?.resposta}
                         />
                     )}
@@ -121,7 +121,7 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
                             value={values.observacao}
                             multiline
                             disabled={disabled}
-                            register={register}
+                            control={control}
                         />
                     </FormControl>
                 </Grid>

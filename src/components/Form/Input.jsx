@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { Controller } from 'react-hook-form'
 import { FormControl, Grid, TextField } from '@mui/material'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask, cpfMask, rgMask } from 'src/configs/masks'
 
@@ -15,6 +16,7 @@ const Input = ({
     multiline,
     disabled,
     required,
+    control,
     register,
     errors
 }) => {
@@ -23,7 +25,74 @@ const Input = ({
     return (
         <Grid item xs={xs} md={md} sx={{ my: 1 }}>
             <FormControl fullWidth>
-                <TextField
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={{ required: required }}
+                    render={({ field }) => (
+                        <TextField
+                            multiline={multiline}
+                            value={field.value}
+                            label={title}
+                            placeholder={title}
+                            rows={rows}
+                            type={type ?? 'text'}
+                            disabled={disabled}
+                            aria-describedby='validation-schema-nome'
+                            error={errors}
+                            onChange={e => {
+                                let value = e.target.value
+
+                                mask === 'cnpj'
+                                    ? (value = cnpjMask(value))
+                                    : mask === 'cep'
+                                    ? ((value = cepMask(value)), getAddressByCep(value))
+                                    : mask === 'telefone'
+                                    ? (value = cellPhoneMask(value))
+                                    : mask === 'estado'
+                                    ? (value = ufMask(value))
+                                    : mask === 'cpf'
+                                    ? (value = cpfMask(value))
+                                    : mask === 'rg'
+                                    ? (value = rgMask(value))
+                                    : null
+
+                                field.onChange(value)
+                            }}
+                            inputProps={
+                                mask === 'cnpj'
+                                    ? {
+                                          maxLength: 18,
+                                          type: 'tel',
+                                          inputMode: 'numeric'
+                                      }
+                                    : mask === 'cep'
+                                    ? {
+                                          maxLength: 9,
+                                          type: 'tel',
+                                          inputMode: 'numeric'
+                                      }
+                                    : mask === 'telefone'
+                                    ? {
+                                          maxLength: 15
+                                      }
+                                    : mask === 'cpf'
+                                    ? {
+                                          maxLength: 14
+                                      }
+                                    : mask === 'rg'
+                                    ? {
+                                          maxLength: 11
+                                      }
+                                    : mask === 'estado'
+                                    ? { maxLength: 2 }
+                                    : {}
+                            }
+                        />
+                    )}
+                />
+
+                {/* <TextField
                     multiline={multiline}
                     defaultValue={value ?? ''}
                     label={title}
@@ -67,7 +136,7 @@ const Input = ({
                               }
                             : mask === 'telefone'
                             ? {
-                                  maxLength: 14
+                                  maxLength: 15
                               }
                             : mask === 'cpf'
                             ? {
@@ -81,7 +150,7 @@ const Input = ({
                             ? { maxLength: 2 }
                             : {}
                     }
-                />
+                /> */}
             </FormControl>
         </Grid>
     )

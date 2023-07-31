@@ -96,69 +96,72 @@ const FormProfissao = () => {
 
     return (
         <>
-            <Card>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <FormHeader
-                        btnCancel
-                        btnSave
-                        disabled={Object.keys(errors).length > 0 ? true : false}
-                        handleSubmit={() => handleSubmit(onSubmit)}
-                        btnDelete={type === 'edit' ? true : false}
-                        onclickDelete={() => setOpen(true)}
-                    />
-                    <CardContent>
-                        <Grid container spacing={5}>
-                            <Grid item xs={12} md={11}>
-                                <FormControl fullWidth>
-                                    <Controller
-                                        name='nome'
-                                        control={control}
-                                        render={({ field: { value, onChange } }) => (
-                                            <TextField
-                                                value={value ?? ''}
-                                                label='Nome'
-                                                onChange={onChange}
-                                                placeholder='Nome'
-                                                error={Boolean(errors.nome)}
-                                                aria-describedby='validation-schema-nome'
-                                                inputRef={inputRef}
-                                            />
+            {!data && <Loading />}
+            {data && (
+                <Card>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <FormHeader
+                            btnCancel
+                            btnSave
+                            disabled={Object.keys(errors).length > 0 ? true : false}
+                            handleSubmit={() => handleSubmit(onSubmit)}
+                            btnDelete={type === 'edit' ? true : false}
+                            onclickDelete={() => setOpen(true)}
+                        />
+                        <CardContent>
+                            <Grid container spacing={5}>
+                                <Grid item xs={12} md={11}>
+                                    <FormControl fullWidth>
+                                        <Controller
+                                            name='nome'
+                                            control={control}
+                                            render={({ field: { value, onChange } }) => (
+                                                <TextField
+                                                    value={value ?? ''}
+                                                    label='Nome'
+                                                    onChange={onChange}
+                                                    placeholder='Nome'
+                                                    error={Boolean(errors.nome)}
+                                                    aria-describedby='validation-schema-nome'
+                                                    inputRef={inputRef}
+                                                />
+                                            )}
+                                        />
+                                        {errors.nome && (
+                                            <FormHelperText sx={{ color: 'error.main' }} id='validation-schema-nome'>
+                                                {errors.nome.message}
+                                            </FormHelperText>
                                         )}
-                                    />
-                                    {errors.nome && (
-                                        <FormHelperText sx={{ color: 'error.main' }} id='validation-schema-nome'>
-                                            {errors.nome.message}
-                                        </FormHelperText>
-                                    )}
-                                </FormControl>
-                            </Grid>
+                                    </FormControl>
+                                </Grid>
 
-                            <Grid item xs={12} md={1}>
-                                <FormControl>
-                                    <Controller
-                                        name='status'
-                                        control={control}
-                                        rules={{ required: false }}
-                                        render={({ field: { value, onChange } }) => (
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={type === 'new' ? true : value ?? false}
-                                                        onChange={onChange}
-                                                    />
-                                                }
-                                                label='Status'
-                                                labelPlacement='top'
-                                                sx={{ mr: 8 }}
-                                            />
-                                        )}
-                                    />
-                                </FormControl>
+                                <Grid item xs={12} md={1}>
+                                    <FormControl>
+                                        <Controller
+                                            name='status'
+                                            control={control}
+                                            rules={{ required: false }}
+                                            render={({ field: { value, onChange } }) => (
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            checked={type === 'new' ? true : value ?? false}
+                                                            onChange={onChange}
+                                                        />
+                                                    }
+                                                    label='Status'
+                                                    labelPlacement='top'
+                                                    sx={{ mr: 8 }}
+                                                />
+                                            )}
+                                        />
+                                    </FormControl>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </CardContent>
-                </form>
-            </Card>
+                        </CardContent>
+                    </form>
+                </Card>
+            )}
 
             <DialogForm
                 text='Tem certeza que deseja excluir?'

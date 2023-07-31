@@ -136,7 +136,7 @@ const UserDropdown = props => {
                     <Box sx={styles}
                         onClick={() => {
                             handleDropdownClose(user.papelID === 1 ? `/configuracoes/usuario` : `/meus-dados`)
-                            setId(user.usuarioID)
+                            setId(user.papelID === 1 ? user.usuarioID : null)
                         }}>
 
                         <Icon icon='mdi:account-outline' />
