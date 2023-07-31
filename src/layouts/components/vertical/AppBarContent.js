@@ -34,7 +34,8 @@ const notifications = [
 const AppBarContent = props => {
     // ** Props
     const { hidden, settings, saveSettings, toggleNavVisibility } = props
-    const { title } = useContext(ParametersContext)
+    const { title, subtitle } = useContext(ParametersContext)
+    console.log("🚀 ~ subtitle:", subtitle)
     const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
 
     // ** Hooks
@@ -73,8 +74,9 @@ const AppBarContent = props => {
                     ) : null}
                     <Autocomplete hidden={hidden} settings={settings} />
                 </Box>
-                <Box className='app-title' sx={{ display: 'flex', alignItems: 'center' }}>
-                    <h3>{title}</h3>
+                <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant='h5' >{title}</Typography>
+                    <Typography variant='caption'>{subtitle}</Typography>
                 </Box>
                 <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
                     {
