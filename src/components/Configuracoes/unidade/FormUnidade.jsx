@@ -37,6 +37,7 @@ const FormUnidade = ({ id }) => {
         handleSubmit,
         setValue,
         reset,
+        control,
         formState: { errors },
         register
     } = useForm()
@@ -44,6 +45,7 @@ const FormUnidade = ({ id }) => {
     //? Função que busca o CEP
     const handleCep = async cep => {
         if (cep.length == 9) {
+            console.log('🚀 ~ cep:', cep)
             //? Obter apenas núemros da string
             const cepNumber = cep.replace(/\D/g, '')
             api.get('https://viacep.com.br/ws/' + cepNumber + '/json/').then(response => {
@@ -191,6 +193,7 @@ const FormUnidade = ({ id }) => {
                                         name='fields.nomeFantasia'
                                         required={true}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.nomeFantasia}
                                     />
                                     <Input
@@ -200,6 +203,7 @@ const FormUnidade = ({ id }) => {
                                         name='fields.razaoSocial'
                                         required={true}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.razaoSocial}
                                     />
                                     <Input
@@ -210,6 +214,7 @@ const FormUnidade = ({ id }) => {
                                         mask='cnpj'
                                         required={true}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.cnpj}
                                     />
                                     <Input
@@ -219,6 +224,7 @@ const FormUnidade = ({ id }) => {
                                         name='fields.responsavel'
                                         required={true}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.responsavel}
                                     />
                                     <Input
@@ -229,6 +235,7 @@ const FormUnidade = ({ id }) => {
                                         type='email'
                                         required={true}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.email}
                                     />
                                     <Input
@@ -239,6 +246,7 @@ const FormUnidade = ({ id }) => {
                                         mask='telefone'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.telefone1}
                                     />
                                     <Input
@@ -249,6 +257,7 @@ const FormUnidade = ({ id }) => {
                                         mask='telefone'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.telefone2}
                                     />
                                     <Input
@@ -260,6 +269,7 @@ const FormUnidade = ({ id }) => {
                                         mask='cep'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.cep}
                                     />
                                     <Input
@@ -269,6 +279,7 @@ const FormUnidade = ({ id }) => {
                                         name='fields.logradouro'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.logradouro}
                                     />
                                     <Input
@@ -278,6 +289,7 @@ const FormUnidade = ({ id }) => {
                                         name='fields.numero'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.numero}
                                     />
                                     <Input
@@ -287,6 +299,7 @@ const FormUnidade = ({ id }) => {
                                         name='fields.complemento'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.complemento}
                                     />
                                     <Input
@@ -296,6 +309,7 @@ const FormUnidade = ({ id }) => {
                                         name='fields.bairro'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.bairro}
                                     />
                                     <Input
@@ -305,6 +319,7 @@ const FormUnidade = ({ id }) => {
                                         name='fields.cidade'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.cidade}
                                     />
                                     <Input
@@ -315,6 +330,7 @@ const FormUnidade = ({ id }) => {
                                         mask='estado'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.uf}
                                     />
                                 </Grid>
@@ -334,6 +350,7 @@ const FormUnidade = ({ id }) => {
                                         name='fields.tituloRelatorio'
                                         required={false}
                                         register={register}
+                                        control={control}
                                         errors={errors?.fields?.tituloRelatorio}
                                     />
                                     <Grid item xs={12} md={12} sx={{ my: 1, position: 'relative' }}>

@@ -17,6 +17,7 @@ import { useState } from 'react'
 const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
     const {
         register,
+        control,
         handleSubmit,
         setValue,
         reset,
@@ -51,10 +52,7 @@ const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal
         setValue('bairro', address?.bairro)
         setValue('cidade', address?.localidade)
         setValue('uf', address?.uf)
-        reset(['logradouro', 'bairro', 'cidade', 'uf'])
     }
-
-
 
     return (
         dataGlobal && (
@@ -89,7 +87,7 @@ const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal
                             defaultValue={dataGlobal?.usuario?.fields?.cep}
                             name='cep'
                             fullWidth
-                            {...register('cep',)}
+                            {...register('cep')}
                             onChange={(e) => {
                                 setValue('cep', cepMask(e.target.value))
                                 getCep(e.target.value)
@@ -102,13 +100,18 @@ const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <TextField
-                            label='Rua'
-                            placeholder='Rua'
-                            defaultValue={dataGlobal?.usuario?.fields?.logradouro ?? ''}
+                        <Controller
                             name='logradouro'
-                            {...register('logradouro')}
-                            fullWidth
+                            control={control}
+                            defaultValue={dataGlobal?.usuario?.fields?.logradouro ?? ''}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    label='Rua'
+                                    placeholder='Rua'
+                                    fullWidth
+                                />
+                            )}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -137,38 +140,50 @@ const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <FormControl fullWidth>
-                            <TextField
-                                defaultValue={dataGlobal?.usuario?.fields?.bairro}
-                                label='Bairro'
-                                placeholder='Bairro'
+                            <Controller
                                 name='bairro'
-                                {...register('bairro', { required: false })}
+                                control={control}
+                                defaultValue={dataGlobal?.usuario?.fields?.bairro ?? ''}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label='Bairro'
+                                        placeholder='Bairro'
+                                        fullWidth
+                                    />
+                                )}
                             />
-
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <TextField
-                            label='Cidade'
-                            placeholder='Cidade'
-                            defaultValue={dataGlobal?.usuario?.fields?.cidade}
+                        <Controller
                             name='cidade'
-                            fullWidth
-                            {...register('cidade')}
+                            control={control}
+                            defaultValue={dataGlobal?.usuario?.fields?.cidade ?? ''}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    label='Cidade'
+                                    placeholder='Cidade'
+                                    fullWidth
+                                />
+                            )}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <TextField
-                            label='Estado'
-                            placeholder='Estado'
-                            defaultValue={dataGlobal?.usuario?.fields?.uf}
+                        <Controller
                             name='uf'
-                            fullWidth
-                            {...register('uf')}
-                            onChange={(e) => {
-                                setValue('uf', ufMask(e.target.value))
-                            }}
-                            inputProps={{ maxLength: 2 }}
+                            control={control}
+                            defaultValue={dataGlobal?.usuario?.fields?.uf ?? ''}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    label='Estado'
+                                    placeholder='Estado'
+                                    fullWidth
+                                    inputProps={{ maxLength: 2 }}
+                                />
+                            )}
                         />
                     </Grid>
                     <Grid item xs={12}>
