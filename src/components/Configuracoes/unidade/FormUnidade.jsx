@@ -19,16 +19,17 @@ import Input from 'src/components/Form/Input'
 const FormUnidade = ({ id }) => {
     const { user, setLoggedUnity, loggedUnity } = useContext(AuthContext)
     const { setId } = useContext(RouteContext)
+    id = user.papelID === 1 ? id : loggedUnity.unidadeID
+    console.log('🚀 ~ id:', id)
 
     const [open, setOpen] = useState(false)
     const [data, setData] = useState()
     const [fileSelect, setFileSelect] = useState()
     const [fileCurrent, setFileCurrent] = useState()
     //* Componente é chamado na tela da unidade e Meus dados do fornecedor
-    // const id = paramId ?? loggedUnity.unidadeID //? se nao tem id é fornecedor, então pega id da unidade logada pelo fornecedor
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
-    const staticUrl = router.pathname
+    const staticUrl = user.papelID === 1 ? router.pathname : '/configuracoes/unidade'
     const fileInputRef = useRef(null)
 
     const {
