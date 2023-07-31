@@ -32,9 +32,7 @@ const Fornecedor = () => {
         setOpen(true)
     }
 
-    const makeFornecedor = async (cnpj, gruposAnexo, email) => {
-        console.log('🚀 ~ makeFornecedor => gruposAnexo:', gruposAnexo)
-
+    const makeFornecedor = async (cnpj, nomeFornecedor, gruposAnexo, email) => {
         try {
             setLoadingSave(true)
             await api
@@ -43,6 +41,7 @@ const Fornecedor = () => {
                     unidadeID: loggedUnity.unidadeID,
                     papelID: user.papelID,
                     cnpj: cnpj,
+                    nomeFornecedor: nomeFornecedor,
                     gruposAnexo: gruposAnexo
                 })
                 .then(response => {
@@ -68,6 +67,7 @@ const Fornecedor = () => {
                 cnpj: cnpj,
                 destinatario: email
             }
+            console.log('🚀 ~ sendMail:', data)
             api.post(`${currentLink}/sendMail`, { data })
                 .then(response => {
                     toast.success('E-mail enviado com sucesso')
@@ -80,8 +80,6 @@ const Fornecedor = () => {
 
     //* Controles da listagem
     const getList = async () => {
-        console.log('getList> ', currentLink)
-        //
         await api
             .post(`${currentLink}/getList`, {
                 unidadeID: loggedUnity.unidadeID,
@@ -107,11 +105,6 @@ const Fornecedor = () => {
                       size: 1
                   },
                   {
-                      headerName: 'Data da Avaliação',
-                      field: 'data',
-                      size: 1
-                  },
-                  {
                       headerName: 'Fornecedor',
                       field: 'fornecedor',
                       size: 1
@@ -119,6 +112,11 @@ const Fornecedor = () => {
                   {
                       headerName: 'CNPJ',
                       field: 'cnpj',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Data da Avaliação',
+                      field: 'data',
                       size: 1
                   },
                   {
@@ -145,11 +143,6 @@ const Fornecedor = () => {
                       size: 1
                   },
                   {
-                      headerName: 'Data da Avaliação',
-                      field: 'data',
-                      size: 1
-                  },
-                  {
                       headerName: 'Fábrica',
                       field: 'fabrica',
                       size: 1
@@ -157,6 +150,11 @@ const Fornecedor = () => {
                   {
                       headerName: 'CNPJ',
                       field: 'cnpj',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Data da Avaliação',
+                      field: 'data',
                       size: 1
                   },
                   {

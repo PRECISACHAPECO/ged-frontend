@@ -24,6 +24,7 @@ const DialogForm = ({
     handleSubmit,
 
     cnpj,
+    nomeFornecedor,
     gruposAnexo,
 
     inputEmail,
@@ -116,7 +117,7 @@ const DialogForm = ({
                             onClick={
                                 inputEmail && cnpj
                                     ? () => {
-                                          handleSubmit(cnpj, gruposAnexo, email)
+                                          handleSubmit(cnpj, nomeFornecedor, gruposAnexo, email)
                                           setEmail(null)
                                           closeAfterSave ? handleClose() : null
                                       }

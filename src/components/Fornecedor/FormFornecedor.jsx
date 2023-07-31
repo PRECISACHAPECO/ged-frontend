@@ -44,7 +44,6 @@ const FormFornecedor = ({ id }) => {
     const [grupoAnexo, setGrupoAnexo] = useState([])
     const [allBlocks, setAllBlocks] = useState([])
     const [blocks, setBlocks] = useState([])
-    console.log('🚀 ~ blocks:', blocks)
     const [info, setInfo] = useState('')
     const [openModal, setOpenModal] = useState(false)
     const [unidade, setUnidade] = useState(null)
@@ -533,6 +532,8 @@ const FormFornecedor = ({ id }) => {
                             dataReports={dataReports}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             handleSend={handleSendForm}
+                            iconConclusion={info.status >= 40 ? 'mdi:check-bold' : 'carbon:send-filled'}
+                            titleConclusion={info.status >= 40 ? 'Aprovar Fornecedor' : 'Concluir Formulário'}
                             title='Fornecedor'
                             btnStatus
                             handleBtnStatus={() => setOpenModalStatus(true)}
@@ -688,7 +689,7 @@ const FormFornecedor = ({ id }) => {
                 handleClose={() => {
                     setOpenModal(false), setValidateForm(false)
                 }}
-                title='Concluir Formulário'
+                title={info.status >= 40 ? 'Aprovar Fornecedor' : 'Concluir Formulário'}
                 text={`Deseja realmente concluir este formulário?`}
                 info={info}
                 btnCancel

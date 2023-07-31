@@ -15,7 +15,6 @@ import {
 import { useEffect, useState, useContext } from 'react'
 import { AuthContext } from 'src/context/AuthContext'
 import { ParametersContext } from 'src/context/ParametersContext'
-
 import { useRouter } from 'next/router'
 
 //* Custom components
@@ -50,6 +49,8 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
     const [messageCopied, setMessageCopied] = useState(false)
     const [optionsGruposAnexo, setOptionsGruposAnexo] = useState([])
     const [gruposAnexo, setGruposAnexo] = useState([])
+    const [nomeFornecedor, setNomeFornecedor] = useState('')
+    console.log('🚀 ~ nomeFornecedor:', nomeFornecedor)
 
     const {
         handleSubmit,
@@ -265,7 +266,30 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
                                     </Alert>
                                 ) : !data.isFornecedor && !data.hasFormulario ? (
                                     <>
+                                        {/* Nome do fornecedor */}
                                         <Grid item xs={12} md={12} sx={{ my: 1 }}>
+                                            <FormControl fullWidth>
+                                                <TextField
+                                                    defaultValue=''
+                                                    label='Nome do Fornecedor'
+                                                    placeholder='Nome do Fornecedor'
+                                                    aria-describedby='validation-schema-nome'
+                                                    name='nomeFornecedor'
+                                                    // {...register(`nomeFornecedor`, {
+                                                    //     required: true
+                                                    // })}
+                                                    inputProps={{
+                                                        onChange: e => {
+                                                            setValue('nomeFornecedor', e.target.value)
+                                                            setNomeFornecedor(e.target.value)
+                                                        }
+                                                    }}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+
+                                        {/* Grupos de anexo */}
+                                        <Grid item xs={12} md={12} sx={{ mt: 3 }}>
                                             <FormControl fullWidth>
                                                 <Autocomplete
                                                     multiple
@@ -273,7 +297,7 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
                                                     options={optionsGruposAnexo}
                                                     getOptionLabel={option => option.nome}
                                                     defaultValue={[]}
-                                                    {...register('gruposAnexo')}
+                                                    // {...register('gruposAnexo')}
                                                     onChange={(e, newValue) => {
                                                         console.log('🚀 Select => onChange:', newValue)
                                                         setGruposAnexo(newValue)
@@ -348,6 +372,7 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
                 closeAfterSave={true}
                 cnpj={cnpj}
                 gruposAnexo={gruposAnexo}
+                nomeFornecedor={nomeFornecedor}
                 grupoAnexosFornecedor={true}
                 btnCancel
                 btnConfirm
