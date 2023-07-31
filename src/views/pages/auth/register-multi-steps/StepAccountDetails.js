@@ -32,6 +32,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
     const rota = router.pathname
     const [existsTableFactory, setExistsTableFactory] = useState(null)
     const [lenghtPassword, setLenghtPassword] = useState(null)
+    const [fromLink, setFromLink] = useState(false)
     const inputRef = useRef(null)
 
     console.log("exist", existsTableFactory)
@@ -183,15 +184,20 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
     const cnpjRouter = router.query.c
 
     const setAcessLink = async (unidadeID, cnpj) => {
-        const data = {
-            unidadeID,
-            cnpj
+        if (unidadeID && cnpj) {
+            const data = {
+                unidadeID,
+                cnpj
+            }
+            await api.post(`/login-fornecedor/setAcessLink`, { data })
+                .then((response, err) => {
+                    if (response.data && response.data[0] && response.data[0].cnpj) {
+                        handleGetCnpj(response.data[0].cnpj)
+                        setValue('cnpj', response.data[0].cnpj)
+                        setFromLink(true)
+                    }
+                })
         }
-        await api.post(`/login-fornecedor/setAcessLink`, { data })
-            .then((response, err) => {
-                handleGetCnpj(response.data[0].cnpj)
-                setValue('cnpj', response.data[0].cnpj)
-            })
     }
 
     useEffect(() => {
@@ -206,7 +212,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
 
 
     return (
-        dataGlobal && (
+        (!fromLink || dataGlobal) && (
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Box sx={{ mb: 4 }}>
                     <Typography variant='h5'>Informações obrigatórios</Typography>
