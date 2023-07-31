@@ -206,7 +206,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
 
 
     return (
-        <>
+        dataGlobal && (
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Box sx={{ mb: 4 }}>
                     <Typography variant='h5'>Informações obrigatórios</Typography>
@@ -487,7 +487,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                     </Grid>
                 </Grid>
             </form>
-        </>
+        )
     )
 }
 
