@@ -20,7 +20,7 @@ const Layout = ({ title, titleButton, unidadeID, content }) => {
                                 <Text style={styles.title}>
                                     {data?.unidade?.tituloRelatorio ?? 'Cabeçalho não definido'}
                                 </Text>
-                                <Image src={data?.unidade?.url} />
+                                <Text>{data?.unidade?.url ? <Image src={data?.unidade?.url} /> : ''}</Text>
                             </View>
 
                             {/* Content */}
