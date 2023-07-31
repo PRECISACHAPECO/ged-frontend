@@ -31,6 +31,7 @@ const FormProdutos = ({ id }) => {
         trigger,
         handleSubmit,
         reset,
+        control,
         formState: { errors },
         register
     } = useForm()
@@ -136,7 +137,7 @@ const FormProdutos = ({ id }) => {
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
-                                    register={register}
+                                    control={control}
                                     errors={errors?.fields?.nome}
                                 />
                                 <Input
@@ -145,7 +146,7 @@ const FormProdutos = ({ id }) => {
                                     title='Unidade de Medida'
                                     name='fields.unidadeMedida'
                                     required={true}
-                                    register={register}
+                                    control={control}
                                     errors={errors?.fields?.unidadeMedida}
                                 />
                                 <Check

@@ -29,6 +29,7 @@ const FormTipoVeiculo = ({ id }) => {
         trigger,
         handleSubmit,
         reset,
+        control,
         formState: { errors },
         register
     } = useForm()
@@ -127,7 +128,7 @@ const FormTipoVeiculo = ({ id }) => {
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
-                                    register={register}
+                                    control={control}
                                     errors={errors?.fields?.nome}
                                 />
                                 <Check

@@ -341,7 +341,7 @@ const FormUsuario = ({ id }) => {
                                             name='nome'
                                             value={data?.nome}
                                             required={true}
-                                            register={register}
+                                            control={control}
                                             error={errors.nome}
                                         />
                                         <Grid item xs={12} md={4}>
@@ -373,7 +373,7 @@ const FormUsuario = ({ id }) => {
                                             name='email'
                                             value={data?.email}
                                             required={true}
-                                            register={register}
+                                            control={control}
                                             error={errors.email}
                                         />
                                         <Input
@@ -384,7 +384,7 @@ const FormUsuario = ({ id }) => {
                                             mask='cpf'
                                             value={data?.cpf}
                                             required={true}
-                                            register={register}
+                                            control={control}
                                             error={errors.cpf}
                                         />
                                         <Input
@@ -395,7 +395,7 @@ const FormUsuario = ({ id }) => {
                                             mask='rg'
                                             value={data?.rg}
                                             required={true}
-                                            register={register}
+                                            control={control}
                                             error={errors.rg}
                                         />
                                         <Input
@@ -404,7 +404,7 @@ const FormUsuario = ({ id }) => {
                                             title='Registro Conselho Classe'
                                             name='registroConselhoClasse'
                                             value={data?.registroConselhoClasse}
-                                            register={register}
+                                            control={control}
                                             error={errors.registroConselhoClasse}
                                         />
 

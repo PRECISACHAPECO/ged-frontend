@@ -30,6 +30,7 @@ const FormItem = ({ id }) => {
         handleSubmit,
         setValue,
         reset,
+        control,
         formState: { errors },
         register
     } = useForm()
@@ -123,7 +124,7 @@ const FormItem = ({ id }) => {
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
-                                    register={register}
+                                    control={control}
                                     errors={errors?.fields?.nome}
                                 />
                                 <Check

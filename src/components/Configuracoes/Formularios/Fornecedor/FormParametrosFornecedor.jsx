@@ -44,6 +44,7 @@ const FormParametrosFornecedor = ({ id }) => {
         register,
         handleSubmit,
         reset,
+        control,
         formState: { errors }
     } = useForm()
 
@@ -294,7 +295,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                             name={`blocks.[${index}].dados.ordem`}
                                             value={block.dados.ordem}
                                             required={true}
-                                            register={register}
+                                            control={control}
                                             errors={errors?.blocks?.[index]?.dados?.ordem}
                                         />
 
@@ -305,7 +306,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                             name={`blocks.[${index}].dados.nome`}
                                             value={block.dados.nome}
                                             required={true}
-                                            register={register}
+                                            control={control}
                                             errors={errors?.blocks?.[index]?.dados?.nome}
                                         />
 
@@ -387,7 +388,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     name={`blocks.[${index}].itens.[${indexItem}].ordem`}
                                                     value={item.ordem}
                                                     required={true}
-                                                    register={register}
+                                                    control={control}
                                                     errors={errors?.blocks?.[index]?.itens?.[indexItem]?.ordem}
                                                 />
 
@@ -551,7 +552,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                         value={orientacoes?.obs}
                                         multiline
                                         rows={4}
-                                        register={register}
+                                        control={control}
                                     />
                                 </Grid>
                             </CardContent>

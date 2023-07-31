@@ -39,6 +39,7 @@ const FormGrupoAnexos = ({ id }) => {
         handleSubmit,
         setValue,
         reset,
+        control,
         formState: { errors },
         register
     } = useForm()
@@ -167,7 +168,7 @@ const FormGrupoAnexos = ({ id }) => {
                                         title='Nome'
                                         name='fields.nome'
                                         required={true}
-                                        register={register}
+                                        control={control}
                                         errors={errors?.fields?.nome}
                                     />
 
@@ -212,7 +213,7 @@ const FormGrupoAnexos = ({ id }) => {
                                             title='Nome'
                                             name={`items[${index}].nome`}
                                             required={true}
-                                            register={register}
+                                            control={control}
                                             errors={errors?.items?.[index]?.nome}
                                         />
 
@@ -222,7 +223,7 @@ const FormGrupoAnexos = ({ id }) => {
                                             title='Descrição'
                                             name={`items[${index}].descricao`}
                                             required={false}
-                                            register={register}
+                                            control={control}
                                             errors={errors?.items?.[index]?.descricao}
                                         />
 

@@ -672,7 +672,7 @@ const FormFornecedor = ({ id }) => {
                                             rows={4}
                                             value={info.obs}
                                             disabled={!canEdit.status}
-                                            register={register}
+                                            control={control}
                                         />
                                     </FormControl>
                                 </Grid>
