@@ -1,14 +1,14 @@
 import { api } from 'src/configs/api'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+import { RouteContext } from 'src/context/RouteContext'
 
 const getHeader = () => {
-    const unidade = JSON.parse(localStorage.getItem('loggedUnity'))
-    const unidadeID = unidade.unidadeID
+    const { id } = useContext(RouteContext)
 
     const [data, setData] = useState([])
     useEffect(() => {
         const fetchData = async () => {
-            await api.post('relatorio/header', { unidadeID }).then(response => setData(response.data))
+            await api.post('relatorio/header', { id }).then(response => setData(response.data))
         }
         fetchData()
     }, [])
