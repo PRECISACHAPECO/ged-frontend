@@ -4,6 +4,7 @@ import { RouteContext } from 'src/context/RouteContext'
 import { api } from 'src/configs/api'
 import Icon from 'src/@core/components/icon'
 import Loading from 'src/components/Loading'
+import { SettingsContext } from 'src/@core/context/settingsContext'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
@@ -49,6 +50,8 @@ import DateField from 'src/components/Form/DateField'
 const FormUsuario = ({ id }) => {
     const { setId } = useContext(RouteContext)
     const { user, setUser, loggedUnity } = useContext(AuthContext)
+    const { settings } = useContext(SettingsContext)
+    const mode = settings.mode
 
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
@@ -257,10 +260,10 @@ const FormUsuario = ({ id }) => {
                                     {...register(`papelID`)}
                                 />
 
-                                <Grid container spacing={5} sx={{ mt: 2 }}>
+                                <Grid container spacing={5}>
                                     {/* Foto */}
-                                    <Grid xs={12} sm={4} md={2} container spacing={5}>
-                                        {/* Foto do usuário e upload */}
+                                    {/* Foto do usuário e upload */}
+                                    <Grid item xs={12} md={2}>
                                         <Grid
                                             item
                                             xs={12}
@@ -269,12 +272,13 @@ const FormUsuario = ({ id }) => {
                                                 display: 'flex',
                                                 justifyContent: 'center',
                                                 alignItems: 'center',
-                                                mx: '17px',
                                                 height: '250px',
                                                 width: '250px',
                                                 position: 'relative',
-                                                mb: '10px',
-                                                md: { height: 'auto', width: 'auto' }
+                                                border: `${
+                                                    mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'
+                                                }`,
+                                                borderRadius: '8px'
                                             }}
                                         >
                                             {photoProfile && (
@@ -283,9 +287,8 @@ const FormUsuario = ({ id }) => {
                                                         size='small'
                                                         sx={{
                                                             position: 'absolute',
-                                                            top: '30px',
-                                                            right: '9px',
-                                                            // opacity: '0.2',
+                                                            top: '8px',
+                                                            right: '8px',
                                                             zIndex: '20',
                                                             color: 'white',
                                                             opacity: '0.8',
@@ -310,8 +313,8 @@ const FormUsuario = ({ id }) => {
                                                         display: 'flex',
                                                         justifyContent: 'center',
                                                         alignItems: 'center',
-                                                        height: '95%',
-                                                        width: '95%'
+                                                        height: '100%',
+                                                        width: '100%'
                                                     }}
                                                 >
                                                     <input
@@ -323,7 +326,7 @@ const FormUsuario = ({ id }) => {
                                                     <Avatar
                                                         variant='rounded'
                                                         alt='Victor Anderson'
-                                                        sx={{ width: '100%', height: '100%', cursor: 'pointer' }}
+                                                        sx={{ width: '97%', height: '97%', cursor: 'pointer' }}
                                                         src={photoProfile}
                                                         onClick={handleAvatarClick}
                                                     />
@@ -333,243 +336,249 @@ const FormUsuario = ({ id }) => {
                                     </Grid>
 
                                     {/* Campos a direita */}
-                                    <Grid xs={12} sm={8} md={10} container spacing={5}>
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='Nome'
-                                            name='nome'
-                                            value={data?.nome}
-                                            required={true}
-                                            control={control}
-                                            error={errors.nome}
-                                        />
-                                        <Grid item xs={12} md={4}>
-                                            <FormControl fullWidth>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DatePicker
-                                                        label='Data de Nascimento'
-                                                        locale={dayjs.locale('pt-br')}
-                                                        format='DD/MM/YYYY'
-                                                        defaultValue={dayjs(new Date(data?.dataNascimento))}
-                                                        name={`dataNascimento`}
-                                                        onChange={value => setValue('dataNascimento', value)}
-                                                        renderInput={params => (
-                                                            <TextField
-                                                                {...params}
-                                                                variant='outlined'
-                                                                error={errors?.dataNascimento}
-                                                            />
-                                                        )}
-                                                    />
-                                                </LocalizationProvider>
-                                            </FormControl>
-                                        </Grid>
-
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='E-mail'
-                                            name='email'
-                                            value={data?.email}
-                                            required={true}
-                                            control={control}
-                                            error={errors.email}
-                                        />
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='CPF'
-                                            name='cpf'
-                                            mask='cpf'
-                                            value={data?.cpf}
-                                            required={true}
-                                            control={control}
-                                            error={errors.cpf}
-                                        />
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='RG'
-                                            name='rg'
-                                            mask='rg'
-                                            value={data?.rg}
-                                            required={true}
-                                            control={control}
-                                            error={errors.rg}
-                                        />
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='Registro Conselho Classe'
-                                            name='registroConselhoClasse'
-                                            value={data?.registroConselhoClasse}
-                                            control={control}
-                                            error={errors.registroConselhoClasse}
-                                        />
-
-                                        {data && user.admin == 0 && (
-                                            <>
-                                                {/* Profissão */}
-                                                <Select
-                                                    title='Selecione a profissão'
-                                                    options={data.profissaoOptions}
-                                                    name={`profissao`}
-                                                    idName={'profissaoID'}
-                                                    value={values.resposta}
-                                                    disabled={disabled}
-                                                    register={register}
-                                                    setValue={setValue}
-                                                    errors={errors?.profissao}
-                                                />
-
-                                                {/* Cargos */}
-                                                <Grid item xs={12} md={4}>
-                                                    <FormControl fullWidth>
-                                                        <Autocomplete
-                                                            multiple
-                                                            limitTags={2}
-                                                            options={data.cargosOptions}
-                                                            getOptionLabel={option => option.nome || ''}
-                                                            defaultValue={data?.cargo ?? []}
-                                                            name={`cargo[]`}
-                                                            {...register(`cargo`, {
-                                                                required: false
-                                                            })}
-                                                            onChange={(index, value) => {
-                                                                const newDataCargos = value
-                                                                    ? value.map(item => {
-                                                                          return {
-                                                                              id: item?.id,
-                                                                              nome: item?.nome,
-                                                                              edit: true
-                                                                          }
-                                                                      })
-                                                                    : []
-                                                                setValue(`cargo`, newDataCargos)
-                                                            }}
+                                    <Grid item xs={12} md={10}>
+                                        <Grid container spacing={5}>
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='Nome'
+                                                name='nome'
+                                                value={data?.nome}
+                                                required={true}
+                                                control={control}
+                                                error={errors.nome}
+                                            />
+                                            <Grid item xs={12} md={4}>
+                                                <FormControl fullWidth>
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DatePicker
+                                                            label='Data de Nascimento'
+                                                            locale={dayjs.locale('pt-br')}
+                                                            format='DD/MM/YYYY'
+                                                            defaultValue={dayjs(new Date(data?.dataNascimento))}
+                                                            name={`dataNascimento`}
+                                                            onChange={value => setValue('dataNascimento', value)}
                                                             renderInput={params => (
                                                                 <TextField
                                                                     {...params}
-                                                                    label='Cargos'
-                                                                    placeholder='Cargos'
-                                                                    error={errors?.cargo}
+                                                                    variant='outlined'
+                                                                    error={errors?.dataNascimento}
                                                                 />
                                                             )}
                                                         />
-                                                    </FormControl>
-                                                </Grid>
-                                            </>
-                                        )}
-
-                                        {/* Botão alterar senha */}
-                                        {data && type == 'edit' && (
-                                            <Grid item xs={12} md={4}>
-                                                <FormControl fullWidth>
-                                                    <Button
-                                                        variant='outlined'
-                                                        startIcon={<Icon icon='mdi:lock-reset' />}
-                                                        onClick={() => {
-                                                            // alterar estado do botão e limpar senha do register se estado for false
-                                                            setChangePasswords(!changePasswords)
-                                                            if (changePasswords) {
-                                                                setValue('senha', null)
-                                                                setValue('confirmarSenha', null)
-                                                            }
-                                                        }}
-                                                        // altura do botao igual aos demais campos texfield
-                                                        sx={{ height: '56px' }}
-                                                    >
-                                                        Alterar Senha
-                                                    </Button>
+                                                    </LocalizationProvider>
                                                 </FormControl>
                                             </Grid>
-                                        )}
 
-                                        {(type == 'new' || changePasswords) && (
-                                            <>
-                                                {/* Senha */}
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='E-mail'
+                                                name='email'
+                                                value={data?.email}
+                                                required={true}
+                                                control={control}
+                                                error={errors.email}
+                                            />
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='CPF'
+                                                name='cpf'
+                                                mask='cpf'
+                                                value={data?.cpf}
+                                                required={true}
+                                                control={control}
+                                                error={errors.cpf}
+                                            />
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='RG'
+                                                name='rg'
+                                                mask='rg'
+                                                value={data?.rg}
+                                                required={true}
+                                                control={control}
+                                                error={errors.rg}
+                                            />
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='Registro Conselho Classe'
+                                                name='registroConselhoClasse'
+                                                value={data?.registroConselhoClasse}
+                                                control={control}
+                                                error={errors.registroConselhoClasse}
+                                            />
+
+                                            {data && user.admin == 0 && (
+                                                <>
+                                                    {/* Profissão */}
+                                                    <Select
+                                                        title='Selecione a profissão'
+                                                        options={data.profissaoOptions}
+                                                        name={`profissao`}
+                                                        idName={'profissaoID'}
+                                                        value={values.resposta}
+                                                        disabled={disabled}
+                                                        register={register}
+                                                        setValue={setValue}
+                                                        errors={errors?.profissao}
+                                                    />
+
+                                                    {/* Cargos */}
+                                                    <Grid item xs={12} md={4}>
+                                                        <FormControl fullWidth>
+                                                            <Autocomplete
+                                                                multiple
+                                                                limitTags={2}
+                                                                options={data.cargosOptions}
+                                                                getOptionLabel={option => option.nome || ''}
+                                                                defaultValue={data?.cargo ?? []}
+                                                                name={`cargo[]`}
+                                                                {...register(`cargo`, {
+                                                                    required: false
+                                                                })}
+                                                                onChange={(index, value) => {
+                                                                    const newDataCargos = value
+                                                                        ? value.map(item => {
+                                                                              return {
+                                                                                  id: item?.id,
+                                                                                  nome: item?.nome,
+                                                                                  edit: true
+                                                                              }
+                                                                          })
+                                                                        : []
+                                                                    setValue(`cargo`, newDataCargos)
+                                                                }}
+                                                                renderInput={params => (
+                                                                    <TextField
+                                                                        {...params}
+                                                                        label='Cargos'
+                                                                        placeholder='Cargos'
+                                                                        error={errors?.cargo}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                </>
+                                            )}
+
+                                            {/* Botão alterar senha */}
+                                            {data && type == 'edit' && (
                                                 <Grid item xs={12} md={4}>
                                                     <FormControl fullWidth>
-                                                        <InputLabel htmlFor='input-confirm-password'>Senha</InputLabel>
-                                                        <OutlinedInput
-                                                            label='Senha'
-                                                            id='input-password'
-                                                            type={statePassword.showPassword ? 'text' : 'password'}
-                                                            name={`senha`}
-                                                            {...register(`senha`, {
-                                                                required: type == 'new' ? true : false
-                                                            })}
-                                                            endAdornment={
-                                                                <InputAdornment position='end'>
-                                                                    <IconButton
-                                                                        edge='end'
-                                                                        onClick={handleClickShowPassword}
-                                                                    >
-                                                                        <Icon
-                                                                            icon={
-                                                                                statePassword.showPassword
-                                                                                    ? 'mdi:eye-outline'
-                                                                                    : 'mdi:eye-off-outline'
-                                                                            }
-                                                                        />
-                                                                    </IconButton>
-                                                                </InputAdornment>
-                                                            }
-                                                        />
-                                                    </FormControl>
-                                                </Grid>
-
-                                                {/* Confirma senha */}
-                                                <Grid item xs={12} md={4}>
-                                                    <FormControl fullWidth>
-                                                        <InputLabel
-                                                            htmlFor='input-confirm-password'
-                                                            color={errors.confirmarSenha?.message ? 'error' : ''}
+                                                        <Button
+                                                            variant='outlined'
+                                                            startIcon={<Icon icon='mdi:lock-reset' />}
+                                                            onClick={() => {
+                                                                // alterar estado do botão e limpar senha do register se estado for false
+                                                                setChangePasswords(!changePasswords)
+                                                                if (changePasswords) {
+                                                                    setValue('senha', null)
+                                                                    setValue('confirmarSenha', null)
+                                                                }
+                                                            }}
+                                                            // altura do botao igual aos demais campos texfield
+                                                            sx={{ height: '56px' }}
                                                         >
-                                                            Confirmar Senha
-                                                        </InputLabel>
-                                                        <OutlinedInput
-                                                            label='Confirmar Senha'
-                                                            id='input-password'
-                                                            type={
-                                                                statePassword.showConfirmPassword ? 'text' : 'password'
-                                                            }
-                                                            name={`confirmarSenha`}
-                                                            {...register(`confirmarSenha`, {
-                                                                required: type == 'new' ? true : false,
-                                                                // validar senha e confirmação de senha somente se houver valor em senha
-                                                                validate: value =>
-                                                                    value === watch('senha') ||
-                                                                    'As senhas não conferem.'
-                                                            })}
-                                                            error={errors.confirmarSenha}
-                                                            endAdornment={
-                                                                <InputAdornment position='end'>
-                                                                    <IconButton
-                                                                        edge='end'
-                                                                        onClick={handleClickShowConfirmPassword}
-                                                                    >
-                                                                        <Icon
-                                                                            icon={
-                                                                                statePassword.showConfirmPassword
-                                                                                    ? 'mdi:eye-outline'
-                                                                                    : 'mdi:eye-off-outline'
-                                                                            }
-                                                                        />
-                                                                    </IconButton>
-                                                                </InputAdornment>
-                                                            }
-                                                        />
-                                                        {errors.confirmarSenha?.message && (
-                                                            <Typography variant='body2' color='error'>
-                                                                {errors.confirmarSenha?.message}
-                                                            </Typography>
-                                                        )}
+                                                            Alterar Senha
+                                                        </Button>
                                                     </FormControl>
                                                 </Grid>
-                                            </>
-                                        )}
+                                            )}
+
+                                            {(type == 'new' || changePasswords) && (
+                                                <>
+                                                    {/* Senha */}
+                                                    <Grid item xs={12} md={4}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel htmlFor='input-confirm-password'>
+                                                                Senha
+                                                            </InputLabel>
+                                                            <OutlinedInput
+                                                                label='Senha'
+                                                                id='input-password'
+                                                                type={statePassword.showPassword ? 'text' : 'password'}
+                                                                name={`senha`}
+                                                                {...register(`senha`, {
+                                                                    required: type == 'new' ? true : false
+                                                                })}
+                                                                endAdornment={
+                                                                    <InputAdornment position='end'>
+                                                                        <IconButton
+                                                                            edge='end'
+                                                                            onClick={handleClickShowPassword}
+                                                                        >
+                                                                            <Icon
+                                                                                icon={
+                                                                                    statePassword.showPassword
+                                                                                        ? 'mdi:eye-outline'
+                                                                                        : 'mdi:eye-off-outline'
+                                                                                }
+                                                                            />
+                                                                        </IconButton>
+                                                                    </InputAdornment>
+                                                                }
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+
+                                                    {/* Confirma senha */}
+                                                    <Grid item xs={12} md={4}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel
+                                                                htmlFor='input-confirm-password'
+                                                                color={errors.confirmarSenha?.message ? 'error' : ''}
+                                                            >
+                                                                Confirmar Senha
+                                                            </InputLabel>
+                                                            <OutlinedInput
+                                                                label='Confirmar Senha'
+                                                                id='input-password'
+                                                                type={
+                                                                    statePassword.showConfirmPassword
+                                                                        ? 'text'
+                                                                        : 'password'
+                                                                }
+                                                                name={`confirmarSenha`}
+                                                                {...register(`confirmarSenha`, {
+                                                                    required: type == 'new' ? true : false,
+                                                                    // validar senha e confirmação de senha somente se houver valor em senha
+                                                                    validate: value =>
+                                                                        value === watch('senha') ||
+                                                                        'As senhas não conferem.'
+                                                                })}
+                                                                error={errors.confirmarSenha}
+                                                                endAdornment={
+                                                                    <InputAdornment position='end'>
+                                                                        <IconButton
+                                                                            edge='end'
+                                                                            onClick={handleClickShowConfirmPassword}
+                                                                        >
+                                                                            <Icon
+                                                                                icon={
+                                                                                    statePassword.showConfirmPassword
+                                                                                        ? 'mdi:eye-outline'
+                                                                                        : 'mdi:eye-off-outline'
+                                                                                }
+                                                                            />
+                                                                        </IconButton>
+                                                                    </InputAdornment>
+                                                                }
+                                                            />
+                                                            {errors.confirmarSenha?.message && (
+                                                                <Typography variant='body2' color='error'>
+                                                                    {errors.confirmarSenha?.message}
+                                                                </Typography>
+                                                            )}
+                                                        </FormControl>
+                                                    </Grid>
+                                                </>
+                                            )}
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </CardContent>
@@ -760,7 +769,12 @@ const FormUsuario = ({ id }) => {
                                                 <Accordion
                                                     expanded={expanded === `panel-${indexUnit}`}
                                                     onChange={handleChange(`panel-${indexUnit}`)}
-                                                    sx={{ border: '1px solid #e0e0e0', boxShadow: 'none' }}
+                                                    sx={{
+                                                        border: `${
+                                                            mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'
+                                                        }`,
+                                                        boxShadow: 'none'
+                                                    }}
                                                 >
                                                     <AccordionSummary
                                                         id='controlled-panel-header-1'
