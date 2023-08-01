@@ -17,22 +17,23 @@ const Layout = ({ title, titleButton, unidadeID, content }) => {
                             {/* Header */}
                             <View style={styles.header}>
                                 {/* Vazio... */}
-                                <View style={{ width: '30%' }}>
+                                <View style={{ width: '100%' }}>
                                     <Text></Text>
                                 </View>
                                 {/* Descrição */}
-                                <View style={{ width: '32%', textAlign: 'center' }}>
+                                <View style={{ width: '100%', textAlign: 'center' }}>
                                     <Text style={styles.title}>
                                         {data?.unidade?.tituloRelatorio ?? 'Cabeçalho não definido'}
                                     </Text>
                                 </View>
                                 {/* Imagem */}
-                                <View style={{ width: '30%' }}>
+                                <View style={{ width: '100%' }}>
                                     {data?.unidade?.url ? (
                                         <Image
                                             src={data?.unidade?.url}
                                             style={{
                                                 aspectRatio: 1,
+                                                objectFit: 'contain',
                                                 height: '100%',
                                                 marginLeft: 'auto' // Alinha a imagem à direita
                                             }}
