@@ -65,7 +65,6 @@ const AppBarContent = props => {
         toast.success('Unidade alterada com sucesso!')
     }
 
-
     return (
         <>
             <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className='no-print'>
@@ -78,7 +77,7 @@ const AppBarContent = props => {
                     <Autocomplete hidden={hidden} settings={settings} />
                 </Box>
                 <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography variant='h5' >{title.title}</Typography>
+                    <Typography variant='h6' sx={{ fontWeight: 700 }} >{title.title}</Typography>
                     <Typography variant='caption'>
                         {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
                     </Typography>
