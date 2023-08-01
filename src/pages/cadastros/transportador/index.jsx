@@ -28,7 +28,14 @@ const Transportador = () => {
     const getList = async () => {
         await api.post(currentLink, { unidadeID: loggedUnity.unidadeID }).then(response => {
             setResult(response.data)
-            setTitle({ title: 'Transportador', subtitle: 'Listagem' })
+            setTitle({
+                title: 'Transportador',
+                subtitle: {
+                    id: id,
+                    count: response.data.length,
+                    new: false
+                }
+            })
         })
     }
 

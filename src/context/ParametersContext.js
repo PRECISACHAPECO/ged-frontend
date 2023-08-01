@@ -5,7 +5,11 @@ const ParametersContext = createContext({})
 const ParametersProvider = ({ children }) => {
     const [title, setTitle] = useState({
         title: 'Início',
-        subtitle: '...'
+        subtitle: {
+            id: null,
+            count: null,
+            new: false
+        }
     })
     const [pageSize, setPageSize] = useState(50)
     const [searchText, setSearchText] = useState('')

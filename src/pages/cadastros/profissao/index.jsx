@@ -25,7 +25,14 @@ const Profissao = () => {
         const getList = async () => {
             await api.get(currentLink).then(response => {
                 setResult(response.data)
-                setTitle({ title: 'Profissão', subtitle: 'Listagem' })
+                setTitle({
+                    title: 'Profissão',
+                    subtitle: {
+                        id: id,
+                        count: response.data.length,
+                        new: false
+                    }
+                })
             })
         }
         getList()

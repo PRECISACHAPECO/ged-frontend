@@ -6,7 +6,14 @@ const UsuarioNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle({ title: 'Usuário', subtitle: 'Novo' })
+        setTitle({
+            title: 'Usuário',
+            subtitle: {
+                id: null,
+                count: null,
+                new: true
+            }
+        })
     }, [])
 
     return <FormUsuario />

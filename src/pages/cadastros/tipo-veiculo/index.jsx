@@ -27,7 +27,14 @@ const TipoVeiculo = () => {
     const getList = async () => {
         await api.get(currentLink).then(response => {
             setResult(response.data)
-            setTitle({ title: 'Tipo de Veículo', subtitle: 'Listagem' })
+            setTitle({
+                title: 'Tipo de Veículo',
+                subtitle: {
+                    id: id,
+                    count: response.data.length,
+                    new: false
+                }
+            })
         })
     }
 

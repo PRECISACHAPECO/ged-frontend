@@ -27,7 +27,14 @@ const Usuario = () => {
                 .get(`${currentLink}?unidadeID=${loggedUnity.unidadeID}&papelID=${loggedUnity.papelID}`)
                 .then(response => {
                     setResult(response.data)
-                    setTitle({ title: 'Usuário', subtitle: 'Listagem' })
+                    setTitle({
+                        title: 'Usuário',
+                        subtitle: {
+                            id: id,
+                            count: response.data.length,
+                            new: false
+                        }
+                    })
                 })
         }
         getList()
