@@ -25,7 +25,14 @@ const RecebimentoMp = () => {
     const getList = async () => {
         await api.get(`${currentLink}/getList/${loggedUnity.unidadeID}`).then(response => {
             setResult(response.data)
-            setTitle({ title: 'Recebimento de Matéria-Prima', subtitle: 'Listagem' })
+            setTitle({
+                title: 'Recebimento de Matéria Prima',
+                subtitle: {
+                    id: id,
+                    count: response.data.length,
+                    new: false
+                }
+            })
         })
     }
 

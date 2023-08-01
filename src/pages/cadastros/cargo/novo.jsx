@@ -6,7 +6,14 @@ const CargoNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle({ title: 'Cargo', subtitle: 'Novo' })
+        setTitle({
+            title: 'Cargo',
+            subtitle: {
+                id: null,
+                count: null,
+                new: true
+            }
+        })
     }, [])
 
     return <FormCargo />

@@ -24,7 +24,11 @@ const Item = () => {
             setResult(response.data)
             setTitle({
                 title: 'Item',
-                subtitle: id ? `ID: ${id}` : `Total de registros: ${response.data.length}`
+                subtitle: {
+                    id: id,
+                    count: response.data.length,
+                    new: false
+                }
             })
         })
     }

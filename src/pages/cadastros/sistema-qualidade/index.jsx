@@ -25,7 +25,14 @@ const SistemaQualidade = () => {
         const getList = async () => {
             await api.get(currentLink).then(response => {
                 setResult(response.data)
-                setTitle({ title: 'Sistema de Qualidade', subtitle: 'Listagem' })
+                setTitle({
+                    title: 'Sistema de Qualidade',
+                    subtitle: {
+                        id: id,
+                        count: response.data.length,
+                        new: false
+                    }
+                })
             })
         }
         getList()

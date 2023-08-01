@@ -79,7 +79,9 @@ const AppBarContent = props => {
                 </Box>
                 <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Typography variant='h5' >{title.title}</Typography>
-                    <Typography variant='caption'>{title.subtitle}</Typography>
+                    <Typography variant='caption'>
+                        {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
+                    </Typography>
                 </Box>
                 <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
                     {

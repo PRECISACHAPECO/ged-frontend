@@ -90,7 +90,11 @@ const Fornecedor = () => {
                 setResult(response.data)
                 setTitle({
                     title: 'Fornecedor',
-                    subtitle: id ? `ID: ${id}` : `Total de registros: ${response.data.length}`
+                    subtitle: {
+                        id: id,
+                        count: response.data.length,
+                        new: false
+                    }
                 })
             })
     }

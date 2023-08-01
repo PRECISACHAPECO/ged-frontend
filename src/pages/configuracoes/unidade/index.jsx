@@ -35,7 +35,14 @@ const Unidade = () => {
                 )
                 .then(response => {
                     setResult(response.data)
-                    setTitle({ title: 'Unidade', subtitle: 'Listagem' })
+                    setTitle({
+                        title: 'Unidade',
+                        subtitle: {
+                            id: id,
+                            count: response.data.length,
+                            new: false
+                        }
+                    })
                 })
         }
         getList()

@@ -28,7 +28,14 @@ const GrupoAnexos = () => {
         await api.get(currentLink).then(response => {
             setResult(response.data)
             console.log('ta vindo', response.data)
-            setTitle({ title: 'Grupo de Anexos', subtitle: 'Listagem' })
+            setTitle({
+                title: 'Grupo de Anexos',
+                subtitle: {
+                    id: id,
+                    count: response.data.length,
+                    new: false
+                }
+            })
         })
     }
 
