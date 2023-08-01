@@ -33,8 +33,6 @@ const FormParametrosFornecedor = ({ id }) => {
     const [savingForm, setSavingForm] = useState(false)
     const [arrRemovedItems, setArrRemovedItems] = useState([])
 
-    const { setTitle } = useContext(ParametersContext)
-    const { setId } = useContext(RouteContext)
     const router = Router
     const type = 'edit'
     const staticUrl = router.pathname
@@ -200,7 +198,6 @@ const FormParametrosFornecedor = ({ id }) => {
     }
 
     useEffect(() => {
-        setTitle('Formulário do Fornecedor')
         getData()
     }, [id, savingForm])
 

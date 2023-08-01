@@ -3,8 +3,10 @@ import { createContext, useState } from 'react'
 const ParametersContext = createContext({})
 
 const ParametersProvider = ({ children }) => {
-    const [title, setTitle] = useState('Home')
-    const [subtitle, setSubtitle] = useState('Home')
+    const [title, setTitle] = useState({
+        title: 'Início',
+        subtitle: '...'
+    })
     const [pageSize, setPageSize] = useState(50)
     const [searchText, setSearchText] = useState('')
     const [filteredData, setFilteredData] = useState([])
@@ -43,8 +45,6 @@ const ParametersProvider = ({ children }) => {
     const values = {
         title,
         setTitle,
-        subtitle,
-        setSubtitle,
         handleSearch,
         pageSize,
         setPageSize,
