@@ -387,7 +387,7 @@ const FormUnidade = ({ id }) => {
                                                 display: 'flex',
                                                 justifyContent: 'center',
                                                 alignItems: 'center',
-                                                height: '250px',
+                                                height: '140px',
                                                 width: '250px',
                                                 position: 'relative',
                                                 border: `${
@@ -429,8 +429,8 @@ const FormUnidade = ({ id }) => {
                                                         display: 'flex',
                                                         justifyContent: 'center',
                                                         alignItems: 'center',
-                                                        height: '100%',
-                                                        width: '100%'
+                                                        height: 'auto',
+                                                        width: 'auto'
                                                     }}
                                                 >
                                                     <input
@@ -441,10 +441,13 @@ const FormUnidade = ({ id }) => {
                                                     />
                                                     <Avatar
                                                         variant='rounded'
-                                                        alt='Victor Anderson'
-                                                        sx={{ width: '97%', height: '97%', cursor: 'pointer' }}
+                                                        alt='Imagem do cabeçalho do relatório'
+                                                        sx={{
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            cursor: 'pointer'
+                                                        }}
                                                         onClick={handleFileClick}
-                                                        // src={imageUrl}
                                                         src={photoProfile ?? 'https://gedagro.com.br/images/report.png'}
                                                     />
                                                 </FormControl>
