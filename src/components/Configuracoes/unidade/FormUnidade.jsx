@@ -338,71 +338,73 @@ const FormUnidade = ({ id }) => {
                         </form>
                     </Card>
 
-                    <Card sx={{ mt: 4 }}>
-                        <CardHeader title='Dados do relatório' />
-                        <CardContent>
-                            <Grid container spacing={4}>
-                                <Grid item xs={12} md={8}>
-                                    <Input
-                                        xs={12}
-                                        md={12}
-                                        title='Titulo do relatório'
-                                        name='fields.tituloRelatorio'
-                                        required={false}
-                                        register={register}
-                                        control={control}
-                                        errors={errors?.fields?.tituloRelatorio}
-                                    />
-                                    <Grid item xs={12} md={12} sx={{ my: 1, position: 'relative' }}>
-                                        <input
-                                            type='file'
-                                            ref={fileInputRef}
-                                            style={{ display: 'none' }}
-                                            onChange={handleFileSelect}
+                    {user.admin == 1 && type == 'edit' && (
+                        <Card sx={{ mt: 4 }}>
+                            <CardHeader title='Parâmetros' />
+                            <CardContent>
+                                <Grid container spacing={4}>
+                                    <Grid item xs={12} md={8}>
+                                        <Input
+                                            xs={12}
+                                            md={12}
+                                            title='Titulo do relatório'
+                                            name='fields.tituloRelatorio'
+                                            required={false}
+                                            register={register}
+                                            control={control}
+                                            errors={errors?.fields?.tituloRelatorio}
                                         />
-                                        <Button
-                                            onClick={handleFileClick}
-                                            variant='contained'
-                                            sx={{ padding: 4, width: '100%', mt: 6 }}
-                                            startIcon={<Icon icon='material-symbols:upload' />}
-                                        >
-                                            {!data?.fields?.cabecalhoRelatorio && !fileSelect?.name
-                                                ? 'Nenhum arquivo selecionado'
-                                                : 'Trocar Imagem'}
-                                        </Button>
-                                        {fileCurrent && (
-                                            <p
-                                                className='absolute top-[79px] text-slate-800 left-0 text-[10px] w-[800px]'
-                                                style={{ textTransform: 'none' }}
+                                        <Grid item xs={12} md={12} sx={{ my: 1, position: 'relative' }}>
+                                            <input
+                                                type='file'
+                                                ref={fileInputRef}
+                                                style={{ display: 'none' }}
+                                                onChange={handleFileSelect}
+                                            />
+                                            <Button
+                                                onClick={handleFileClick}
+                                                variant='contained'
+                                                sx={{ padding: 4, width: '100%', mt: 6 }}
+                                                startIcon={<Icon icon='material-symbols:upload' />}
                                             >
-                                                {fileCurrent}
-                                            </p>
-                                        )}
+                                                {!data?.fields?.cabecalhoRelatorio && !fileSelect?.name
+                                                    ? 'Nenhum arquivo selecionado'
+                                                    : 'Trocar Imagem'}
+                                            </Button>
+                                            {fileCurrent && (
+                                                <p
+                                                    className='absolute top-[79px] text-slate-800 left-0 text-[10px] w-[800px]'
+                                                    style={{ textTransform: 'none' }}
+                                                >
+                                                    {fileCurrent}
+                                                </p>
+                                            )}
+                                        </Grid>
+                                    </Grid>
+                                    {/* Imagem */}
+                                    <Grid item xs={12} md={4}>
+                                        <div
+                                            className={`${
+                                                data?.fields?.cabecalhoRelatorio ? 'cursor-pointer ' : ''
+                                            }  w-full h-full border border-black/10 rounded-2xl`}
+                                        >
+                                            <Avatar
+                                                onClick={() => {
+                                                    data?.fields?.cabecalhoRelatorio
+                                                        ? window.open(data?.fields?.cabecalhoRelatorio, '_blank')
+                                                        : null
+                                                }}
+                                                variant='rounded'
+                                                alt='magem relatório'
+                                                sx={{ width: '100%', height: '100%' }}
+                                                src={imageUrl}
+                                            />
+                                        </div>
                                     </Grid>
                                 </Grid>
-                                {/* Imagem */}
-                                <Grid item xs={12} md={4}>
-                                    <div
-                                        className={`${
-                                            data?.fields?.cabecalhoRelatorio ? 'cursor-pointer ' : ''
-                                        }  w-full h-full border border-black/10 rounded-2xl`}
-                                    >
-                                        <Avatar
-                                            onClick={() => {
-                                                data?.fields?.cabecalhoRelatorio
-                                                    ? window.open(data?.fields?.cabecalhoRelatorio, '_blank')
-                                                    : null
-                                            }}
-                                            variant='rounded'
-                                            alt='magem relatório'
-                                            sx={{ width: '100%', height: '100%' }}
-                                            src={imageUrl}
-                                        />
-                                    </div>
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    )}
                     {type === 'edit' && data && (
                         <Typography variant='caption' sx={{ display: 'flex', justifyContent: 'end', p: 4 }}>
                             Data de cadastro:
