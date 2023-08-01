@@ -5,9 +5,7 @@ import FormCargo from 'src/components/Cadastros/Cargo/FormCargo'
 const ProfissaoForm = () => {
     const { setTitle } = useContext(ParametersContext)
 
-    useEffect(() => {
-        setTitle('Cargo')
-    }, [])
+    useEffect(() => {}, [])
 
     return <FormCargo />
 }

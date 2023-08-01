@@ -5,9 +5,7 @@ import { useContext, useEffect } from 'react'
 const ApresentacaoForm = () => {
     const { setTitle } = useContext(ParametersContext)
 
-    useEffect(() => {
-        setTitle('Apresentação')
-    }, [])
+    useEffect(() => {}, [])
 
     return <FormApresentacao />
 }

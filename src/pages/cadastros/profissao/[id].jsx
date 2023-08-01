@@ -6,7 +6,7 @@ const ProfissaoForm = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Profissao')
+        setTitle({ title: 'Profissão', subtitle: 'Novo' })
     }, [])
 
     return <FormProfissao />

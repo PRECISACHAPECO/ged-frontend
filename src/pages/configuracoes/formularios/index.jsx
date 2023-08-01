@@ -24,7 +24,7 @@ const ListParametrosFormularios = () => {
         const getList = async () => {
             await api.get(currentLink).then(response => {
                 setResult(response.data)
-                setTitle('Formulários')
+                setTitle({ title: 'Parâmetros', subtitle: 'Listagem' })
             })
         }
         getList()

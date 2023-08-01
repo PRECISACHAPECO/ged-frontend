@@ -6,7 +6,7 @@ const SistemaQualidadeNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Sistema de Qualidade')
+        setTitle({ title: 'Sistema de Qualidade', subtitle: 'Novo' })
     }, [])
 
     return <FormSistemaQualidade />

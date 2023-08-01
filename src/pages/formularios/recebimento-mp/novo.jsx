@@ -6,7 +6,7 @@ const RecebimentoMpNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Recebimento de MP')
+        setTitle({ title: 'Recebimento de MP', subtitle: 'Novo' })
     }, [])
 
     return <FormRecebimentoMp />

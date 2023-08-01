@@ -13,7 +13,7 @@ const Home = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Home')
+        setTitle({ title: 'Home', subtitle: '' })
     }, [])
 
 

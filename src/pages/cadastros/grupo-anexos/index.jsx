@@ -28,7 +28,7 @@ const GrupoAnexos = () => {
         await api.get(currentLink).then(response => {
             setResult(response.data)
             console.log('ta vindo', response.data)
-            setTitle('Requisitos de anexos')
+            setTitle({ title: 'Grupo de Anexos', subtitle: 'Listagem' })
         })
     }
 

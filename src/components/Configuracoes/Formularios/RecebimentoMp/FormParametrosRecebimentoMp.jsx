@@ -48,7 +48,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
     const router = Router
     const staticUrl = router.pathname
     const type = 'edit'
-    const { setTitle } = useContext(ParametersContext)
+
     const { setId } = useContext(RouteContext)
 
     const {
@@ -192,7 +192,6 @@ const FormParametrosRecebimentoMp = ({ id }) => {
     }
 
     useEffect(() => {
-        setTitle('Formulário do Recebimento de MP')
         getData()
     }, [id, savingForm])
 

@@ -375,7 +375,6 @@ const FormFornecedor = ({ id }) => {
     }
 
     useEffect(() => {
-        setTitle('Formulário do Fornecedor')
         //? Form Fornecedor não tem página NOVO
         type == 'edit' ? getData() : noPermissions()
         verifyFormPending()

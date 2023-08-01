@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { ParametersContext } from 'src/context/ParametersContext'
+import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
 import { useContext, useState } from 'react'
 
@@ -34,8 +35,10 @@ const notifications = [
 const AppBarContent = props => {
     // ** Props
     const { hidden, settings, saveSettings, toggleNavVisibility } = props
-    const { title, subtitle } = useContext(ParametersContext)
-    console.log("🚀 ~ subtitle:", subtitle)
+    const { title } = useContext(ParametersContext)
+    const { id, setId } = useContext(RouteContext)
+    console.log("🚀 ~ title:", id, title)
+
     const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
 
     // ** Hooks
@@ -75,8 +78,8 @@ const AppBarContent = props => {
                     <Autocomplete hidden={hidden} settings={settings} />
                 </Box>
                 <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography variant='h5' >{title}</Typography>
-                    <Typography variant='caption'>{subtitle}</Typography>
+                    <Typography variant='h5' >{title.title}</Typography>
+                    <Typography variant='caption'>{title.subtitle}</Typography>
                 </Box>
                 <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
                     {

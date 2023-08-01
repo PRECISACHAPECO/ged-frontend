@@ -23,7 +23,7 @@ const Apresentacao = () => {
     const getList = async () => {
         await api.get(currentLink).then(response => {
             setResult(response.data)
-            setTitle('Apresentação')
+            setTitle({ title: 'Apresentação', subtitle: '...' })
         })
     }
 

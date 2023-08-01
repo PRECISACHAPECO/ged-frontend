@@ -35,7 +35,7 @@ const Unidade = () => {
                 )
                 .then(response => {
                     setResult(response.data)
-                    setTitle('Unidade')
+                    setTitle({ title: 'Unidade', subtitle: 'Listagem' })
                 })
         }
         getList()

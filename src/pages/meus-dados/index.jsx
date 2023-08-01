@@ -8,7 +8,7 @@ const MeusDados = () => {
     const { user } = useContext(AuthContext)
 
     useEffect(() => {
-        setTitle('Meus Dados')
+        setTitle({ title: 'Meus Dados', subtitle: 'Editar' })
     }, [])
 
     return <FormUnidade paramFornecedorUnidadeID={user.unidadeID} />

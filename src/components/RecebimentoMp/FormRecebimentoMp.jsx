@@ -433,7 +433,6 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     useEffect(() => {
-        setTitle('Recebimento de MP')
         type == 'new' ? getNewData() : getData()
     }, [id, savingForm])
 

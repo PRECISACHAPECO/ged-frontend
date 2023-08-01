@@ -5,9 +5,7 @@ import { useContext, useEffect } from 'react'
 const AtividadeForm = () => {
     const { setTitle } = useContext(ParametersContext)
 
-    useEffect(() => {
-        setTitle('Atividade')
-    }, [])
+    useEffect(() => {}, [])
 
     return <FormAtividade />
 }

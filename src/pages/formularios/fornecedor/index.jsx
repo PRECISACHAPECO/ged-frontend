@@ -22,7 +22,7 @@ const Fornecedor = () => {
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
-    const { setTitle, setSubtitle } = useContext(ParametersContext)
+    const { setTitle } = useContext(ParametersContext)
     const [open, setOpen] = useState(false)
     const [loadingSave, setLoadingSave] = useState(false) //? Dependencia do useEffect pra atualizar listagem ao salvar
     const { id } = useContext(RouteContext)
@@ -88,8 +88,10 @@ const Fornecedor = () => {
             })
             .then(response => {
                 setResult(response.data)
-                setTitle('Fornecedor')
-                setSubtitle(id ? `ID: ${id}` : `Total de registros: ${response.data.length}`)
+                setTitle({
+                    title: 'Fornecedor',
+                    subtitle: id ? `ID: ${id}` : `Total de registros: ${response.data.length}`
+                })
             })
     }
 

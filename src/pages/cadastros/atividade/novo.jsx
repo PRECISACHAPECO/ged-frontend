@@ -6,7 +6,7 @@ const AtividadeNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Atividade')
+        setTitle({ title: 'Atividade', subtitle: 'Novo' })
     }, [])
 
     return <FormAtividade />

@@ -6,7 +6,7 @@ const UnidadeForm = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Unidade')
+        setTitle({ title: 'Unidade', subtitle: 'Novo' })
     }, [])
 
     return <FormUnidade />

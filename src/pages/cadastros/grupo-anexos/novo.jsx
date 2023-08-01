@@ -6,7 +6,7 @@ const GrupoAnexosNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Grupo de Anexos')
+        setTitle({ title: 'Grupo de Anexos', subtitle: 'Novo' })
     }, [])
 
     return <FormGrupoAnexos />
