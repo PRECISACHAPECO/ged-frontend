@@ -56,8 +56,6 @@ const FormParametrosFornecedor = ({ id }) => {
             arrRemovedItems: arrRemovedItems,
             orientacoes: values.orientations
         }
-        console.log('🚀 ~ data:', data)
-        return
 
         setHeaders(null) //? Pra exibir loading
 
@@ -284,6 +282,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     name={`header.[${index}].mostra`}
                                                     value={header.mostra}
                                                     register={register}
+                                                    disabled={header.nomeColuna == 'cnpj' ? true : false}
                                                 />
 
                                                 <CheckLabel
@@ -293,6 +292,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     name={`header.[${index}].obrigatorio`}
                                                     value={header.obrigatorio}
                                                     register={register}
+                                                    disabled={header.nomeColuna == 'cnpj' ? true : false}
                                                 />
                                             </>
                                         ))}

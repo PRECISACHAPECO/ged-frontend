@@ -182,6 +182,16 @@ const FormGrupoAnexos = ({ id }) => {
                                         register={register}
                                     />
 
+                                    <Input
+                                        xs={12}
+                                        md={12}
+                                        title='Descrição'
+                                        name='fields.descricao'
+                                        required={false}
+                                        control={control}
+                                        errors={errors?.fields?.descricao}
+                                    />
+
                                     <Select
                                         xs={12}
                                         md={12}
@@ -241,7 +251,7 @@ const FormGrupoAnexos = ({ id }) => {
                                         <Check
                                             xs={12}
                                             md={1}
-                                            title='Status'
+                                            title='Ativo'
                                             index={index}
                                             name={`items[${index}].status`}
                                             value={item.status}

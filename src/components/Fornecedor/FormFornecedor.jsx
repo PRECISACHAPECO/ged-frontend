@@ -245,7 +245,6 @@ const FormFornecedor = ({ id }) => {
         try {
             setLoading(true)
             if (id) {
-                console.log('🚀 ~ Busca fornecedor:', id, loggedUnity.unidadeID)
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
                     console.log('getData: ', response.data)
 
@@ -318,7 +317,6 @@ const FormFornecedor = ({ id }) => {
             }
         }
         console.log('🚀 ~ onSubmit:', data.form)
-        // return
 
         try {
             setLoadingSave(true)
@@ -505,8 +503,8 @@ const FormFornecedor = ({ id }) => {
                 >
                     {/* Mensagem de que não possui nenhum bloco */}
                     {blocks && blocks.length === 0 && (
-                        <Alert severity='warning' sx={{ mb: 2 }}>
-                            Não há nenhum bloco disponível para as categorias selecionadas!
+                        <Alert severity='error' sx={{ mb: 2 }}>
+                            Selecione ao menos uma <span style={{ fontWeight: 'bold' }}>categoria</span>!
                         </Alert>
                     )}
                     {!canEdit.status && (
