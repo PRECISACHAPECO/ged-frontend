@@ -8,6 +8,7 @@ import { SettingsContext } from 'src/@core/context/settingsContext'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
+import Permissions from './Permissions'
 
 import {
     Card,
@@ -103,10 +104,13 @@ const FormUsuario = ({ id }) => {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
                     router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
-                    setId(response.data)
+                    setId(response.data.id)
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
+                values['permissionUserLogged'] = user.admin
+                console.log('🚀 ~ onSubmit:', values)
+                // return
                 await api.post(`${staticUrl}/updateData/${id}`, values)
                 toast.success(toastMessage.successUpdate)
             }
@@ -208,6 +212,7 @@ const FormUsuario = ({ id }) => {
                     setData(response.data)
                     setPhotoProfile(response.data.imagem)
                     reset(response.data) //* Insere os dados no formulário
+                    console.log('🚀 ~ getData:', response.data)
                 })
             } catch (error) {
                 console.log(error)
@@ -396,7 +401,6 @@ const FormUsuario = ({ id }) => {
                                                 md={4}
                                                 title='RG'
                                                 name='rg'
-                                                mask='rg'
                                                 value={data?.rg}
                                                 required={true}
                                                 control={control}
@@ -761,422 +765,22 @@ const FormUsuario = ({ id }) => {
                                                         />
                                                     </Grid>
                                                 </Grid>
+
+                                                {/* Permissões da unidade */}
+                                                <Permissions
+                                                    unit={unit}
+                                                    indexUnit={indexUnit}
+                                                    expanded={expanded}
+                                                    expandedItem={expandedItem}
+                                                    handleChange={handleChange}
+                                                    handleChangeItem={handleChangeItem}
+                                                    control={control}
+                                                    register={register}
+                                                    setValue={setValue}
+                                                />
                                             </CardContent>
 
-                                            {/* Permissões da unidade */}
-                                            <CardContent>
-                                                {/* Accordion */}
-                                                <Accordion
-                                                    expanded={expanded === `panel-${indexUnit}`}
-                                                    onChange={handleChange(`panel-${indexUnit}`)}
-                                                    sx={{
-                                                        border: `${
-                                                            mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'
-                                                        }`,
-                                                        boxShadow: 'none'
-                                                    }}
-                                                >
-                                                    <AccordionSummary
-                                                        id='controlled-panel-header-1'
-                                                        aria-controls='controlled-panel-content-1'
-                                                        expandIcon={<Icon icon='mdi:chevron-down' />}
-                                                        sx={{ display: 'flex', alignItems: 'center' }}
-                                                    >
-                                                        <Typography>Permissões de Acesso</Typography>
-                                                    </AccordionSummary>
-                                                    <AccordionDetails>
-                                                        {unit.menu &&
-                                                            unit.menu.map((menuGroup, indexMenuGroup) => (
-                                                                <>
-                                                                    {/* Divisor */}
-                                                                    <Grid container spacing={5} sx={{ my: 2 }}>
-                                                                        <Grid item xs={12} md={8}>
-                                                                            <Typography variant='body2'>
-                                                                                {menuGroup.nome}
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                        <Grid item xs={12} md={1}>
-                                                                            <Typography
-                                                                                variant='body2'
-                                                                                sx={{ textAlign: 'center' }}
-                                                                            >
-                                                                                Ler
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                        <Grid item xs={12} md={1}>
-                                                                            <Typography
-                                                                                variant='body2'
-                                                                                sx={{ textAlign: 'center' }}
-                                                                            >
-                                                                                Inserir
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                        <Grid item xs={12} md={1}>
-                                                                            <Typography
-                                                                                variant='body2'
-                                                                                sx={{ textAlign: 'center' }}
-                                                                            >
-                                                                                Editar
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                        <Grid item xs={12} md={1}>
-                                                                            <Typography
-                                                                                variant='body2'
-                                                                                sx={{ textAlign: 'center' }}
-                                                                            >
-                                                                                Excluir
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                    </Grid>
-                                                                    {menuGroup.menu &&
-                                                                        menuGroup.menu.map((menu, indexMenu) => (
-                                                                            <>
-                                                                                {menu.rota ? (
-                                                                                    <>
-                                                                                        {/* Menu com rota => seleciona permissões */}
-                                                                                        <Grid
-                                                                                            container
-                                                                                            spacing={5}
-                                                                                            sx={{ my: 2 }}
-                                                                                        >
-                                                                                            {/* Menu título */}
-                                                                                            <Grid item xs={12} md={8}>
-                                                                                                <Typography variant='subtitle1'>
-                                                                                                    {menu.nome}
-                                                                                                </Typography>
-                                                                                            </Grid>
-
-                                                                                            {/* Hidden rota */}
-                                                                                            <input
-                                                                                                type='hidden'
-                                                                                                value={menu.rota}
-                                                                                                name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].rota`}
-                                                                                                {...register(
-                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].rota`
-                                                                                                )}
-                                                                                            />
-
-                                                                                            {/* Ler */}
-                                                                                            <Grid
-                                                                                                item
-                                                                                                xs={12}
-                                                                                                md={1}
-                                                                                                sx={{
-                                                                                                    textAlign: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Checkbox
-                                                                                                    defaultChecked={
-                                                                                                        menu.ler
-                                                                                                    }
-                                                                                                    name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].ler`}
-                                                                                                    {...register(
-                                                                                                        `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].ler`
-                                                                                                    )}
-                                                                                                    onChange={e => {
-                                                                                                        setValue(
-                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].edit`,
-                                                                                                            true
-                                                                                                        )
-                                                                                                    }}
-                                                                                                />
-                                                                                            </Grid>
-
-                                                                                            {/* Inserir */}
-                                                                                            <Grid
-                                                                                                item
-                                                                                                xs={12}
-                                                                                                md={1}
-                                                                                                sx={{
-                                                                                                    textAlign: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Checkbox
-                                                                                                    defaultChecked={
-                                                                                                        menu.inserir
-                                                                                                    }
-                                                                                                    name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].inserir`}
-                                                                                                    {...register(
-                                                                                                        `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].inserir`
-                                                                                                    )}
-                                                                                                    onChange={e => {
-                                                                                                        setValue(
-                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].edit`,
-                                                                                                            true
-                                                                                                        )
-                                                                                                    }}
-                                                                                                />
-                                                                                            </Grid>
-
-                                                                                            {/* Editar */}
-                                                                                            <Grid
-                                                                                                item
-                                                                                                xs={12}
-                                                                                                md={1}
-                                                                                                sx={{
-                                                                                                    textAlign: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Checkbox
-                                                                                                    defaultChecked={
-                                                                                                        menu.editar
-                                                                                                    }
-                                                                                                    name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].editar`}
-                                                                                                    {...register(
-                                                                                                        `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].editar`
-                                                                                                    )}
-                                                                                                    onChange={e => {
-                                                                                                        setValue(
-                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].edit`,
-                                                                                                            true
-                                                                                                        )
-                                                                                                    }}
-                                                                                                />
-                                                                                            </Grid>
-
-                                                                                            {/* Excluir */}
-                                                                                            <Grid
-                                                                                                item
-                                                                                                xs={12}
-                                                                                                md={1}
-                                                                                                sx={{
-                                                                                                    textAlign: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Checkbox
-                                                                                                    defaultChecked={
-                                                                                                        menu.excluir
-                                                                                                    }
-                                                                                                    name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].excluir`}
-                                                                                                    {...register(
-                                                                                                        `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].excluir`
-                                                                                                    )}
-                                                                                                    onChange={e => {
-                                                                                                        setValue(
-                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].edit`,
-                                                                                                            true
-                                                                                                        )
-                                                                                                    }}
-                                                                                                />
-                                                                                            </Grid>
-                                                                                        </Grid>
-                                                                                    </>
-                                                                                ) : (
-                                                                                    <>
-                                                                                        {/* Menu sem rota => accordion pra abrir submenu */}
-                                                                                        <Accordion
-                                                                                            expanded={
-                                                                                                expandedItem ===
-                                                                                                `item-${indexUnit}-${indexMenuGroup}-${indexMenu}`
-                                                                                            }
-                                                                                            onChange={handleChangeItem(
-                                                                                                `item-${indexUnit}-${indexMenuGroup}-${indexMenu}`
-                                                                                            )}
-                                                                                            sx={{
-                                                                                                border: '1px solid #e0e0e0',
-                                                                                                boxShadow: 'none'
-                                                                                            }}
-                                                                                        >
-                                                                                            <AccordionSummary
-                                                                                                id='controlled-panel-header-1'
-                                                                                                aria-controls='controlled-panel-content-1'
-                                                                                                expandIcon={
-                                                                                                    <Icon icon='mdi:chevron-down' />
-                                                                                                }
-                                                                                                sx={{
-                                                                                                    display: 'flex',
-                                                                                                    alignItems: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Typography>
-                                                                                                    {menu.nome}
-                                                                                                </Typography>
-                                                                                            </AccordionSummary>
-                                                                                            <AccordionDetails>
-                                                                                                {menu.submenu &&
-                                                                                                    menu.submenu.map(
-                                                                                                        (
-                                                                                                            submenu,
-                                                                                                            indexSubmenu
-                                                                                                        ) => (
-                                                                                                            <>
-                                                                                                                {/* Submenu */}
-                                                                                                                <Grid
-                                                                                                                    container
-                                                                                                                    spacing={
-                                                                                                                        5
-                                                                                                                    }
-                                                                                                                    sx={{
-                                                                                                                        my: 2
-                                                                                                                    }}
-                                                                                                                >
-                                                                                                                    {/* Submenu título */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            8
-                                                                                                                        }
-                                                                                                                    >
-                                                                                                                        <Typography variant='subtitle1'>
-                                                                                                                            {
-                                                                                                                                submenu.nome
-                                                                                                                            }
-                                                                                                                        </Typography>
-                                                                                                                    </Grid>
-
-                                                                                                                    {/* Hidden rota */}
-                                                                                                                    <input
-                                                                                                                        type='hidden'
-                                                                                                                        value={
-                                                                                                                            submenu.rota
-                                                                                                                        }
-                                                                                                                        name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].rota`}
-                                                                                                                        {...register(
-                                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].rota`
-                                                                                                                        )}
-                                                                                                                    />
-
-                                                                                                                    {/* Ler */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            1
-                                                                                                                        }
-                                                                                                                        sx={{
-                                                                                                                            textAlign:
-                                                                                                                                'center'
-                                                                                                                        }}
-                                                                                                                    >
-                                                                                                                        <Checkbox
-                                                                                                                            defaultChecked={
-                                                                                                                                submenu.ler
-                                                                                                                            }
-                                                                                                                            name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].ler`}
-                                                                                                                            {...register(
-                                                                                                                                `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].ler`
-                                                                                                                            )}
-                                                                                                                            onChange={e => {
-                                                                                                                                setValue(
-                                                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`,
-                                                                                                                                    true
-                                                                                                                                )
-                                                                                                                            }}
-                                                                                                                        />
-                                                                                                                    </Grid>
-
-                                                                                                                    {/* Inserir */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            1
-                                                                                                                        }
-                                                                                                                        sx={{
-                                                                                                                            textAlign:
-                                                                                                                                'center'
-                                                                                                                        }}
-                                                                                                                    >
-                                                                                                                        <Checkbox
-                                                                                                                            defaultChecked={
-                                                                                                                                submenu.inserir
-                                                                                                                            }
-                                                                                                                            name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].inserir`}
-                                                                                                                            {...register(
-                                                                                                                                `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].inserir`
-                                                                                                                            )}
-                                                                                                                            onChange={e => {
-                                                                                                                                setValue(
-                                                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`,
-                                                                                                                                    true
-                                                                                                                                )
-                                                                                                                            }}
-                                                                                                                        />
-                                                                                                                    </Grid>
-
-                                                                                                                    {/* Editar */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            1
-                                                                                                                        }
-                                                                                                                        sx={{
-                                                                                                                            textAlign:
-                                                                                                                                'center'
-                                                                                                                        }}
-                                                                                                                    >
-                                                                                                                        <Checkbox
-                                                                                                                            defaultChecked={
-                                                                                                                                submenu.editar
-                                                                                                                            }
-                                                                                                                            name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].editar`}
-                                                                                                                            {...register(
-                                                                                                                                `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].editar`
-                                                                                                                            )}
-                                                                                                                            onChange={e => {
-                                                                                                                                setValue(
-                                                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`,
-                                                                                                                                    true
-                                                                                                                                )
-                                                                                                                            }}
-                                                                                                                        />
-                                                                                                                    </Grid>
-
-                                                                                                                    {/* Excluir */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            1
-                                                                                                                        }
-                                                                                                                        sx={{
-                                                                                                                            textAlign:
-                                                                                                                                'center'
-                                                                                                                        }}
-                                                                                                                    >
-                                                                                                                        <Checkbox
-                                                                                                                            defaultChecked={
-                                                                                                                                submenu.excluir
-                                                                                                                            }
-                                                                                                                            name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].excluir`}
-                                                                                                                            {...register(
-                                                                                                                                `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].excluir`
-                                                                                                                            )}
-                                                                                                                            onChange={e => {
-                                                                                                                                setValue(
-                                                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`,
-                                                                                                                                    true
-                                                                                                                                )
-                                                                                                                            }}
-                                                                                                                        />
-                                                                                                                    </Grid>
-                                                                                                                </Grid>
-                                                                                                            </>
-                                                                                                        )
-                                                                                                    )}
-                                                                                            </AccordionDetails>
-                                                                                        </Accordion>
-                                                                                    </>
-                                                                                )}
-                                                                            </>
-                                                                        ))}
-                                                                </>
-                                                            ))}
-                                                    </AccordionDetails>
-                                                </Accordion>
-                                            </CardContent>
+                                            <CardContent>{/* Accordion */}</CardContent>
                                         </Card>
                                     </>
                                 ))}

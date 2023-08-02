@@ -1,6 +1,6 @@
 import { Grid, Typography, Box, FormControlLabel, Checkbox } from '@mui/material'
 
-const Check = ({ xs, md, title, index, name, typePage, value, register }) => {
+const Check = ({ xs, md, title, index, name, typePage, value, edit, register, setValue }) => {
     return (
         <Grid item xs={xs} md={md}>
             <Box height='100%' display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
@@ -11,6 +11,9 @@ const Check = ({ xs, md, title, index, name, typePage, value, register }) => {
                             sx={{ ml: 4 }}
                             {...register(name)}
                             defaultChecked={value == true || value == 1 || typePage == 'new'}
+                            onChange={e => {
+                                edit ? setValue(edit, true) : null
+                            }}
                         />
                     }
                 />
