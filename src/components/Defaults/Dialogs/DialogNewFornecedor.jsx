@@ -50,10 +50,10 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
     const [optionsGruposAnexo, setOptionsGruposAnexo] = useState([])
     const [gruposAnexo, setGruposAnexo] = useState([])
     const [nomeFornecedor, setNomeFornecedor] = useState('')
-    console.log('🚀 ~ nomeFornecedor:', nomeFornecedor)
 
     const {
         handleSubmit,
+        reset,
         formState: { errors },
         setValue,
         register
@@ -69,7 +69,9 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
         const cnpjMd5 = criptoMd5(onlyNumber(cnpj))
         const unidadeIDMd5 = criptoMd5(loggedUnity.unidadeID)
         const originRoute = window.location.origin
-        const url = `${originRoute}/fornecedor?c=${cnpjMd5}&u=${unidadeIDMd5}`
+        const url = `${originRoute}/registro?c=${cnpjMd5}&u=${unidadeIDMd5}&n=${encodeURIComponent(
+            nomeFornecedor
+        )}&e=${email}`
         navigator.clipboard.writeText(url)
     }
 
@@ -85,9 +87,12 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
                         console.log('🚀 ~ getFornecedorByCnpj response:', response.data)
                         setData(response.data)
                         setCnpj(cnpj)
+                        setNomeFornecedor(response.data?.nomeFornecedor)
+                        setEmail(response.data?.email)
                         setLoading(false)
                     })
             } else {
+                setData(null)
                 setCnpj(null)
                 setErrorCnpj(true)
             }
@@ -145,11 +150,16 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
 
     useEffect(() => {
         getFornecedorByCnpj(cnpj)
-        setData(null)
         handleSubmit(onSubmit)
+    }, [loadingSave])
+
+    useEffect(() => {
+        reset()
+        setData(null)
         setCnpj(null)
+        setNomeFornecedor(null)
         setEmail(null)
-    }, [openModal, loadingSave])
+    }, [openModal])
 
     return (
         <>
@@ -165,7 +175,7 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
                             <Grid item xs={12} md={12}>
                                 <FormControl fullWidth>
                                     <TextField
-                                        defaultValue={data?.cnpj ? data.cnpj : ''}
+                                        // defaultValue={data?.cnpj ? data.cnpj : ''}
                                         label='CNPJ'
                                         placeholder='CNPJ'
                                         aria-describedby='validation-schema-nome'
@@ -369,6 +379,8 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
                 openModal={openConfirmMakeFornecedor}
                 handleSubmit={makeFornecedor}
                 inputEmail
+                setEmail={setEmail}
+                email={email}
                 closeAfterSave={true}
                 cnpj={cnpj}
                 gruposAnexo={gruposAnexo}
