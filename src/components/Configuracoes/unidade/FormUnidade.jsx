@@ -374,8 +374,10 @@ const FormUnidade = ({ id }) => {
                         </form>
                     </Card>
 
+                    {/* Parâmetros da unidade */}
                     {user.admin == 1 && type == 'edit' && (
                         <Card sx={{ mt: 4 }}>
+                            <CardHeader title='Parâmetros' />
                             <CardContent>
                                 <Grid container spacing={8}>
                                     <Grid item xs={12} md={2}>
@@ -429,8 +431,8 @@ const FormUnidade = ({ id }) => {
                                                         display: 'flex',
                                                         justifyContent: 'center',
                                                         alignItems: 'center',
-                                                        height: 'auto',
-                                                        width: 'auto'
+                                                        height: '100%',
+                                                        width: '100%'
                                                     }}
                                                 >
                                                     <input
@@ -459,17 +461,7 @@ const FormUnidade = ({ id }) => {
                                             <Input
                                                 xs={12}
                                                 md={12}
-                                                title='Titulo do relatório'
-                                                name='fields.tituloRelatorio'
-                                                required={false}
-                                                register={register}
-                                                control={control}
-                                                errors={errors?.fields?.tituloRelatorio}
-                                            />
-                                            <Input
-                                                xs={12}
-                                                md={12}
-                                                title='Titulo do relatório'
+                                                title='Título do relatório'
                                                 name='fields.tituloRelatorio'
                                                 required={false}
                                                 register={register}
