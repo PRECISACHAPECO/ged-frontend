@@ -27,7 +27,7 @@ import Icon from 'src/@core/components/icon'
 import Link from 'next/link'
 import { set } from 'nprogress'
 
-const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
+const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, setExistFactory, existFactory }) => {
     const router = Router
     const rota = router.pathname
     const [existsTableFactory, setExistsTableFactory] = useState(null)
@@ -35,8 +35,6 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
     const [fromLink, setFromLink] = useState(false)
     const inputRef = useRef(null)
 
-    console.log("exist", existsTableFactory)
-    console.log("dataglobal", dataGlobal)
 
     const [values, setValues] = useState({
         showPassword: false,
@@ -123,18 +121,19 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
         if (cnpj.length === 18 && validationCNPJ(cnpj)) {
             api.post(`/registro-fornecedor`, { value: cnpj }, { headers: { 'function-name': 'VerifyCnpjTableFactory' } }).then((response, err) => {
                 setExistsTableFactory(response.data)
+                setExistFactory(response.data)
+
             })
             api.post(`/registro-fornecedor`, { cnpj: cnpj }, { headers: { 'function-name': 'handleGetCnpj' } }).then((response, err) => {
-                console.log("🚀 ~ :", response.data)
                 if (response.data.length > 0) {
-                    // Quero manter oque ja tem no dataGlobal e adicionar o que vem do response.data[0]
                     setDataGlobal({
                         usuario: {
                             ...dataGlobal?.usuario,
                             exists: true,
+                            existFactory: existFactory,
                             fields: {
                                 ...dataGlobal?.usuario?.fields,
-                                ...response.data[0]
+                                ...response.data[0],
                             }
                         }
                     })
@@ -146,7 +145,10 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                             exists: false,
                             fields: {
                                 ...dataGlobal?.usuario?.fields,
-                                cnpj: cnpj
+                                cnpj: cnpj,
+                                email: email,
+                                nomeFantasia: nome,
+                                razaoSocial: nome,
                             }
                         }
                     })
@@ -173,27 +175,38 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                 ...dataGlobal?.usuario,
                 fields: {
                     ...dataGlobal?.usuario?.fields,
-                    ...value
+                    ...value,
+                    existsTableFactory: existsTableFactory
                 }
             }
         })
     }
 
+    console.log("exist table factory", existsTableFactory)
+    console.log("dataglobal", dataGlobal)
+
     // UnidadeID e CNPJ criptografados / CNPJ esta com mascara de apenas numeros
     const unidadeIDRouter = router.query.u
     const cnpjRouter = router.query.c
+    const email = router.query.e
+    const nome = router.query.n
 
     const setAcessLink = async (unidadeID, cnpj) => {
         if (unidadeID && cnpj) {
             const data = {
                 unidadeID,
-                cnpj
+                cnpj,
+                nome,
+                email
             }
             await api.post(`/login-fornecedor/setAcessLink`, { data })
                 .then((response, err) => {
                     if (response.data && response.data[0] && response.data[0].cnpj) {
                         handleGetCnpj(response.data[0].cnpj)
                         setValue('cnpj', response.data[0].cnpj)
+                        setValue('email', response.data[0].email)
+                        setValue('nomeFantasia', response.data[0].nome)
+                        setValue('razaoSocial', response.data[0].nome)
                         setFromLink(true)
                     }
                 })
@@ -225,6 +238,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                             label='CNPJ'
                             fullWidth
                             {...register('cnpj', { required: true })}
+                            disabled={cnpjRouter}
                             error={errors.cnpj && true}
                             helperText={errors.cnpj && errors.cnpj.message}
                             defaultValue={dataGlobal?.usuario?.fields?.cnpj}
@@ -244,7 +258,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                     </Grid>
 
                     {
-                        !existsTableFactory && dataGlobal?.usuario?.exists === false && (
+                        !existFactory && dataGlobal?.usuario?.exists === false && (
                             <Grid item xs={12} md={12}>
                                 <Alert severity='warning'>
                                     Antes de realizar o cadastro, é necessário que uma fábrica habilite o seu CNPJ como um fornecedor.
@@ -253,7 +267,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                         )
                     }
                     {
-                        dataGlobal && dataGlobal?.usuario?.exists === false && existsTableFactory === true && (
+                        dataGlobal && dataGlobal?.usuario?.exists === false && existFactory === true && (
                             <>
                                 <Grid item xs={12} md={6}>
                                     <TextField
@@ -262,7 +276,6 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                                         defaultValue={dataGlobal?.usuario?.fields?.nomeFantasia}
                                         {...register('nomeFantasia', { required: true })}
                                         error={errors.nomeFantasia && true}
-                                        inputRef={inputRef}
                                         helperText={errors.nomeFantasia && errors.nomeFantasia.message}
                                     />
                                 </Grid>
@@ -293,6 +306,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                                         <OutlinedInput
                                             label='Senha'
                                             id='input-password'
+                                            inputRef={inputRef}
                                             type={values.showPassword ? 'text' : 'password'}
                                             name='senha'
                                             {...register('senha')}
@@ -321,7 +335,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                                             type={values.showConfirmPassword ? 'text' : 'password'} // altere o tipo para 'password'
                                             onChange={e => {
                                                 setLenghtPassword(e.target.value)
-                                                console.log("dentro do onchange", e.target.value)
+
                                             }}
                                             endAdornment={
                                                 <InputAdornment position='end'>
@@ -387,7 +401,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
 
                                 {/* Empresa já cadastrada mas sem usuario, é necessario criar uma senha */}
                                 {
-                                    dataGlobal?.usuario?.fields?.existsFornecedor === 0 && existsTableFactory && (
+                                    dataGlobal?.usuario?.fields?.existsFornecedor === 0 && existFactory && (
                                         <>
                                             <h3 sx={{ color: 'text.primary', marginTop: "10px" }}>Empresa já cadastrada, apenas é necessario criar um usuário</h3>
                                             <Grid item xs={12} sm={6} mt={6}>
@@ -424,7 +438,6 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                                                         type={values.showConfirmPassword ? 'text' : 'password'} // altere o tipo para 'password'
                                                         onChange={e => {
                                                             setLenghtPassword(e.target.value)
-                                                            console.log("dentro do onchange", e.target.value)
                                                         }}
                                                         endAdornment={
                                                             <InputAdornment position='end'>
@@ -460,7 +473,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal, }) => {
                                 Anterior
                             </Button>
                             <Button
-                                disabled={!existsTableFactory || (dataGlobal?.usuario?.exists === true && dataGlobal?.usuario?.fields?.existsFornecedor > 0 ? true : false) || (lenghtPassword <= 0 || lenghtPassword == null || lenghtPassword == undefined)}
+                                disabled={!existFactory || (dataGlobal?.usuario?.exists === true && dataGlobal?.usuario?.fields?.existsFornecedor > 0 ? true : false) || (lenghtPassword <= 0 || lenghtPassword == null || lenghtPassword == undefined)}
                                 type='submit'
                                 variant='contained'
                                 onClick={handleSubmit}

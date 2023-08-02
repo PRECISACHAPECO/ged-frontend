@@ -37,6 +37,7 @@ const RegisterMultiSteps = () => {
   // ** States
   const [activeStep, setActiveStep] = useState(0)
   const [dataGlobal, setDataGlobal] = useState()
+  const [existFactory, setExistFactory] = useState()
 
   // Handle Stepper
   const handleNext = () => {
@@ -52,7 +53,7 @@ const RegisterMultiSteps = () => {
   const getStepContent = step => {
     switch (step) {
       case 0:
-        return <StepAccountDetails handleNext={handleNext} setDataGlobal={setDataGlobal} dataGlobal={dataGlobal} />
+        return <StepAccountDetails handleNext={handleNext} setDataGlobal={setDataGlobal} dataGlobal={dataGlobal} setExistFactory={setExistFactory} existFactory={existFactory} />
       case 1:
         return <StepPersonalInfo handleNext={handleNext} handlePrev={handlePrev} setDataGlobal={setDataGlobal} dataGlobal={dataGlobal} />
       case 2:

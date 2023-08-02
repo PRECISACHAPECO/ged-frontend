@@ -41,6 +41,7 @@ const Fornecedor = () => {
                     unidadeID: loggedUnity.unidadeID,
                     papelID: user.papelID,
                     cnpj: cnpj,
+                    email: email,
                     nomeFornecedor: nomeFornecedor,
                     gruposAnexo: gruposAnexo
                 })
@@ -48,7 +49,7 @@ const Fornecedor = () => {
                     if (response.status === 200) {
                         toast.success('Fornecedor habilitado com sucesso')
                         if (email) {
-                            sendMail(email, cnpj)
+                            sendMail(email, cnpj, nomeFornecedor)
                         }
                     } else {
                         toast.error('Erro ao tornar fornecedor')
@@ -60,11 +61,12 @@ const Fornecedor = () => {
         }
     }
 
-    const sendMail = (email, cnpj) => {
+    const sendMail = (email, cnpj, nomeFornecedor) => {
         if (email && validationEmail(email)) {
             const data = {
                 unidadeID: loggedUnity.unidadeID,
-                cnpj: cnpj,
+                cnpj,
+                nomeFornecedor,
                 destinatario: email
             }
             console.log('🚀 ~ sendMail:', data)
