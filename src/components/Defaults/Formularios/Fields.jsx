@@ -112,7 +112,7 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                     value={field?.[field.nomeColuna]}
                                     type={field.nomeColuna}
                                     mask={getMaskForField(field.nomeColuna)}
-                                    disabled={disabled}
+                                    disabled={disabled || field.nomeColuna == 'cnpj' ? true : false}
                                     control={control}
                                     // errors field[index] nomeColuna
                                     errors={errors?.fields?.[index]?.[field.nomeColuna]}
