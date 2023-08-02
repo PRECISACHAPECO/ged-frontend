@@ -77,14 +77,12 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
 
     const getFornecedorByCnpj = async cnpj => {
         if (cnpj && cnpj.length === 18) {
-            console.log('getFornecedorByCnpj: ', cnpj)
             if (validationCNPJ(cnpj)) {
                 setLoading(true)
                 setErrorCnpj(false)
                 await api
                     .post(`/formularios/fornecedor/cnpj`, { unidadeID: loggedUnity.unidadeID, cnpj: cnpj })
                     .then(response => {
-                        console.log('🚀 ~ getFornecedorByCnpj response:', response.data)
                         setData(response.data)
                         setCnpj(cnpj)
                         setNomeFornecedor(response.data?.nomeFornecedor)
@@ -101,7 +99,6 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
 
     //? Fornecedor já está vinculado e já possui formulários respondidos, então pega o cnpj e coloca na busca do datatable
     const formFilter = async () => {
-        console.log('filtra no contexto...')
         handleSearch(cnpj)
         handleClose()
     }
@@ -309,7 +306,6 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
                                                     defaultValue={[]}
                                                     // {...register('gruposAnexo')}
                                                     onChange={(e, newValue) => {
-                                                        console.log('🚀 Select => onChange:', newValue)
                                                         setGruposAnexo(newValue)
                                                     }}
                                                     renderInput={params => (
