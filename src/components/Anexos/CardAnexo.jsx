@@ -5,7 +5,9 @@ import { SettingsContext } from 'src/@core/context/settingsContext'
 import IconCloudUpload from 'src/icon/IconUpload'
 import IconFilePdf from '../../icon/IconPdf'
 
-const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, disabled }) => {
+const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, error, disabled }) => {
+    console.log('🚀 ~ CardAnexo error:', error)
+
     const [selectedItem, setSelectedItem] = useState(null)
     const { settings } = useContext(SettingsContext)
     const mode = settings.mode
@@ -35,7 +37,11 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, dis
                         <Grid item xs={12} md={3} key={`${indexGrupo}-${indexItem}`}>
                             <div
                                 className={`border  ${
-                                    mode === 'dark' ? 'border-[#71717B]' : 'border-[#E1E1E6]'
+                                    error?.[indexItem]
+                                        ? 'border-red-500'
+                                        : mode === 'dark'
+                                        ? 'border-[#71717B]'
+                                        : 'border-[#E1E1E6]'
                                 } rounded-lg flex flex-col relative z-10`}
                             >
                                 <div className={`flex items-center justify-center p-2 mt-1 `}>
