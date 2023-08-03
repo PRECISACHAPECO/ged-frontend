@@ -19,7 +19,6 @@ import { useEffect, useState } from 'react'
 
 
 const StepBillingDetails = ({ handlePrev, dataGlobal, setDataGlobal }) => {
-    const router = Router
     const [rememberMe, setRememberMe] = useState(true)
     const [loadingConclusion, setLoadingConclusion] = useState(false)
     const auth = useAuth()
@@ -38,7 +37,7 @@ const StepBillingDetails = ({ handlePrev, dataGlobal, setDataGlobal }) => {
                     toast.success("Cadastro efetuado com sucesso!")
                     setTimeout(() => {
                         toast.success("Efetuando login no sistema")
-                        const { cnpj, senha: password } = dataGlobal?.usuario?.fields
+                        const { cnpj, senha: password } = dataGlobal?.sectionOne
                         auth.loginFornecedor({ cnpj, password, rememberMe }, error => {
                         })
                     }, 2000)
@@ -83,31 +82,31 @@ const StepBillingDetails = ({ handlePrev, dataGlobal, setDataGlobal }) => {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', }}>
                             <Typography variant='caption' sx={{ color: 'text.secondary', }}>CNPJ</Typography>
-                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.usuario?.fields.cnpj}</Typography>
+                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.sectionOne?.cnpj}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', }}>
                             <Typography variant='caption' sx={{ color: 'text.secondary', }}>Nome Fantasia</Typography>
-                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.usuario?.fields.nomeFantasia}</Typography>
+                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.sectionOne?.nomeFantasia}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', }}>
                             <Typography variant='caption' sx={{ color: 'text.secondary', }}>Razão Social</Typography>
-                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.usuario?.fields.razaoSocial}</Typography>
+                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.sectionOne?.razaoSocial}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', }}>
                             <Typography variant='caption' sx={{ color: 'text.secondary', }}>Email Institucional</Typography>
-                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.usuario?.fields.email}</Typography>
+                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.sectionOne?.email}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', }}>
                             <Typography variant='caption' sx={{ color: 'text.secondary', }}>Telefone</Typography>
-                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.usuario?.fields.telefone}</Typography>
+                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.sectionTwo?.telefone}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', }}>
                             <Typography variant='caption' sx={{ color: 'text.secondary', }}>Cep</Typography>
-                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.usuario?.fields.cep}</Typography>
+                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.sectionTwo?.cep}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', }}>
                             <Typography variant='caption' sx={{ color: 'text.secondary', }}>Endereço</Typography>
-                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.usuario?.fields.enderecoCompleto
+                            <Typography sx={{ color: 'text.primary' }}>{dataGlobal?.sectionThree?.endereco
                             }</Typography>
                         </Box>
                     </Box>
@@ -122,9 +121,10 @@ const StepBillingDetails = ({ handlePrev, dataGlobal, setDataGlobal }) => {
                         >
                             Anterior
                         </Button>
-                        <Button type='submit' onClick={handleSubmit} disabled={loadingConclusion} color='success' variant='contained'>
+                        <Button type='submit' onClick={handleSubmit} color='success' variant='contained'>
                             Concluir
                         </Button>
+                        {/* disabled={loadingConclusion} */}
                     </Box>
                 </Grid>
             </Grid>

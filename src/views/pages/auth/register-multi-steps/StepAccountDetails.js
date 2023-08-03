@@ -59,6 +59,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
         setValue,
         control,
         reset,
+        watch,
         formState: { errors }
     } = useForm()
 
@@ -123,7 +124,8 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                 ...dataGlobal.sectionOne,
                 nomeFantasia: value.nomeFantasia,
                 razaoSocial: value.razaoSocial,
-                email: value.email
+                email: value.email,
+                senha: value.senha,
             }
         });
         handleNext(value);
@@ -328,45 +330,54 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                 />
                                 <Grid item xs={12} sm={6}>
                                     <FormControl fullWidth>
-                                        <InputLabel htmlFor='input-password' color={errors.senha ? 'error' : ''}>Senha</InputLabel>
+                                        <InputLabel htmlFor="input-password" color={errors.senha ? 'error' : ''}>
+                                            Senha
+                                        </InputLabel>
                                         <OutlinedInput
-                                            label='Senha'
-                                            id='input-password'
-                                            inputRef={inputRef}
+                                            label="Senha"
+                                            id="input-password"
                                             type={values.showPassword ? 'text' : 'password'}
-                                            name='sectionOne.senha'
-                                            {...register('senha')}
+                                            name="senha"
+                                            {...register('senha', {
+                                                required: 'Campo obrigatório',
+                                                minLength: {
+                                                    value: 4,
+                                                    message: 'Senha deve ter pelo menos 4 caracteres',
+                                                },
+                                            })}
                                             endAdornment={
-                                                <InputAdornment position='end'>
-                                                    <IconButton edge='end' onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
+                                                <InputAdornment position="end">
+                                                    <IconButton edge="end" onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
                                                         <Icon icon={values.showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
                                                     </IconButton>
                                                 </InputAdornment>
                                             }
-                                            error={errors.senha && true}
+                                            error={!!errors.senha}
                                             helperText={errors.senha && errors.senha.message}
                                         />
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <FormControl fullWidth>
-                                        <InputLabel htmlFor='input-confirm-password' style={{
-                                            color: errors.confirmaSenha && 'red'
-                                        }}  >Confirme a senha</InputLabel>
+                                        <InputLabel htmlFor="input-confirm-password" style={{ color: errors.confirmaSenha && 'red' }}>
+                                            Confirme a senha
+                                        </InputLabel>
                                         <OutlinedInput
-                                            label='Confirme a senha'
-                                            name='sectionOne.confirmaSenha'
-                                            {...register('confirmaSenha')}
-                                            id='input-confirm-password'
-                                            type={values.showConfirmPassword ? 'text' : 'password'} // altere o tipo para 'password'
+                                            label="Confirme a senha"
+                                            name="confirmaSenha"
+                                            {...register('confirmaSenha', {
+                                                required: 'Campo obrigatório',
+                                                validate: (value) => value === watch('senha') || 'As senhas não coincidem',
+                                            })}
+                                            id="input-confirm-password"
+                                            type={values.showConfirmPassword ? 'text' : 'password'}
                                             onChange={e => {
-                                                setLenghtPassword(e.target.value)
-
+                                                setLenghtPassword(e.target.value);
                                             }}
                                             endAdornment={
-                                                <InputAdornment position='end'>
+                                                <InputAdornment position="end">
                                                     <IconButton
-                                                        edge='end'
+                                                        edge="end"
                                                         onClick={handleClickShowConfirmPassword}
                                                         onMouseDown={handleMouseDownConfirmPassword}
                                                     >
@@ -374,9 +385,9 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                                     </IconButton>
                                                 </InputAdornment>
                                             }
-                                            error={errors.confirmaSenha && true}
+                                            error={!!errors.confirmaSenha}
                                         />
-                                        <Typography variant='caption' sx={{ color: 'error.main' }}>
+                                        <Typography variant="caption" sx={{ color: 'error.main' }}>
                                             {errors.confirmaSenha && errors.confirmaSenha.message}
                                         </Typography>
                                     </FormControl>
