@@ -91,13 +91,10 @@ const AuthProvider = ({ children }) => {
                 }
 
             } else {
-                console.log('Não tem token')
                 setLoading(false)
             }
         }
         initAuth()
-        console.log('useEffect no authContext')
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 

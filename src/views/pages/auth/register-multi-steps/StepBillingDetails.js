@@ -24,10 +24,12 @@ const StepBillingDetails = ({ handlePrev, dataGlobal, setDataGlobal }) => {
     const [loadingConclusion, setLoadingConclusion] = useState(false)
     const auth = useAuth()
 
+    console.log("dataglobal tela 33333", dataGlobal)
+
     const handleSubmit = () => {
         setLoadingConclusion(true)
         // Salva o fornecedor no banco de dados
-        api.post('/registro-fornecedor', { data: dataGlobal }, { headers: { 'function-name': 'handleSaveFornecedor' } })
+        api.post('/registro-fornecedor/registerNew', { data: dataGlobal })
             .then(response => {
                 if (response.status === 201) {
                     toast.error(response.data.message)
@@ -50,12 +52,12 @@ const StepBillingDetails = ({ handlePrev, dataGlobal, setDataGlobal }) => {
 
     useEffect(() => {
         const endereco = {
-            logradouro: dataGlobal?.usuario?.fields.logradouro,
-            numero: dataGlobal?.usuario?.fields.numero,
-            complemento: dataGlobal?.usuario?.fields.complemento,
-            bairro: dataGlobal?.usuario?.fields.bairro,
-            cidade: dataGlobal?.usuario?.fields.cidade,
-            uf: dataGlobal?.usuario?.fields.uf
+            logradouro: dataGlobal?.sectionTwo?.logradouro,
+            numero: dataGlobal?.sectionTwo?.numero,
+            complemento: dataGlobal?.sectionTwo?.complemento,
+            bairro: dataGlobal?.sectionTwo?.bairro,
+            cidade: dataGlobal?.sectionTwo?.cidade,
+            uf: dataGlobal?.sectionTwo?.uf
         }
         const enderecoCompleto = Object.entries(endereco).map(([key, value]) => {
             if (value) {
@@ -63,12 +65,9 @@ const StepBillingDetails = ({ handlePrev, dataGlobal, setDataGlobal }) => {
             }
         }).join('').slice(0, -2) + '.'; // Remove a última vírgula e adiciona um ponto final
         setDataGlobal({
-            usuario: {
-                ...dataGlobal?.usuario,
-                fields: {
-                    ...dataGlobal?.usuario?.fields,
-                    enderecoCompleto: enderecoCompleto
-                }
+            ...dataGlobal,
+            sectionThree: {
+                endereco: enderecoCompleto
             }
         })
     }, [])
