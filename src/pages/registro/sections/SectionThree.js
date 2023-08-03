@@ -6,7 +6,6 @@ import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import toast from 'react-hot-toast'
-import Router from 'next/router'
 
 
 // ** Icon Imports
@@ -121,13 +120,12 @@ const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
                         >
                             Anterior
                         </Button>
-                        <Button type='submit' onClick={handleSubmit} color='success' variant='contained'>
+                        <Button type='submit' onClick={handleSubmit} color='success' variant='contained' disabled={loadingConclusion} >
                             Concluir
                         </Button>
-                        {/* disabled={loadingConclusion} */}
                     </Box>
                 </Grid>
-            </Grid>
+            </Grid >
         </>
     )
 }

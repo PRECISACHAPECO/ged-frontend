@@ -15,6 +15,7 @@ const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
         control,
         handleSubmit,
         setValue,
+
         formState: { errors }
     } = useForm({
     })
@@ -42,10 +43,12 @@ const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
     }
 
     const setAddress = (address) => {
-        setValue('logradouro', address?.logradouro)
-        setValue('bairro', address?.bairro)
-        setValue('cidade', address?.localidade)
-        setValue('uf', address?.uf)
+        setTimeout(() => {
+            setValue('logradouro', address?.logradouro)
+            setValue('bairro', address?.bairro)
+            setValue('cidade', address?.localidade)
+            setValue('uf', address?.uf)
+        }, 400);
     }
 
     useEffect(() => {

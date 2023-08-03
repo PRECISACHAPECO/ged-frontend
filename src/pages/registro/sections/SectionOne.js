@@ -11,7 +11,6 @@ import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { cnpjMask } from 'src/configs/masks'
 import { validationCNPJ } from 'src/configs/validations'
 import Router from 'next/router'
 import InputLabel from '@mui/material/InputLabel'
@@ -32,6 +31,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
     const [fromLink, setFromLink] = useState(false)
     const inputRef = useRef(null)
 
+    console.log("🚀 ~ dataGlobal:", dataGlobal)
 
     const [values, setValues] = useState({
         showPassword: false,
@@ -64,7 +64,6 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
         formState: { errors }
     } = useForm()
 
-    console.log("🚀 ~ errors:", errors)
 
     // Quando a quantidade de caracteres do cnpj é 18 faz um get para pegar os dados do fornecedor
     const handleGetCnpj = (cnpj) => {
@@ -74,6 +73,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                     setCnpjData(cnpj)
                     setDataGlobal({
                         ...response.data,
+                        ...dataGlobal,
                         sectionOne: {
                             cnpj: cnpj,
                             nomeFantasia: '',
@@ -81,7 +81,6 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                             email: '',
                         }
                     })
-                    reset()
                 })
         } else {
             setDataGlobal(null)
@@ -89,7 +88,6 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
         }
     }
 
-    console.log("dataglobal tela 111111", dataGlobal)
 
 
     // UnidadeID e CNPJ criptografados / CNPJ esta com mascara de apenas numeros
@@ -109,21 +107,18 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
             await api.post(`/login-fornecedor/setAcessLink`, { data })
                 .then((response, err) => {
                     if (response.data && response.data[0] && response.data[0].cnpj) {
-                        console.log("caiuuu aki", data)
                         handleGetCnpj(response.data[0].cnpj)
                         setValue('cnpj', data.response?.data[0].cnpj)
                         setValue('email', data.email)
                         setValue('nomeFantasia', data.nome)
                         setValue('razaoSocial', data.nome)
                         setFromLink(true)
-
                     }
                 })
         }
     }
 
     const onSubmit = value => {
-        console.log("🚀 ~ value:", value)
         setDataGlobal({
             ...dataGlobal,
             sectionOne: {
@@ -154,6 +149,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
         setValue("nomeFantasia", dataGlobal?.sectionOne?.nomeFantasia)
         setValue("razaoSocial", dataGlobal?.sectionOne?.razaoSocial)
         setValue("email", dataGlobal?.sectionOne?.email)
+        setCnpjData(dataGlobal?.sectionOne?.cnpj)
     }, [])
 
 
@@ -310,7 +306,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                     md={6}
                                     title='Nome Fantasia'
                                     name='nomeFantasia'
-                                    defaultValue={dataGlobal?.sectionOne.nomeFantasia}
+                                    defaultValue={dataGlobal?.sectionOne.nomeFantasia || nome}
                                     required
                                     control={control}
                                     errors={errors?.nomeFantasia}
@@ -320,7 +316,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                     md={6}
                                     title='Razão Social'
                                     name='razaoSocial'
-                                    defaultValue={dataGlobal?.sectionOne?.razaoSocial}
+                                    defaultValue={dataGlobal?.sectionOne?.razaoSocial || nome}
                                     required
                                     control={control}
                                     errors={errors?.razaoSocial}
@@ -330,7 +326,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                     md={6}
                                     title='Email Institucional'
                                     name='email'
-                                    defaultValue={dataGlobal?.sectionOne?.email}
+                                    defaultValue={dataGlobal?.sectionOne?.email || email}
                                     required
                                     control={control}
                                     errors={errors?.email}
