@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-import { api } from '../../../../configs/api'
+import { api } from 'src/configs/api'
 import { useEffect, useRef } from 'react'
 
 // ** MUI Components
@@ -25,9 +25,10 @@ import Icon from 'src/@core/components/icon'
 import Link from 'next/link'
 import Input from 'src/components/Form/Input'
 
-const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
+const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
     const router = Router
     const [lenghtPassword, setLenghtPassword] = useState(null)
+    const [cnpj, setCnpj] = useState()
     const [fromLink, setFromLink] = useState(false)
     const inputRef = useRef(null)
 
@@ -63,12 +64,14 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
         formState: { errors }
     } = useForm()
 
+    console.log("🚀 ~ errors:", errors)
 
     // Quando a quantidade de caracteres do cnpj é 18 faz um get para pegar os dados do fornecedor
     const handleGetCnpj = (cnpj) => {
         if (cnpj.length === 18 && validationCNPJ(cnpj)) {
             api.post(`/registro-fornecedor/getData`, { cnpj: cnpj })
                 .then((response) => {
+                    setCnpj(cnpj)
                     setDataGlobal({
                         ...response.data,
                         sectionOne: {
@@ -82,6 +85,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                 })
         } else {
             setDataGlobal(null)
+            setCnpj(null)
         }
     }
 
@@ -105,12 +109,14 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
             await api.post(`/login-fornecedor/setAcessLink`, { data })
                 .then((response, err) => {
                     if (response.data && response.data[0] && response.data[0].cnpj) {
+                        console.log("caiuuu aki", data)
                         handleGetCnpj(response.data[0].cnpj)
-                        setValue('cnpj', response.data[0].cnpj)
-                        setValue('email', response.data[0].email)
-                        setValue('nomeFantasia', response.data[0].nome)
-                        setValue('razaoSocial', response.data[0].nome)
+                        setValue('cnpj', data.response?.data[0].cnpj)
+                        setValue('email', data.email)
+                        setValue('nomeFantasia', data.nome)
+                        setValue('razaoSocial', data.nome)
                         setFromLink(true)
+
                     }
                 })
         }
@@ -121,7 +127,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
         setDataGlobal({
             ...dataGlobal,
             sectionOne: {
-                ...dataGlobal.sectionOne,
+                ...dataGlobal?.sectionOne,
                 nomeFantasia: value.nomeFantasia,
                 razaoSocial: value.razaoSocial,
                 email: value.email,
@@ -164,7 +170,6 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                         name='sectionOne.cnpj'
                         defaultValue={dataGlobal?.sectionOne?.cnpj}
                         mask='cnpj'
-                        required={false}
                         control={control}
                         errors={errors?.sectionOne?.cnpj}
                         onChange={(value) => handleGetCnpj(value)}
@@ -406,7 +411,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                 Anterior
                             </Button>
                             <Button
-                                disabled={dataGlobal?.status == 'hasUserHasUnity' || dataGlobal?.status == 'notAuthorized'}
+                                disabled={dataGlobal?.status == 'hasUserHasUnity' || dataGlobal?.status == 'notAuthorized' || !cnpj}
                                 type='submit'
                                 variant='contained'
                                 onClick={handleSubmit}
@@ -445,4 +450,4 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
     )
 }
 
-export default StepAccountDetails
+export default SectionOne

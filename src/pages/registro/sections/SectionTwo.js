@@ -10,7 +10,7 @@ import Icon from 'src/@core/components/icon'
 import Input from 'src/components/Form/Input'
 import { useEffect } from 'react'
 
-const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
+const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
     const {
         control,
         handleSubmit,
@@ -166,4 +166,4 @@ const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal
     )
 }
 
-export default StepPersonalDetails
+export default SectionTwo

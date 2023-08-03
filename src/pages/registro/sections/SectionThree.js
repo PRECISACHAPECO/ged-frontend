@@ -1,4 +1,4 @@
-import { api } from '../../../../configs/api'
+import { api } from 'src/configs/api'
 
 // ** MUI Components
 import Box from '@mui/material/Box'
@@ -18,7 +18,7 @@ import 'react-credit-cards/es/styles-compiled.css'
 import { useEffect, useState } from 'react'
 
 
-const StepBillingDetails = ({ handlePrev, dataGlobal, setDataGlobal }) => {
+const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
     const [rememberMe, setRememberMe] = useState(true)
     const [loadingConclusion, setLoadingConclusion] = useState(false)
     const auth = useAuth()
@@ -132,4 +132,4 @@ const StepBillingDetails = ({ handlePrev, dataGlobal, setDataGlobal }) => {
     )
 }
 
-export default StepBillingDetails
+export default SectionThree

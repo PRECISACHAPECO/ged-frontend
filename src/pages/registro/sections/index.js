@@ -8,9 +8,9 @@ import StepLabel from '@mui/material/StepLabel'
 import Typography from '@mui/material/Typography'
 
 // ** Step Components
-import StepPersonalInfo from 'src/views/pages/auth/register-multi-steps/StepPersonalInfo'
-import StepAccountDetails from 'src/views/pages/auth/register-multi-steps/StepAccountDetails'
-import StepBillingDetails from 'src/views/pages/auth/register-multi-steps/StepBillingDetails'
+import SectionTwo from './SectionTwo'
+import SectionOne from './SectionOne'
+import SectionThree from './SectionThree'
 
 // ** Custom Component Import
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
@@ -33,7 +33,7 @@ const steps = [
     }
 ]
 
-const RegisterMultiSteps = () => {
+const RegisterSections = () => {
     // ** States
     const [activeStep, setActiveStep] = useState(0)
     const [dataGlobal, setDataGlobal] = useState()
@@ -52,11 +52,11 @@ const RegisterMultiSteps = () => {
     const getStepContent = step => {
         switch (step) {
             case 0:
-                return <StepAccountDetails handleNext={handleNext} setDataGlobal={setDataGlobal} dataGlobal={dataGlobal} />
+                return <SectionOne handleNext={handleNext} setDataGlobal={setDataGlobal} dataGlobal={dataGlobal} />
             case 1:
-                return <StepPersonalInfo handleNext={handleNext} handlePrev={handlePrev} setDataGlobal={setDataGlobal} dataGlobal={dataGlobal} />
+                return <SectionTwo handleNext={handleNext} handlePrev={handlePrev} setDataGlobal={setDataGlobal} dataGlobal={dataGlobal} />
             case 2:
-                return <StepBillingDetails handlePrev={handlePrev} setDataGlobal={setDataGlobal} dataGlobal={dataGlobal} />
+                return <SectionThree handlePrev={handlePrev} setDataGlobal={setDataGlobal} dataGlobal={dataGlobal} />
             default:
                 return null
         }
@@ -92,4 +92,4 @@ const RegisterMultiSteps = () => {
     )
 }
 
-export default RegisterMultiSteps
+export default RegisterSections
