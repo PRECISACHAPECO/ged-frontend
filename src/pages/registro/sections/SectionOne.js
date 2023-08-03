@@ -31,7 +31,6 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
     const [fromLink, setFromLink] = useState(false)
     const inputRef = useRef(null)
 
-    console.log("🚀 ~ dataGlobal:", dataGlobal)
 
     const [values, setValues] = useState({
         showPassword: false,

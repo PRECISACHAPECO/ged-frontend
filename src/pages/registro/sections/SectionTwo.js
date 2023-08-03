@@ -20,10 +20,7 @@ const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
     } = useForm({
     })
 
-    console.log("dataglobal tela 222222", dataGlobal)
-
     const onSubmit = value => {
-        console.log("valuestela 2222", value)
         setDataGlobal({
             ...dataGlobal,
             sectionTwo: {
