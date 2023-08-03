@@ -9,6 +9,7 @@ import { SettingsContext } from 'src/@core/context/settingsContext'
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
 import Permissions from './Permissions'
+import DateField from 'src/components/Form/DateField'
 
 import {
     Card,
@@ -46,7 +47,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br' // import locale
 import Input from 'src/components/Form/Input'
-import DateField from 'src/components/Form/DateField'
+// import DateField from 'src/components/Form/DateField'
 
 const FormUsuario = ({ id }) => {
     const { setId } = useContext(RouteContext)
@@ -69,12 +70,14 @@ const FormUsuario = ({ id }) => {
     const {
         control,
         handleSubmit,
-        formState: { errors },
         watch,
         reset,
         setValue,
-        register
+        register,
+        formState: { errors }
     } = useForm({})
+
+    console.log('🚀 ~ errors:', errors)
 
     data &&
         data.units &&
@@ -210,7 +213,7 @@ const FormUsuario = ({ id }) => {
                 const route = `${staticUrl}/getData/${id}?unidadeID=${loggedUnity.unidadeID}&papelID=${loggedUnity.papelID}&admin=${user.admin}`
                 await api.post(route).then(response => {
                     setData(response.data)
-                    setPhotoProfile(response.data.imagem)
+                    setPhotoProfile(response.data.fields.imagem)
                     reset(response.data) //* Insere os dados no formulário
                     console.log('🚀 ~ getData:', response.data)
                 })
@@ -266,154 +269,144 @@ const FormUsuario = ({ id }) => {
                                 />
 
                                 <Grid container spacing={5}>
-                                    {/* Foto */}
                                     {/* Foto do usuário e upload */}
-                                    <Grid item xs={12} md={2}>
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            md={12}
-                                            sx={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                height: '250px',
-                                                width: '250px',
-                                                position: 'relative',
-                                                border: `${
-                                                    mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'
-                                                }`,
-                                                borderRadius: '8px'
-                                            }}
-                                        >
-                                            {photoProfile && (
-                                                <Tooltip title='Apagar foto do perfil' placement='top'>
-                                                    <IconButton
-                                                        size='small'
-                                                        sx={{
-                                                            position: 'absolute',
-                                                            top: '8px',
-                                                            right: '8px',
-                                                            zIndex: '20',
-                                                            color: 'white',
-                                                            opacity: '0.8',
-                                                            backgroundColor: '#FF4D49',
-                                                            '&:hover': {
-                                                                backgroundColor: '#FF4D49',
-                                                                opacity: '1'
-                                                            }
-                                                        }}
-                                                        onClick={handleDeleteImage}
-                                                    >
-                                                        <Icon icon='material-symbols:delete-outline' />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            )}
-                                            <Tooltip
-                                                title={photoProfile ? 'Alterar foto' : 'Inserir foto'}
-                                                placement='top'
+                                    {type == 'edit' && (
+                                        <Grid item xs={12} md={2}>
+                                            <Grid
+                                                item
+                                                xs={12}
+                                                md={12}
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: '250px',
+                                                    width: '250px',
+                                                    position: 'relative',
+                                                    border: `${
+                                                        mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'
+                                                    }`,
+                                                    borderRadius: '8px'
+                                                }}
                                             >
-                                                <FormControl
-                                                    sx={{
-                                                        display: 'flex',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        height: '100%',
-                                                        width: '100%'
-                                                    }}
+                                                {photoProfile && (
+                                                    <Tooltip title='Apagar foto do perfil' placement='top'>
+                                                        <IconButton
+                                                            size='small'
+                                                            sx={{
+                                                                position: 'absolute',
+                                                                top: '8px',
+                                                                right: '8px',
+                                                                zIndex: '20',
+                                                                color: 'white',
+                                                                opacity: '0.8',
+                                                                backgroundColor: '#FF4D49',
+                                                                '&:hover': {
+                                                                    backgroundColor: '#FF4D49',
+                                                                    opacity: '1'
+                                                                }
+                                                            }}
+                                                            onClick={handleDeleteImage}
+                                                        >
+                                                            <Icon icon='material-symbols:delete-outline' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                )}
+                                                <Tooltip
+                                                    title={photoProfile ? 'Alterar foto' : 'Inserir foto'}
+                                                    placement='top'
                                                 >
-                                                    <input
-                                                        type='file'
-                                                        ref={fileInputRef}
-                                                        style={{ display: 'none' }}
-                                                        onChange={handleFileSelect}
-                                                    />
-                                                    <Avatar
-                                                        variant='rounded'
-                                                        alt='Victor Anderson'
-                                                        sx={{ width: '97%', height: '97%', cursor: 'pointer' }}
-                                                        src={photoProfile}
-                                                        onClick={handleAvatarClick}
-                                                    />
-                                                </FormControl>
-                                            </Tooltip>
+                                                    <FormControl
+                                                        sx={{
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            height: '100%',
+                                                            width: '100%'
+                                                        }}
+                                                    >
+                                                        <input
+                                                            type='file'
+                                                            ref={fileInputRef}
+                                                            style={{ display: 'none' }}
+                                                            onChange={handleFileSelect}
+                                                        />
+                                                        <Avatar
+                                                            variant='rounded'
+                                                            alt='Victor Anderson'
+                                                            sx={{ width: '97%', height: '97%', cursor: 'pointer' }}
+                                                            src={photoProfile}
+                                                            onClick={handleAvatarClick}
+                                                        />
+                                                    </FormControl>
+                                                </Tooltip>
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
+                                    )}
 
                                     {/* Campos a direita */}
-                                    <Grid item xs={12} md={10}>
+                                    <Grid item xs={12} md={type === 'edit' ? 10 : 12}>
                                         <Grid container spacing={5}>
                                             <Input
                                                 xs={12}
                                                 md={4}
                                                 title='Nome'
-                                                name='nome'
-                                                value={data?.nome}
+                                                name='fields.nome'
+                                                value={data?.fields?.nome}
                                                 required={true}
                                                 control={control}
-                                                error={errors.nome}
+                                                errors={errors?.fields?.nome}
                                             />
-                                            <Grid item xs={12} md={4}>
-                                                <FormControl fullWidth>
-                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                        <DatePicker
-                                                            label='Data de Nascimento'
-                                                            locale={dayjs.locale('pt-br')}
-                                                            format='DD/MM/YYYY'
-                                                            defaultValue={dayjs(new Date(data?.dataNascimento))}
-                                                            name={`dataNascimento`}
-                                                            onChange={value => setValue('dataNascimento', value)}
-                                                            renderInput={params => (
-                                                                <TextField
-                                                                    {...params}
-                                                                    variant='outlined'
-                                                                    error={errors?.dataNascimento}
-                                                                />
-                                                            )}
-                                                        />
-                                                    </LocalizationProvider>
-                                                </FormControl>
-                                            </Grid>
+
+                                            <DateField
+                                                xs={12}
+                                                md={4}
+                                                title='Data de Nascimento'
+                                                value={data?.fields?.dataNascimento}
+                                                name={`fields.dataNascimento`}
+                                                errors={errors?.fields?.dataNascimento}
+                                                control={control}
+                                                register={register}
+                                            />
 
                                             <Input
                                                 xs={12}
                                                 md={4}
                                                 title='E-mail'
-                                                name='email'
-                                                value={data?.email}
+                                                name='fields.email'
+                                                value={data?.fields?.email}
                                                 required={true}
                                                 control={control}
-                                                error={errors.email}
+                                                errors={errors?.fields?.email}
                                             />
                                             <Input
                                                 xs={12}
                                                 md={4}
                                                 title='CPF'
-                                                name='cpf'
+                                                name='fields.cpf'
                                                 mask='cpf'
-                                                value={data?.cpf}
+                                                value={data?.fields?.cpf}
                                                 required={true}
                                                 control={control}
-                                                error={errors.cpf}
+                                                errors={errors?.fields?.cpf}
                                             />
                                             <Input
                                                 xs={12}
                                                 md={4}
                                                 title='RG'
-                                                name='rg'
-                                                value={data?.rg}
-                                                required={true}
+                                                name='fields.rg'
+                                                value={data?.fields?.rg}
                                                 control={control}
-                                                error={errors.rg}
+                                                errors={errors?.fields?.rg}
                                             />
                                             <Input
                                                 xs={12}
                                                 md={4}
                                                 title='Registro Conselho Classe'
-                                                name='registroConselhoClasse'
-                                                value={data?.registroConselhoClasse}
+                                                name='fields.registroConselhoClasse'
+                                                value={data?.fields?.registroConselhoClasse}
                                                 control={control}
-                                                error={errors.registroConselhoClasse}
+                                                errors={errors?.fields?.registroConselhoClasse}
                                             />
 
                                             {data && user.admin == 0 && (
@@ -506,10 +499,11 @@ const FormUsuario = ({ id }) => {
                                                                 label='Senha'
                                                                 id='input-password'
                                                                 type={statePassword.showPassword ? 'text' : 'password'}
-                                                                name={`senha`}
-                                                                {...register(`senha`, {
+                                                                name={`fields.senha`}
+                                                                {...register(`fields.senha`, {
                                                                     required: type == 'new' ? true : false
                                                                 })}
+                                                                error={errors?.fields?.senha}
                                                                 endAdornment={
                                                                     <InputAdornment position='end'>
                                                                         <IconButton
@@ -547,12 +541,12 @@ const FormUsuario = ({ id }) => {
                                                                         ? 'text'
                                                                         : 'password'
                                                                 }
-                                                                name={`confirmarSenha`}
-                                                                {...register(`confirmarSenha`, {
+                                                                name={`fields.confirmarSenha`}
+                                                                {...register(`fields.confirmarSenha`, {
                                                                     required: type == 'new' ? true : false,
                                                                     // validar senha e confirmação de senha somente se houver valor em senha
                                                                     validate: value =>
-                                                                        value === watch('senha') ||
+                                                                        value === watch('fields.senha') ||
                                                                         'As senhas não conferem.'
                                                                 })}
                                                                 error={errors.confirmarSenha}

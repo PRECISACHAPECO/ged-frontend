@@ -4,13 +4,15 @@ import { useState, useContext, useEffect } from 'react'
 import { CardContent, Button, Box, Tooltip } from '@mui/material'
 import Link from 'next/link'
 import Icon from 'src/@core/components/icon'
-import { backRoute } from 'src/configs/defaultConfigs'
+import { backRoute, statusDefault } from 'src/configs/defaultConfigs'
 import MenuReports from './MenuReports'
 import { AuthContext } from 'src/context/AuthContext'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import Fab from '@mui/material/Fab'
 import LayoutReport from 'src/components/Reports/Layout'
+// ** Custom Components
+import CustomChip from 'src/@core/components/mui/chip'
 
 const FormHeader = ({
     btnCancel,
@@ -33,7 +35,8 @@ const FormHeader = ({
     disabled,
     dataReports,
     generateReport,
-    type
+    type,
+    status
 }) => {
     const router = Router
     const { user, routes, loggedUnity } = useContext(AuthContext)
@@ -177,6 +180,18 @@ const FormHeader = ({
                         >
                             Status
                         </Button>
+                    )}
+
+                    {status && (
+                        <Box display='flex' alignItems='center' justifyContent='flex-end'>
+                            <CustomChip
+                                size='small'
+                                skin='light'
+                                color={status.color}
+                                label={status.title}
+                                sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+                            />
+                        </Box>
                     )}
                 </Box>
 
