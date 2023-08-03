@@ -22,6 +22,10 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
     const [lenghtPassword, setLenghtPassword] = useState(null)
     const [cnpjData, setCnpjData] = useState()
     const [fromLink, setFromLink] = useState(false)
+    const [validationCnpj, setValidationCnpj] = useState(null)
+    console.log("🚀 ~ validationCnpj:", validationCnpj)
+    console.log("🚀 ~ dataGlobal:", dataGlobal)
+
     const inputRef = useRef(null)
 
 
@@ -58,24 +62,28 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
 
     // Quando a quantidade de caracteres do cnpj é 18 faz um get para pegar os dados do fornecedor
     const handleGetCnpj = (cnpj) => {
-        if (cnpj.length === 18 && validationCNPJ(cnpj)) {
-            api.post(`/registro-fornecedor/getData`, { cnpj: cnpj })
-                .then((response) => {
-                    setCnpjData(cnpj)
-                    setDataGlobal({
-                        ...response.data,
-                        ...dataGlobal,
-                        sectionOne: {
-                            cnpj: cnpj,
-                            nomeFantasia: '',
-                            razaoSocial: '',
-                            email: '',
-                        }
+        if (cnpj.length === 18) {
+            setValidationCnpj(validationCNPJ(cnpj))
+            if (validationCNPJ(cnpj)) {
+                api.post(`/registro-fornecedor/getData`, { cnpj: cnpj })
+                    .then((response) => {
+                        setCnpjData(cnpj)
+                        setDataGlobal({
+                            ...response.data,
+                            ...dataGlobal,
+                            sectionOne: {
+                                cnpj: cnpj,
+                                nomeFantasia: '',
+                                razaoSocial: '',
+                                email: '',
+                            }
+                        })
                     })
-                })
+            }
         } else {
             setDataGlobal(null)
             setCnpjData(null)
+            setValidationCnpj(null)
         }
     }
 
@@ -150,6 +158,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                     <Typography sx={{ color: 'text.secondary' }}>Insira as informações obrigatórias</Typography>
                 </Box>
                 <Grid container spacing={5}>
+
                     <Input
                         xs={12}
                         md={6}
@@ -161,6 +170,16 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                         errors={errors?.cnpj}
                         onChange={(value) => handleGetCnpj(value)}
                     />
+                    {/* Mostra quando cnpj digitado for inválido  */}
+                    {
+                        !validationCnpj && validationCnpj !== null && (
+                            <Grid item xs={12} md={12}>
+                                <Alert severity='warning'>
+                                    CNPJ inválido!
+                                </Alert>
+                            </Grid>
+                        )
+                    }
 
                     {/* Não autorizado / O fornecedor não está habilidade por nenhuma fabrica */}
                     {
