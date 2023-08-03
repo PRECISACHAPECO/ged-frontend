@@ -28,7 +28,7 @@ import Input from 'src/components/Form/Input'
 const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
     const router = Router
     const [lenghtPassword, setLenghtPassword] = useState(null)
-    const [cnpj, setCnpj] = useState()
+    const [cnpjData, setCnpjData] = useState()
     const [fromLink, setFromLink] = useState(false)
     const inputRef = useRef(null)
 
@@ -71,7 +71,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
         if (cnpj.length === 18 && validationCNPJ(cnpj)) {
             api.post(`/registro-fornecedor/getData`, { cnpj: cnpj })
                 .then((response) => {
-                    setCnpj(cnpj)
+                    setCnpjData(cnpj)
                     setDataGlobal({
                         ...response.data,
                         sectionOne: {
@@ -85,7 +85,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                 })
         } else {
             setDataGlobal(null)
-            setCnpj(null)
+            setCnpjData(null)
         }
     }
 
@@ -149,6 +149,8 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
     }, [unidadeIDRouter, cnpjRouter])
 
     useEffect(() => {
+        setCnpjData(dataGlobal?.sectionOne?.cnpj)
+        setValue("cnpj", dataGlobal?.sectionOne?.cnpj)
         setValue("nomeFantasia", dataGlobal?.sectionOne?.nomeFantasia)
         setValue("razaoSocial", dataGlobal?.sectionOne?.razaoSocial)
         setValue("email", dataGlobal?.sectionOne?.email)
@@ -167,11 +169,11 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                         xs={12}
                         md={6}
                         title='CNPJ'
-                        name='sectionOne.cnpj'
+                        name='cnpj'
                         defaultValue={dataGlobal?.sectionOne?.cnpj}
                         mask='cnpj'
                         control={control}
-                        errors={errors?.sectionOne?.cnpj}
+                        errors={errors?.cnpj}
                         onChange={(value) => handleGetCnpj(value)}
                     />
 
@@ -308,7 +310,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                     md={6}
                                     title='Nome Fantasia'
                                     name='nomeFantasia'
-                                    defaultValue={dataGlobal?.nomeFantasia}
+                                    defaultValue={dataGlobal?.sectionOne.nomeFantasia}
                                     required
                                     control={control}
                                     errors={errors?.nomeFantasia}
@@ -411,7 +413,8 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                 Anterior
                             </Button>
                             <Button
-                                disabled={dataGlobal?.status == 'hasUserHasUnity' || dataGlobal?.status == 'notAuthorized' || !cnpj}
+                                disabled={dataGlobal?.status == 'hasUserHasUnity' || dataGlobal?.status == 'notAuthorized' || !cnpjData}
+                                // || !cnpj
                                 type='submit'
                                 variant='contained'
                                 onClick={handleSubmit}
