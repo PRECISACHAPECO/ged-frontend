@@ -1,28 +1,24 @@
-// ** MUI Components
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useForm } from 'react-hook-form'
 import { api } from 'src/configs/api'
-// ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import Input from 'src/components/Form/Input'
 import { useEffect } from 'react'
 
-const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
+const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
     const {
         control,
         handleSubmit,
         setValue,
+
         formState: { errors }
     } = useForm({
     })
 
-    console.log("dataglobal tela 222222", dataGlobal)
-
     const onSubmit = value => {
-        console.log("valuestela 2222", value)
         setDataGlobal({
             ...dataGlobal,
             sectionTwo: {
@@ -42,10 +38,12 @@ const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal
     }
 
     const setAddress = (address) => {
-        setValue('logradouro', address?.logradouro)
-        setValue('bairro', address?.bairro)
-        setValue('cidade', address?.localidade)
-        setValue('uf', address?.uf)
+        setTimeout(() => {
+            setValue('logradouro', address?.logradouro)
+            setValue('bairro', address?.bairro)
+            setValue('cidade', address?.localidade)
+            setValue('uf', address?.uf)
+        }, 400);
     }
 
     useEffect(() => {
@@ -66,7 +64,6 @@ const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal
                     <Typography variant='h5'>Informações opcionais</Typography>
                     <Typography sx={{ color: 'text.secondary' }}>Insira as informações opcionais</Typography>
                 </Box>
-
                 <Grid container spacing={5}>
                     <Input
                         xs={12}
@@ -162,8 +159,7 @@ const StepPersonalDetails = ({ handleNext, handlePrev, setDataGlobal, dataGlobal
                 </Grid>
             </form >
         )
-
     )
 }
 
-export default StepPersonalDetails
+export default SectionTwo

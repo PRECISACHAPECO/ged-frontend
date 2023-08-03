@@ -1,17 +1,11 @@
-// ** React Imports
-
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-import { api } from '../../../../configs/api'
+import { api } from 'src/configs/api'
 import { useEffect, useRef } from 'react'
-
-// ** MUI Components
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { cnpjMask } from 'src/configs/masks'
 import { validationCNPJ } from 'src/configs/validations'
 import Router from 'next/router'
 import InputLabel from '@mui/material/InputLabel'
@@ -19,16 +13,19 @@ import FormControl from '@mui/material/FormControl'
 import InputAdornment from '@mui/material/InputAdornment'
 import { Alert, OutlinedInput } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
-
-// ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import Link from 'next/link'
 import Input from 'src/components/Form/Input'
 
-const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
+const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
     const router = Router
     const [lenghtPassword, setLenghtPassword] = useState(null)
+    const [cnpjData, setCnpjData] = useState()
     const [fromLink, setFromLink] = useState(false)
+    const [validationCnpj, setValidationCnpj] = useState(null)
+    console.log("🚀 ~ validationCnpj:", validationCnpj)
+    console.log("🚀 ~ dataGlobal:", dataGlobal)
+
     const inputRef = useRef(null)
 
 
@@ -58,34 +55,37 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
         handleSubmit,
         setValue,
         control,
-        reset,
+        watch,
         formState: { errors }
     } = useForm()
 
 
     // Quando a quantidade de caracteres do cnpj é 18 faz um get para pegar os dados do fornecedor
     const handleGetCnpj = (cnpj) => {
-        if (cnpj.length === 18 && validationCNPJ(cnpj)) {
-            api.post(`/registro-fornecedor/getData`, { cnpj: cnpj })
-                .then((response) => {
-                    setDataGlobal({
-                        ...response.data,
-                        sectionOne: {
-                            cnpj: cnpj,
-                            nomeFantasia: '',
-                            razaoSocial: '',
-                            email: '',
-                        }
+        if (cnpj.length === 18) {
+            setValidationCnpj(validationCNPJ(cnpj))
+            if (validationCNPJ(cnpj)) {
+                api.post(`/registro-fornecedor/getData`, { cnpj: cnpj })
+                    .then((response) => {
+                        setCnpjData(cnpj)
+                        setDataGlobal({
+                            ...response.data,
+                            ...dataGlobal,
+                            sectionOne: {
+                                cnpj: cnpj,
+                                nomeFantasia: '',
+                                razaoSocial: '',
+                                email: '',
+                            }
+                        })
                     })
-                    reset()
-                })
+            }
         } else {
             setDataGlobal(null)
+            setCnpjData(null)
+            setValidationCnpj(null)
         }
     }
-
-    console.log("dataglobal tela 111111", dataGlobal)
-
 
     // UnidadeID e CNPJ criptografados / CNPJ esta com mascara de apenas numeros
     const unidadeIDRouter = router.query.u
@@ -93,6 +93,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
     const email = router.query.e
     const nome = router.query.n
 
+    // Execula se link conter parametros
     const setAcessLink = async (unidadeID, cnpj) => {
         if (unidadeID && cnpj) {
             const data = {
@@ -105,10 +106,10 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                 .then((response, err) => {
                     if (response.data && response.data[0] && response.data[0].cnpj) {
                         handleGetCnpj(response.data[0].cnpj)
-                        setValue('cnpj', response.data[0].cnpj)
-                        setValue('email', response.data[0].email)
-                        setValue('nomeFantasia', response.data[0].nome)
-                        setValue('razaoSocial', response.data[0].nome)
+                        setValue('cnpj', data.response?.data[0].cnpj)
+                        setValue('email', data.email)
+                        setValue('nomeFantasia', data.nome)
+                        setValue('razaoSocial', data.nome)
                         setFromLink(true)
                     }
                 })
@@ -116,14 +117,14 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
     }
 
     const onSubmit = value => {
-        console.log("🚀 ~ value:", value)
         setDataGlobal({
             ...dataGlobal,
             sectionOne: {
-                ...dataGlobal.sectionOne,
+                ...dataGlobal?.sectionOne,
                 nomeFantasia: value.nomeFantasia,
                 razaoSocial: value.razaoSocial,
-                email: value.email
+                email: value.email,
+                senha: value.senha,
             }
         });
         handleNext(value);
@@ -141,11 +142,13 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
     }, [unidadeIDRouter, cnpjRouter])
 
     useEffect(() => {
+        setCnpjData(dataGlobal?.sectionOne?.cnpj)
+        setValue("cnpj", dataGlobal?.sectionOne?.cnpj)
         setValue("nomeFantasia", dataGlobal?.sectionOne?.nomeFantasia)
         setValue("razaoSocial", dataGlobal?.sectionOne?.razaoSocial)
         setValue("email", dataGlobal?.sectionOne?.email)
+        setCnpjData(dataGlobal?.sectionOne?.cnpj)
     }, [])
-
 
     return (
         (!fromLink || dataGlobal) && (
@@ -155,18 +158,28 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                     <Typography sx={{ color: 'text.secondary' }}>Insira as informações obrigatórias</Typography>
                 </Box>
                 <Grid container spacing={5}>
+
                     <Input
                         xs={12}
                         md={6}
                         title='CNPJ'
-                        name='sectionOne.cnpj'
+                        name='cnpj'
                         defaultValue={dataGlobal?.sectionOne?.cnpj}
                         mask='cnpj'
-                        required={false}
                         control={control}
-                        errors={errors?.sectionOne?.cnpj}
+                        errors={errors?.cnpj}
                         onChange={(value) => handleGetCnpj(value)}
                     />
+                    {/* Mostra quando cnpj digitado for inválido  */}
+                    {
+                        !validationCnpj && validationCnpj !== null && (
+                            <Grid item xs={12} md={12}>
+                                <Alert severity='warning'>
+                                    CNPJ inválido!
+                                </Alert>
+                            </Grid>
+                        )
+                    }
 
                     {/* Não autorizado / O fornecedor não está habilidade por nenhuma fabrica */}
                     {
@@ -231,7 +244,6 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                                     type={values.showConfirmPassword ? 'text' : 'password'} // altere o tipo para 'password'
                                                     onChange={e => {
                                                         setLenghtPassword(e.target.value)
-
                                                     }}
                                                     endAdornment={
                                                         <InputAdornment position='end'>
@@ -301,7 +313,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                     md={6}
                                     title='Nome Fantasia'
                                     name='nomeFantasia'
-                                    defaultValue={dataGlobal?.nomeFantasia}
+                                    defaultValue={dataGlobal?.sectionOne.nomeFantasia || nome}
                                     required
                                     control={control}
                                     errors={errors?.nomeFantasia}
@@ -311,7 +323,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                     md={6}
                                     title='Razão Social'
                                     name='razaoSocial'
-                                    defaultValue={dataGlobal?.sectionOne?.razaoSocial}
+                                    defaultValue={dataGlobal?.sectionOne?.razaoSocial || nome}
                                     required
                                     control={control}
                                     errors={errors?.razaoSocial}
@@ -321,52 +333,61 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                     md={6}
                                     title='Email Institucional'
                                     name='email'
-                                    defaultValue={dataGlobal?.sectionOne?.email}
+                                    defaultValue={dataGlobal?.sectionOne?.email || email}
                                     required
                                     control={control}
                                     errors={errors?.email}
                                 />
                                 <Grid item xs={12} sm={6}>
                                     <FormControl fullWidth>
-                                        <InputLabel htmlFor='input-password' color={errors.senha ? 'error' : ''}>Senha</InputLabel>
+                                        <InputLabel htmlFor="input-password" color={errors.senha ? 'error' : ''}>
+                                            Senha
+                                        </InputLabel>
                                         <OutlinedInput
-                                            label='Senha'
-                                            id='input-password'
-                                            inputRef={inputRef}
+                                            label="Senha"
+                                            id="input-password"
                                             type={values.showPassword ? 'text' : 'password'}
-                                            name='sectionOne.senha'
-                                            {...register('senha')}
+                                            name="senha"
+                                            {...register('senha', {
+                                                required: 'Campo obrigatório',
+                                                minLength: {
+                                                    value: 4,
+                                                    message: 'Senha deve ter pelo menos 4 caracteres',
+                                                },
+                                            })}
                                             endAdornment={
-                                                <InputAdornment position='end'>
-                                                    <IconButton edge='end' onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
+                                                <InputAdornment position="end">
+                                                    <IconButton edge="end" onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
                                                         <Icon icon={values.showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
                                                     </IconButton>
                                                 </InputAdornment>
                                             }
-                                            error={errors.senha && true}
+                                            error={!!errors.senha}
                                             helperText={errors.senha && errors.senha.message}
                                         />
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <FormControl fullWidth>
-                                        <InputLabel htmlFor='input-confirm-password' style={{
-                                            color: errors.confirmaSenha && 'red'
-                                        }}  >Confirme a senha</InputLabel>
+                                        <InputLabel htmlFor="input-confirm-password" style={{ color: errors.confirmaSenha && 'red' }}>
+                                            Confirme a senha
+                                        </InputLabel>
                                         <OutlinedInput
-                                            label='Confirme a senha'
-                                            name='sectionOne.confirmaSenha'
-                                            {...register('confirmaSenha')}
-                                            id='input-confirm-password'
-                                            type={values.showConfirmPassword ? 'text' : 'password'} // altere o tipo para 'password'
+                                            label="Confirme a senha"
+                                            name="confirmaSenha"
+                                            {...register('confirmaSenha', {
+                                                required: 'Campo obrigatório',
+                                                validate: (value) => value === watch('senha') || 'As senhas não coincidem',
+                                            })}
+                                            id="input-confirm-password"
+                                            type={values.showConfirmPassword ? 'text' : 'password'}
                                             onChange={e => {
-                                                setLenghtPassword(e.target.value)
-
+                                                setLenghtPassword(e.target.value);
                                             }}
                                             endAdornment={
-                                                <InputAdornment position='end'>
+                                                <InputAdornment position="end">
                                                     <IconButton
-                                                        edge='end'
+                                                        edge="end"
                                                         onClick={handleClickShowConfirmPassword}
                                                         onMouseDown={handleMouseDownConfirmPassword}
                                                     >
@@ -374,9 +395,9 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                                     </IconButton>
                                                 </InputAdornment>
                                             }
-                                            error={errors.confirmaSenha && true}
+                                            error={!!errors.confirmaSenha}
                                         />
-                                        <Typography variant='caption' sx={{ color: 'error.main' }}>
+                                        <Typography variant="caption" sx={{ color: 'error.main' }}>
                                             {errors.confirmaSenha && errors.confirmaSenha.message}
                                         </Typography>
                                     </FormControl>
@@ -384,7 +405,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                             </>
                         )
                     }
-
+                    {/* Botões de acção */}
                     <Grid item xs={12}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Button
@@ -395,7 +416,7 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                 Anterior
                             </Button>
                             <Button
-                                disabled={dataGlobal?.status == 'hasUserHasUnity' || dataGlobal?.status == 'notAuthorized'}
+                                disabled={dataGlobal?.status == 'hasUserHasUnity' || dataGlobal?.status == 'notAuthorized' || !cnpjData}
                                 type='submit'
                                 variant='contained'
                                 onClick={handleSubmit}
@@ -434,4 +455,4 @@ const StepAccountDetails = ({ handleNext, setDataGlobal, dataGlobal }) => {
     )
 }
 
-export default StepAccountDetails
+export default SectionOne
