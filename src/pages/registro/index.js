@@ -1,18 +1,10 @@
-// ** MUI Components
 import Box from '@mui/material/Box'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
-
-// ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-
-// ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
-
-// ** Demo Components Imports
 import RegisterSections from './sections'
 
-// ** Styled Components
 const RegisterMultiStepsIllustration = styled('img')({
     maxWidth: 200,
     height: 'auto',

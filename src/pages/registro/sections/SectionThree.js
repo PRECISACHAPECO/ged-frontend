@@ -1,28 +1,18 @@
 import { api } from 'src/configs/api'
-
-// ** MUI Components
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import toast from 'react-hot-toast'
-
-
-// ** Icon Imports
 import Icon from 'src/@core/components/icon'
-
 import { useAuth } from 'src/hooks/useAuth'
-// ** Styles Import
 import 'react-credit-cards/es/styles-compiled.css'
 import { useEffect, useState } from 'react'
-
 
 const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
     const [rememberMe, setRememberMe] = useState(true)
     const [loadingConclusion, setLoadingConclusion] = useState(false)
     const auth = useAuth()
-
-    console.log("dataglobal tela 33333", dataGlobal)
 
     const handleSubmit = () => {
         setLoadingConclusion(true)

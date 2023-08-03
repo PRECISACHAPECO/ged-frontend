@@ -1,21 +1,12 @@
-// ** React Imports
 import { useState } from 'react'
-
-// ** MUI Imports
 import Step from '@mui/material/Step'
 import Stepper from '@mui/material/Stepper'
 import StepLabel from '@mui/material/StepLabel'
 import Typography from '@mui/material/Typography'
-
-// ** Step Components
 import SectionTwo from './SectionTwo'
 import SectionOne from './SectionOne'
 import SectionThree from './SectionThree'
-
-// ** Custom Component Import
 import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
-
-// ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
 
 const steps = [
@@ -34,7 +25,6 @@ const steps = [
 ]
 
 const RegisterSections = () => {
-    // ** States
     const [activeStep, setActiveStep] = useState(0)
     const [dataGlobal, setDataGlobal] = useState()
 

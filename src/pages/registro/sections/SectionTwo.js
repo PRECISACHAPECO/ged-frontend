@@ -1,11 +1,9 @@
-// ** MUI Components
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useForm } from 'react-hook-form'
 import { api } from 'src/configs/api'
-// ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import Input from 'src/components/Form/Input'
 import { useEffect } from 'react'
@@ -66,7 +64,6 @@ const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
                     <Typography variant='h5'>Informações opcionais</Typography>
                     <Typography sx={{ color: 'text.secondary' }}>Insira as informações opcionais</Typography>
                 </Box>
-
                 <Grid container spacing={5}>
                     <Input
                         xs={12}
@@ -162,7 +159,6 @@ const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
                 </Grid>
             </form >
         )
-
     )
 }
 

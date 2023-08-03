@@ -1,15 +1,10 @@
-// ** React Imports
-
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { api } from 'src/configs/api'
 import { useEffect, useRef } from 'react'
-
-// ** MUI Components
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { validationCNPJ } from 'src/configs/validations'
 import Router from 'next/router'
@@ -18,8 +13,6 @@ import FormControl from '@mui/material/FormControl'
 import InputAdornment from '@mui/material/InputAdornment'
 import { Alert, OutlinedInput } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
-
-// ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import Link from 'next/link'
 import Input from 'src/components/Form/Input'
@@ -58,7 +51,6 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
         handleSubmit,
         setValue,
         control,
-        reset,
         watch,
         formState: { errors }
     } = useForm()
@@ -87,14 +79,13 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
         }
     }
 
-
-
     // UnidadeID e CNPJ criptografados / CNPJ esta com mascara de apenas numeros
     const unidadeIDRouter = router.query.u
     const cnpjRouter = router.query.c
     const email = router.query.e
     const nome = router.query.n
 
+    // Execula se link conter parametros
     const setAcessLink = async (unidadeID, cnpj) => {
         if (unidadeID && cnpj) {
             const data = {
@@ -150,7 +141,6 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
         setValue("email", dataGlobal?.sectionOne?.email)
         setCnpjData(dataGlobal?.sectionOne?.cnpj)
     }, [])
-
 
     return (
         (!fromLink || dataGlobal) && (
@@ -235,7 +225,6 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                                     type={values.showConfirmPassword ? 'text' : 'password'} // altere o tipo para 'password'
                                                     onChange={e => {
                                                         setLenghtPassword(e.target.value)
-
                                                     }}
                                                     endAdornment={
                                                         <InputAdornment position='end'>
@@ -397,7 +386,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                             </>
                         )
                     }
-
+                    {/* Botões de acção */}
                     <Grid item xs={12}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Button
@@ -409,7 +398,6 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                             </Button>
                             <Button
                                 disabled={dataGlobal?.status == 'hasUserHasUnity' || dataGlobal?.status == 'notAuthorized' || !cnpjData}
-                                // || !cnpj
                                 type='submit'
                                 variant='contained'
                                 onClick={handleSubmit}
