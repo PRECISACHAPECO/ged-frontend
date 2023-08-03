@@ -79,6 +79,8 @@ const FormFornecedor = ({ id }) => {
         formState: { errors }
     } = useForm()
 
+    console.log('🚀 ~ ERRORS:', errors)
+
     const verifyFormPending = async () => {
         try {
             const parFormularioID = 1
@@ -316,6 +318,7 @@ const FormFornecedor = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
+
         console.log('🚀 ~ onSubmit:', data.form)
 
         try {
@@ -366,6 +369,20 @@ const FormFornecedor = ({ id }) => {
                 : null
         })
 
+        //? Anexos
+        grupoAnexo.forEach((grupo, indexGrupo) => {
+            grupo.itens.forEach((item, indexItem) => {
+                if (item?.obrigatorio === 1 && !item?.anexo?.exist) {
+                    setError(`grupoAnexo[${indexGrupo}].itens[${indexItem}].anexo`, {
+                        type: 'manual',
+                        message: 'Campo obrigatário'
+                    })
+                    arrErrors.push(`Anexo: ${item?.nome}`)
+                    hasErrors = true
+                }
+            })
+        })
+
         setListErrors({
             status: hasErrors,
             errors: arrErrors
@@ -388,6 +405,14 @@ const FormFornecedor = ({ id }) => {
             toast.success('Dados copiados com sucesso!')
         }
     }, [copiedDataContext])
+
+    //? Ao fechar o modal de conclusão, remove errors do formulário, pra permitir salvar "rascunho"
+    useEffect(() => {
+        if (!openModal) {
+            clearErrors()
+            console.log('====================>>> modal fechado, limpa errors!!!!')
+        }
+    }, [openModal])
 
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
     const handleFileSelect = (event, item) => {
@@ -650,6 +675,7 @@ const FormFornecedor = ({ id }) => {
                                 handleFileSelect={handleFileSelect}
                                 handleRemoveAnexo={handleRemoveAnexo}
                                 disabled={!canEdit.status}
+                                error={errors?.grupoAnexo?.[indexGrupo]?.itens}
                             />
                         ))}
 

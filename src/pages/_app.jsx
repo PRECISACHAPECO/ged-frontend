@@ -125,6 +125,7 @@ const App = props => {
                                                 <Toaster
                                                     position={settings.toastPosition}
                                                     toastOptions={{ className: 'react-hot-toast' }}
+                                                    style={{ zIndex: 999999 }}
                                                 />
                                             </ReactHotToast>
                                         </ThemeComponent>
