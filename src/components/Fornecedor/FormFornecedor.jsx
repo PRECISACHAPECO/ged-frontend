@@ -298,9 +298,13 @@ const FormFornecedor = ({ id }) => {
         setValidateForm(true)
     }
 
+    const handleDraftForm = async data => {
+        clearErrors() //? Limpa errors do formulário pra salvar "rascunho", com errors não entra no onSubmit
+        await handleSubmit(onSubmit)(data)
+    }
+
     const conclusionForm = async values => {
         values['conclusion'] = true
-
         await handleSubmit(onSubmit)(values)
     }
 
@@ -405,14 +409,6 @@ const FormFornecedor = ({ id }) => {
             toast.success('Dados copiados com sucesso!')
         }
     }, [copiedDataContext])
-
-    //? Ao fechar o modal de conclusão, remove errors do formulário, pra permitir salvar "rascunho"
-    useEffect(() => {
-        if (!openModal) {
-            clearErrors()
-            console.log('====================>>> modal fechado, limpa errors!!!!')
-        }
-    }, [openModal])
 
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
     const handleFileSelect = (event, item) => {
@@ -521,11 +517,7 @@ const FormFornecedor = ({ id }) => {
             {isLoading ? (
                 <Loading />
             ) : fieldsState ? (
-                <form
-                    onSubmit={handleSubmit(data => {
-                        canEdit.status ? onSubmit(data, false) : updateFormStatus()
-                    })}
-                >
+                <form onSubmit={handleDraftForm}>
                     {/* Mensagem de que não possui nenhum bloco */}
                     {blocks && blocks.length === 0 && (
                         <Alert severity='error' sx={{ mb: 2 }}>
