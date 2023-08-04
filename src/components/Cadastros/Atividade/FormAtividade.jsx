@@ -153,7 +153,7 @@ const FormAtividade = ({ id }) => {
             )}
             <DialogForm
                 text='Tem certeza que deseja excluir?'
-                title={'Excluir ' + title}
+                title={'Excluir ' + title.title}
                 openModal={open}
                 handleClose={() => setOpen(false)}
                 handleSubmit={handleClickDelete}

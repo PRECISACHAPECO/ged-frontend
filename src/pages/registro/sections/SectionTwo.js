@@ -13,12 +13,12 @@ const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
         control,
         handleSubmit,
         setValue,
-
         formState: { errors }
     } = useForm({
     })
 
     const onSubmit = value => {
+        //Todo: Pra não bugar campos quando carrega endereço pelo CEP
         setDataGlobal({
             ...dataGlobal,
             sectionTwo: {
@@ -38,12 +38,10 @@ const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
     }
 
     const setAddress = (address) => {
-        setTimeout(() => {
-            setValue('logradouro', address?.logradouro)
-            setValue('bairro', address?.bairro)
-            setValue('cidade', address?.localidade)
-            setValue('uf', address?.uf)
-        }, 400);
+        setValue('logradouro', address?.logradouro)
+        setValue('bairro', address?.bairro)
+        setValue('cidade', address?.localidade)
+        setValue('uf', address?.uf)
     }
 
     useEffect(() => {

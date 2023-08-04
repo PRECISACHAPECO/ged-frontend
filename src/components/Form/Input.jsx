@@ -70,7 +70,7 @@ const Input = ({
                                           type: 'tel',
                                           inputMode: 'numeric'
                                       }
-                                    : mask === 'cep'
+                                    : mask === 'cep' || mask === 'cep2'
                                     ? {
                                           maxLength: 9,
                                           type: 'tel',

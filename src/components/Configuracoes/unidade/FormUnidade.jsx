@@ -159,14 +159,20 @@ const FormUnidade = ({ id }) => {
                 console.log(error)
             }
         } else {
-            setData({})
+            setData({}) //? Sair loading
+            reset({
+                //Todo: Pra não bugar campos quando carrega endereço pelo CEP
+                fields: {
+                    logradouro: '--',
+                    bairro: '--',
+                    cidade: '--',
+                    uf: '--'
+                }
+            })
         }
     }
     useEffect(() => {
         getData()
-        setTimeout(() => {
-            trigger()
-        }, 300)
     }, [id])
 
     //! Crud imagem cabeçalho relatórios

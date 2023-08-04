@@ -292,7 +292,7 @@ const FormGrupoAnexos = ({ id }) => {
             {/* Modal excluir */}
             <DialogForm
                 text='Tem certeza que deseja excluir?'
-                title={'Excluir ' + title}
+                title={'Excluir ' + title.title}
                 openModal={openDelete}
                 handleClose={() => setOpenDelete(false)}
                 handleSubmit={handleDelete}
