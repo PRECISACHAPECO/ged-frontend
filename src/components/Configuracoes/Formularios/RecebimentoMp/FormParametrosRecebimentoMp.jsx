@@ -436,6 +436,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                         options={options.itens}
                                                         register={register}
                                                         setValue={setValue}
+                                                        control={control}
                                                         errors={errors?.blocks?.[index]?.itens?.[indexItem]?.item}
                                                     />
 
@@ -449,6 +450,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                         options={options.alternativas}
                                                         register={register}
                                                         setValue={setValue}
+                                                        control={control}
                                                         errors={
                                                             errors?.blocks?.[index]?.itens?.[indexItem]?.alternativa
                                                         }

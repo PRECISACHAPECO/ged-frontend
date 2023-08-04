@@ -14,7 +14,8 @@ import {
     Typography,
     Tooltip,
     IconButton,
-    FormControl
+    FormControl,
+    Alert
 } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import { useForm } from 'react-hook-form'
@@ -27,6 +28,7 @@ import { formatDate } from 'src/configs/conversions'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
+import Select from 'src/components/Form/Select'
 
 const FormUnidade = ({ id }) => {
     const { user, setLoggedUnity, loggedUnity } = useContext(AuthContext)
@@ -37,6 +39,7 @@ const FormUnidade = ({ id }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState()
     const [fileSelect, setFileSelect] = useState()
+    const [saving, setSaving] = useState(false)
     const [fileCurrent, setFileCurrent] = useState()
     const [photoProfile, setPhotoProfile] = useState(null)
     //* Componente é chamado na tela da unidade e Meus dados do fornecedor
@@ -83,6 +86,8 @@ const FormUnidade = ({ id }) => {
             ...datas.fields,
             dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD')
         }
+        console.log('🚀 ~ data:', data)
+
         delete data.cabecalhoRelatorioTitle
         delete data.cabecalhoRelatorio
         const formData = new FormData()
@@ -148,10 +153,12 @@ const FormUnidade = ({ id }) => {
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     const getData = async () => {
+        console.log('no getdata....')
         if (type == 'edit') {
             try {
                 const response = await api.get(`${staticUrl}/${id}`)
                 reset(response.data)
+                console.log('🚀 ~ response.data:', response.data)
                 setData(response.data)
                 setFileCurrent(response.data.fields.cabecalhoRelatorioTitle)
                 setPhotoProfile(response.data?.fields?.cabecalhoRelatorio)
@@ -473,6 +480,19 @@ const FormUnidade = ({ id }) => {
                                                 register={register}
                                                 control={control}
                                                 errors={errors?.fields?.tituloRelatorio}
+                                            />
+
+                                            <Select
+                                                xs={12}
+                                                md={12}
+                                                multiple
+                                                title='Extensões de Arquivos Permitidas'
+                                                name={`fields.extensoes`}
+                                                options={data.fields.allExtensions}
+                                                value={data.fields.extensoes}
+                                                register={register}
+                                                setValue={setValue}
+                                                control={control}
                                             />
                                         </Grid>
                                     </Grid>

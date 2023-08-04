@@ -369,6 +369,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                             options={allOptions.categorias}
                                             register={register}
                                             setValue={setValue}
+                                            control={control}
                                             errors={errors?.blocks?.[index]?.categorias}
                                         />
 
@@ -383,6 +384,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                             options={allOptions.atividades}
                                             register={register}
                                             setValue={setValue}
+                                            control={control}
                                             errors={errors?.blocks?.[index]?.atividades}
                                         />
                                     </Grid>
@@ -436,6 +438,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     options={blocks[index].optionsBlock?.itens}
                                                     register={register}
                                                     setValue={setValue}
+                                                    control={control}
                                                     errors={errors?.blocks?.[index]?.itens?.[indexItem]?.item}
                                                 />
 
@@ -450,6 +453,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     options={allOptions.alternativas}
                                                     register={register}
                                                     setValue={setValue}
+                                                    control={control}
                                                     errors={errors?.blocks?.[index]?.itens?.[indexItem]?.alternativa}
                                                 />
 

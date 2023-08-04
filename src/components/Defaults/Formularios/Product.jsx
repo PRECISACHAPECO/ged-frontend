@@ -34,6 +34,7 @@ const Product = ({ field, data, indexData, disabled, control, register, setValue
                     options={field.options}
                     register={register}
                     setValue={setValue}
+                    control={control}
                     errors={errors?.produtos?.[indexData]?.[field.tabela]}
                 />
             )}

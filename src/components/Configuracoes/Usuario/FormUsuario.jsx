@@ -421,6 +421,7 @@ const FormUsuario = ({ id }) => {
                                                         disabled={disabled}
                                                         register={register}
                                                         setValue={setValue}
+                                                        control={control}
                                                         errors={errors?.profissao}
                                                     />
 

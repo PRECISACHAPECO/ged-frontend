@@ -146,6 +146,7 @@ const FormItem = ({ id }) => {
                                     options={data.formulario.options}
                                     register={register}
                                     setValue={setValue}
+                                    control={control}
                                     errors={errors?.formulario?.fields}
                                 />
                             </Grid>
