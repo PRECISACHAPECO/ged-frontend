@@ -15,6 +15,7 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { AuthContext } from 'src/context/AuthContext'
 import { RouteContext } from 'src/context/RouteContext'
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -22,6 +23,8 @@ import Icon from 'src/@core/components/icon'
 // ** Context
 import { useAuth, user } from 'src/hooks/useAuth'
 import DialogSelectUnit from 'src/components/Defaults/Dialogs/DialogSelectUnit'
+import { toast } from 'react-hot-toast'
+import ModeToggler from './ModeToggler'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -34,13 +37,15 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 
 const UserDropdown = props => {
     // ** Props
-    const { settings } = props
     const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
     // Controla troca de unidade
-    // Controla troca de unidade
+    const { saveSettings, settings } = useSettings()
+    const mode = settings.mode
+    console.log("🚀 ~ mode:", mode)
     const [openModal, setOpenModal] = useState(false);
     const [unity, setSelectedUnit] = useState(null);
     const handleCloseModalSelectUnits = () => setOpenModal(false);
+
 
     // Troca de unidade
     const handleConfirmUnity = () => {
@@ -54,6 +59,7 @@ const UserDropdown = props => {
         getRoutes(user.usuarioID, unity?.unidadeID, user.admin, unity?.papelID)
 
         setOpenModal(false)
+        handleDropdownClose()
         router.replace('/home')
         toast.success('Unidade alterada com sucesso!')
     }
@@ -100,9 +106,6 @@ const UserDropdown = props => {
         handleDropdownClose()
         setId(null)
     }
-
-    console.log("user url", user)
-
 
     return (
         <Fragment>
@@ -173,16 +176,25 @@ const UserDropdown = props => {
 
 
                             {/* troca de unidade quando mobile */}
-                            <MenuItem sx={{ p: 0 }}>
-                                <Box sx={styles}
-                                    onClick={() => {
-                                        setOpenModal(true)
-                                    }}
-                                >
-                                    <Icon icon='mdi:account-outline' />
-                                    Trocar unidade
-                                </Box>
-                            </MenuItem>
+                            <div className='block md:hidden'>
+                                <MenuItem sx={{ p: 0 }} >
+                                    <Box sx={styles}
+                                        onClick={() => {
+                                            setOpenModal(true)
+                                        }}
+                                    >
+                                        <Icon icon='mdi:account-outline' />
+                                        Trocar unidade
+                                    </Box>
+                                </MenuItem>
+                                <div className='block md:hidden'>
+                                    <MenuItem sx={{ p: 0, pl: 2 }} >
+                                        <div className="flex items-center" >
+                                            <ModeToggler settings={settings} saveSettings={saveSettings} text={true} />
+                                        </div>
+                                    </MenuItem>
+                                </div>
+                            </div>
                             {/* Modal que abre ao clicar em Trocar unidade */}
                             <DialogSelectUnit
                                 openModal={openModal}
