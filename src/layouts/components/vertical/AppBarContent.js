@@ -82,31 +82,39 @@ const AppBarContent = props => {
                         {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
                     </Typography>
                 </Box>
-                <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
-                    {
-                        unitsUser && unitsUser.length > 1 ? (
-                            <Button
-                                color="secondary"
-                                endIcon={<Icon icon='material-symbols:keyboard-arrow-down-rounded' />}
-                                onClick={() => setOpenModal(true)}
-                                style={{ textTransform: 'none' }}>
-                                {loggedUnity?.nomeFantasia}
-                            </Button>
-                        ) : (
-                            <Button
-                                color="secondary"
-                                style={{
-                                    textTransform: 'none',
-                                    pointerEvents: 'none'
-                                }}>
-                                {loggedUnity?.nomeFantasia}
-                            </Button>
-                        )
-                    }
 
-                    <ModeToggler settings={settings} saveSettings={saveSettings} />
-                    <NotificationDropdown settings={settings} notifications={notifications} />
+                <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
+                    <div className='hidden sm:block'>
+                        {
+                            unitsUser && unitsUser.length > 1 ? (
+                                <Button
+                                    color="secondary"
+                                    endIcon={<Icon icon='material-symbols:keyboard-arrow-down-rounded' />}
+                                    onClick={() => setOpenModal(true)}
+                                    style={{ textTransform: 'none' }}>
+                                    {loggedUnity?.nomeFantasia}
+                                </Button>
+                            ) : (
+                                <Button
+                                    color="secondary"
+                                    style={{
+                                        textTransform: 'none',
+                                        pointerEvents: 'none'
+                                    }}>
+                                    {loggedUnity?.nomeFantasia}
+                                </Button>
+                            )
+                        }
+                    </div>
+                    <div className='hidden sm:block'>
+                        <ModeToggler settings={settings} saveSettings={saveSettings} />
+                    </div>
+                    <div className='hidden sm:block'>
+                        <NotificationDropdown settings={settings} notifications={notifications} />
+                    </div>
+
                     <UserDropdown settings={settings} />
+
                 </Box>
             </Box >
 
