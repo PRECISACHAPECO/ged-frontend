@@ -176,7 +176,8 @@ const FormUsuario = ({ id }) => {
         const selectedFile = event.target.files[0]
         if (selectedFile) {
             const formData = new FormData()
-            formData.append('photoProfile', selectedFile)
+            // formData.append('photoProfile', selectedFile)
+            formData.append('file', selectedFile)
             await api
                 .post(`${staticUrl}/photo-profile/${id}`, formData)
                 .then(response => {
