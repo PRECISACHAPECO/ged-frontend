@@ -21,6 +21,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Context
 import { useAuth, user } from 'src/hooks/useAuth'
+import DialogSelectUnit from 'src/components/Defaults/Dialogs/DialogSelectUnit'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -34,7 +35,28 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 const UserDropdown = props => {
     // ** Props
     const { settings } = props
-    const { user } = useContext(AuthContext)
+    const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
+    // Controla troca de unidade
+    // Controla troca de unidade
+    const [openModal, setOpenModal] = useState(false);
+    const [unity, setSelectedUnit] = useState(null);
+    const handleCloseModalSelectUnits = () => setOpenModal(false);
+
+    // Troca de unidade
+    const handleConfirmUnity = () => {
+        // Atualizar contexto e localStorage
+        setLoggedUnity(unity)
+        localStorage.setItem('loggedUnity', JSON.stringify(unity))
+
+        getMenu(unity?.papelID)
+
+        // Recebe usuário e unidade e seta rotas de acordo com o perfil
+        getRoutes(user.usuarioID, unity?.unidadeID, user.admin, unity?.papelID)
+
+        setOpenModal(false)
+        router.replace('/home')
+        toast.success('Unidade alterada com sucesso!')
+    }
 
     // ** States
     const [anchorEl, setAnchorEl] = useState(null)
@@ -148,6 +170,30 @@ const UserDropdown = props => {
                                     Meus Dados
                                 </Box>
                             </MenuItem>
+
+
+                            {/* troca de unidade quando mobile */}
+                            <MenuItem sx={{ p: 0 }}>
+                                <Box sx={styles}
+                                    onClick={() => {
+                                        setOpenModal(true)
+                                    }}
+                                >
+                                    <Icon icon='mdi:account-outline' />
+                                    Trocar unidade
+                                </Box>
+                            </MenuItem>
+                            {/* Modal que abre ao clicar em Trocar unidade */}
+                            <DialogSelectUnit
+                                openModal={openModal}
+                                handleClose={handleCloseModalSelectUnits}
+                                handleSubmit={handleConfirmUnity}
+                                unidades={unitsUser}
+                                setSelectedUnit={setSelectedUnit}
+                            />
+
+
+
                             <MenuItem
                                 onClick={handleLogout}
                                 sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}
