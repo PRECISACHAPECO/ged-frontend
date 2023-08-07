@@ -150,7 +150,7 @@ const FormProdutos = ({ id }) => {
                                     errors={errors?.fields?.unidadeMedida}
                                 />
                                 <Check
-                                    xs={12}
+                                    xs={2}
                                     md={1}
                                     title='Ativo'
                                     name='fields.status'

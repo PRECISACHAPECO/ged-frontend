@@ -246,17 +246,17 @@ const FormParametrosFornecedor = ({ id }) => {
                                 <List component='nav' aria-label='main mailbox'>
                                     <Grid container spacing={2}>
                                         {/* Cabeçalho */}
-                                        <Grid item md={4}>
+                                        <Grid item md={4} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Nome do Campo
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={3}>
+                                        <Grid item md={3} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Mostra no Formulário
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={3}>
+                                        <Grid item md={3} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Obrigatório
                                             </Typography>
@@ -271,29 +271,27 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     {...register(`header.[${index}].parFornecedorID`)}
                                                 />
 
-                                                <Grid item md={4}>
+                                                <Grid item md={4} xs={6}>
                                                     {header.nomeCampo}
                                                 </Grid>
-
-                                                <CheckLabel
-                                                    xs={12}
-                                                    md={3}
-                                                    title=''
-                                                    name={`header.[${index}].mostra`}
-                                                    value={header.mostra}
-                                                    register={register}
-                                                    disabled={header.nomeColuna == 'cnpj' ? true : false}
-                                                />
-
-                                                <CheckLabel
-                                                    xs={12}
-                                                    md={3}
-                                                    title=''
-                                                    name={`header.[${index}].obrigatorio`}
-                                                    value={header.obrigatorio}
-                                                    register={register}
-                                                    disabled={header.nomeColuna == 'cnpj' ? true : false}
-                                                />
+                                                <Grid item md={3} xs={3}>
+                                                    <CheckLabel
+                                                        title=''
+                                                        name={`header.[${index}].mostra`}
+                                                        value={header.mostra}
+                                                        register={register}
+                                                        disabled={header.nomeColuna == 'cnpj' ? true : false}
+                                                    />
+                                                </Grid>
+                                                <Grid item md={3} xs={3}>
+                                                    <CheckLabel
+                                                        title=''
+                                                        name={`header.[${index}].obrigatorio`}
+                                                        value={header.obrigatorio}
+                                                        register={register}
+                                                        disabled={header.nomeColuna == 'cnpj' ? true : false}
+                                                    />
+                                                </Grid>
                                             </>
                                         ))}
                                     </Grid>

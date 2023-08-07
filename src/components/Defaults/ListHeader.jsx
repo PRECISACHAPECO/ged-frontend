@@ -1,6 +1,6 @@
 import Router from 'next/router'
 
-import { CardContent, Button, Box } from '@mui/material'
+import { CardContent, Button, Box, IconButton } from '@mui/material'
 import Link from 'next/link'
 import { AuthContext } from 'src/context/AuthContext'
 import { useContext } from 'react'
@@ -14,8 +14,8 @@ const ListHeader = ({ btnNew, btnPrint, openModal }) => {
 
     return (
         <>
-            <CardContent sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', p: '0', m: '0' }}>
-                <Box sx={{ display: 'flex', gap: '8px' }}>
+            <div className='flex items-center justify-end sm:justify-normal gap-4 my-2 '>
+                <div>
                     {btnPrint && (
                         <Button
                             onClick={() => window.print()}
@@ -23,28 +23,31 @@ const ListHeader = ({ btnNew, btnPrint, openModal }) => {
                             variant='outlined'
                             color='primary'
                             size='medium'
-                            startIcon={<Icon icon='mdi:printer' />}
+                            sx={{ display: 'flex', gap: 2 }}
                         >
-                            Imprimir
+                            <Icon icon='mdi:printer' />
+                            <span className='hidden sm:block'>Imprimir</span>
                         </Button>
                     )}
-
+                </div>
+                <div className=''>
                     {btnNew && routes.find(route => route.rota === router.pathname && route.inserir) && (
-                        <Link href={!openModal ? `${router.pathname}/novo` : ``}>
+                        <Link href={!openModal ? `${router.pathname}/novo` : ''}>
                             <Button
                                 type='button'
                                 variant='outlined'
                                 color='primary'
                                 size='medium'
-                                startIcon={<Icon icon='ic:outline-plus' />}
                                 onClick={openModal ? openModal : null}
+                                sx={{ display: 'flex', gap: 2 }}
                             >
-                                Novo
+                                <Icon icon='ic:outline-plus' />
+                                <span className='hidden sm:block'>Novo</span>
                             </Button>
                         </Link>
                     )}
-                </Box>
-            </CardContent>
+                </div>
+            </div>
         </>
     )
 }
