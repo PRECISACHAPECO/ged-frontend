@@ -226,23 +226,24 @@ const FormRecebimentoMp = ({ id }) => {
         setLoading(true)
         if (id) {
             api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID }).then(response => {
-                setFields(response.data.fields)
-                setData(response.data.data)
-                setFieldsProducts(response.data.fieldsProducts)
-                setDataProducts(response.data.dataProducts)
-                setBlocos(response.data.blocos)
-                setInfo(response.data.info)
-                initializeValues(response.data)
+                console.log('getData: ', response.data)
+                // setFields(response.data.fields)
+                // setData(response.data.data)
+                // setFieldsProducts(response.data.fieldsProducts)
+                // setDataProducts(response.data.dataProducts)
+                // setBlocos(response.data.blocos)
+                // setInfo(response.data.info)
+                // initializeValues(response.data)
 
-                let objStatus = statusDefault[response?.data?.info?.status]
-                setStatus(objStatus)
+                // let objStatus = statusDefault[response?.data?.info?.status]
+                // setStatus(objStatus)
 
-                setCanEdit({
-                    status: response?.data?.info?.status < 40 ? true : false,
-                    message:
-                        'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
-                    messageType: 'info'
-                })
+                // setCanEdit({
+                //     status: response?.data?.info?.status < 40 ? true : false,
+                //     message:
+                //         'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
+                //     messageType: 'info'
+                // })
 
                 verifyFormPending()
                 setLoading(false)
