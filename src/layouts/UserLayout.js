@@ -26,7 +26,6 @@ const UserLayout = ({ children, contentHeightFixed }) => {
     const { settings, saveSettings } = useSettings()
     const { newVersionAvailable, setNewVersionAvailable, setOpenModalUpdate, openModalUpdate, latestVersionState, setLatestVersionState } = useContext(AuthContext)
     const mode = settings.mode
-    console.log("🚀 ~ mode:", mode)
 
     const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
     if (hidden && settings.layout === 'horizontal') {
@@ -93,7 +92,6 @@ const UserLayout = ({ children, contentHeightFixed }) => {
                             elevation={3}
                             variant='filled'
                             onClose={handleClose}
-                        // severity='secondary'
                         >
                             Nova versão disponível, deseja atualizar para {newVersionAvailable.version} ?
                             <Button color="primary" variant='contained' size="small" onClick={ClickUpdateAcept} sx={{ ml: 4 }}>
@@ -109,20 +107,11 @@ const UserLayout = ({ children, contentHeightFixed }) => {
             }
             {
                 latestVersionState && (
-                    <Typography
-                        component={'span'}
-                        variant={'caption'}
-                        color={'textSecondary'}
-                        style={{
-                            position: "fixed",
-                            bottom: "14px",
-                            left: "2%",
-                            color: mode === 'light' || mode === 'semi-dark' ? '#757575' : '#bdbdbd',
-                            zIndex: 999999999
-                        }}
+                    <span
+                        className={`hidden sm:block fixed bottom-4 left-6 md:left-8 text-xs md:text-sm z-[99999999] ${mode === 'light' || mode === 'semi-dark' ? 'text-[#757575]' : 'text-[#bdbdbd]'}`}
                     >
                         v {latestVersionState}
-                    </Typography>
+                    </span>
 
                 )
             }

@@ -163,7 +163,7 @@ const FormGrupoAnexos = ({ id }) => {
                             <CardContent>
                                 <Grid container spacing={4}>
                                     <Input
-                                        xs={12}
+                                        xs={11}
                                         md={11}
                                         title='Nome'
                                         name='fields.nome'
@@ -173,7 +173,7 @@ const FormGrupoAnexos = ({ id }) => {
                                     />
 
                                     <Check
-                                        xs={12}
+                                        xs={1}
                                         md={1}
                                         title='Ativo'
                                         name='fields.status'
@@ -239,7 +239,7 @@ const FormGrupoAnexos = ({ id }) => {
                                         />
 
                                         <Check
-                                            xs={12}
+                                            xs={4}
                                             md={1}
                                             title='Obrigatório'
                                             index={index}
@@ -250,7 +250,7 @@ const FormGrupoAnexos = ({ id }) => {
                                         />
 
                                         <Check
-                                            xs={12}
+                                            xs={4}
                                             md={1}
                                             title='Ativo'
                                             index={index}
@@ -261,7 +261,7 @@ const FormGrupoAnexos = ({ id }) => {
                                         />
 
                                         <Remove
-                                            xs={12}
+                                            xs={4}
                                             md={1}
                                             title='Remover'
                                             index={index}
