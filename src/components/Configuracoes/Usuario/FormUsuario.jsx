@@ -181,6 +181,7 @@ const FormUsuario = ({ id }) => {
             await api
                 .post(`${staticUrl}/photo-profile/${id}`, formData)
                 .then(response => {
+                    console.log('Response ===> ', response)
                     setPhotoProfile(response.data)
                     if (user.usuarioID == id) {
                         setUser({ ...user, imagem: response.data })
@@ -188,8 +189,8 @@ const FormUsuario = ({ id }) => {
                     toast.success('Foto de perfil atualizada com sucesso!')
                 })
                 .catch(error => {
-                    console.log(error)
-                    toast.error('Erro ao atualizar foto de perfil, tente novamente!')
+                    // console.log('=====> ', error.response.data.message)
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
                 })
         }
     }
