@@ -403,7 +403,6 @@ const FormUnidade = ({ id }) => {
                                                 justifyContent: 'center',
                                                 alignItems: 'center',
                                                 height: '140px',
-                                                width: '250px',
                                                 position: 'relative',
                                                 border: `${
                                                     mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'
