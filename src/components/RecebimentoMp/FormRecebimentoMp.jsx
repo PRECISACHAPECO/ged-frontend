@@ -70,9 +70,13 @@ const FormRecebimentoMp = ({ id }) => {
     const [status, setStatus] = useState(null)
 
     const [openModalStatus, setOpenModalStatus] = useState(false)
-    const [fieldsState, setFields] = useState([])
+
+    const [field, setField] = useState([])
+    const [fieldsProduct, setFieldsProduct] = useState([])
+    const [products, setProducts] = useState([])
+    console.log('🚀 ~ products:', products)
+
     const [data, setData] = useState(null)
-    const [fieldProducts, setFieldsProducts] = useState([])
     const [dataProducts, setDataProducts] = useState([])
     const [removedProducts, setRemovedProducts] = useState([])
     const [blocos, setBlocos] = useState([])
@@ -147,24 +151,29 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const addProduct = () => {
-        const newProduct = [...dataProducts]
-        const newProductFields = fieldProducts.map((field, index) => {
-            if (field.tabela) {
-                // Select (objeto com id e nome)
-                return {
-                    [field.tabela]: {
-                        id: '',
-                        nome: ''
-                    }
-                }
-            } else {
-                return {
-                    [field.nomeColuna]: ''
-                }
-            }
+        const newProduct = [...products]
+        const newProductFields = products[0]?.fields.map((field, index) => {
+            return field
+            // if (field.tabela) {
+            //     // Select (objeto com id e nome)
+            //     return {
+            //         [field.tabela]: {
+            //             id: '',
+            //             nome: ''
+            //         }
+            //     }
+            // } else {
+            //     return {
+            //         [field.nomeColuna]: ''
+            //     }
+            // }
         })
-        newProduct.push(newProductFields)
-        setDataProducts(newProduct)
+        let newProd = {}
+        newProd['fields'] = newProductFields
+        console.log('🚀 ~ newProductFields:', newProd)
+
+        newProduct.push(newProd)
+        setProducts(newProduct)
     }
 
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
@@ -227,23 +236,27 @@ const FormRecebimentoMp = ({ id }) => {
         if (id) {
             api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID }).then(response => {
                 console.log('getData: ', response.data)
-                // setFields(response.data.fields)
+
+                reset(response.data) //? Insere valores no formulário
+
+                setField(response.data.fields)
+                setProducts(response.data.products)
                 // setData(response.data.data)
-                // setFieldsProducts(response.data.fieldsProducts)
+                setFieldsProduct(response.data.fieldsProduct)
                 // setDataProducts(response.data.dataProducts)
                 // setBlocos(response.data.blocos)
-                // setInfo(response.data.info)
+                setInfo(response.data.info)
                 // initializeValues(response.data)
 
-                // let objStatus = statusDefault[response?.data?.info?.status]
-                // setStatus(objStatus)
+                let objStatus = statusDefault[response?.data?.info?.status]
+                setStatus(objStatus)
 
-                // setCanEdit({
-                //     status: response?.data?.info?.status < 40 ? true : false,
-                //     message:
-                //         'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
-                //     messageType: 'info'
-                // })
+                setCanEdit({
+                    status: response?.data?.info?.status < 40 ? true : false,
+                    message:
+                        'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
+                    messageType: 'info'
+                })
 
                 verifyFormPending()
                 setLoading(false)
@@ -326,7 +339,7 @@ const FormRecebimentoMp = ({ id }) => {
         let arrErrors = []
 
         //? Header
-        fieldsState?.forEach((field, index) => {
+        field?.forEach((field, index) => {
             const fieldName = field.tabela ? `header.${field.tabela}` : `header.${field.nomeColuna}`
             const fieldValue = getValues(fieldName)
             if (field.obrigatorio === 1 && !fieldValue) {
@@ -340,22 +353,23 @@ const FormRecebimentoMp = ({ id }) => {
         })
 
         //? Produtos
-        dataProducts.forEach((data, indexData) => {
-            fieldProducts.forEach((field, indexField) => {
-                const fieldName = field.tabela
-                    ? `produtos[${indexData}].${field.tabela}`
-                    : `produtos[${indexData}].${field.nomeColuna}`
-                const fieldValue = getValues(fieldName)
+        products.forEach((data, indexData) => {
+            data.fields &&
+                data.fields.forEach((field, indexField) => {
+                    const fieldName = field.tabela
+                        ? `produtos[${indexData}].${field.tabela}`
+                        : `produtos[${indexData}].${field.nomeColuna}`
+                    const fieldValue = getValues(fieldName)
 
-                if (field.obrigatorio === 1 && !fieldValue) {
-                    setError(fieldName, {
-                        type: 'manual',
-                        message: 'Campo obrigatário'
-                    })
-                    arrErrors.push(field?.nomeCampo)
-                    hasErrors = true
-                }
-            })
+                    if (field.obrigatorio === 1 && !fieldValue) {
+                        setError(fieldName, {
+                            type: 'manual',
+                            message: 'Campo obrigatário'
+                        })
+                        arrErrors.push(field?.nomeCampo)
+                        hasErrors = true
+                    }
+                })
         })
 
         //? Blocos
@@ -398,24 +412,21 @@ const FormRecebimentoMp = ({ id }) => {
         }
 
         const data = {
-            forms: {
-                ...values,
-                header: {
-                    ...values.header
-                },
-                produtos: [...values.produtos],
-                removedProducts: removedProducts
-            },
+            form: values,
             auth: {
                 usuarioID: user.usuarioID,
                 papelID: user.papelID,
                 unidadeID: loggedUnity.unidadeID
             }
         }
+        data['form']['removedProducts'] = removedProducts
+        console.log('🚀 ~ onSubmit:', data)
+        // return
+
         try {
             if (type == 'edit') {
                 setSavingForm(true)
-                await api.put(`${staticUrl}/updateData`, data).then(response => {
+                await api.post(`${staticUrl}/updateData/${id}`, data).then(response => {
                     toast.success(toastMessage.successUpdate)
                     setSavingForm(false)
                 })
@@ -491,8 +502,8 @@ const FormRecebimentoMp = ({ id }) => {
                                 errors={errors}
                                 setValue={setValue}
                                 control={control}
-                                fields={fieldsState}
-                                values={data}
+                                fields={field}
+                                values={field}
                                 disabled={!canEdit.status}
                             />
                         </CardContent>
@@ -504,9 +515,8 @@ const FormRecebimentoMp = ({ id }) => {
                             <Typography color='primary' variant='subtitle1' sx={{ fontWeight: 700, mb: 5 }}>
                                 PRODUTOS
                             </Typography>
-                            {fieldProducts &&
-                                dataProducts &&
-                                dataProducts.map((data, indexData) => (
+                            {products &&
+                                products.map((data, indexData) => (
                                     <Box
                                         display='flex'
                                         justifyContent='space-between'
@@ -515,20 +525,25 @@ const FormRecebimentoMp = ({ id }) => {
                                         sx={{ mb: 4 }}
                                     >
                                         {/* Monta as colunas dinâmicas dos produtos */}
-                                        {fieldProducts.map((field, indexField) => (
-                                            <Box flex={1} key={indexField}>
-                                                <Product
-                                                    field={field}
-                                                    data={data}
-                                                    indexData={indexData}
-                                                    disabled={!canEdit.status}
-                                                    register={register}
-                                                    control={control}
-                                                    setValue={setValue}
-                                                    errors={errors}
-                                                />
-                                            </Box>
-                                        ))}
+                                        {fieldsProduct &&
+                                            fieldsProduct.length > 0 &&
+                                            fieldsProduct.map((field, indexField) => (
+                                                <Box flex={1} key={indexField}>
+                                                    <Product
+                                                        name={`products[${indexData}].${
+                                                            field.tabela ?? field.nomeColuna
+                                                        }`}
+                                                        field={field}
+                                                        data={data}
+                                                        indexData={indexData}
+                                                        disabled={!canEdit.status}
+                                                        register={register}
+                                                        control={control}
+                                                        setValue={setValue}
+                                                        errors={errors}
+                                                    />
+                                                </Box>
+                                            ))}
                                         {/* Delete */}
                                         <Remove
                                             xs={12}
