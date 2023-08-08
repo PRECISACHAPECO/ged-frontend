@@ -76,7 +76,7 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                 register={register}
                                 setValue={setValue}
                                 control={control}
-                                errors={errors?.fields?.[field.tabela]}
+                                errors={errors?.fields?.[index]?.[field.tabela]}
                                 handleRegistroEstabelecimento={setWatchRegistroEstabelecimento}
                             />
                         )}
@@ -91,7 +91,7 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                 value={field?.[field.nomeColuna]}
                                 type={field.nomeColuna}
                                 name={`fields[${index}].${field.nomeColuna}`}
-                                errors={errors?.fields?.[field.nomeColuna]}
+                                errors={errors?.fields?.[index]?.[field.nomeColuna]}
                                 control={control}
                                 setDateFormat={setDateFormat}
                                 typeValidation='dataPassado'

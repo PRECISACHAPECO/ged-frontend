@@ -9,11 +9,13 @@ const DynamicMenu = () => {
 
     const hasPermission = (currentRoute, arrSubmenu = []) => {
         let response = false
-        routes.forEach(permission => {
-            if ((permission.rota === currentRoute && permission.ler) || arrSubmenu.length > 0) {
-                response = true
-            }
-        })
+        if (routes && routes.length > 0) {
+            routes.forEach(permission => {
+                if ((permission.rota === currentRoute && permission.ler) || arrSubmenu.length > 0) {
+                    response = true
+                }
+            })
+        }
 
         return response
     }

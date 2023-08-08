@@ -151,29 +151,13 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const addProduct = () => {
-        const newProduct = [...products]
-        const newProductFields = products[0]?.fields.map((field, index) => {
-            return field
-            // if (field.tabela) {
-            //     // Select (objeto com id e nome)
-            //     return {
-            //         [field.tabela]: {
-            //             id: '',
-            //             nome: ''
-            //         }
-            //     }
-            // } else {
-            //     return {
-            //         [field.nomeColuna]: ''
-            //     }
-            // }
-        })
-        let newProd = {}
-        newProd['fields'] = newProductFields
-        console.log('🚀 ~ newProductFields:', newProd)
+        const newProduct = {
+            recebimentompProdutoID: 0,
+            recebimentompID: id
+        }
 
-        newProduct.push(newProd)
-        setProducts(newProduct)
+        const updatedDataProducts = [...products, newProduct]
+        setProducts(updatedDataProducts)
     }
 
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
@@ -244,7 +228,7 @@ const FormRecebimentoMp = ({ id }) => {
                 // setData(response.data.data)
                 setFieldsProduct(response.data.fieldsProduct)
                 // setDataProducts(response.data.dataProducts)
-                // setBlocos(response.data.blocos)
+                setBlocos(response.data.blocos)
                 setInfo(response.data.info)
                 // initializeValues(response.data)
 
@@ -265,25 +249,21 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const removeProduct = (value, index) => {
-        if (dataProducts.length == 1) {
-            toast.error('Você deve ter ao menos um produto!')
+        if (products.length == 1) {
+            toast.error('O formulário deve conter pelo menos um produto!')
             return
         }
 
-        // Remove o item do array dataProducts
-        const updatedDataProducts = [...dataProducts]
-        updatedDataProducts.splice(index, 1)
-        setDataProducts(updatedDataProducts)
-
-        // Insere ID no array de produtos removidos
         if (value?.recebimentompProdutoID > 0) {
-            const newRemovedProducts = [...removedProducts, { recebimentompProdutoID: value.recebimentompProdutoID }] // Atribui o valor atual a uma nova variável
-            setRemovedProducts(newRemovedProducts) // Atualiza a variável de estado
+            setRemovedProducts([...removedProducts, value?.recebimentompProdutoID])
         }
+        const updatedDataProducts = [...products]
+        updatedDataProducts.splice(index, 1)
+        setProducts(updatedDataProducts)
 
         reset({
             ...getValues(), // Obtém os valores atuais de todos os campos
-            produtos: updatedDataProducts // Atualiza apenas o campo "produtos"
+            products: updatedDataProducts // Atualiza apenas o campo "produtos"
         })
         trigger()
 
@@ -340,8 +320,9 @@ const FormRecebimentoMp = ({ id }) => {
 
         //? Header
         field?.forEach((field, index) => {
-            const fieldName = field.tabela ? `header.${field.tabela}` : `header.${field.nomeColuna}`
+            const fieldName = field.tabela ? `fields[${index}].${field.tabela}` : `fields[${index}].${field.nomeColuna}`
             const fieldValue = getValues(fieldName)
+            console.log('🚀 ~ checkErrors:', fieldName, fieldValue)
             if (field.obrigatorio === 1 && !fieldValue) {
                 setError(fieldName, {
                     type: 'manual',
@@ -354,12 +335,13 @@ const FormRecebimentoMp = ({ id }) => {
 
         //? Produtos
         products.forEach((data, indexData) => {
-            data.fields &&
-                data.fields.forEach((field, indexField) => {
+            fieldsProduct &&
+                fieldsProduct.forEach((field, indexField) => {
                     const fieldName = field.tabela
-                        ? `produtos[${indexData}].${field.tabela}`
-                        : `produtos[${indexData}].${field.nomeColuna}`
+                        ? `products[${indexData}].${field.tabela}`
+                        : `products[${indexData}].${field.nomeColuna}`
                     const fieldValue = getValues(fieldName)
+                    console.log('🚀 ~ checkErrors produto:', fieldName)
 
                     if (field.obrigatorio === 1 && !fieldValue) {
                         setError(fieldName, {
@@ -470,12 +452,14 @@ const FormRecebimentoMp = ({ id }) => {
                         <FormHeader
                             btnCancel
                             btnSave={info?.status < 40 || type == 'new'}
-                            btnSend={type == 'edit' ? true : false}
+                            btnSend={true}
                             btnPrint
                             generateReport={generateReport}
                             dataReports={dataReports}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             handleSend={handleSendForm}
+                            iconConclusion={'mdi:check-bold'}
+                            titleConclusion={'Aprovar Recebimento'}
                             title='Recebimento MP'
                             btnStatus={type == 'edit' ? true : false}
                             handleBtnStatus={() => setOpenModalStatus(true)}
@@ -583,11 +567,11 @@ const FormRecebimentoMp = ({ id }) => {
                                 index={index}
                                 blockKey={`parRecebimentompBlocoID`}
                                 values={bloco}
-                                register={register}
                                 control={control}
+                                register={register}
                                 setValue={setValue}
                                 errors={errors}
-                                isDisabled={!canEdit.status}
+                                disabled={!canEdit.status}
                             />
                         ))}
 

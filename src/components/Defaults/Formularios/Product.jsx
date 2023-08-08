@@ -7,7 +7,7 @@ import Select from 'src/components/Form/Select'
 import Input from 'src/components/Form/Input'
 
 const Product = ({ field, data, name, indexData, disabled, control, register, setValue, errors }) => {
-    console.log('🚀 ~ Product field:', field)
+    console.log('🚀 ~ errors Product field:', errors)
 
     return (
         <>
@@ -35,7 +35,7 @@ const Product = ({ field, data, name, indexData, disabled, control, register, se
                     register={register}
                     setValue={setValue}
                     control={control}
-                    errors={errors?.produtos?.[indexData]?.[field.tabela]}
+                    errors={errors?.products?.[indexData]?.[field.tabela]}
                 />
             )}
 
