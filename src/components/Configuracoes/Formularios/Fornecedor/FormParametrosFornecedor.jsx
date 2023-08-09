@@ -32,9 +32,8 @@ const FormParametrosFornecedor = ({ id }) => {
     const [itemScore, setItemScore] = useState()
     const [savingForm, setSavingForm] = useState(false)
     const [arrRemovedItems, setArrRemovedItems] = useState([])
+    const [arrRemovedBlocks, setArrRemovedBlocks] = useState([])
 
-    const { setTitle } = useContext(ParametersContext)
-    const { setId } = useContext(RouteContext)
     const router = Router
     const type = 'edit'
     const staticUrl = router.pathname
@@ -53,6 +52,7 @@ const FormParametrosFornecedor = ({ id }) => {
             unidadeID: loggedUnity.unidadeID,
             header: values.header,
             blocks: values.blocks,
+            arrRemovedBlocks: arrRemovedBlocks,
             arrRemovedItems: arrRemovedItems,
             orientacoes: values.orientations
         }
@@ -122,11 +122,39 @@ const FormParametrosFornecedor = ({ id }) => {
         updatedBlocks[indexBlock].itens = newBlock
         setBlocks(updatedBlocks)
 
-        console.log('🚀 ~ newBlock:', newBlock)
-
         setValue(`blocks.[${indexBlock}].itens`, newBlock) //* Remove item do formulário
 
         refreshOptions(blocks[indexBlock], indexBlock, blocks, allOptions)
+    }
+
+    const removeBlock = (block, index) => {
+        // Verifica se o bloco possui itens com pendência
+        let canDelete = true
+        block &&
+            block.itens.map(item => {
+                if (item.hasPending == 1) {
+                    canDelete = false
+                }
+            })
+
+        if (!canDelete) {
+            toast.error('Este bloco não pode ser removido pois possui itens respondidos em um formulário')
+            return
+        }
+
+        // Inserir no array de blocos removidos
+        let newRemovedBlocks = [...arrRemovedBlocks]
+        newRemovedBlocks.push(block.dados.parFornecedorBlocoID)
+        setArrRemovedBlocks(newRemovedBlocks)
+
+        // Remove bloco
+        const updatedBlocks = [...blocks]
+        updatedBlocks.splice(index, 1)
+        setBlocks(updatedBlocks)
+
+        setValue(`blocks`, updatedBlocks) //* Remove bloco do formulário
+
+        toast.success('Bloco pré-removido. Salve para concluir!')
     }
 
     //  Ao clicar no icone de pontuação, abre o modal de confirmação de pontuação e envia para o back o item selecionado
@@ -200,7 +228,6 @@ const FormParametrosFornecedor = ({ id }) => {
     }
 
     useEffect(() => {
-        setTitle('Formulário do Fornecedor')
         getData()
     }, [id, savingForm])
 
@@ -219,17 +246,17 @@ const FormParametrosFornecedor = ({ id }) => {
                                 <List component='nav' aria-label='main mailbox'>
                                     <Grid container spacing={2}>
                                         {/* Cabeçalho */}
-                                        <Grid item md={4}>
+                                        <Grid item md={4} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Nome do Campo
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={3}>
+                                        <Grid item md={3} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Mostra no Formulário
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={3}>
+                                        <Grid item md={3} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Obrigatório
                                             </Typography>
@@ -244,27 +271,27 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     {...register(`header.[${index}].parFornecedorID`)}
                                                 />
 
-                                                <Grid item md={4}>
+                                                <Grid item md={4} xs={6}>
                                                     {header.nomeCampo}
                                                 </Grid>
-
-                                                <CheckLabel
-                                                    xs={12}
-                                                    md={3}
-                                                    title=''
-                                                    name={`header.[${index}].mostra`}
-                                                    value={header.mostra}
-                                                    register={register}
-                                                />
-
-                                                <CheckLabel
-                                                    xs={12}
-                                                    md={3}
-                                                    title=''
-                                                    name={`header.[${index}].obrigatorio`}
-                                                    value={header.obrigatorio}
-                                                    register={register}
-                                                />
+                                                <Grid item md={3} xs={3}>
+                                                    <CheckLabel
+                                                        title=''
+                                                        name={`header.[${index}].mostra`}
+                                                        value={header.mostra}
+                                                        register={register}
+                                                        disabled={header.nomeColuna == 'cnpj' ? true : false}
+                                                    />
+                                                </Grid>
+                                                <Grid item md={3} xs={3}>
+                                                    <CheckLabel
+                                                        title=''
+                                                        name={`header.[${index}].obrigatorio`}
+                                                        value={header.obrigatorio}
+                                                        register={register}
+                                                        disabled={header.nomeColuna == 'cnpj' ? true : false}
+                                                    />
+                                                </Grid>
                                             </>
                                         ))}
                                     </Grid>
@@ -340,6 +367,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                             options={allOptions.categorias}
                                             register={register}
                                             setValue={setValue}
+                                            control={control}
                                             errors={errors?.blocks?.[index]?.categorias}
                                         />
 
@@ -354,6 +382,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                             options={allOptions.atividades}
                                             register={register}
                                             setValue={setValue}
+                                            control={control}
                                             errors={errors?.blocks?.[index]?.atividades}
                                         />
                                     </Grid>
@@ -407,6 +436,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     options={blocks[index].optionsBlock?.itens}
                                                     register={register}
                                                     setValue={setValue}
+                                                    control={control}
                                                     errors={errors?.blocks?.[index]?.itens?.[indexItem]?.item}
                                                 />
 
@@ -421,6 +451,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     options={allOptions.alternativas}
                                                     register={register}
                                                     setValue={setValue}
+                                                    control={control}
                                                     errors={errors?.blocks?.[index]?.itens?.[indexItem]?.alternativa}
                                                 />
 
@@ -517,6 +548,18 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 }}
                                             >
                                                 Inserir Item
+                                            </Button>
+
+                                            <Button
+                                                variant='outlined'
+                                                color='error'
+                                                startIcon={<Icon icon='tabler:trash-filled' />}
+                                                onClick={() => {
+                                                    removeBlock(block, index)
+                                                }}
+                                                sx={{ ml: 2 }}
+                                            >
+                                                Remover Bloco
                                             </Button>
                                         </Grid>
                                     </Grid>

@@ -26,7 +26,8 @@ const DialogForm = ({
     cnpj,
     nomeFornecedor,
     gruposAnexo,
-
+    email,
+    setEmail,
     inputEmail,
     btnCancel,
     btnConfirm,
@@ -36,7 +37,7 @@ const DialogForm = ({
     closeAfterSave,
     listErrors
 }) => {
-    const [email, setEmail] = useState(null)
+    // const [email, setEmail] = useState(null)
     const [errorEmail, setErrorEmail] = useState(false)
 
     return (
@@ -118,13 +119,13 @@ const DialogForm = ({
                                 inputEmail && cnpj
                                     ? () => {
                                           handleSubmit(cnpj, nomeFornecedor, gruposAnexo, email)
-                                          setEmail(null)
+                                          //   setEmail(null)
                                           closeAfterSave ? handleClose() : null
                                       }
                                     : inputEmail && !cnpj
                                     ? () => {
                                           handleSubmit(email)
-                                          setEmail(null)
+                                          //   setEmail(null)
                                           closeAfterSave ? handleClose() : null
                                       }
                                     : () => {

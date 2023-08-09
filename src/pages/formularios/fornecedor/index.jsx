@@ -22,7 +22,7 @@ const Fornecedor = () => {
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
-    const { setTitle, setSubtitle } = useContext(ParametersContext)
+    const { setTitle } = useContext(ParametersContext)
     const [open, setOpen] = useState(false)
     const [loadingSave, setLoadingSave] = useState(false) //? Dependencia do useEffect pra atualizar listagem ao salvar
     const { id } = useContext(RouteContext)
@@ -41,6 +41,7 @@ const Fornecedor = () => {
                     unidadeID: loggedUnity.unidadeID,
                     papelID: user.papelID,
                     cnpj: cnpj,
+                    email: email,
                     nomeFornecedor: nomeFornecedor,
                     gruposAnexo: gruposAnexo
                 })
@@ -48,7 +49,7 @@ const Fornecedor = () => {
                     if (response.status === 200) {
                         toast.success('Fornecedor habilitado com sucesso')
                         if (email) {
-                            sendMail(email, cnpj)
+                            sendMail(email, cnpj, nomeFornecedor)
                         }
                     } else {
                         toast.error('Erro ao tornar fornecedor')
@@ -60,11 +61,12 @@ const Fornecedor = () => {
         }
     }
 
-    const sendMail = (email, cnpj) => {
+    const sendMail = (email, cnpj, nomeFornecedor) => {
         if (email && validationEmail(email)) {
             const data = {
                 unidadeID: loggedUnity.unidadeID,
-                cnpj: cnpj,
+                cnpj,
+                nomeFornecedor,
                 destinatario: email
             }
             console.log('🚀 ~ sendMail:', data)
@@ -88,8 +90,14 @@ const Fornecedor = () => {
             })
             .then(response => {
                 setResult(response.data)
-                setTitle('Fornecedor')
-                setSubtitle(id ? `ID: ${id}` : `Total de registros: ${response.data.length}`)
+                setTitle({
+                    title: 'Fornecedor',
+                    subtitle: {
+                        id: id,
+                        count: response.data.length,
+                        new: false
+                    }
+                })
             })
     }
 

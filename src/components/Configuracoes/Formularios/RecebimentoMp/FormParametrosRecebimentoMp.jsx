@@ -48,7 +48,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
     const router = Router
     const staticUrl = router.pathname
     const type = 'edit'
-    const { setTitle } = useContext(ParametersContext)
+
     const { setId } = useContext(RouteContext)
 
     const {
@@ -192,7 +192,6 @@ const FormParametrosRecebimentoMp = ({ id }) => {
     }
 
     useEffect(() => {
-        setTitle('Formulário do Recebimento de MP')
         getData()
     }, [id, savingForm])
 
@@ -213,17 +212,17 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                 <List component='nav' aria-label='main mailbox'>
                                     <Grid container spacing={2}>
                                         {/* Cabeçalho */}
-                                        <Grid item md={4}>
+                                        <Grid item md={4} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Nome do Campo
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={3}>
+                                        <Grid item md={3} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Mostra no Formulário
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={3}>
+                                        <Grid item md={3} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Obrigatório
                                             </Typography>
@@ -238,27 +237,25 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                     {...register(`headers.[${index}].parRecebimentompID`)}
                                                 />
 
-                                                <Grid item md={4}>
+                                                <Grid item md={4} xs={6}>
                                                     {header.nomeCampo}
                                                 </Grid>
-
-                                                <CheckLabel
-                                                    xs={12}
-                                                    md={3}
-                                                    title=''
-                                                    name={`header.[${index}].mostra`}
-                                                    value={header.mostra}
-                                                    register={register}
-                                                />
-
-                                                <CheckLabel
-                                                    xs={12}
-                                                    md={3}
-                                                    title=''
-                                                    name={`header.[${index}].obrigatorio`}
-                                                    value={header.obrigatorio}
-                                                    register={register}
-                                                />
+                                                <Grid item md={3} xs={3}>
+                                                    <CheckLabel
+                                                        title=''
+                                                        name={`header.[${index}].mostra`}
+                                                        value={header.mostra}
+                                                        register={register}
+                                                    />
+                                                </Grid>
+                                                <Grid item md={3} xs={3}>
+                                                    <CheckLabel
+                                                        title=''
+                                                        name={`header.[${index}].obrigatorio`}
+                                                        value={header.obrigatorio}
+                                                        register={register}
+                                                    />
+                                                </Grid>
                                             </>
                                         ))}
                                     </Grid>
@@ -275,17 +272,17 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                 <List component='nav' aria-label='main mailbox'>
                                     <Grid container spacing={2}>
                                         {/* Cabeçalho */}
-                                        <Grid item md={4}>
+                                        <Grid item md={4} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Nome do Campo
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={3}>
+                                        <Grid item md={3} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Mostra no Formulário
                                             </Typography>
                                         </Grid>
-                                        <Grid item md={3}>
+                                        <Grid item md={3} xs={4}>
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 Obrigatório
                                             </Typography>
@@ -300,27 +297,25 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                     {...register(`products.[${index}].parRecebimentoMpProdutoID`)}
                                                 />
 
-                                                <Grid item md={4}>
+                                                <Grid item md={4} xs={6}>
                                                     {product.nomeCampo}
                                                 </Grid>
-
-                                                <CheckLabel
-                                                    xs={12}
-                                                    md={3}
-                                                    title=''
-                                                    name={`products.[${index}].mostra`}
-                                                    value={product.mostra}
-                                                    register={register}
-                                                />
-
-                                                <CheckLabel
-                                                    xs={12}
-                                                    md={3}
-                                                    title=''
-                                                    name={`products.[${index}].obrigatorio`}
-                                                    value={product.obrigatorio}
-                                                    register={register}
-                                                />
+                                                <Grid item md={3} xs={3}>
+                                                    <CheckLabel
+                                                        title=''
+                                                        name={`products.[${index}].mostra`}
+                                                        value={product.mostra}
+                                                        register={register}
+                                                    />
+                                                </Grid>
+                                                <Grid item md={3} xs={3}>
+                                                    <CheckLabel
+                                                        title=''
+                                                        name={`products.[${index}].obrigatorio`}
+                                                        value={product.obrigatorio}
+                                                        register={register}
+                                                    />
+                                                </Grid>
                                             </>
                                         ))}
                                     </Grid>
@@ -437,6 +432,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                         options={options.itens}
                                                         register={register}
                                                         setValue={setValue}
+                                                        control={control}
                                                         errors={errors?.blocks?.[index]?.itens?.[indexItem]?.item}
                                                     />
 
@@ -450,6 +446,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                         options={options.alternativas}
                                                         register={register}
                                                         setValue={setValue}
+                                                        control={control}
                                                         errors={
                                                             errors?.blocks?.[index]?.itens?.[indexItem]?.alternativa
                                                         }

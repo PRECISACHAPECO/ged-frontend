@@ -6,7 +6,14 @@ const FornecedorNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Fornecedor')
+        setTitle({
+            title: 'Fornecedor',
+            subtitle: {
+                id: null,
+                count: null,
+                new: true
+            }
+        })
     }, [])
 
     return <FormFornecedor />

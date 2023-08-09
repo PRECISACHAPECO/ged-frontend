@@ -24,7 +24,14 @@ const Atividade = () => {
             await api.get(currentLink).then(response => {
                 console.log('🚀 ~ response.data:', response.data)
                 setResult(response.data)
-                setTitle('Atividade')
+                setTitle({
+                    title: 'Atividade',
+                    subtitle: {
+                        id: id,
+                        count: response.data.length,
+                        new: false
+                    }
+                })
             })
         }
         getList()

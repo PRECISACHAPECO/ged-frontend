@@ -13,28 +13,21 @@ import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
 
 import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
-import { backRoute } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
 import FormHeader from 'src/components/Defaults/FormHeader'
-import { ParametersContext } from 'src/context/ParametersContext'
 import { AuthContext } from 'src/context/AuthContext'
 import Loading from 'src/components/Loading'
 import { toastMessage, statusDefault } from 'src/configs/defaultConfigs'
 import toast from 'react-hot-toast'
-import { SettingsContext } from 'src/@core/context/settingsContext'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
-
-// ** Custom Components
-import CustomChip from 'src/@core/components/mui/chip'
 
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
 
 const FormFornecedor = ({ id }) => {
-    const { setId } = useContext(RouteContext)
     const { user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false) //? loading de carregamento da página
     const [isLoadingSave, setLoadingSave] = useState(false) //? dependencia do useEffect pra atualizar a página após salvar
-    const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
+    // const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
 
     const [fieldsState, setFields] = useState([])
     const [data, setData] = useState(null)
@@ -48,7 +41,7 @@ const FormFornecedor = ({ id }) => {
     const [openModal, setOpenModal] = useState(false)
     const [unidade, setUnidade] = useState(null)
     const [status, setStatus] = useState(null)
-    const [statusEdit, setStatusEdit] = useState(false)
+    // const [statusEdit, setStatusEdit] = useState(false)
     const [openModalStatus, setOpenModalStatus] = useState(false)
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
     const [listErrors, setListErrors] = useState({ status: false, errors: [] })
@@ -61,7 +54,6 @@ const FormFornecedor = ({ id }) => {
         messageType: 'info'
     })
 
-    const { setTitle } = useContext(ParametersContext)
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
@@ -79,6 +71,8 @@ const FormFornecedor = ({ id }) => {
         formState: { errors }
     } = useForm()
 
+    console.log('🚀 ~ ERRORS:', errors)
+
     const verifyFormPending = async () => {
         try {
             const parFormularioID = 1
@@ -91,9 +85,10 @@ const FormFornecedor = ({ id }) => {
     }
 
     //* Reabre o formulário pro fornecedor alterar novamente se ainda nao estiver vinculado com recebimento
-    const changeFormStatus = async status => {
+    const changeFormStatus = async (status, observacao) => {
         const data = {
             status: status,
+            observacao: observacao,
             auth: {
                 usuarioID: user.usuarioID,
                 papelID: user.papelID,
@@ -109,34 +104,6 @@ const FormFornecedor = ({ id }) => {
             })
         } catch (error) {
             console.log(error)
-        }
-    }
-
-    const updateFormStatus = async () => {
-        const data = {
-            status: {
-                edit: statusEdit, // true/false
-                status: info.status
-            },
-            auth: {
-                usuarioID: user.usuarioID,
-                papelID: user.papelID,
-                unidadeID: loggedUnity.unidadeID
-            }
-        }
-
-        if (statusEdit) {
-            try {
-                setLoadingSave(true)
-                await api.post(`${staticUrl}/updateFormStatus/${id}`, data).then(response => {
-                    toast.success(toastMessage.successUpdate)
-                    setLoadingSave(false)
-                })
-            } catch (error) {
-                console.log(error)
-            }
-        } else {
-            toast.error('Não há dados a serem atualizados!')
         }
     }
 
@@ -245,7 +212,6 @@ const FormFornecedor = ({ id }) => {
         try {
             setLoading(true)
             if (id) {
-                console.log('🚀 ~ Busca fornecedor:', id, loggedUnity.unidadeID)
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
                     console.log('getData: ', response.data)
 
@@ -294,12 +260,16 @@ const FormFornecedor = ({ id }) => {
     const handleSendForm = () => {
         checkErrors()
         setOpenModal(true)
-        setValidateForm(true)
+        // setValidateForm(true)
+    }
+
+    const handleDraftForm = async data => {
+        clearErrors() //? Limpa errors do formulário pra salvar "rascunho", com errors não entra no onSubmit
+        await handleSubmit(onSubmit)(data)
     }
 
     const conclusionForm = async values => {
         values['conclusion'] = true
-
         await handleSubmit(onSubmit)(values)
     }
 
@@ -317,8 +287,8 @@ const FormFornecedor = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
+
         console.log('🚀 ~ onSubmit:', data.form)
-        // return
 
         try {
             setLoadingSave(true)
@@ -368,6 +338,20 @@ const FormFornecedor = ({ id }) => {
                 : null
         })
 
+        //? Anexos
+        grupoAnexo.forEach((grupo, indexGrupo) => {
+            grupo.itens.forEach((item, indexItem) => {
+                if (item?.obrigatorio === 1 && !item?.anexo?.exist) {
+                    setError(`grupoAnexo[${indexGrupo}].itens[${indexItem}].anexo`, {
+                        type: 'manual',
+                        message: 'Campo obrigatário'
+                    })
+                    arrErrors.push(`Anexo: ${item?.nome}`)
+                    hasErrors = true
+                }
+            })
+        })
+
         setListErrors({
             status: hasErrors,
             errors: arrErrors
@@ -375,7 +359,6 @@ const FormFornecedor = ({ id }) => {
     }
 
     useEffect(() => {
-        setTitle('Formulário do Fornecedor')
         //? Form Fornecedor não tem página NOVO
         type == 'edit' ? getData() : noPermissions()
         verifyFormPending()
@@ -499,15 +482,11 @@ const FormFornecedor = ({ id }) => {
             {isLoading ? (
                 <Loading />
             ) : fieldsState ? (
-                <form
-                    onSubmit={handleSubmit(data => {
-                        canEdit.status ? onSubmit(data, false) : updateFormStatus()
-                    })}
-                >
+                <form onSubmit={handleDraftForm}>
                     {/* Mensagem de que não possui nenhum bloco */}
                     {blocks && blocks.length === 0 && (
-                        <Alert severity='warning' sx={{ mb: 2 }}>
-                            Não há nenhum bloco disponível para as categorias selecionadas!
+                        <Alert severity='error' sx={{ mb: 2 }}>
+                            Selecione ao menos uma <span style={{ fontWeight: 'bold' }}>categoria</span>!
                         </Alert>
                     )}
                     {!canEdit.status && (
@@ -537,6 +516,7 @@ const FormFornecedor = ({ id }) => {
                             btnStatus
                             handleBtnStatus={() => setOpenModalStatus(true)}
                             type={type}
+                            status={status}
                         />
 
                         <CardContent>
@@ -555,20 +535,6 @@ const FormFornecedor = ({ id }) => {
                                             <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                                 {unidade.nomeFantasia}
                                             </Typography>
-                                        </Grid>
-
-                                        <Grid item xs={12} md={6}>
-                                            {status && (
-                                                <Box display='flex' alignItems='center' justifyContent='flex-end'>
-                                                    <CustomChip
-                                                        size='small'
-                                                        skin='light'
-                                                        color={status.color}
-                                                        label={status.title}
-                                                        sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-                                                    />
-                                                </Box>
-                                            )}
                                         </Grid>
                                     </Grid>
                                 </Box>
@@ -653,6 +619,7 @@ const FormFornecedor = ({ id }) => {
                                 handleFileSelect={handleFileSelect}
                                 handleRemoveAnexo={handleRemoveAnexo}
                                 disabled={!canEdit.status}
+                                error={errors?.grupoAnexo?.[indexGrupo]?.itens}
                             />
                         ))}
 
@@ -686,7 +653,8 @@ const FormFornecedor = ({ id }) => {
             <DialogFormConclusion
                 openModal={openModal}
                 handleClose={() => {
-                    setOpenModal(false), setValidateForm(false)
+                    setOpenModal(false)
+                    // setValidateForm(false)
                 }}
                 title={info.status >= 40 ? 'Aprovar Fornecedor' : 'Concluir Formulário'}
                 text={`Deseja realmente concluir este formulário?`}
@@ -701,6 +669,8 @@ const FormFornecedor = ({ id }) => {
             {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}
             {openModalStatus && (
                 <DialogFormStatus
+                    title='Histórico do Formulário'
+                    text={`Listagem do histórico das movimentações do formulário ${id} do Fornecedor.`}
                     id={id}
                     parFormularioID={1} // Fornecedor
                     formStatus={info.status}
@@ -708,8 +678,6 @@ const FormFornecedor = ({ id }) => {
                     canChangeStatus={user.papelID == 1 && !hasFormPending && info.status > 30}
                     openModal={openModalStatus}
                     handleClose={() => setOpenModalStatus(false)}
-                    title='Histórico do Formulário'
-                    text={`Listagem do histórico das movimentações do formulário ${id} do Fornecedor.`}
                     btnCancel
                     btnConfirm
                     handleSubmit={changeFormStatus}

@@ -82,12 +82,15 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
                     {/* Data */}
                     {values.alternativas.length == 0 && values.alternativa == 'Data' && (
                         <DateField
+                            xs={12}
+                            md={12}
                             title='Data da avaliação'
                             disabled={disabled}
                             value={values.resposta}
                             type={null}
                             name={`blocos[${blockIndex}].itens[${index}].resposta`}
                             errors={errors?.blocos?.[blockIndex]?.itens[index]?.resposta}
+                            control={control}
                             setDateFormat={setDateFormat}
                             typeValidation='dataPassado'
                             daysValidation={365}
@@ -118,7 +121,7 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
                         <Input
                             title='Observação'
                             name={`blocos[${blockIndex}].itens[${index}].observacao`}
-                            value={values.observacao}
+                            value={values?.observacao}
                             multiline
                             disabled={disabled}
                             control={control}

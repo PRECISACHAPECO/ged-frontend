@@ -4,17 +4,21 @@ import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import { GridToolbarFilterButton } from '@mui/x-data-grid'
 import ListHeader from 'src/components/Defaults/ListHeader'
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 const QuickSearchToolbar = (props) => {
 
+    const matches = useMediaQuery('(min-width:640px)');
+
     return (
         <Box
             sx={{
                 display: 'flex',
-                flexWrap: 'wrap',
+                flexDirection: 'row',
+                gap: 2,
                 alignItems: 'baseline',
                 justifyContent: 'space-between',
                 p: theme => theme.spacing(8, 0, 0, 0),
@@ -49,16 +53,16 @@ const QuickSearchToolbar = (props) => {
                         }
                     }}
                 />
-                <GridToolbarFilterButton />
+                <div className='hidden sm:block'>
+                    <GridToolbarFilterButton />
+                </div>
             </Box>
 
-            <Box>
-                <ListHeader
-                    btnNew={props.buttonsHeader.btnNew}
-                    btnPrint={props.buttonsHeader.btnPrint}
-                    openModal={props.buttonsHeader.openModal}
-                />
-            </Box>
+            <ListHeader
+                btnNew={props.buttonsHeader.btnNew}
+                btnPrint={props.buttonsHeader.btnPrint}
+                openModal={props.buttonsHeader.openModal}
+            />
         </Box>
     )
 }

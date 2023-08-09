@@ -1,15 +1,27 @@
 import { api } from 'src/configs/api'
-import { useEffect, useState } from 'react'
+import Router from 'next/router'
+import { useEffect, useState, useContext } from 'react'
+import { RouteContext } from 'src/context/RouteContext'
+import { AuthContext } from 'src/context/AuthContext'
 
 const getHeader = () => {
-    const unidade = JSON.parse(localStorage.getItem('loggedUnity'))
-    const unidadeID = unidade.unidadeID
-
+    const { id } = useContext(RouteContext)
+    const route = Router.pathname.split('/')[2]
     const [data, setData] = useState([])
+
+    const { user, loggedUnity } = useContext(AuthContext)
+
+    const fetchData = async () => {
+        await api
+            .post('relatorio/header', {
+                id,
+                unidadeID: loggedUnity.unidadeID,
+                isFornecedor: route === 'fornecedor' ? true : false
+            })
+            .then(response => setData(response.data))
+    }
+
     useEffect(() => {
-        const fetchData = async () => {
-            await api.post('relatorio/header', { unidadeID }).then(response => setData(response.data))
-        }
         fetchData()
     }, [])
     return data

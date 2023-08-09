@@ -3,11 +3,17 @@ import { ParametersContext } from 'src/context/ParametersContext'
 import { useContext, useEffect } from 'react'
 
 const ItemNovo = () => {
-    const { setTitle, setSubtitle } = useContext(ParametersContext)
+    const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Item')
-        setSubtitle(`Novo`)
+        setTitle({
+            title: 'Item',
+            subtitle: {
+                id: null,
+                count: null,
+                new: true
+            }
+        })
     }, [])
 
     return <FormItem />

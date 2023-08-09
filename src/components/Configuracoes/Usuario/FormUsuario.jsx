@@ -4,9 +4,12 @@ import { RouteContext } from 'src/context/RouteContext'
 import { api } from 'src/configs/api'
 import Icon from 'src/@core/components/icon'
 import Loading from 'src/components/Loading'
+import { SettingsContext } from 'src/@core/context/settingsContext'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
+import Permissions from './Permissions'
+import DateField from 'src/components/Form/DateField'
 
 import {
     Card,
@@ -44,11 +47,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br' // import locale
 import Input from 'src/components/Form/Input'
-import DateField from 'src/components/Form/DateField'
+// import DateField from 'src/components/Form/DateField'
 
 const FormUsuario = ({ id }) => {
     const { setId } = useContext(RouteContext)
     const { user, setUser, loggedUnity } = useContext(AuthContext)
+    const { settings } = useContext(SettingsContext)
+    const mode = settings.mode
 
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
@@ -65,12 +70,14 @@ const FormUsuario = ({ id }) => {
     const {
         control,
         handleSubmit,
-        formState: { errors },
         watch,
         reset,
         setValue,
-        register
+        register,
+        formState: { errors }
     } = useForm({})
+
+    console.log('🚀 ~ errors:', errors)
 
     data &&
         data.units &&
@@ -100,10 +107,13 @@ const FormUsuario = ({ id }) => {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
                     router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
-                    setId(response.data)
+                    setId(response.data.id)
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
+                values['permissionUserLogged'] = user.admin
+                console.log('🚀 ~ onSubmit:', values)
+                // return
                 await api.post(`${staticUrl}/updateData/${id}`, values)
                 toast.success(toastMessage.successUpdate)
             }
@@ -166,10 +176,12 @@ const FormUsuario = ({ id }) => {
         const selectedFile = event.target.files[0]
         if (selectedFile) {
             const formData = new FormData()
-            formData.append('photoProfile', selectedFile)
+            // formData.append('photoProfile', selectedFile)
+            formData.append('file', selectedFile)
             await api
                 .post(`${staticUrl}/photo-profile/${id}`, formData)
                 .then(response => {
+                    console.log('Response ===> ', response)
                     setPhotoProfile(response.data)
                     if (user.usuarioID == id) {
                         setUser({ ...user, imagem: response.data })
@@ -177,8 +189,8 @@ const FormUsuario = ({ id }) => {
                     toast.success('Foto de perfil atualizada com sucesso!')
                 })
                 .catch(error => {
-                    console.log(error)
-                    toast.error('Erro ao atualizar foto de perfil, tente novamente!')
+                    // console.log('=====> ', error.response.data.message)
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
                 })
         }
     }
@@ -203,8 +215,9 @@ const FormUsuario = ({ id }) => {
                 const route = `${staticUrl}/getData/${id}?unidadeID=${loggedUnity.unidadeID}&papelID=${loggedUnity.papelID}&admin=${user.admin}`
                 await api.post(route).then(response => {
                     setData(response.data)
-                    setPhotoProfile(response.data.imagem)
+                    setPhotoProfile(response.data.fields.imagem)
                     reset(response.data) //* Insere os dados no formulário
+                    console.log('🚀 ~ getData:', response.data)
                 })
             } catch (error) {
                 console.log(error)
@@ -257,319 +270,315 @@ const FormUsuario = ({ id }) => {
                                     {...register(`papelID`)}
                                 />
 
-                                <Grid container spacing={5} sx={{ mt: 2 }}>
-                                    {/* Foto */}
-                                    <Grid xs={12} sm={4} md={2} container spacing={5}>
-                                        {/* Foto do usuário e upload */}
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            md={12}
-                                            sx={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                mx: '17px',
-                                                height: '250px',
-                                                width: '250px',
-                                                position: 'relative',
-                                                mb: '10px',
-                                                md: { height: 'auto', width: 'auto' }
-                                            }}
-                                        >
-                                            {photoProfile && (
-                                                <Tooltip title='Apagar foto do perfil' placement='top'>
-                                                    <IconButton
-                                                        size='small'
-                                                        sx={{
-                                                            position: 'absolute',
-                                                            top: '30px',
-                                                            right: '9px',
-                                                            // opacity: '0.2',
-                                                            zIndex: '20',
-                                                            color: 'white',
-                                                            opacity: '0.8',
-                                                            backgroundColor: '#FF4D49',
-                                                            '&:hover': {
-                                                                backgroundColor: '#FF4D49',
-                                                                opacity: '1'
-                                                            }
-                                                        }}
-                                                        onClick={handleDeleteImage}
-                                                    >
-                                                        <Icon icon='material-symbols:delete-outline' />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            )}
-                                            <Tooltip
-                                                title={photoProfile ? 'Alterar foto' : 'Inserir foto'}
-                                                placement='top'
+                                <Grid container spacing={5}>
+                                    {/* Foto do usuário e upload */}
+                                    {type == 'edit' && (
+                                        <Grid item xs={12} md={2}>
+                                            <Grid
+                                                item
+                                                xs={12}
+                                                md={12}
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: '250px',
+                                                    position: 'relative',
+                                                    border: `${
+                                                        mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'
+                                                    }`,
+                                                    borderRadius: '8px'
+                                                }}
                                             >
-                                                <FormControl
-                                                    sx={{
-                                                        display: 'flex',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        height: '95%',
-                                                        width: '95%'
-                                                    }}
+                                                {photoProfile && (
+                                                    <Tooltip title='Apagar foto do perfil' placement='top'>
+                                                        <IconButton
+                                                            size='small'
+                                                            sx={{
+                                                                position: 'absolute',
+                                                                top: '8px',
+                                                                right: '8px',
+                                                                zIndex: '20',
+                                                                color: 'white',
+                                                                opacity: '0.8',
+                                                                backgroundColor: '#FF4D49',
+                                                                '&:hover': {
+                                                                    backgroundColor: '#FF4D49',
+                                                                    opacity: '1'
+                                                                }
+                                                            }}
+                                                            onClick={handleDeleteImage}
+                                                        >
+                                                            <Icon icon='material-symbols:delete-outline' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                )}
+                                                <Tooltip
+                                                    title={photoProfile ? 'Alterar foto' : 'Inserir foto'}
+                                                    placement='top'
                                                 >
-                                                    <input
-                                                        type='file'
-                                                        ref={fileInputRef}
-                                                        style={{ display: 'none' }}
-                                                        onChange={handleFileSelect}
-                                                    />
-                                                    <Avatar
-                                                        variant='rounded'
-                                                        alt='Victor Anderson'
-                                                        sx={{ width: '100%', height: '100%', cursor: 'pointer' }}
-                                                        src={photoProfile}
-                                                        onClick={handleAvatarClick}
-                                                    />
-                                                </FormControl>
-                                            </Tooltip>
+                                                    <FormControl
+                                                        sx={{
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            height: '100%',
+                                                            width: '100%'
+                                                        }}
+                                                    >
+                                                        <input
+                                                            type='file'
+                                                            ref={fileInputRef}
+                                                            style={{ display: 'none' }}
+                                                            onChange={handleFileSelect}
+                                                        />
+                                                        <Avatar
+                                                            variant='rounded'
+                                                            alt='Victor Anderson'
+                                                            sx={{ width: '97%', height: '97%', cursor: 'pointer' }}
+                                                            src={photoProfile}
+                                                            onClick={handleAvatarClick}
+                                                        />
+                                                    </FormControl>
+                                                </Tooltip>
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
+                                    )}
 
                                     {/* Campos a direita */}
-                                    <Grid xs={12} sm={8} md={10} container spacing={5}>
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='Nome'
-                                            name='nome'
-                                            value={data?.nome}
-                                            required={true}
-                                            control={control}
-                                            error={errors.nome}
-                                        />
-                                        <Grid item xs={12} md={4}>
-                                            <FormControl fullWidth>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DatePicker
-                                                        label='Data de Nascimento'
-                                                        locale={dayjs.locale('pt-br')}
-                                                        format='DD/MM/YYYY'
-                                                        defaultValue={dayjs(new Date(data?.dataNascimento))}
-                                                        name={`dataNascimento`}
-                                                        onChange={value => setValue('dataNascimento', value)}
-                                                        renderInput={params => (
-                                                            <TextField
-                                                                {...params}
-                                                                variant='outlined'
-                                                                error={errors?.dataNascimento}
-                                                            />
-                                                        )}
+                                    <Grid item xs={12} md={type === 'edit' ? 10 : 12}>
+                                        <Grid container spacing={5}>
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='Nome'
+                                                name='fields.nome'
+                                                value={data?.fields?.nome}
+                                                required={true}
+                                                control={control}
+                                                errors={errors?.fields?.nome}
+                                            />
+
+                                            <DateField
+                                                xs={12}
+                                                md={4}
+                                                title='Data de Nascimento'
+                                                value={data?.fields?.dataNascimento}
+                                                name={`fields.dataNascimento`}
+                                                errors={errors?.fields?.dataNascimento}
+                                                control={control}
+                                                register={register}
+                                            />
+
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='E-mail'
+                                                name='fields.email'
+                                                value={data?.fields?.email}
+                                                required={true}
+                                                control={control}
+                                                errors={errors?.fields?.email}
+                                            />
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='CPF'
+                                                name='fields.cpf'
+                                                mask='cpf'
+                                                value={data?.fields?.cpf}
+                                                required={true}
+                                                control={control}
+                                                errors={errors?.fields?.cpf}
+                                            />
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='RG'
+                                                name='fields.rg'
+                                                value={data?.fields?.rg}
+                                                control={control}
+                                                errors={errors?.fields?.rg}
+                                            />
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='Registro Conselho Classe'
+                                                name='fields.registroConselhoClasse'
+                                                value={data?.fields?.registroConselhoClasse}
+                                                control={control}
+                                                errors={errors?.fields?.registroConselhoClasse}
+                                            />
+
+                                            {data && user.admin == 0 && (
+                                                <>
+                                                    {/* Profissão */}
+                                                    <Select
+                                                        title='Selecione a profissão'
+                                                        options={data.profissaoOptions}
+                                                        name={`profissao`}
+                                                        idName={'profissaoID'}
+                                                        value={values.resposta}
+                                                        disabled={disabled}
+                                                        register={register}
+                                                        setValue={setValue}
+                                                        control={control}
+                                                        errors={errors?.profissao}
                                                     />
-                                                </LocalizationProvider>
-                                            </FormControl>
-                                        </Grid>
 
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='E-mail'
-                                            name='email'
-                                            value={data?.email}
-                                            required={true}
-                                            control={control}
-                                            error={errors.email}
-                                        />
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='CPF'
-                                            name='cpf'
-                                            mask='cpf'
-                                            value={data?.cpf}
-                                            required={true}
-                                            control={control}
-                                            error={errors.cpf}
-                                        />
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='RG'
-                                            name='rg'
-                                            mask='rg'
-                                            value={data?.rg}
-                                            required={true}
-                                            control={control}
-                                            error={errors.rg}
-                                        />
-                                        <Input
-                                            xs={12}
-                                            md={4}
-                                            title='Registro Conselho Classe'
-                                            name='registroConselhoClasse'
-                                            value={data?.registroConselhoClasse}
-                                            control={control}
-                                            error={errors.registroConselhoClasse}
-                                        />
+                                                    {/* Cargos */}
+                                                    <Grid item xs={12} md={4}>
+                                                        <FormControl fullWidth>
+                                                            <Autocomplete
+                                                                multiple
+                                                                limitTags={2}
+                                                                options={data.cargosOptions}
+                                                                getOptionLabel={option => option.nome || ''}
+                                                                defaultValue={data?.cargo ?? []}
+                                                                name={`cargo[]`}
+                                                                {...register(`cargo`, {
+                                                                    required: false
+                                                                })}
+                                                                onChange={(index, value) => {
+                                                                    const newDataCargos = value
+                                                                        ? value.map(item => {
+                                                                              return {
+                                                                                  id: item?.id,
+                                                                                  nome: item?.nome,
+                                                                                  edit: true
+                                                                              }
+                                                                          })
+                                                                        : []
+                                                                    setValue(`cargo`, newDataCargos)
+                                                                }}
+                                                                renderInput={params => (
+                                                                    <TextField
+                                                                        {...params}
+                                                                        label='Cargos'
+                                                                        placeholder='Cargos'
+                                                                        error={errors?.cargo}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+                                                </>
+                                            )}
 
-                                        {data && user.admin == 0 && (
-                                            <>
-                                                {/* Profissão */}
-                                                <Select
-                                                    title='Selecione a profissão'
-                                                    options={data.profissaoOptions}
-                                                    name={`profissao`}
-                                                    idName={'profissaoID'}
-                                                    value={values.resposta}
-                                                    disabled={disabled}
-                                                    register={register}
-                                                    setValue={setValue}
-                                                    errors={errors?.profissao}
-                                                />
-
-                                                {/* Cargos */}
+                                            {/* Botão alterar senha */}
+                                            {data && type == 'edit' && (
                                                 <Grid item xs={12} md={4}>
                                                     <FormControl fullWidth>
-                                                        <Autocomplete
-                                                            multiple
-                                                            limitTags={2}
-                                                            options={data.cargosOptions}
-                                                            getOptionLabel={option => option.nome || ''}
-                                                            defaultValue={data?.cargo ?? []}
-                                                            name={`cargo[]`}
-                                                            {...register(`cargo`, {
-                                                                required: false
-                                                            })}
-                                                            onChange={(index, value) => {
-                                                                const newDataCargos = value
-                                                                    ? value.map(item => {
-                                                                          return {
-                                                                              id: item?.id,
-                                                                              nome: item?.nome,
-                                                                              edit: true
-                                                                          }
-                                                                      })
-                                                                    : []
-                                                                setValue(`cargo`, newDataCargos)
+                                                        <Button
+                                                            variant='outlined'
+                                                            startIcon={<Icon icon='mdi:lock-reset' />}
+                                                            onClick={() => {
+                                                                // alterar estado do botão e limpar senha do register se estado for false
+                                                                setChangePasswords(!changePasswords)
+                                                                if (changePasswords) {
+                                                                    setValue('senha', null)
+                                                                    setValue('confirmarSenha', null)
+                                                                }
                                                             }}
-                                                            renderInput={params => (
-                                                                <TextField
-                                                                    {...params}
-                                                                    label='Cargos'
-                                                                    placeholder='Cargos'
-                                                                    error={errors?.cargo}
-                                                                />
-                                                            )}
-                                                        />
-                                                    </FormControl>
-                                                </Grid>
-                                            </>
-                                        )}
-
-                                        {/* Botão alterar senha */}
-                                        {data && type == 'edit' && (
-                                            <Grid item xs={12} md={4}>
-                                                <FormControl fullWidth>
-                                                    <Button
-                                                        variant='outlined'
-                                                        startIcon={<Icon icon='mdi:lock-reset' />}
-                                                        onClick={() => {
-                                                            // alterar estado do botão e limpar senha do register se estado for false
-                                                            setChangePasswords(!changePasswords)
-                                                            if (changePasswords) {
-                                                                setValue('senha', null)
-                                                                setValue('confirmarSenha', null)
-                                                            }
-                                                        }}
-                                                        // altura do botao igual aos demais campos texfield
-                                                        sx={{ height: '56px' }}
-                                                    >
-                                                        Alterar Senha
-                                                    </Button>
-                                                </FormControl>
-                                            </Grid>
-                                        )}
-
-                                        {(type == 'new' || changePasswords) && (
-                                            <>
-                                                {/* Senha */}
-                                                <Grid item xs={12} md={4}>
-                                                    <FormControl fullWidth>
-                                                        <InputLabel htmlFor='input-confirm-password'>Senha</InputLabel>
-                                                        <OutlinedInput
-                                                            label='Senha'
-                                                            id='input-password'
-                                                            type={statePassword.showPassword ? 'text' : 'password'}
-                                                            name={`senha`}
-                                                            {...register(`senha`, {
-                                                                required: type == 'new' ? true : false
-                                                            })}
-                                                            endAdornment={
-                                                                <InputAdornment position='end'>
-                                                                    <IconButton
-                                                                        edge='end'
-                                                                        onClick={handleClickShowPassword}
-                                                                    >
-                                                                        <Icon
-                                                                            icon={
-                                                                                statePassword.showPassword
-                                                                                    ? 'mdi:eye-outline'
-                                                                                    : 'mdi:eye-off-outline'
-                                                                            }
-                                                                        />
-                                                                    </IconButton>
-                                                                </InputAdornment>
-                                                            }
-                                                        />
-                                                    </FormControl>
-                                                </Grid>
-
-                                                {/* Confirma senha */}
-                                                <Grid item xs={12} md={4}>
-                                                    <FormControl fullWidth>
-                                                        <InputLabel
-                                                            htmlFor='input-confirm-password'
-                                                            color={errors.confirmarSenha?.message ? 'error' : ''}
+                                                            // altura do botao igual aos demais campos texfield
+                                                            sx={{ height: '56px' }}
                                                         >
-                                                            Confirmar Senha
-                                                        </InputLabel>
-                                                        <OutlinedInput
-                                                            label='Confirmar Senha'
-                                                            id='input-password'
-                                                            type={
-                                                                statePassword.showConfirmPassword ? 'text' : 'password'
-                                                            }
-                                                            name={`confirmarSenha`}
-                                                            {...register(`confirmarSenha`, {
-                                                                required: type == 'new' ? true : false,
-                                                                // validar senha e confirmação de senha somente se houver valor em senha
-                                                                validate: value =>
-                                                                    value === watch('senha') ||
-                                                                    'As senhas não conferem.'
-                                                            })}
-                                                            error={errors.confirmarSenha}
-                                                            endAdornment={
-                                                                <InputAdornment position='end'>
-                                                                    <IconButton
-                                                                        edge='end'
-                                                                        onClick={handleClickShowConfirmPassword}
-                                                                    >
-                                                                        <Icon
-                                                                            icon={
-                                                                                statePassword.showConfirmPassword
-                                                                                    ? 'mdi:eye-outline'
-                                                                                    : 'mdi:eye-off-outline'
-                                                                            }
-                                                                        />
-                                                                    </IconButton>
-                                                                </InputAdornment>
-                                                            }
-                                                        />
-                                                        {errors.confirmarSenha?.message && (
-                                                            <Typography variant='body2' color='error'>
-                                                                {errors.confirmarSenha?.message}
-                                                            </Typography>
-                                                        )}
+                                                            Alterar Senha
+                                                        </Button>
                                                     </FormControl>
                                                 </Grid>
-                                            </>
-                                        )}
+                                            )}
+
+                                            {(type == 'new' || changePasswords) && (
+                                                <>
+                                                    {/* Senha */}
+                                                    <Grid item xs={12} md={4}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel htmlFor='input-confirm-password'>
+                                                                Senha
+                                                            </InputLabel>
+                                                            <OutlinedInput
+                                                                label='Senha'
+                                                                id='input-password'
+                                                                type={statePassword.showPassword ? 'text' : 'password'}
+                                                                name={`fields.senha`}
+                                                                {...register(`fields.senha`, {
+                                                                    required: type == 'new' ? true : false
+                                                                })}
+                                                                error={errors?.fields?.senha}
+                                                                endAdornment={
+                                                                    <InputAdornment position='end'>
+                                                                        <IconButton
+                                                                            edge='end'
+                                                                            onClick={handleClickShowPassword}
+                                                                        >
+                                                                            <Icon
+                                                                                icon={
+                                                                                    statePassword.showPassword
+                                                                                        ? 'mdi:eye-outline'
+                                                                                        : 'mdi:eye-off-outline'
+                                                                                }
+                                                                            />
+                                                                        </IconButton>
+                                                                    </InputAdornment>
+                                                                }
+                                                            />
+                                                        </FormControl>
+                                                    </Grid>
+
+                                                    {/* Confirma senha */}
+                                                    <Grid item xs={12} md={4}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel
+                                                                htmlFor='input-confirm-password'
+                                                                color={errors.confirmarSenha?.message ? 'error' : ''}
+                                                            >
+                                                                Confirmar Senha
+                                                            </InputLabel>
+                                                            <OutlinedInput
+                                                                label='Confirmar Senha'
+                                                                id='input-password'
+                                                                type={
+                                                                    statePassword.showConfirmPassword
+                                                                        ? 'text'
+                                                                        : 'password'
+                                                                }
+                                                                name={`fields.confirmarSenha`}
+                                                                {...register(`fields.confirmarSenha`, {
+                                                                    required: type == 'new' ? true : false,
+                                                                    // validar senha e confirmação de senha somente se houver valor em senha
+                                                                    validate: value =>
+                                                                        value === watch('fields.senha') ||
+                                                                        'As senhas não conferem.'
+                                                                })}
+                                                                error={errors.confirmarSenha}
+                                                                endAdornment={
+                                                                    <InputAdornment position='end'>
+                                                                        <IconButton
+                                                                            edge='end'
+                                                                            onClick={handleClickShowConfirmPassword}
+                                                                        >
+                                                                            <Icon
+                                                                                icon={
+                                                                                    statePassword.showConfirmPassword
+                                                                                        ? 'mdi:eye-outline'
+                                                                                        : 'mdi:eye-off-outline'
+                                                                                }
+                                                                            />
+                                                                        </IconButton>
+                                                                    </InputAdornment>
+                                                                }
+                                                            />
+                                                            {errors.confirmarSenha?.message && (
+                                                                <Typography variant='body2' color='error'>
+                                                                    {errors.confirmarSenha?.message}
+                                                                </Typography>
+                                                            )}
+                                                        </FormControl>
+                                                    </Grid>
+                                                </>
+                                            )}
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </CardContent>
@@ -752,417 +761,22 @@ const FormUsuario = ({ id }) => {
                                                         />
                                                     </Grid>
                                                 </Grid>
+
+                                                {/* Permissões da unidade */}
+                                                <Permissions
+                                                    unit={unit}
+                                                    indexUnit={indexUnit}
+                                                    expanded={expanded}
+                                                    expandedItem={expandedItem}
+                                                    handleChange={handleChange}
+                                                    handleChangeItem={handleChangeItem}
+                                                    control={control}
+                                                    register={register}
+                                                    setValue={setValue}
+                                                />
                                             </CardContent>
 
-                                            {/* Permissões da unidade */}
-                                            <CardContent>
-                                                {/* Accordion */}
-                                                <Accordion
-                                                    expanded={expanded === `panel-${indexUnit}`}
-                                                    onChange={handleChange(`panel-${indexUnit}`)}
-                                                    sx={{ border: '1px solid #e0e0e0', boxShadow: 'none' }}
-                                                >
-                                                    <AccordionSummary
-                                                        id='controlled-panel-header-1'
-                                                        aria-controls='controlled-panel-content-1'
-                                                        expandIcon={<Icon icon='mdi:chevron-down' />}
-                                                        sx={{ display: 'flex', alignItems: 'center' }}
-                                                    >
-                                                        <Typography>Permissões de Acesso</Typography>
-                                                    </AccordionSummary>
-                                                    <AccordionDetails>
-                                                        {unit.menu &&
-                                                            unit.menu.map((menuGroup, indexMenuGroup) => (
-                                                                <>
-                                                                    {/* Divisor */}
-                                                                    <Grid container spacing={5} sx={{ my: 2 }}>
-                                                                        <Grid item xs={12} md={8}>
-                                                                            <Typography variant='body2'>
-                                                                                {menuGroup.nome}
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                        <Grid item xs={12} md={1}>
-                                                                            <Typography
-                                                                                variant='body2'
-                                                                                sx={{ textAlign: 'center' }}
-                                                                            >
-                                                                                Ler
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                        <Grid item xs={12} md={1}>
-                                                                            <Typography
-                                                                                variant='body2'
-                                                                                sx={{ textAlign: 'center' }}
-                                                                            >
-                                                                                Inserir
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                        <Grid item xs={12} md={1}>
-                                                                            <Typography
-                                                                                variant='body2'
-                                                                                sx={{ textAlign: 'center' }}
-                                                                            >
-                                                                                Editar
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                        <Grid item xs={12} md={1}>
-                                                                            <Typography
-                                                                                variant='body2'
-                                                                                sx={{ textAlign: 'center' }}
-                                                                            >
-                                                                                Excluir
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                    </Grid>
-                                                                    {menuGroup.menu &&
-                                                                        menuGroup.menu.map((menu, indexMenu) => (
-                                                                            <>
-                                                                                {menu.rota ? (
-                                                                                    <>
-                                                                                        {/* Menu com rota => seleciona permissões */}
-                                                                                        <Grid
-                                                                                            container
-                                                                                            spacing={5}
-                                                                                            sx={{ my: 2 }}
-                                                                                        >
-                                                                                            {/* Menu título */}
-                                                                                            <Grid item xs={12} md={8}>
-                                                                                                <Typography variant='subtitle1'>
-                                                                                                    {menu.nome}
-                                                                                                </Typography>
-                                                                                            </Grid>
-
-                                                                                            {/* Hidden rota */}
-                                                                                            <input
-                                                                                                type='hidden'
-                                                                                                value={menu.rota}
-                                                                                                name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].rota`}
-                                                                                                {...register(
-                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].rota`
-                                                                                                )}
-                                                                                            />
-
-                                                                                            {/* Ler */}
-                                                                                            <Grid
-                                                                                                item
-                                                                                                xs={12}
-                                                                                                md={1}
-                                                                                                sx={{
-                                                                                                    textAlign: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Checkbox
-                                                                                                    defaultChecked={
-                                                                                                        menu.ler
-                                                                                                    }
-                                                                                                    name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].ler`}
-                                                                                                    {...register(
-                                                                                                        `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].ler`
-                                                                                                    )}
-                                                                                                    onChange={e => {
-                                                                                                        setValue(
-                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].edit`,
-                                                                                                            true
-                                                                                                        )
-                                                                                                    }}
-                                                                                                />
-                                                                                            </Grid>
-
-                                                                                            {/* Inserir */}
-                                                                                            <Grid
-                                                                                                item
-                                                                                                xs={12}
-                                                                                                md={1}
-                                                                                                sx={{
-                                                                                                    textAlign: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Checkbox
-                                                                                                    defaultChecked={
-                                                                                                        menu.inserir
-                                                                                                    }
-                                                                                                    name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].inserir`}
-                                                                                                    {...register(
-                                                                                                        `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].inserir`
-                                                                                                    )}
-                                                                                                    onChange={e => {
-                                                                                                        setValue(
-                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].edit`,
-                                                                                                            true
-                                                                                                        )
-                                                                                                    }}
-                                                                                                />
-                                                                                            </Grid>
-
-                                                                                            {/* Editar */}
-                                                                                            <Grid
-                                                                                                item
-                                                                                                xs={12}
-                                                                                                md={1}
-                                                                                                sx={{
-                                                                                                    textAlign: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Checkbox
-                                                                                                    defaultChecked={
-                                                                                                        menu.editar
-                                                                                                    }
-                                                                                                    name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].editar`}
-                                                                                                    {...register(
-                                                                                                        `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].editar`
-                                                                                                    )}
-                                                                                                    onChange={e => {
-                                                                                                        setValue(
-                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].edit`,
-                                                                                                            true
-                                                                                                        )
-                                                                                                    }}
-                                                                                                />
-                                                                                            </Grid>
-
-                                                                                            {/* Excluir */}
-                                                                                            <Grid
-                                                                                                item
-                                                                                                xs={12}
-                                                                                                md={1}
-                                                                                                sx={{
-                                                                                                    textAlign: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Checkbox
-                                                                                                    defaultChecked={
-                                                                                                        menu.excluir
-                                                                                                    }
-                                                                                                    name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].excluir`}
-                                                                                                    {...register(
-                                                                                                        `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].excluir`
-                                                                                                    )}
-                                                                                                    onChange={e => {
-                                                                                                        setValue(
-                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].edit`,
-                                                                                                            true
-                                                                                                        )
-                                                                                                    }}
-                                                                                                />
-                                                                                            </Grid>
-                                                                                        </Grid>
-                                                                                    </>
-                                                                                ) : (
-                                                                                    <>
-                                                                                        {/* Menu sem rota => accordion pra abrir submenu */}
-                                                                                        <Accordion
-                                                                                            expanded={
-                                                                                                expandedItem ===
-                                                                                                `item-${indexUnit}-${indexMenuGroup}-${indexMenu}`
-                                                                                            }
-                                                                                            onChange={handleChangeItem(
-                                                                                                `item-${indexUnit}-${indexMenuGroup}-${indexMenu}`
-                                                                                            )}
-                                                                                            sx={{
-                                                                                                border: '1px solid #e0e0e0',
-                                                                                                boxShadow: 'none'
-                                                                                            }}
-                                                                                        >
-                                                                                            <AccordionSummary
-                                                                                                id='controlled-panel-header-1'
-                                                                                                aria-controls='controlled-panel-content-1'
-                                                                                                expandIcon={
-                                                                                                    <Icon icon='mdi:chevron-down' />
-                                                                                                }
-                                                                                                sx={{
-                                                                                                    display: 'flex',
-                                                                                                    alignItems: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <Typography>
-                                                                                                    {menu.nome}
-                                                                                                </Typography>
-                                                                                            </AccordionSummary>
-                                                                                            <AccordionDetails>
-                                                                                                {menu.submenu &&
-                                                                                                    menu.submenu.map(
-                                                                                                        (
-                                                                                                            submenu,
-                                                                                                            indexSubmenu
-                                                                                                        ) => (
-                                                                                                            <>
-                                                                                                                {/* Submenu */}
-                                                                                                                <Grid
-                                                                                                                    container
-                                                                                                                    spacing={
-                                                                                                                        5
-                                                                                                                    }
-                                                                                                                    sx={{
-                                                                                                                        my: 2
-                                                                                                                    }}
-                                                                                                                >
-                                                                                                                    {/* Submenu título */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            8
-                                                                                                                        }
-                                                                                                                    >
-                                                                                                                        <Typography variant='subtitle1'>
-                                                                                                                            {
-                                                                                                                                submenu.nome
-                                                                                                                            }
-                                                                                                                        </Typography>
-                                                                                                                    </Grid>
-
-                                                                                                                    {/* Hidden rota */}
-                                                                                                                    <input
-                                                                                                                        type='hidden'
-                                                                                                                        value={
-                                                                                                                            submenu.rota
-                                                                                                                        }
-                                                                                                                        name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].rota`}
-                                                                                                                        {...register(
-                                                                                                                            `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].rota`
-                                                                                                                        )}
-                                                                                                                    />
-
-                                                                                                                    {/* Ler */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            1
-                                                                                                                        }
-                                                                                                                        sx={{
-                                                                                                                            textAlign:
-                                                                                                                                'center'
-                                                                                                                        }}
-                                                                                                                    >
-                                                                                                                        <Checkbox
-                                                                                                                            defaultChecked={
-                                                                                                                                submenu.ler
-                                                                                                                            }
-                                                                                                                            name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].ler`}
-                                                                                                                            {...register(
-                                                                                                                                `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].ler`
-                                                                                                                            )}
-                                                                                                                            onChange={e => {
-                                                                                                                                setValue(
-                                                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`,
-                                                                                                                                    true
-                                                                                                                                )
-                                                                                                                            }}
-                                                                                                                        />
-                                                                                                                    </Grid>
-
-                                                                                                                    {/* Inserir */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            1
-                                                                                                                        }
-                                                                                                                        sx={{
-                                                                                                                            textAlign:
-                                                                                                                                'center'
-                                                                                                                        }}
-                                                                                                                    >
-                                                                                                                        <Checkbox
-                                                                                                                            defaultChecked={
-                                                                                                                                submenu.inserir
-                                                                                                                            }
-                                                                                                                            name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].inserir`}
-                                                                                                                            {...register(
-                                                                                                                                `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].inserir`
-                                                                                                                            )}
-                                                                                                                            onChange={e => {
-                                                                                                                                setValue(
-                                                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`,
-                                                                                                                                    true
-                                                                                                                                )
-                                                                                                                            }}
-                                                                                                                        />
-                                                                                                                    </Grid>
-
-                                                                                                                    {/* Editar */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            1
-                                                                                                                        }
-                                                                                                                        sx={{
-                                                                                                                            textAlign:
-                                                                                                                                'center'
-                                                                                                                        }}
-                                                                                                                    >
-                                                                                                                        <Checkbox
-                                                                                                                            defaultChecked={
-                                                                                                                                submenu.editar
-                                                                                                                            }
-                                                                                                                            name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].editar`}
-                                                                                                                            {...register(
-                                                                                                                                `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].editar`
-                                                                                                                            )}
-                                                                                                                            onChange={e => {
-                                                                                                                                setValue(
-                                                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`,
-                                                                                                                                    true
-                                                                                                                                )
-                                                                                                                            }}
-                                                                                                                        />
-                                                                                                                    </Grid>
-
-                                                                                                                    {/* Excluir */}
-                                                                                                                    <Grid
-                                                                                                                        item
-                                                                                                                        xs={
-                                                                                                                            12
-                                                                                                                        }
-                                                                                                                        md={
-                                                                                                                            1
-                                                                                                                        }
-                                                                                                                        sx={{
-                                                                                                                            textAlign:
-                                                                                                                                'center'
-                                                                                                                        }}
-                                                                                                                    >
-                                                                                                                        <Checkbox
-                                                                                                                            defaultChecked={
-                                                                                                                                submenu.excluir
-                                                                                                                            }
-                                                                                                                            name={`units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].excluir`}
-                                                                                                                            {...register(
-                                                                                                                                `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].excluir`
-                                                                                                                            )}
-                                                                                                                            onChange={e => {
-                                                                                                                                setValue(
-                                                                                                                                    `units[${indexUnit}].menuGroup[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`,
-                                                                                                                                    true
-                                                                                                                                )
-                                                                                                                            }}
-                                                                                                                        />
-                                                                                                                    </Grid>
-                                                                                                                </Grid>
-                                                                                                            </>
-                                                                                                        )
-                                                                                                    )}
-                                                                                            </AccordionDetails>
-                                                                                        </Accordion>
-                                                                                    </>
-                                                                                )}
-                                                                            </>
-                                                                        ))}
-                                                                </>
-                                                            ))}
-                                                    </AccordionDetails>
-                                                </Accordion>
-                                            </CardContent>
+                                            <CardContent>{/* Accordion */}</CardContent>
                                         </Card>
                                     </>
                                 ))}

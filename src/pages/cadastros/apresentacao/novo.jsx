@@ -6,7 +6,14 @@ const ApresentacaoNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Apresentação')
+        setTitle({
+            title: 'Apresentação',
+            subtitle: {
+                id: null,
+                count: null,
+                new: true
+            }
+        })
     }, [])
 
     return <FormApresentacao />

@@ -22,7 +22,7 @@ const FormItem = ({ id }) => {
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
-    const { title, setSubtitle } = useContext(ParametersContext)
+    const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
 
     const {
@@ -92,7 +92,6 @@ const FormItem = ({ id }) => {
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     useEffect(() => {
-        setSubtitle(`ID: ${id}`)
         getData()
 
         //? Seta error nos campos obrigatórios
@@ -120,7 +119,7 @@ const FormItem = ({ id }) => {
                         <CardContent>
                             <Grid container spacing={5}>
                                 <Input
-                                    xs={12}
+                                    xs={11}
                                     md={11}
                                     title='Nome'
                                     name='fields.nome'
@@ -129,7 +128,7 @@ const FormItem = ({ id }) => {
                                     errors={errors?.fields?.nome}
                                 />
                                 <Check
-                                    xs={12}
+                                    xs={1}
                                     md={1}
                                     title='Ativo'
                                     name='fields.status'
@@ -147,6 +146,7 @@ const FormItem = ({ id }) => {
                                     options={data.formulario.options}
                                     register={register}
                                     setValue={setValue}
+                                    control={control}
                                     errors={errors?.formulario?.fields}
                                 />
                             </Grid>
@@ -157,7 +157,7 @@ const FormItem = ({ id }) => {
 
             <DialogForm
                 text='Tem certeza que deseja excluir?'
-                title={'Excluir ' + title}
+                title={'Excluir ' + title.title}
                 openModal={open}
                 handleClose={() => setOpen(false)}
                 handleSubmit={handleClickDelete}

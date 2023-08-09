@@ -7,7 +7,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 import Icon from 'src/@core/components/icon'
 import { api } from 'src/configs/api'
-import { Alert, Autocomplete, Box, FormControl, TextField } from '@mui/material'
+import { Alert, Autocomplete, Box, FormControl, Grid, TextField } from '@mui/material'
 import { statusDefault } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
 
@@ -56,6 +56,7 @@ const DialogFormStatus = ({
     const [historic, setHistoric] = useState(false)
     const { user, loggedUnity } = useContext(AuthContext)
     const [selectedStatus, setSelectedStatus] = useState(null)
+    const [observacao, setObservacao] = useState('')
     const [openModalConfirm, setOpenModalConfirm] = useState(false)
 
     console.log('selectedStatus: ', selectedStatus)
@@ -63,7 +64,6 @@ const DialogFormStatus = ({
     const getMovementHistory = async () => {
         try {
             await api.post(`/formularios/fornecedor/getMovementHistory/${id}`, { parFormularioID }).then(response => {
-                console.log('🚀 ~ response:', response.data)
                 setHistoric(response.data)
             })
         } catch (error) {
@@ -82,7 +82,6 @@ const DialogFormStatus = ({
     }
 
     useEffect(() => {
-        console.log('entrou no useeffect...')
         getMovementHistory()
     }, [openModalConfirm]) // Estado do modal de confirmação como dependência
 
@@ -95,27 +94,44 @@ const DialogFormStatus = ({
 
                     {/* Altera status do formulário */}
                     {canChangeStatus && (
-                        <Box>
-                            <FormControl fullWidth>
-                                <Autocomplete
-                                    options={arrStatus}
-                                    defaultValue={arrStatus.find(option => option.id === selectedStatus)}
-                                    id='autocomplete-outlined'
-                                    getOptionLabel={option => option.nome}
-                                    onChange={(event, value) => {
-                                        setSelectedStatus(value?.id)
-                                    }}
-                                    renderInput={params => (
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} md={12}>
+                                <FormControl fullWidth>
+                                    <Autocomplete
+                                        options={arrStatus}
+                                        defaultValue={arrStatus.find(option => option.id === selectedStatus)}
+                                        id='autocomplete-outlined'
+                                        getOptionLabel={option => option.nome}
+                                        onChange={(event, value) => {
+                                            setSelectedStatus(value?.id)
+                                        }}
+                                        renderInput={params => (
+                                            <TextField
+                                                {...params}
+                                                name={`formulario.status`}
+                                                label='Alterar Status do Formulário'
+                                                placeholder='Alterar Status do Formulário'
+                                            />
+                                        )}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            {selectedStatus && selectedStatus > 0 && (
+                                <Grid item xs={12} md={12}>
+                                    <FormControl fullWidth>
                                         <TextField
-                                            {...params}
-                                            name={`formulario.status`}
-                                            label='Alterar Status do Formulário'
-                                            placeholder='Alterar Status do Formulário'
+                                            id='outlined-multiline-static'
+                                            label='Observação'
+                                            multiline
+                                            rows={4}
+                                            placeholder='Observação'
+                                            variant='outlined'
+                                            onChange={e => setObservacao(e.target.value)}
                                         />
-                                    )}
-                                />
-                            </FormControl>
-                        </Box>
+                                    </FormControl>
+                                </Grid>
+                            )}
+                        </Grid>
                     )}
 
                     {/* Mensagem que não pode mais alterar pq já foi usado */}
@@ -187,6 +203,11 @@ const DialogFormStatus = ({
                                                 </Typography>
                                                 <Typography variant='caption'>{mov.unidade}</Typography>
                                             </Box>
+                                            {mov.observacao != null && (
+                                                <Box>
+                                                    <Typography variant='caption'>{mov.observacao}</Typography>
+                                                </Box>
+                                            )}
                                         </TimelineContent>
                                     </TimelineItem>
                                 ))}
@@ -204,7 +225,9 @@ const DialogFormStatus = ({
                             variant='contained'
                             color='primary'
                             onClick={() =>
-                                parFormularioID == 1 ? setOpenModalConfirm(true) : handleSubmit(selectedStatus)
+                                parFormularioID == 1
+                                    ? setOpenModalConfirm(true)
+                                    : handleSubmit(selectedStatus, observacao)
                             }
                             disabled={!selectedStatus}
                         >
@@ -224,7 +247,7 @@ const DialogFormStatus = ({
                 btnConfirm
                 btnConfirmColor='primary'
                 handleSubmit={() => {
-                    handleSubmit(selectedStatus), setOpenModalConfirm(false), setSelectedStatus(null)
+                    handleSubmit(selectedStatus, observacao), setOpenModalConfirm(false), setSelectedStatus(null)
                 }}
             />
         </>

@@ -6,7 +6,14 @@ const UnidadeNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
-        setTitle('Unidade')
+        setTitle({
+            title: 'Unidade',
+            subtitle: {
+                id: null,
+                count: null,
+                new: true
+            }
+        })
     }, [])
 
     return <FormUnidade />

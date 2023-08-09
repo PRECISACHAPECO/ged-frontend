@@ -25,7 +25,14 @@ const Cargo = () => {
         const getList = async () => {
             await api.get(currentLink).then(response => {
                 setResult(response.data)
-                setTitle('Profissão')
+                setTitle({
+                    title: 'Cargo',
+                    subtitle: {
+                        id: id,
+                        count: response.data.length,
+                        new: false
+                    }
+                })
             })
         }
         getList()

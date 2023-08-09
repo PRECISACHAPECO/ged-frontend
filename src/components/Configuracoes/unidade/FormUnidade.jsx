@@ -2,8 +2,21 @@ import Router from 'next/router'
 import { useEffect, useState, useContext, useRef } from 'react'
 import { api } from 'src/configs/api'
 import { ParametersContext } from 'src/context/ParametersContext'
+import { SettingsContext } from 'src/@core/context/settingsContext'
 import { RouteContext } from 'src/context/RouteContext'
-import { Avatar, Button, Card, CardContent, CardHeader, Grid, Typography } from '@mui/material'
+import {
+    Avatar,
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    Grid,
+    Typography,
+    Tooltip,
+    IconButton,
+    FormControl,
+    Alert
+} from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import { useForm } from 'react-hook-form'
 import Loading from 'src/components/Loading'
@@ -15,6 +28,7 @@ import { formatDate } from 'src/configs/conversions'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
+import Select from 'src/components/Form/Select'
 
 const FormUnidade = ({ id }) => {
     const { user, setLoggedUnity, loggedUnity } = useContext(AuthContext)
@@ -25,12 +39,16 @@ const FormUnidade = ({ id }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState()
     const [fileSelect, setFileSelect] = useState()
+    const [saving, setSaving] = useState(false)
     const [fileCurrent, setFileCurrent] = useState()
+    const [photoProfile, setPhotoProfile] = useState(null)
     //* Componente é chamado na tela da unidade e Meus dados do fornecedor
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = user.papelID === 1 ? router.pathname : '/configuracoes/unidade'
     const fileInputRef = useRef(null)
+    const { settings } = useContext(SettingsContext)
+    const mode = settings.mode
 
     const {
         trigger,
@@ -68,6 +86,8 @@ const FormUnidade = ({ id }) => {
             ...datas.fields,
             dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD')
         }
+        console.log('🚀 ~ data:', data)
+
         delete data.cabecalhoRelatorioTitle
         delete data.cabecalhoRelatorio
         const formData = new FormData()
@@ -110,7 +130,6 @@ const FormUnidade = ({ id }) => {
                 loggedUnity[key] = data[key]
             }
         }
-
         // Atualiza os dados do usuário logado no localStorage
         localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
     }
@@ -132,42 +151,72 @@ const FormUnidade = ({ id }) => {
         }
     }
 
-    // Quando clicar no botão de foto, o input de foto é clicado abrindo o seletor de arquivos
-    const handleFileClick = () => {
-        fileInputRef.current.click()
-    }
-
-    // Seleciona imagem, a mesma vai ser aplicada ao cabeçalho dos relatórios
-    const handleFileSelect = async event => {
-        const selectedFile = event.target.files[0]
-        setFileSelect(selectedFile)
-        setFileCurrent(selectedFile?.name)
-        toast.success('Imagem pré selecionada, confirme para salvar')
-    }
-
-    const imageUrl = data?.fields?.cabecalhoRelatorio || 'https://gedagro.com.br/images/report.png'
-
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     const getData = async () => {
+        console.log('no getdata....')
         if (type == 'edit') {
             try {
                 const response = await api.get(`${staticUrl}/${id}`)
                 reset(response.data)
+                console.log('🚀 ~ response.data:', response.data)
                 setData(response.data)
                 setFileCurrent(response.data.fields.cabecalhoRelatorioTitle)
+                setPhotoProfile(response.data?.fields?.cabecalhoRelatorio)
             } catch (error) {
                 console.log(error)
             }
         } else {
-            setData({}) // pra sair o loading
+            setData({}) //? Sair loading
+            reset({
+                //Todo: Pra não bugar campos quando carrega endereço pelo CEP
+                fields: {
+                    logradouro: '--',
+                    bairro: '--',
+                    cidade: '--',
+                    uf: '--'
+                }
+            })
         }
     }
     useEffect(() => {
         getData()
-        setTimeout(() => {
-            trigger()
-        }, 300)
     }, [id])
+
+    //! Crud imagem cabeçalho relatórios
+    const handleFileClick = () => {
+        fileInputRef.current.click()
+    }
+
+    // Ao selecionar a foto, ela é enviada para o servidor e salva no banco de dados, como resposta atualiza a foto atual
+    const handleFileSelect = async event => {
+        const selectedFile = event.target.files[0]
+        if (selectedFile) {
+            const formData = new FormData()
+            formData.append('fileReport', selectedFile)
+            await api
+                .post(`${staticUrl}/updateData/report/${id}`, formData)
+                .then(response => {
+                    setPhotoProfile(response.data)
+                    toast.success('Foto atualizada com sucesso!')
+                })
+                .catch(error => {
+                    console.log(error)
+                    toast.error('Erro ao atualizar foto, tente novamente!')
+                })
+        }
+    }
+
+    // Remove a imagen
+    const handleDeleteImage = async () => {
+        try {
+            await api.delete(`${staticUrl}/fileReport/${id}`)
+            setPhotoProfile(null)
+            toast.success('Foto removida com sucesso!')
+        } catch (error) {
+            console.log(error)
+            toast.error('Erro ao remover foto, tente novamente!')
+        }
+    }
 
     return (
         <>
@@ -338,71 +387,118 @@ const FormUnidade = ({ id }) => {
                         </form>
                     </Card>
 
-                    <Card sx={{ mt: 4 }}>
-                        <CardHeader title='Dados do relatório' />
-                        <CardContent>
-                            <Grid container spacing={4}>
-                                <Grid item xs={12} md={8}>
-                                    <Input
-                                        xs={12}
-                                        md={12}
-                                        title='Titulo do relatório'
-                                        name='fields.tituloRelatorio'
-                                        required={false}
-                                        register={register}
-                                        control={control}
-                                        errors={errors?.fields?.tituloRelatorio}
-                                    />
-                                    <Grid item xs={12} md={12} sx={{ my: 1, position: 'relative' }}>
-                                        <input
-                                            type='file'
-                                            ref={fileInputRef}
-                                            style={{ display: 'none' }}
-                                            onChange={handleFileSelect}
-                                        />
-                                        <Button
-                                            onClick={handleFileClick}
-                                            variant='contained'
-                                            sx={{ padding: 4, width: '100%', mt: 6 }}
-                                            startIcon={<Icon icon='material-symbols:upload' />}
+                    {/* Parâmetros da unidade */}
+                    {user.admin == 1 && type == 'edit' && (
+                        <Card sx={{ mt: 4 }}>
+                            <CardHeader title='Parâmetros' />
+                            <CardContent>
+                                <Grid container spacing={8}>
+                                    <Grid item xs={12} md={2}>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            md={12}
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                height: '140px',
+                                                position: 'relative',
+                                                border: `${
+                                                    mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'
+                                                }`,
+                                                borderRadius: '8px'
+                                            }}
                                         >
-                                            {!data?.fields?.cabecalhoRelatorio && !fileSelect?.name
-                                                ? 'Nenhum arquivo selecionado'
-                                                : 'Trocar Imagem'}
-                                        </Button>
-                                        {fileCurrent && (
-                                            <p
-                                                className='absolute top-[79px] text-slate-800 left-0 text-[10px] w-[800px]'
-                                                style={{ textTransform: 'none' }}
+                                            {photoProfile && (
+                                                <Tooltip title='Apagar foto do perfil' placement='top'>
+                                                    <IconButton
+                                                        size='small'
+                                                        sx={{
+                                                            position: 'absolute',
+                                                            top: '8px',
+                                                            right: '8px',
+                                                            zIndex: '20',
+                                                            color: 'white',
+                                                            opacity: '0.8',
+                                                            backgroundColor: '#FF4D49',
+                                                            '&:hover': {
+                                                                backgroundColor: '#FF4D49',
+                                                                opacity: '1'
+                                                            }
+                                                        }}
+                                                        onClick={handleDeleteImage}
+                                                    >
+                                                        <Icon icon='material-symbols:delete-outline' />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )}
+
+                                            <Tooltip
+                                                title={photoProfile ? 'Alterar foto' : 'Inserir foto'}
+                                                placement='top'
                                             >
-                                                {fileCurrent}
-                                            </p>
-                                        )}
+                                                <FormControl
+                                                    sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        height: '100%',
+                                                        width: '100%'
+                                                    }}
+                                                >
+                                                    <input
+                                                        type='file'
+                                                        ref={fileInputRef}
+                                                        style={{ display: 'none' }}
+                                                        onChange={handleFileSelect}
+                                                    />
+                                                    <Avatar
+                                                        variant='rounded'
+                                                        alt='Imagem do cabeçalho do relatório'
+                                                        sx={{
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            cursor: 'pointer'
+                                                        }}
+                                                        onClick={handleFileClick}
+                                                        src={photoProfile ?? 'https://gedagro.com.br/images/report.png'}
+                                                    />
+                                                </FormControl>
+                                            </Tooltip>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} md={10}>
+                                        <Grid container spacing={4}>
+                                            <Input
+                                                xs={12}
+                                                md={12}
+                                                title='Título do relatório'
+                                                name='fields.tituloRelatorio'
+                                                required={false}
+                                                register={register}
+                                                control={control}
+                                                errors={errors?.fields?.tituloRelatorio}
+                                            />
+
+                                            <Select
+                                                xs={12}
+                                                md={12}
+                                                multiple
+                                                title='Extensões de Arquivos Permitidas'
+                                                name={`fields.extensoes`}
+                                                options={data.fields.allExtensions}
+                                                value={data.fields.extensoes}
+                                                register={register}
+                                                setValue={setValue}
+                                                control={control}
+                                            />
+                                        </Grid>
                                     </Grid>
                                 </Grid>
-                                {/* Imagem */}
-                                <Grid item xs={12} md={4}>
-                                    <div
-                                        className={`${
-                                            data?.fields?.cabecalhoRelatorio ? 'cursor-pointer ' : ''
-                                        }  w-full h-full border border-black/10 rounded-2xl`}
-                                    >
-                                        <Avatar
-                                            onClick={() => {
-                                                data?.fields?.cabecalhoRelatorio
-                                                    ? window.open(data?.fields?.cabecalhoRelatorio, '_blank')
-                                                    : null
-                                            }}
-                                            variant='rounded'
-                                            alt='magem relatório'
-                                            sx={{ width: '100%', height: '100%' }}
-                                            src={imageUrl}
-                                        />
-                                    </div>
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    )}
                     {type === 'edit' && data && (
                         <Typography variant='caption' sx={{ display: 'flex', justifyContent: 'end', p: 4 }}>
                             Data de cadastro:

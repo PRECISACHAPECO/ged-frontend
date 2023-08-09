@@ -17,6 +17,7 @@ const DateField = ({
     errors,
     control // Add 'control' prop to receive the react-hook-form control object
 }) => {
+    console.log('🚀 ~ type:', type)
     const formatDate = dateString => {
         const date = new Date(dateString)
         const day = date.getDate().toString().padStart(2, '0')
@@ -39,7 +40,7 @@ const DateField = ({
                             defaultValue={value ? formatDate(value) : ''}
                             onChange={e => {
                                 field.onChange(e) // Manually update the field value
-                                setDateFormat(typeValidation, type, e.target.value, daysValidation)
+                                if (typeValidation) setDateFormat(typeValidation, type, e.target.value, daysValidation)
                             }}
                             variant='outlined'
                             fullWidth
@@ -47,8 +48,8 @@ const DateField = ({
                                 shrink: true
                             }}
                             inputProps={{
-                                min: dateStatus[type]?.dataIni,
-                                max: dateStatus[type]?.dataFim
+                                min: dateStatus?.[type]?.dataIni,
+                                max: dateStatus?.[type]?.dataFim
                             }}
                         />
                     )}

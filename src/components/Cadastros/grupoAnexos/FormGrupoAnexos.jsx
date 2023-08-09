@@ -163,7 +163,7 @@ const FormGrupoAnexos = ({ id }) => {
                             <CardContent>
                                 <Grid container spacing={4}>
                                     <Input
-                                        xs={12}
+                                        xs={11}
                                         md={11}
                                         title='Nome'
                                         name='fields.nome'
@@ -173,13 +173,23 @@ const FormGrupoAnexos = ({ id }) => {
                                     />
 
                                     <Check
-                                        xs={12}
+                                        xs={1}
                                         md={1}
                                         title='Ativo'
                                         name='fields.status'
                                         value={data.fields.status}
                                         typePage={type}
                                         register={register}
+                                    />
+
+                                    <Input
+                                        xs={12}
+                                        md={12}
+                                        title='Descrição'
+                                        name='fields.descricao'
+                                        required={false}
+                                        control={control}
+                                        errors={errors?.fields?.descricao}
                                     />
 
                                     <Select
@@ -194,6 +204,7 @@ const FormGrupoAnexos = ({ id }) => {
                                         options={data.formulario.options}
                                         register={register}
                                         setValue={setValue}
+                                        control={control}
                                         errors={errors?.formulario?.fields}
                                     />
                                 </Grid>
@@ -228,7 +239,7 @@ const FormGrupoAnexos = ({ id }) => {
                                         />
 
                                         <Check
-                                            xs={12}
+                                            xs={4}
                                             md={1}
                                             title='Obrigatório'
                                             index={index}
@@ -239,9 +250,9 @@ const FormGrupoAnexos = ({ id }) => {
                                         />
 
                                         <Check
-                                            xs={12}
+                                            xs={4}
                                             md={1}
-                                            title='Status'
+                                            title='Ativo'
                                             index={index}
                                             name={`items[${index}].status`}
                                             value={item.status}
@@ -250,7 +261,7 @@ const FormGrupoAnexos = ({ id }) => {
                                         />
 
                                         <Remove
-                                            xs={12}
+                                            xs={4}
                                             md={1}
                                             title='Remover'
                                             index={index}
@@ -282,7 +293,7 @@ const FormGrupoAnexos = ({ id }) => {
             {/* Modal excluir */}
             <DialogForm
                 text='Tem certeza que deseja excluir?'
-                title={'Excluir ' + title}
+                title={'Excluir ' + title.title}
                 openModal={openDelete}
                 handleClose={() => setOpenDelete(false)}
                 handleSubmit={handleDelete}

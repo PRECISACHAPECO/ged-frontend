@@ -123,7 +123,7 @@ const FormTipoVeiculo = ({ id }) => {
                         <CardContent>
                             <Grid container spacing={5}>
                                 <Input
-                                    xs={12}
+                                    xs={11}
                                     md={11}
                                     title='Nome'
                                     name='fields.nome'
@@ -132,7 +132,7 @@ const FormTipoVeiculo = ({ id }) => {
                                     errors={errors?.fields?.nome}
                                 />
                                 <Check
-                                    xs={12}
+                                    xs={1}
                                     md={1}
                                     title='Ativo'
                                     name='fields.status'
@@ -147,7 +147,7 @@ const FormTipoVeiculo = ({ id }) => {
             )}
             <DialogForm
                 text='Tem certeza que deseja excluir?'
-                title={'Excluir ' + title}
+                title={'Excluir ' + title.title}
                 openModal={open}
                 handleClose={() => setOpen(false)}
                 handleSubmit={handleClickDelete}

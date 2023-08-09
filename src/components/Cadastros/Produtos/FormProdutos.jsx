@@ -150,7 +150,7 @@ const FormProdutos = ({ id }) => {
                                     errors={errors?.fields?.unidadeMedida}
                                 />
                                 <Check
-                                    xs={12}
+                                    xs={2}
                                     md={1}
                                     title='Ativo'
                                     name='fields.status'
@@ -165,7 +165,7 @@ const FormProdutos = ({ id }) => {
             )}
             <DialogForm
                 text='Tem certeza que deseja excluir?'
-                title={'Excluir ' + title}
+                title={'Excluir ' + title.title}
                 openModal={open}
                 handleClose={() => setOpen(false)}
                 handleSubmit={handleClickDelete}

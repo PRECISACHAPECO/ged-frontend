@@ -16,14 +16,20 @@ const Item = () => {
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
-    const { setTitle, setSubtitle } = useContext(ParametersContext)
+    const { setTitle } = useContext(ParametersContext)
     const { id } = useContext(RouteContext)
 
     const getList = async () => {
         await api.get(currentLink).then(response => {
             setResult(response.data)
-            setTitle('Item')
-            setSubtitle(id ? `ID: ${id}` : `Total de registros: ${response.data.length}`)
+            setTitle({
+                title: 'Item',
+                subtitle: {
+                    id: id,
+                    count: response.data.length,
+                    new: false
+                }
+            })
         })
     }
 
