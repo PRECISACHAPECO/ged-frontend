@@ -464,23 +464,11 @@ const FormRecebimentoMp = ({ id }) => {
                             btnStatus={type == 'edit' ? true : false}
                             handleBtnStatus={() => setOpenModalStatus(true)}
                             type={type}
+                            status={status}
                         />
 
                         {/* Header */}
                         <CardContent>
-                            {/* Status */}
-                            <Box sx={{ mb: 4 }}>
-                                <Box display='flex' alignItems='center' justifyContent='flex-end'>
-                                    <CustomChip
-                                        size='small'
-                                        skin='light'
-                                        color={status?.color ?? 'primary'}
-                                        label={status?.title ?? 'Novo preenchimento'}
-                                        sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-                                    />
-                                </Box>
-                            </Box>
-
                             <Fields
                                 register={register}
                                 errors={errors}
@@ -588,7 +576,7 @@ const FormRecebimentoMp = ({ id }) => {
                                                 </Typography>
                                                 <Input
                                                     title='Observação (opcional)'
-                                                    name='obs'
+                                                    name='info.obs'
                                                     multiline
                                                     rows={4}
                                                     value={info.obs}
