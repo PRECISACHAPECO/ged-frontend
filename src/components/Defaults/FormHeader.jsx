@@ -199,10 +199,9 @@ const FormHeader = ({
                             </Box>
                         )}
                     </Box>
-
                     <Box sx={{ display: 'flex', gap: '8px' }}>
                         {/* Imprimir com 1 opção */}
-                        {btnPrint && dataReports.length === 1 && (
+                        {btnPrint && dataReports.length === 1 && matches && (
                             <Button
                                 id='fade-button'
                                 color='primary'
@@ -221,7 +220,7 @@ const FormHeader = ({
                             </Button>
                         )}
                         {/* Imprimir com +1 opção (dropdown) */}
-                        {btnPrint && dataReports.length > 1 && (
+                        {btnPrint && dataReports.length > 1 && matches && (
                             <Box>
                                 <Button
                                     id='fade-button'
@@ -270,9 +269,10 @@ const FormHeader = ({
                                 size='medium'
                                 color='primary'
                                 disabled={disabled || disabledSend}
-                                startIcon={<Icon icon={iconConclusion ?? 'carbon:send-filled'} />}
+                                sx={{ display: 'flex', gap: 2 }}
                             >
-                                {titleConclusion}
+                                <Icon icon={iconConclusion ?? 'carbon:send-filled'} />
+                                <span className='hidden sm:block'>{titleConclusion}</span>
                             </Button>
                         )}
 
@@ -293,9 +293,9 @@ const FormHeader = ({
                                 ) {
                                     return null
                                 }
-                                // if (item.id === 2 && !btnBackToTop) {
-                                //     return null
-                                // }
+                                if (item.id === 2 && !matches) {
+                                    return null
+                                }
 
                                 if (item.id === 2 && !btnPrint) {
                                     return null

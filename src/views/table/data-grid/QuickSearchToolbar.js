@@ -18,13 +18,13 @@ const QuickSearchToolbar = (props) => {
             sx={{
                 display: 'flex',
                 flexDirection: 'row',
-                flexWrap: 'wrap',
+                gap: 2,
                 alignItems: 'baseline',
                 justifyContent: 'space-between',
                 p: theme => theme.spacing(8, 0, 0, 0),
             }}
         >
-            <Box sx={{ display: 'flex', gap: '8px', textAlig: "end", width: '50%' }}>
+            <Box sx={{ display: 'flex', gap: '8px', textAlig: "end" }}>
                 <TextField
                     size='medium'
                     value={props.value}
