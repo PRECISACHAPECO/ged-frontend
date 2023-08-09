@@ -96,6 +96,7 @@ const FormRecebimentoMp = ({ id }) => {
     const { setTitle, setStorageId, getStorageId } = useContext(ParametersContext)
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
+    console.log('🚀 ~~~ type:', type, id)
     const staticUrl = router.pathname
 
     const {
@@ -194,12 +195,17 @@ const FormRecebimentoMp = ({ id }) => {
     const getNewData = () => {
         try {
             setLoading(true)
-            api.post(`${staticUrl}/getNewData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
-                setFields(response.data.fields)
-                setFieldsProducts(response.data.fieldsProducts)
-                setDataProducts(response.data.dataProducts)
+            api.post(`${backRoute(staticUrl)}/new/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
+                console.log('getNewData: ', response.data)
+
+                setField(response.data.fields)
+                setProducts(response.data.products)
+                setFieldsProduct(response.data.fieldsProduct)
                 setBlocos(response.data.blocos)
                 setInfo(response.data.info)
+
+                //* Insere os dados no formulário
+                reset(response.data)
 
                 setCanEdit({
                     status: true,
@@ -221,16 +227,14 @@ const FormRecebimentoMp = ({ id }) => {
             api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID }).then(response => {
                 console.log('getData: ', response.data)
 
-                reset(response.data) //? Insere valores no formulário
-
                 setField(response.data.fields)
                 setProducts(response.data.products)
-                // setData(response.data.data)
                 setFieldsProduct(response.data.fieldsProduct)
-                // setDataProducts(response.data.dataProducts)
                 setBlocos(response.data.blocos)
                 setInfo(response.data.info)
-                // initializeValues(response.data)
+
+                //* Insere os dados no formulário
+                reset(response.data)
 
                 let objStatus = statusDefault[response?.data?.info?.status]
                 setStatus(objStatus)
@@ -268,49 +272,6 @@ const FormRecebimentoMp = ({ id }) => {
         trigger()
 
         toast.success('Produto pré-removido. Salve para concluir!')
-    }
-
-    const initializeValues = values => {
-        values?.fields?.map(field => {
-            if (field.tipo == 'int') {
-                setValue(`header.${field.tabela}`, values.data?.[field.tabela] ? values.data?.[field.tabela] : null)
-            } else if (field.tipo == 'date') {
-                setValue(
-                    `header.${field.nomeColuna}`,
-                    new Date(values.data?.[field.nomeColuna]).toISOString().split('T')[0]
-                )
-            } else {
-                setValue(`header.${field.nomeColuna}`, values.data?.[field.nomeColuna])
-            }
-        })
-
-        // Seta autocomplete com o valor do banco em um objeto com id e nome
-        values?.dataProducts?.map((data, indexData) => {
-            values?.fieldsProducts?.map((field, indexFields) => {
-                if (field.tipo == 'int') {
-                    console.log('🚀 ~ data?.[field.tabela]:', data?.[field.tabela])
-                    setValue(
-                        `produtos[${indexData}].${field.tabela}`,
-                        data?.[field.tabela] ? data?.[field.tabela] : null
-                    )
-                } else {
-                    setValue(`produtos[${indexData}].${field.nomeColuna}`, data?.[field.nomeColuna])
-                }
-            })
-        })
-
-        // Seta bloco com o valor do banco em um objeto com id e nome
-        values?.blocos?.map((block, indexBlock) => {
-            block?.itens?.map((item, indexItem) => {
-                if (item?.resposta) {
-                    setValue(`blocos[${indexBlock}].itens[${indexItem}].resposta`, item?.resposta)
-                }
-            })
-        })
-
-        // Seta infos
-        setValue('obs', values.info?.obs)
-        setValue('status', values.info?.status)
     }
 
     const checkErrors = () => {
@@ -452,7 +413,7 @@ const FormRecebimentoMp = ({ id }) => {
                         <FormHeader
                             btnCancel
                             btnSave={info?.status < 40 || type == 'new'}
-                            btnSend={true}
+                            btnSend={type == 'edit' ? true : false}
                             btnPrint
                             generateReport={generateReport}
                             dataReports={dataReports}
