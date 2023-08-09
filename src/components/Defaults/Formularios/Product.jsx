@@ -6,8 +6,8 @@ import { cnpjMask, cellPhoneMask, cepMask, ufMask } from 'src/configs/masks'
 import Select from 'src/components/Form/Select'
 import Input from 'src/components/Form/Input'
 
-const Product = ({ field, data, indexData, disabled, control, register, setValue, errors }) => {
-    console.log('product errors: ', errors)
+const Product = ({ field, data, name, indexData, disabled, control, register, setValue, errors }) => {
+    console.log('🚀 ~ errors Product field:', errors)
 
     return (
         <>
@@ -15,7 +15,7 @@ const Product = ({ field, data, indexData, disabled, control, register, setValue
             <input
                 type='hidden'
                 name={`produtos[${indexData}].recebimentompProdutoID`}
-                defaultValue={data?.recebimentompProdutoID}
+                defaultValue={field?.recebimentompProdutoID}
                 {...register(`produtos[${indexData}].recebimentompProdutoID`)}
             />
 
@@ -26,7 +26,7 @@ const Product = ({ field, data, indexData, disabled, control, register, setValue
                     xs={12}
                     md={12}
                     title={field.nomeCampo}
-                    name={`produtos[${indexData}].${field.tabela}`}
+                    name={name}
                     value={data?.[field.tabela] ?? null}
                     multiple={false}
                     disabled={disabled}
@@ -35,7 +35,7 @@ const Product = ({ field, data, indexData, disabled, control, register, setValue
                     register={register}
                     setValue={setValue}
                     control={control}
-                    errors={errors?.produtos?.[indexData]?.[field.tabela]}
+                    errors={errors?.products?.[indexData]?.[field.tabela]}
                 />
             )}
 
@@ -43,7 +43,7 @@ const Product = ({ field, data, indexData, disabled, control, register, setValue
             {field && field.tipo === 'string' && (
                 <Input
                     title={field.nomeCampo}
-                    name={`produtos[${indexData}].${field.nomeColuna}`}
+                    name={name}
                     value={data?.[field.nomeColuna]}
                     type={field.nomeColuna}
                     disabled={disabled}

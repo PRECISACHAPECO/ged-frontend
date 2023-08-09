@@ -9,7 +9,6 @@ const PageReport = ({ children }) => {
     return (
         <div id={idPage}>
             <ButtonsReport savePdf={savePdf} />
-            {/* <HeaderReport/> */}
             {children}
         </div>
     )
