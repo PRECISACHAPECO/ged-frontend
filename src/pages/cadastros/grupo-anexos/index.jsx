@@ -3,6 +3,7 @@ import { api } from 'src/configs/api'
 import Table from 'src/components/Defaults/Table'
 import { CardContent } from '@mui/material'
 import { ParametersContext } from 'src/context/ParametersContext'
+import { AuthContext } from 'src/context/AuthContext'
 import { RouteContext } from 'src/context/RouteContext'
 import FormGrupoAnexos from 'src/components/Cadastros/grupoAnexos/FormGrupoAnexos'
 
@@ -21,11 +22,12 @@ const GrupoAnexos = () => {
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
+    const { loggedUnity } = useContext(AuthContext)
     const { setTitle } = useContext(ParametersContext)
     const { id } = useContext(RouteContext)
 
     const getList = async () => {
-        await api.get(currentLink).then(response => {
+        await api.post(currentLink, { unidadeID: loggedUnity.unidadeID }).then(response => {
             setResult(response.data)
             console.log('ta vindo', response.data)
             setTitle({
