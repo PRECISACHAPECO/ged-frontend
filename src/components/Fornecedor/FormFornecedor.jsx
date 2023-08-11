@@ -483,6 +483,10 @@ const FormFornecedor = ({ id }) => {
                 <Loading />
             ) : fieldsState ? (
                 <form onSubmit={handleDraftForm}>
+                    {unidade && (
+                        <input type='hidden' value={unidade.unidadeID} name='unidadeID' {...register(`unidadeID`)} />
+                    )}
+
                     {/* Mensagem de que não possui nenhum bloco */}
                     {blocks && blocks.length === 0 && (
                         <Alert severity='error' sx={{ mb: 2 }}>
@@ -520,15 +524,8 @@ const FormFornecedor = ({ id }) => {
                         />
 
                         <CardContent>
-                            {unidade && (
+                            {unidade && user.papelID == 2 && (
                                 <Box sx={{ mb: 4 }}>
-                                    <input
-                                        type='hidden'
-                                        value={unidade.unidadeID}
-                                        name='unidadeID'
-                                        {...register(`unidadeID`)}
-                                    />
-
                                     <Grid container spacing={4}>
                                         <Grid item xs={12} md={6}>
                                             <Typography variant='caption'>Fábrica:</Typography>
@@ -660,6 +657,7 @@ const FormFornecedor = ({ id }) => {
                 text={`Deseja realmente concluir este formulário?`}
                 info={info}
                 btnCancel
+                canChange={!hasFormPending}
                 btnConfirm
                 btnConfirmColor='primary'
                 conclusionForm={conclusionForm}

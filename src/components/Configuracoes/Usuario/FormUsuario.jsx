@@ -77,8 +77,6 @@ const FormUsuario = ({ id }) => {
         formState: { errors }
     } = useForm({})
 
-    console.log('🚀 ~ errors:', errors)
-
     data &&
         data.units &&
         data.units.map((unit, index) => {
@@ -112,8 +110,11 @@ const FormUsuario = ({ id }) => {
                 })
             } else if (type === 'edit') {
                 values['permissionUserLogged'] = user.admin
-                console.log('🚀 ~ onSubmit:', values)
-                // return
+                if (!changePasswords) {
+                    delete values.fields.senha
+                    delete values.fields.confirmarSenha
+                }
+
                 await api.post(`${staticUrl}/updateData/${id}`, values)
                 toast.success(toastMessage.successUpdate)
             }

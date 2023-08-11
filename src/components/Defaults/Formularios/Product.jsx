@@ -30,7 +30,7 @@ const Product = ({ field, data, name, indexData, disabled, control, register, se
                     value={data?.[field.tabela] ?? null}
                     multiple={false}
                     disabled={disabled}
-                    required={true}
+                    // required={field.obrigatorio == 1 ? true : false}
                     options={field.options}
                     register={register}
                     setValue={setValue}

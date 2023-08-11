@@ -27,7 +27,7 @@ const DateField = ({
     }
 
     return (
-        <Grid item xs={xs} md={md}>
+        <Grid item xs={xs} md={md} sx={{ my: 1 }}>
             <FormControl fullWidth>
                 <Controller
                     name={name}

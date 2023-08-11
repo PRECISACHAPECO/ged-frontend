@@ -33,10 +33,12 @@ const DialogFormConclusion = ({
     openModal,
     conclusionForm,
     info,
+    canChange,
     btnCancel,
     btnConfirm,
     listErrors
 }) => {
+    console.log('🚀 ~ canChange:', canChange)
     console.log('🚀 ~ DialogFormConclusion title:', title)
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState({})
@@ -57,50 +59,58 @@ const DialogFormConclusion = ({
 
                 <DialogContent>
                     <DialogContentText sx={{ mb: 3 }}>
-                        {text}
-                        {listErrors && listErrors.status && (
-                            <Alert variant='outlined' severity='error' sx={{ mt: 2 }}>
-                                Por favor, verifique os campos abaixo:
-                                <Typography variant='subtitle1' color='error' sx={{ mt: 2 }}>
-                                    {listErrors.errors.map((error, index) => (
-                                        <Typography variant='body2' color='error' key={index}>
-                                            - {error}
+                        {canChange ? (
+                            <>
+                                {text}
+                                {listErrors && listErrors.status && (
+                                    <Alert variant='outlined' severity='error' sx={{ mt: 2 }}>
+                                        Por favor, verifique os campos abaixo:
+                                        <Typography variant='subtitle1' color='error' sx={{ mt: 2 }}>
+                                            {listErrors.errors.map((error, index) => (
+                                                <Typography variant='body2' color='error' key={index}>
+                                                    - {error}
+                                                </Typography>
+                                            ))}
                                         </Typography>
-                                    ))}
-                                </Typography>
+                                    </Alert>
+                                )}
+
+                                {listErrors && !listErrors.status && (
+                                    <Alert severity='warning' sx={{ mt: 2 }}>
+                                        Após concluir o formulário, o mesmo não poderá mais ser alterado!
+                                    </Alert>
+                                )}
+
+                                <Result
+                                    title={user.papelID == 1 ? 'Resultado do Processo' : 'Observação'}
+                                    name={'status'}
+                                    value={result}
+                                    setResult={setResult}
+                                    papelID={user.papelID}
+                                    options={[
+                                        {
+                                            value: 70,
+                                            color: 'success',
+                                            label: 'Aprovado'
+                                        },
+                                        {
+                                            value: 60,
+                                            color: 'warning',
+                                            label: 'Aprovado Parcial'
+                                        },
+                                        {
+                                            value: 50,
+                                            color: 'error',
+                                            label: 'Reprovado'
+                                        }
+                                    ]}
+                                />
+                            </>
+                        ) : (
+                            <Alert severity='warning' sx={{ mb: 0 }}>
+                                O Status não pode mais ser alterado pois já está sendo utilizado em outro formulário!
                             </Alert>
                         )}
-
-                        {listErrors && !listErrors.status && (
-                            <Alert severity='warning' sx={{ mt: 2 }}>
-                                Após concluir o formulário, o mesmo não poderá mais ser alterado!
-                            </Alert>
-                        )}
-
-                        <Result
-                            title={user.papelID == 1 ? 'Resultado do Processo' : 'Observação'}
-                            name={'status'}
-                            value={result}
-                            setResult={setResult}
-                            papelID={user.papelID}
-                            options={[
-                                {
-                                    value: 70,
-                                    color: 'success',
-                                    label: 'Aprovado'
-                                },
-                                {
-                                    value: 60,
-                                    color: 'warning',
-                                    label: 'Aprovado Parcial'
-                                },
-                                {
-                                    value: 50,
-                                    color: 'error',
-                                    label: 'Reprovado'
-                                }
-                            ]}
-                        />
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions className='dialog-actions-dense'>
@@ -109,7 +119,7 @@ const DialogFormConclusion = ({
                             Fechar
                         </Button>
                     )}
-                    {btnConfirm && (
+                    {btnConfirm && canChange && (
                         <Button
                             variant='contained'
                             disabled={(listErrors && listErrors.status) || (user.papelID == 1 && !result.status)}
