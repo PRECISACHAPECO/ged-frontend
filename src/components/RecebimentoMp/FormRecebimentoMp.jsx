@@ -72,6 +72,7 @@ const FormRecebimentoMp = ({ id }) => {
     const [openModalStatus, setOpenModalStatus] = useState(false)
 
     const [field, setField] = useState([])
+    console.log('🚀 ~ field:', field)
     const [fieldsProduct, setFieldsProduct] = useState([])
     const [products, setProducts] = useState([])
     console.log('🚀 ~ products:', products)
@@ -106,6 +107,7 @@ const FormRecebimentoMp = ({ id }) => {
         getValues,
         setValue,
         control,
+        watch,
         handleSubmit,
         clearErrors,
         setError,
@@ -274,6 +276,40 @@ const FormRecebimentoMp = ({ id }) => {
         toast.success('Produto pré-removido. Salve para concluir!')
     }
 
+    const hasFornecedor = () => {
+        let hasFornecedor = false
+
+        field &&
+            field.forEach((field, index) => {
+                if (field?.nomeColuna == 'fornecedorID' && getValues(`fields[${index}].fornecedor`)) {
+                    hasFornecedor = true
+                }
+            })
+        return hasFornecedor
+    }
+
+    //? Função chamada ao clicar no botão de acessar o fornecedor selecionado
+    const getSelectedFornecedor = () => {
+        if (field) {
+            for (let index = 0; index < field.length; index++) {
+                if (field[index]?.nomeColuna === 'fornecedorID' && getValues(`fields[${index}].fornecedor`)) {
+                    return getValues(`fields[${index}].fornecedor.id`)
+                }
+            }
+        }
+        return false
+    }
+
+    let fieldFornecedor = null
+    field &&
+        field.forEach((field, index) => {
+            fieldFornecedor = watch(`fields[${index}].fornecedor`)
+        })
+
+    useEffect(() => {
+        hasFornecedor()
+    }, [fieldFornecedor])
+
     const checkErrors = () => {
         clearErrors()
         let hasErrors = false
@@ -439,6 +475,45 @@ const FormRecebimentoMp = ({ id }) => {
                                 values={field}
                                 disabled={!canEdit.status}
                             />
+                            {/* <Grid container spacing={4}>
+                                <Grid item xs={12} md={9}>
+                                </Grid>
+
+                                <Grid item xs={12} md={3}>
+                                    <Card sx={{ mb: 4 }}>
+                                        <CardContent>
+                                            <Typography color='primary' variant='subtitle1' sx={{ fontWeight: 700 }}>
+                                                Fornecedor
+                                            </Typography>
+                                            <Typography variant='subtitle1' sx={{ fontWeight: 700 }}>
+                                                Lorem ipisu uas hu shas uhusa h
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            </Grid> */}
+
+                            {/* {
+                                // Se o formulário tiver fornecedor selecionado, mostra botão com link pro fornecedor
+                                hasFornecedor() && (
+                                    <Button
+                                        variant='outlined'
+                                        color='info'
+                                        startIcon={<Icon icon='iconamoon:link-external-fill' />}
+                                        size='small'
+                                        sx={{ mt: 4 }}
+                                        onClick={() => {
+                                            //? Redireciona pro fornecedor selecionado
+                                            if (getSelectedFornecedor() > 0) {
+                                                router.push('/formularios/fornecedor/')
+                                                setId(getSelectedFornecedor())
+                                            }
+                                        }}
+                                    >
+                                        Acessar fornecedor
+                                    </Button>
+                                )
+                            } */}
                         </CardContent>
                     </Card>
 
@@ -579,6 +654,7 @@ const FormRecebimentoMp = ({ id }) => {
                         title='Concluir Formulário'
                         text={`Deseja realmente concluir este formulário?`}
                         info={info}
+                        canChange={!hasFormPending}
                         btnCancel
                         btnConfirm
                         btnConfirmColor='primary'
