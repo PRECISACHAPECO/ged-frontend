@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { api } from 'src/configs/api'
 import Table from 'src/components/Defaults/Table'
-import FormRecebimentoMp from 'src/components/RecebimentoMp/FormRecebimentoMp'
+import FormNaoConformidade from 'src/components/RecebimentoMp/NaoConformidade/FormNaoConformidade'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
@@ -14,19 +14,21 @@ import { useRouter } from 'next/router'
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
 
-const RecebimentoMp = () => {
+const NaoConformidade = () => {
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
+    console.log('🚀 ~ currentLink:', currentLink)
     const { setTitle } = useContext(ParametersContext)
     const { id } = useContext(RouteContext)
 
     const getList = async () => {
         await api.get(`${currentLink}/getList/${loggedUnity.unidadeID}`).then(response => {
             setResult(response.data)
+            console.log('🚀 ~ getList:', response.data)
             setTitle({
-                title: 'Recebimento de Matéria Prima',
+                title: 'Não Conformidade',
                 subtitle: {
                     id: id,
                     count: response.data.length,
@@ -47,6 +49,11 @@ const RecebimentoMp = () => {
             size: 0.1
         },
         {
+            headerName: 'Recebimento ID',
+            field: 'recebimentompID',
+            size: 0.1
+        },
+        {
             headerName: 'Data',
             field: 'data',
             size: 0.1
@@ -62,9 +69,14 @@ const RecebimentoMp = () => {
             size: 0.3
         },
         {
-            headerName: 'Total de Produtos',
-            field: 'totalProdutos',
-            size: 0.2
+            headerName: 'Fabricação',
+            field: 'fabricacao',
+            size: 0.3
+        },
+        {
+            headerName: 'Lote',
+            field: 'lote',
+            size: 0.3
         },
         {
             headerName: 'Status',
@@ -82,7 +94,7 @@ const RecebimentoMp = () => {
                 <Loading />
             ) : //? Se tem id, exibe o formulário
             id && id > 0 ? (
-                <FormRecebimentoMp id={id} />
+                <FormNaoConformidade id={id} />
             ) : (
                 //? Lista tabela de resultados da listagem
                 <Table result={result} columns={columns} />
@@ -91,4 +103,4 @@ const RecebimentoMp = () => {
     )
 }
 
-export default RecebimentoMp
+export default NaoConformidade

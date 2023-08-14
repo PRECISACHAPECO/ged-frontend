@@ -9,13 +9,6 @@ const Block = ({ index, values, blockKey, register, control, setValue, errors, d
             <Card key={index} sx={{ mt: 4 }}>
                 <CardContent>
                     <Grid container>
-                        {/* <input
-                            type='hidden'
-                            name={`blocos[${index}].${blockKey}`}
-                            defaultValue={values[blockKey]}
-                            {...register(`blocos[${index}].${blockKey}`)}
-                        /> */}
-
                         <Grid item xs={12} md={12}>
                             <Typography color='primary' variant='subtitle1' sx={{ fontWeight: 700, mb: 6 }}>
                                 {values?.nome}
