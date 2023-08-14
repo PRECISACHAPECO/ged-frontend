@@ -24,66 +24,112 @@ const NaoConformidade = () => {
     const { id } = useContext(RouteContext)
 
     const getList = async () => {
-        await api.get(`${currentLink}/getList/${loggedUnity.unidadeID}`).then(response => {
-            setResult(response.data)
-            console.log('🚀 ~ getList:', response.data)
-            setTitle({
-                title: 'Não Conformidade',
-                subtitle: {
-                    id: id,
-                    count: response.data.length,
-                    new: false
-                }
+        await api
+            .post(`${currentLink}/getList`, {
+                unidadeID: loggedUnity.unidadeID,
+                papelID: user.papelID,
+                usuarioID: user.id,
+                cnpjFornecedor: user.papelID == 2 && user.cnpj ? user.cnpj : null
             })
-        })
+            .then(response => {
+                setResult(response.data)
+                console.log('🚀 ~ getList:', response.data)
+                setTitle({
+                    title: 'Não Conformidade',
+                    subtitle: {
+                        id: id,
+                        count: response.data.length,
+                        new: false
+                    }
+                })
+            })
     }
 
     useEffect(() => {
         getList()
     }, [id])
 
-    const arrColumns = [
-        {
-            headerName: 'ID',
-            field: 'id',
-            size: 0.1
-        },
-        {
-            headerName: 'Recebimento ID',
-            field: 'recebimentompID',
-            size: 0.1
-        },
-        {
-            headerName: 'Data',
-            field: 'data',
-            size: 0.1
-        },
-        {
-            headerName: 'Fornecedor',
-            field: 'fornecedor',
-            size: 0.2
-        },
-        {
-            headerName: 'CNPJ Fornecedor',
-            field: 'cnpj',
-            size: 0.3
-        },
-        {
-            headerName: 'Fabricação',
-            field: 'fabricacao',
-            size: 0.3
-        },
-        {
-            headerName: 'Lote',
-            field: 'lote',
-            size: 0.3
-        },
-        {
-            headerName: 'Status',
-            field: 'status',
-            size: 0.2
-        }
-    ]
+    const arrColumns =
+        user.papelID == 1
+            ? [
+                  {
+                      headerName: 'ID',
+                      field: 'id',
+                      size: 0.1
+                  },
+                  {
+                      headerName: 'Recebimento ID',
+                      field: 'recebimentompID',
+                      size: 0.1
+                  },
+                  {
+                      headerName: 'Data',
+                      field: 'data',
+                      size: 0.1
+                  },
+                  {
+                      headerName: 'Fornecedor',
+                      field: 'fornecedor',
+                      size: 0.2
+                  },
+                  {
+                      headerName: 'CNPJ Fornecedor',
+                      field: 'cnpj',
+                      size: 0.3
+                  },
+                  {
+                      headerName: 'Fabricação',
+                      field: 'fabricacao',
+                      size: 0.3
+                  },
+                  {
+                      headerName: 'Lote',
+                      field: 'lote',
+                      size: 0.3
+                  },
+                  {
+                      headerName: 'Status',
+                      field: 'status',
+                      size: 0.2
+                  }
+              ]
+            : [
+                  {
+                      headerName: 'ID',
+                      field: 'id',
+                      size: 0.1
+                  },
+                  {
+                      headerName: 'Recebimento ID',
+                      field: 'recebimentompID',
+                      size: 0.1
+                  },
+                  {
+                      headerName: 'Data',
+                      field: 'data',
+                      size: 0.1
+                  },
+                  {
+                      headerName: 'Fábrica',
+                      field: 'fabrica',
+                      size: 0.2
+                  },
+                  {
+                      headerName: 'Fabricação',
+                      field: 'fabricacao',
+                      size: 0.3
+                  },
+                  {
+                      headerName: 'Lote',
+                      field: 'lote',
+                      size: 0.3
+                  },
+                  {
+                      headerName: 'Status',
+                      field: 'status',
+                      size: 0.2
+                  }
+              ]
 
     const columns = configColumns(currentLink, arrColumns)
 

@@ -10,6 +10,7 @@ import Fields from 'src/components/Defaults/Formularios/Fields'
 import Product from 'src/components/Defaults/Formularios/Product'
 import Block from 'src/components/Defaults/Formularios/Block'
 import DialogFormStatus from '../../Defaults/Dialogs/DialogFormStatus'
+import DialogSendForm from '../../Defaults/Dialogs/DialogSendForm'
 
 //* Custom components
 import Input from 'src/components/Form/Input'
@@ -85,6 +86,7 @@ const FormNaoConformidade = ({ id }) => {
     // const [removedProducts, setRemovedProducts] = useState([])
     const [blocos, setBlocos] = useState([])
     const [info, setInfo] = useState('')
+    const [openSendModal, setOpenSendModal] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [listErrors, setListErrors] = useState({ status: false, errors: [] })
     const { settings } = useContext(SettingsContext)
@@ -199,7 +201,11 @@ const FormNaoConformidade = ({ id }) => {
     const getData = () => {
         setLoading(true)
         if (id) {
-            api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID }).then(response => {
+            api.post(`${staticUrl}/getData/${id}`, {
+                type: type,
+                unidadeID: loggedUnity.unidadeID,
+                papelID: user.papelID
+            }).then(response => {
                 console.log('getData: ', response.data)
 
                 setField(response.data.fields)
@@ -301,6 +307,12 @@ const FormNaoConformidade = ({ id }) => {
         })
     }
 
+    const sendForm = async () => {
+        setOpenSendModal(false)
+        setValue('sendToFornecedor', true)
+        await handleSubmit(onSubmit)()
+    }
+
     const handleConclusionForm = () => {
         checkErrors()
         setOpenModal(true)
@@ -308,24 +320,20 @@ const FormNaoConformidade = ({ id }) => {
     }
 
     const conclusionForm = async values => {
+        console.log('🚀 ~ conclusionForm...')
         values['conclusion'] = true
-
         await handleSubmit(onSubmit)(values)
     }
 
-    const onSubmit = async (values, param = false) => {
-        if (param.conclusion === true && param.status > 10) {
-            values['status'] = param.status
-            values['obsConclusao'] = param.obsConclusao
-        }
-
+    const onSubmit = async values => {
         const data = {
             form: values,
             auth: {
                 usuarioID: user.usuarioID,
                 papelID: user.papelID,
                 unidadeID: loggedUnity.unidadeID
-            }
+            },
+            sendToFornecedor: values['sendToFornecedor'] ? true : false
         }
         console.log('🚀 ~ onSubmit:', data)
         // return
@@ -383,7 +391,7 @@ const FormNaoConformidade = ({ id }) => {
                             dataReports={dataReports}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             // handleSend={handleConclusionForm}
-                            handleSend={handleSendForm}
+                            handleSend={() => setOpenSendModal(true)}
                             iconConclusion={'mdi:check-bold'}
                             titleConclusion={'Enviar'}
                             title='Recebimento MP'
@@ -403,6 +411,7 @@ const FormNaoConformidade = ({ id }) => {
                                 fields={field}
                                 values={field}
                                 disabled={!canEdit.status}
+                                disabledFields={['fornecedorID']} //? Array com fields desabilitados
                             />
                         </CardContent>
                     </Card>
@@ -468,6 +477,19 @@ const FormNaoConformidade = ({ id }) => {
                             handleSubmit={changeFormStatus}
                         />
                     )}
+
+                    {/* Dialog de envio pro fornecedor */}
+                    <DialogSendForm
+                        openModal={openSendModal}
+                        handleClose={() => {
+                            setOpenSendModal(false)
+                        }}
+                        title='Enviar Formulário'
+                        text={`Deseja realmente enviar este formulário para o fornecedor ${info?.fornecedor?.nome} preencher? Um e-mail será enviado para ${info?.fornecedor?.email}`}
+                        btnClose
+                        btnConfirm
+                        handleSubmit={sendForm}
+                    />
 
                     {/* Dialog de confirmação de envio */}
                     <DialogFormConclusion

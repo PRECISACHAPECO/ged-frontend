@@ -10,7 +10,17 @@ import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import DateField from 'src/components/Form/DateField'
 
-const Fields = ({ register, errors, setValue, fields, values, disabled, control, setCopiedDataContext }) => {
+const Fields = ({
+    register,
+    errors,
+    setValue,
+    fields,
+    values,
+    disabled,
+    disabledFields,
+    control,
+    setCopiedDataContext
+}) => {
     console.log('🚀 ~ Filds errors:', errors)
     const [dateStatus, setDateStatus] = useState({})
     const [watchRegistroEstabelecimento, setWatchRegistroEstabelecimento] = useState(null)
@@ -52,6 +62,14 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
         }
     }
 
+    const disabledField = field => {
+        // verifica se o campo está na lista de campos desabilitados, retorna true ou false para desabilitar o campo
+        if (disabledFields && disabledFields.length > 0) {
+            return disabledFields.includes(field)
+        }
+        return false
+    }
+
     useEffect(() => {
         setRegistroEstabelecimento()
     }, [])
@@ -72,7 +90,7 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                 options={field.options}
                                 value={field?.[field.tabela]}
                                 mask={field.tabela}
-                                disabled={disabled}
+                                disabled={disabled || disabledField(field.nomeColuna)}
                                 register={register}
                                 setValue={setValue}
                                 control={control}
@@ -87,7 +105,7 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                 xs={12}
                                 md={3}
                                 title='Data da avaliação'
-                                disabled={disabled}
+                                disabled={disabled || disabledField(field.nomeColuna)}
                                 value={field?.[field.nomeColuna]}
                                 type={field.nomeColuna}
                                 name={`fields[${index}].${field.nomeColuna}`}
@@ -113,7 +131,11 @@ const Fields = ({ register, errors, setValue, fields, values, disabled, control,
                                     value={field?.[field.nomeColuna]}
                                     type={field.nomeColuna}
                                     mask={getMaskForField(field.nomeColuna)}
-                                    disabled={disabled || field.nomeColuna == 'cnpj' ? true : false}
+                                    disabled={
+                                        disabled || disabledField(field.nomeColuna) || field.nomeColuna == 'cnpj'
+                                            ? true
+                                            : false
+                                    }
                                     control={control}
                                     // errors field[index] nomeColuna
                                     errors={errors?.fields?.[index]?.[field.nomeColuna]}
