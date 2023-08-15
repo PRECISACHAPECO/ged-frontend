@@ -114,9 +114,27 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
                 </FormControl>
             </Grid>
 
+            {/* Texto longo (linha inteira) */}
+            {values.alternativas.length == 0 && values.alternativa == 'Dissertativa longa' && (
+                <Grid item xs={12} md={12} sx={{ pt: 0 }}>
+                    <FormControl fullWidth>
+                        <Input
+                            title='Descreva a resposta'
+                            name={`blocos[${blockIndex}].itens[${index}].resposta`}
+                            rows={6}
+                            value={values.resposta}
+                            multiline
+                            disabled={disabled}
+                            control={control}
+                            errors={errors?.blocos?.[blockIndex]?.itens[index]?.resposta}
+                        />
+                    </FormControl>
+                </Grid>
+            )}
+
             {/* Obs */}
             {values && values.obs == 1 && (
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={values.alternativa == 'Dissertativa longa' ? 12 : 3}>
                     <FormControl fullWidth>
                         <Input
                             title='Observação'

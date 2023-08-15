@@ -74,7 +74,6 @@ const RecebimentoMp = () => {
     ]
 
     const columns = configColumns(currentLink, arrColumns)
-    console.log('🚀 ~ columns:', columns, result)
 
     return (
         <>
