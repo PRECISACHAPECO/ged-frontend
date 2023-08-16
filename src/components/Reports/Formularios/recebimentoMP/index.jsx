@@ -3,7 +3,7 @@ import { Text, View, Font } from '@react-pdf/renderer'
 import { styles as stylesDefault } from '../../Layout/Style'
 import getData from './getData'
 
-const RecebimentoMP = ({ params }) => {
+const ReportRecebimentoMP = ({ params }) => {
     const data = getData(params)
     console.log(' data recebimento', data)
 
@@ -120,4 +120,4 @@ const RecebimentoMP = ({ params }) => {
     )
 }
 
-export default RecebimentoMP
+export default ReportRecebimentoMP

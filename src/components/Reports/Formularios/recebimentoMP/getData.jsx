@@ -6,7 +6,7 @@ const getData = params => {
     useEffect(() => {
         const fetchData = async () => {
             await api
-                .post('relatorio/fornecedor/dadosRecebimentoMp', { data: params })
+                .post('relatorio/recebimentoMp/dadosRecebimentoMp', { data: params })
                 .then(response => setData(response.data))
         }
         fetchData()

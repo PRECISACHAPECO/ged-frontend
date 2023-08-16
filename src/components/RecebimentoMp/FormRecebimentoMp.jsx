@@ -10,7 +10,7 @@ import Fields from 'src/components/Defaults/Formularios/Fields'
 import Product from 'src/components/Defaults/Formularios/Product'
 import Block from 'src/components/Defaults/Formularios/Block'
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
-import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
+import ReportRecebimentoMP from 'src/components/Reports/Formularios/RecebimentoMP'
 
 //* Custom components
 import Input from 'src/components/Form/Input'
@@ -52,7 +52,7 @@ import { Checkbox } from '@mui/material'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask } from 'src/configs/masks'
-import RecebimentoMP from '../Reports/Formularios/recebimentoMP'
+// import RecebimentoMP from '../Reports/Formularios/recebimentoMP'
 // como importar moment
 import moment from 'moment'
 
@@ -170,9 +170,16 @@ const FormRecebimentoMp = ({ id }) => {
     const dataReports = [
         {
             id: 1,
-            name: 'Formulário do fornecedor',
-            component: <ReportFornecedor params={{ id: id }} />,
-            route: '/relatorio/fornecedor/dadosFornecedor',
+            name: 'Formulário do Recebimento de MP',
+            component: (
+                <ReportRecebimentoMP
+                    params={{
+                        id: id,
+                        unidadeID: 1 //loggedUnity.unidadeID
+                    }}
+                />
+            ),
+            route: '/relatorio/recebimentoMp/dadosRecebimentoMp',
             papelID: user.papelID,
             identification: '01',
             params: {
