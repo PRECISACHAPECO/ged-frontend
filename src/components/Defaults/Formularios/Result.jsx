@@ -13,7 +13,11 @@ import {
     Typography
 } from '@mui/material'
 
-const Result = ({ title, name, value, papelID, setResult, options }) => {
+import CheckLabel from 'src/components/Form/CheckLabel'
+
+const Result = ({ title, name, value, papelID, register, setResult, options }) => {
+    console.log('🚀 ~ Result:', name)
+
     return (
         <Grid container spacing={2} sx={{ mt: 4 }}>
             {/* Somente fábrica */}
@@ -55,24 +59,15 @@ const Result = ({ title, name, value, papelID, setResult, options }) => {
 
                     {/* Gerar não conformidade */}
                     {value.status && (value.status == 50 || value.status == 60) && (
-                        <Grid item xs={12} md={12}>
-                            <FormControlLabel
-                                label='Gerar não conformidade'
-                                control={
-                                    <Checkbox
-                                        name='naoConformidade'
-                                        value={value?.naoConformidade}
-                                        checked={value.status == 50 ? true : false}
-                                        onChange={e => {
-                                            setResult({
-                                                ...value,
-                                                naoConformidade: e.target.checked
-                                            })
-                                        }}
-                                    />
-                                }
-                            />
-                        </Grid>
+                        <CheckLabel
+                            xs={12}
+                            md={12}
+                            title='Gerar não conformidade'
+                            name={`naoConformidade`}
+                            value={value?.status == 50 || value?.status == 60 ? true : false}
+                            req={true}
+                            register={register}
+                        />
                     )}
                 </>
             )}

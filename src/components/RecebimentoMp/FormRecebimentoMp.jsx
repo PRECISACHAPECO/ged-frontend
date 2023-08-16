@@ -400,7 +400,7 @@ const FormRecebimentoMp = ({ id }) => {
         }
         data['form']['removedProducts'] = removedProducts
         console.log('🚀 ~ onSubmit:', data)
-        // return
+        return
 
         try {
             if (type == 'edit') {
@@ -655,6 +655,8 @@ const FormRecebimentoMp = ({ id }) => {
                         text={`Deseja realmente concluir este formulário?`}
                         info={info}
                         canChange={!hasFormPending}
+                        register={register}
+                        getValues={getValues}
                         btnCancel
                         btnConfirm
                         btnConfirmColor='primary'

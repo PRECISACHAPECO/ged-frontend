@@ -32,16 +32,18 @@ const DialogFormConclusion = ({
     handleClose,
     openModal,
     conclusionForm,
+    getValues,
     info,
     canChange,
     btnCancel,
     btnConfirm,
+    register,
     listErrors
 }) => {
-    console.log('🚀 ~ canChange:', canChange)
-    console.log('🚀 ~ DialogFormConclusion title:', title)
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState({})
+
+    console.log('🚀 ~ DialogFormConclusion:', getValues('naoConformidade'))
 
     return (
         <>
@@ -85,6 +87,7 @@ const DialogFormConclusion = ({
                                     title={user.papelID == 1 ? 'Resultado do Processo' : 'Observação'}
                                     name={'status'}
                                     value={result}
+                                    register={register}
                                     setResult={setResult}
                                     papelID={user.papelID}
                                     options={[
@@ -122,7 +125,12 @@ const DialogFormConclusion = ({
                     {btnConfirm && canChange && (
                         <Button
                             variant='contained'
-                            disabled={(listErrors && listErrors.status) || (user.papelID == 1 && !result.status)}
+                            disabled={
+                                // desabilitar se value for 50 e nao tiver naoConformidade
+                                (result.status == 50 && !getValues('naoConformidade')) ||
+                                (listErrors && listErrors.status) ||
+                                (user.papelID == 1 && !result.status)
+                            }
                             color='primary'
                             onClick={() => {
                                 handleClose(), conclusionForm(result)
