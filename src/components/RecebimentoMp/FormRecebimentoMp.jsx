@@ -10,6 +10,7 @@ import Fields from 'src/components/Defaults/Formularios/Fields'
 import Product from 'src/components/Defaults/Formularios/Product'
 import Block from 'src/components/Defaults/Formularios/Block'
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
+import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
 
 //* Custom components
 import Input from 'src/components/Form/Input'
@@ -167,21 +168,34 @@ const FormRecebimentoMp = ({ id }) => {
     const dataReports = [
         {
             id: 1,
-            name: 'recebimentoMP',
+            name: 'Formulário do fornecedor',
+            component: <ReportFornecedor params={{ id: id }} />,
+            route: '/relatorio/fornecedor/dadosFornecedor',
+            papelID: user.papelID,
             identification: '01',
-            route: 'relatorio/recebimentoMP',
             params: {
-                recebimentompID: id,
-                unidadeID: loggedUnity.unidadeID
+                fornecedorID: id
             }
-        },
-        {
-            id: 2,
-            name: 'Recepção',
-            identification: '02',
-            route: '/relatorio/recepcao'
         }
     ]
+    // const dataReports = [
+    //     {
+    //         id: 1,
+    //         name: 'recebimentoMP',
+    //         identification: '01',
+    //         route: 'relatorio/recebimentoMP',
+    //         params: {
+    //             recebimentompID: id,
+    //             unidadeID: loggedUnity.unidadeID
+    //         }
+    //     },
+    //     {
+    //         id: 2,
+    //         name: 'Recepção',
+    //         identification: '02',
+    //         route: '/relatorio/recepcao'
+    //     }
+    // ]
 
     const verifyFormPending = async () => {
         try {

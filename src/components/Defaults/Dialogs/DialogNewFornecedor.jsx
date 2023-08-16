@@ -358,7 +358,7 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
                                     !data.isFornecedor && data.hasFormulario
                                     ? 'Reativar fornecedor'
                                     : !data.isFornecedor && !data.hasFormulario
-                                    ? 'Tornar meu fornecedor'
+                                    ? 'Avançar'
                                     : null}
                             </Button>
                         )}

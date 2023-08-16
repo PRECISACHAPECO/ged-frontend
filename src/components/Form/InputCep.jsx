@@ -2,7 +2,7 @@ import { Controller } from 'react-hook-form'
 import { FormControl, Grid, TextField } from '@mui/material'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask, cpfMask, rgMask } from 'src/configs/masks'
 
-const Input = ({
+const InputCep = ({
     xs,
     md,
     title,
@@ -102,4 +102,4 @@ const Input = ({
     )
 }
 
-export default Input
+export default InputCep

@@ -18,6 +18,7 @@ const Fields = ({
     values,
     disabled,
     disabledFields,
+    getAddressByCep,
     control,
     setCopiedDataContext
 }) => {
@@ -130,6 +131,7 @@ const Fields = ({
                                     name={`fields[${index}].${field.nomeColuna}`}
                                     value={field?.[field.nomeColuna]}
                                     type={field.nomeColuna}
+                                    getAddressByCep={getAddressByCep}
                                     mask={getMaskForField(field.nomeColuna)}
                                     disabled={
                                         disabled || disabledField(field.nomeColuna) || field.nomeColuna == 'cnpj'

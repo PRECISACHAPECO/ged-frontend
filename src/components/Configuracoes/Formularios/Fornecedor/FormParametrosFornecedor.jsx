@@ -433,6 +433,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     name={`blocks.[${index}].itens.[${indexItem}].item`}
                                                     value={blocks[index].itens[indexItem].item ?? null}
                                                     required={true}
+                                                    disabled={item.hasPending == 1 ? true : false}
                                                     options={blocks[index].optionsBlock?.itens}
                                                     register={register}
                                                     setValue={setValue}
@@ -448,6 +449,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     name={`blocks.[${index}].itens.[${indexItem}].alternativa`}
                                                     value={blocks[index].itens[indexItem].alternativa ?? null}
                                                     required={true}
+                                                    disabled={item.hasPending == 1 ? true : false}
                                                     options={allOptions.alternativas}
                                                     register={register}
                                                     setValue={setValue}

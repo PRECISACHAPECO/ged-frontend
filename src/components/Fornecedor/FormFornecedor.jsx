@@ -118,20 +118,34 @@ const FormFornecedor = ({ id }) => {
         setInfo(newInfo)
     }
 
-    const getAddressByCep = cepString => {
-        if (cepString.length == 9) {
+    const getAddressByCep = async cepString => {
+        if (cepString.length === 9) {
             const cep = cepString.replace(/[^0-9]/g, '')
-            api.get(`https://viacep.com.br/ws/${cep}/json/`).then(response => {
+            try {
+                const response = await api.get(`https://viacep.com.br/ws/${cep}/json/`)
                 if (response.data.localidade) {
-                    setValue('header.logradouro', response.data.logradouro)
-                    setValue('header.bairro', response.data.bairro)
-                    setValue('header.cidade', response.data.localidade)
-                    setValue('header.estado', response.data.uf)
+                    fieldsState.forEach(async (field, index) => {
+                        if (
+                            field.nomeColuna === 'logradouro' ||
+                            field.nomeColuna === 'bairro' ||
+                            field.nomeColuna === 'cidade' ||
+                            field.nomeColuna === 'estado'
+                        ) {
+                            await setValue(`fields[${index}].logradouro`, response.data.logradouro)
+                            await setValue(`fields[${index}].bairro`, response.data.bairro)
+                            await setValue(`fields[${index}].cidade`, response.data.localidade)
+                            await setValue(`fields[${index}].estado`, response.data.uf)
+                        }
+                    })
+
                     toast.success('Endereço encontrado!')
                 } else {
                     toast.error('Endereço não encontrado!')
                 }
-            })
+            } catch (error) {
+                // Handle error
+                console.error(error)
+            }
         }
     }
 
@@ -545,6 +559,7 @@ const FormFornecedor = ({ id }) => {
                                 setValue={setValue}
                                 control={control}
                                 watch={watch}
+                                getAddressByCep={getAddressByCep}
                                 disabled={!canEdit.status}
                                 setCopiedDataContext={setCopiedDataContext}
                             />
