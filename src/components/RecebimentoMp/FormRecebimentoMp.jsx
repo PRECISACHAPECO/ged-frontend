@@ -400,7 +400,7 @@ const FormRecebimentoMp = ({ id }) => {
         }
         data['form']['removedProducts'] = removedProducts
         console.log('🚀 ~ onSubmit:', data)
-        return
+        // return
 
         try {
             if (type == 'edit') {
@@ -408,6 +408,13 @@ const FormRecebimentoMp = ({ id }) => {
                 await api.post(`${staticUrl}/updateData/${id}`, data).then(response => {
                     toast.success(toastMessage.successUpdate)
                     setSavingForm(false)
+
+                    //? Se gerou uma não conformidade, redireciona pra não conformidade gerada
+                    if (response.data && response.data.naoConformidade && response.data.id > 0) {
+                        console.log('🚀 ~ redireciona pra nao conformidade')
+                        router.push('/formularios/recebimento-mp/nao-conformidade/')
+                        setId(response.data.id)
+                    }
                 })
             } else if (type == 'new') {
                 await api.post(`${backRoute(staticUrl)}/insertData`, data).then(response => {
@@ -449,7 +456,7 @@ const FormRecebimentoMp = ({ id }) => {
                         <FormHeader
                             btnCancel
                             btnSave={info?.status < 40 || type == 'new'}
-                            btnSend={type == 'edit' ? true : false}
+                            btnSend={type == 'edit' && info?.status < 50 ? true : false}
                             btnPrint
                             generateReport={generateReport}
                             dataReports={dataReports}
@@ -656,6 +663,7 @@ const FormRecebimentoMp = ({ id }) => {
                         info={info}
                         canChange={!hasFormPending}
                         register={register}
+                        setValue={setValue}
                         getValues={getValues}
                         btnCancel
                         btnConfirm
