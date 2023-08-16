@@ -411,7 +411,7 @@ const FormNaoConformidade = ({ id }) => {
                                 fields={field}
                                 values={field}
                                 disabled={!canEdit.status}
-                                disabledFields={['fornecedorID']} //? Array com fields desabilitados
+                                disabledFields={['recebimentompID', 'fornecedorID']} //? Array com fields desabilitados
                             />
                         </CardContent>
                     </Card>

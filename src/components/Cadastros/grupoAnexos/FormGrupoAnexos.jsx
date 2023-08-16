@@ -241,10 +241,10 @@ const FormGrupoAnexos = ({ id }) => {
                                         <Check
                                             xs={4}
                                             md={1}
-                                            title='Obrigatório'
+                                            title='Ativo'
                                             index={index}
-                                            name={`items[${index}].obrigatorio`}
-                                            value={item.obrigatorio}
+                                            name={`items[${index}].status`}
+                                            value={item.status}
                                             typePage={type}
                                             register={register}
                                         />
@@ -252,10 +252,10 @@ const FormGrupoAnexos = ({ id }) => {
                                         <Check
                                             xs={4}
                                             md={1}
-                                            title='Ativo'
+                                            title='Obrigatório'
                                             index={index}
-                                            name={`items[${index}].status`}
-                                            value={item.status}
+                                            name={`items[${index}].obrigatorio`}
+                                            value={item.obrigatorio}
                                             typePage={type}
                                             register={register}
                                         />

@@ -36,10 +36,10 @@ const DialogFormConclusion = ({
     canChange,
     btnCancel,
     btnConfirm,
+    register,
+    setValue,
     listErrors
 }) => {
-    console.log('🚀 ~ canChange:', canChange)
-    console.log('🚀 ~ DialogFormConclusion title:', title)
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState({})
 
@@ -85,6 +85,8 @@ const DialogFormConclusion = ({
                                     title={user.papelID == 1 ? 'Resultado do Processo' : 'Observação'}
                                     name={'status'}
                                     value={result}
+                                    register={register}
+                                    setValue={setValue}
                                     setResult={setResult}
                                     papelID={user.papelID}
                                     options={[

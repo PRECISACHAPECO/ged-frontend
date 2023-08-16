@@ -20,6 +20,8 @@ const Input = ({
     onChange,
     ...props
 }) => {
+    console.log('🚀 ~ Input mask:', mask)
+
     return (
         <Grid item xs={xs} md={md} sx={{ my: 1 }}>
             <FormControl fullWidth>

@@ -138,7 +138,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                 setHeaders(response.data.header)
                 setProducts(response.data.products)
                 setBlocks(response.data.blocks)
-                setOrientacoes(response.data.orientacoes.obs)
+                setOrientacoes(response.data?.orientacoes?.obs)
                 setOptions(response.data.options)
 
                 //* Insere os dados no formulário
@@ -423,12 +423,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                         name={`blocks.[${index}].itens.[${indexItem}].item`}
                                                         value={blocks[index].itens[indexItem].item ?? null}
                                                         required={true}
-                                                        // options={block.optionsBlock.itens.map(row => {
-                                                        //     const isSelected = block.itens.some(i => {
-                                                        //         i.item && row.id == i.item.id
-                                                        //     })
-                                                        //     return !isSelected ? row : null
-                                                        // })}
+                                                        disabled={item.hasPending == 1 ? true : false}
                                                         options={options.itens}
                                                         register={register}
                                                         setValue={setValue}
@@ -443,6 +438,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                         name={`blocks.[${index}].itens.[${indexItem}].alternativa`}
                                                         value={blocks[index].itens[indexItem].alternativa ?? null}
                                                         required={true}
+                                                        disabled={item.hasPending == 1 ? true : false}
                                                         options={options.alternativas}
                                                         register={register}
                                                         setValue={setValue}

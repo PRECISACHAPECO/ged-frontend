@@ -10,6 +10,7 @@ import Fields from 'src/components/Defaults/Formularios/Fields'
 import Product from 'src/components/Defaults/Formularios/Product'
 import Block from 'src/components/Defaults/Formularios/Block'
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
+import ReportRecebimentoMP from 'src/components/Reports/Formularios/RecebimentoMP'
 
 //* Custom components
 import Input from 'src/components/Form/Input'
@@ -51,6 +52,7 @@ import { Checkbox } from '@mui/material'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask } from 'src/configs/masks'
+// import RecebimentoMP from '../Reports/Formularios/recebimentoMP'
 // como importar moment
 import moment from 'moment'
 
@@ -62,6 +64,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br' // import locale
 
 const FormRecebimentoMp = ({ id }) => {
+    console.log('🚀 ~ id:', id)
     const { user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
     const [savingForm, setSavingForm] = useState(false)
@@ -167,21 +170,41 @@ const FormRecebimentoMp = ({ id }) => {
     const dataReports = [
         {
             id: 1,
-            name: 'recebimentoMP',
+            name: 'Formulário do Recebimento de MP',
+            component: (
+                <ReportRecebimentoMP
+                    params={{
+                        id: id,
+                        unidadeID: 1 //loggedUnity.unidadeID
+                    }}
+                />
+            ),
+            route: '/relatorio/recebimentoMp/dadosRecebimentoMp',
+            papelID: user.papelID,
             identification: '01',
-            route: 'relatorio/recebimentoMP',
             params: {
-                recebimentompID: id,
-                unidadeID: loggedUnity.unidadeID
+                fornecedorID: id
             }
-        },
-        {
-            id: 2,
-            name: 'Recepção',
-            identification: '02',
-            route: '/relatorio/recepcao'
         }
     ]
+    // const dataReports = [
+    //     {
+    //         id: 1,
+    //         name: 'recebimentoMP',
+    //         identification: '01',
+    //         route: 'relatorio/recebimentoMP',
+    //         params: {
+    //             recebimentompID: id,
+    //             unidadeID: loggedUnity.unidadeID
+    //         }
+    //     },
+    //     {
+    //         id: 2,
+    //         name: 'Recepção',
+    //         identification: '02',
+    //         route: '/relatorio/recepcao'
+    //     }
+    // ]
 
     const verifyFormPending = async () => {
         try {
@@ -408,6 +431,13 @@ const FormRecebimentoMp = ({ id }) => {
                 await api.post(`${staticUrl}/updateData/${id}`, data).then(response => {
                     toast.success(toastMessage.successUpdate)
                     setSavingForm(false)
+
+                    //? Se gerou uma não conformidade, redireciona pra não conformidade gerada
+                    if (response.data && response.data.naoConformidade && response.data.id > 0) {
+                        console.log('🚀 ~ redireciona pra nao conformidade')
+                        router.push('/formularios/recebimento-mp/nao-conformidade/')
+                        setId(response.data.id)
+                    }
                 })
             } else if (type == 'new') {
                 await api.post(`${backRoute(staticUrl)}/insertData`, data).then(response => {
@@ -449,7 +479,7 @@ const FormRecebimentoMp = ({ id }) => {
                         <FormHeader
                             btnCancel
                             btnSave={info?.status < 40 || type == 'new'}
-                            btnSend={type == 'edit' ? true : false}
+                            btnSend={type == 'edit' && info?.status < 50 ? true : false}
                             btnPrint
                             generateReport={generateReport}
                             dataReports={dataReports}
@@ -655,6 +685,9 @@ const FormRecebimentoMp = ({ id }) => {
                         text={`Deseja realmente concluir este formulário?`}
                         info={info}
                         canChange={!hasFormPending}
+                        register={register}
+                        setValue={setValue}
+                        getValues={getValues}
                         btnCancel
                         btnConfirm
                         btnConfirmColor='primary'
