@@ -15,28 +15,34 @@ const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
     const auth = useAuth()
 
     const handleSubmit = () => {
-        setLoadingConclusion(true)
+        setLoadingConclusion(true);
+
         // Salva o fornecedor no banco de dados
         api.post('/registro-fornecedor/registerNew', { data: dataGlobal })
             .then(response => {
                 if (response.status === 201) {
-                    toast.error(response.data.message)
+                    toast.error(response.data.message);
                 } else {
                     // Efetua login de forma automática após o cadastro
-                    toast.success("Cadastro efetuado com sucesso!")
-                    setTimeout(() => {
-                        toast.success("Efetuando login no sistema")
-                        const { cnpj, senha: password } = dataGlobal?.sectionOne
-                        auth.loginFornecedor({ cnpj, password, rememberMe }, error => {
-                        })
-                    }, 2000)
+                    toast.success("Cadastro efetuado com sucesso!");
+                    const { cnpj, senha: password } = dataGlobal?.sectionOne;
+                    return auth.loginFornecedor({ cnpj, password, rememberMe });
                 }
-            }
-            ).catch(error => {
-                toast.error(error.message)
-            }
-            )
-    }
+            })
+            .then(() => {
+                setTimeout(() => {
+                    toast.success("Efetuando login no sistema");
+                }, 2000);
+            })
+            .catch(error => {
+                toast.error("Erro: " + error.message);
+            })
+            .finally(() => {
+                setLoadingConclusion(false);
+            });
+    };
+
+
 
     useEffect(() => {
         const endereco = {

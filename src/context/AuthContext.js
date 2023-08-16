@@ -160,8 +160,10 @@ const AuthProvider = ({ children }) => {
 
             params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
             // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-            const redirectURL = '/formularios/fornecedor/'
+            const previousRoute = router.asPath
+            const redirectURL = previousRoute.includes('/registro/') ? '/meus-dados' : '/formularios/fornecedor/';
             router.replace(redirectURL)
+
 
         }).catch(err => {
             if (err?.response?.status === 400) {

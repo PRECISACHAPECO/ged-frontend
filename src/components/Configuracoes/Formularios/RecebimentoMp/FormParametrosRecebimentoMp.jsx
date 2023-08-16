@@ -138,7 +138,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                 setHeaders(response.data.header)
                 setProducts(response.data.products)
                 setBlocks(response.data.blocks)
-                setOrientacoes(response.data.orientacoes.obs)
+                setOrientacoes(response.data?.orientacoes?.obs)
                 setOptions(response.data.options)
 
                 //* Insere os dados no formulário

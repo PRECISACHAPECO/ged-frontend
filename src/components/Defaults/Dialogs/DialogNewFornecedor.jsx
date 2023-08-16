@@ -66,8 +66,8 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
             setMessageCopied(false)
         }, 5000)
         //? Criptografa CNPJ e unidadeID, monta URL e copia pra clipboard
-        const cnpjMd5 = criptoMd5(onlyNumber(cnpj))
-        const unidadeIDMd5 = criptoMd5(loggedUnity.unidadeID)
+        const cnpjMd5 = criptoMd5(onlyNumber(cnpj.toString()))
+        const unidadeIDMd5 = criptoMd5(onlyNumber(loggedUnity.unidadeID.toString()))
         const originRoute = window.location.origin
         const url = `${originRoute}/registro?c=${cnpjMd5}&u=${unidadeIDMd5}&n=${encodeURIComponent(
             nomeFornecedor
