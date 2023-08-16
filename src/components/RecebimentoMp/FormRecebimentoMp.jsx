@@ -52,6 +52,7 @@ import { Checkbox } from '@mui/material'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask } from 'src/configs/masks'
+import RecebimentoMP from '../Reports/Formularios/recebimentoMP'
 // como importar moment
 import moment from 'moment'
 
@@ -63,6 +64,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br' // import locale
 
 const FormRecebimentoMp = ({ id }) => {
+    console.log('🚀 ~ id:', id)
     const { user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
     const [savingForm, setSavingForm] = useState(false)
