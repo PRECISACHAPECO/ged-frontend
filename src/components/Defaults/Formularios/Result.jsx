@@ -14,8 +14,9 @@ import {
 } from '@mui/material'
 
 import CheckLabel from 'src/components/Form/CheckLabel'
+import CheckLabelConditional from 'src/components/Form/CheckLabelConditional'
 
-const Result = ({ title, name, value, papelID, register, setResult, options }) => {
+const Result = ({ title, name, value, papelID, register, setValue, setResult, options }) => {
     console.log('🚀 ~ Result:', name)
 
     return (
@@ -59,13 +60,13 @@ const Result = ({ title, name, value, papelID, register, setResult, options }) =
 
                     {/* Gerar não conformidade */}
                     {value.status && (value.status == 50 || value.status == 60) && (
-                        <CheckLabel
+                        <CheckLabelConditional
                             xs={12}
                             md={12}
                             title='Gerar não conformidade'
                             name={`naoConformidade`}
-                            value={value?.status == 50 || value?.status == 60 ? true : false}
-                            req={true}
+                            value={value.status}
+                            valueChecked={50} // Se o valor for 50, não pode ser alterado
                             register={register}
                         />
                     )}
