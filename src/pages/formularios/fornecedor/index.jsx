@@ -61,6 +61,7 @@ const Fornecedor = () => {
         }
     }
 
+    // Envia email para um novo fornecedor / Novo fornecedor
     const sendMail = (email, cnpj, nomeFornecedor) => {
         if (email && validationEmail(email)) {
             const data = {
@@ -69,7 +70,6 @@ const Fornecedor = () => {
                 nomeFornecedor,
                 destinatario: email
             }
-            console.log('🚀 ~ sendMail:', data)
             api.post(`${currentLink}/sendMail`, { data })
                 .then(response => {
                     toast.success('E-mail enviado com sucesso')
