@@ -15,24 +15,27 @@ const FooterContent = () => {
 
     return (
         <div className='flex justify-between sm:justify-end items-center '>
-            <div className='block order-1 sm:order-2'>
-                {
-                    latestVersionState && (
-                        <span
-                            className={`text-sm ${mode === 'light' || mode === 'semi-dark' ? 'text-[#757575]' : 'text-[#bdbdbd]'}`}
-                        >
-                            v {latestVersionState}
-                        </span>
-
-                    )
+            {/* Mobile */}
+            <span
+                className={
+                    `block sm:hidden text-sm ${mode === 'light' || mode === 'semi-dark' ? 'text-[#757575]' : 'text-[#bdbdbd]'}`
                 }
-            </div>
-            <div className='order-2 sm:order-1'>
-                <p className='text-sm pr-2 md:text-sm'>
+            >
+                v {latestVersionState}
+            </span>
+
+            <div>
+                <p className='text-sm pr-2 md:text-sm flex gap-1'>
                     {`© ${new Date().getFullYear()}, por `}
                     <Link target='_blank' href='https://sisprecisa.com.br/'>
                         Precisa Tecnologia
                     </Link>
+                    {/* Desktop */}
+                    <span
+                        className={`hidden sm:block text-sm ${mode === 'light' || mode === 'semi-dark' ? 'text-[#757575]' : 'text-[#bdbdbd]'}`}
+                    >
+                        versão {latestVersionState}
+                    </span>
                 </p>
             </div>
         </div>

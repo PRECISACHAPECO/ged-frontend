@@ -79,7 +79,7 @@ const SearchDataNew = () => {
                             category: divisor.nome
                         })
                     }
-                } else {
+                } else if (item && item.submenu) {
                     for (const subitem of item.submenu) {
                         if (hasPermission(subitem.rota)) {
                             data.push({

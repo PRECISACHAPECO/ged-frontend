@@ -10,6 +10,7 @@ import { SettingsContext } from 'src/@core/context/settingsContext'
 import CustomChip from 'src/@core/components/mui/chip'
 import Permissions from './Permissions'
 import DateField from 'src/components/Form/DateField'
+import Select from 'src/components/Form/Select'
 
 import {
     Card,
@@ -414,21 +415,23 @@ const FormUsuario = ({ id }) => {
                                             {data && user.admin == 0 && (
                                                 <>
                                                     {/* Profissão */}
-                                                    <Select
+                                                    {/* <Select
+                                                        xs={12}
+                                                        md={4}
                                                         title='Selecione a profissão'
                                                         options={data.profissaoOptions}
                                                         name={`profissao`}
                                                         idName={'profissaoID'}
-                                                        value={values.resposta}
-                                                        disabled={disabled}
+                                                        value={data.profissao.id > 0 ? data.profissao : null}
+                                                        // disabled={disabled}
                                                         register={register}
                                                         setValue={setValue}
                                                         control={control}
                                                         errors={errors?.profissao}
-                                                    />
+                                                    /> */}
 
                                                     {/* Cargos */}
-                                                    <Grid item xs={12} md={4}>
+                                                    {/* <Grid item xs={12} md={4}>
                                                         <FormControl fullWidth>
                                                             <Autocomplete
                                                                 multiple
@@ -462,7 +465,7 @@ const FormUsuario = ({ id }) => {
                                                                 )}
                                                             />
                                                         </FormControl>
-                                                    </Grid>
+                                                    </Grid> */}
                                                 </>
                                             )}
 
