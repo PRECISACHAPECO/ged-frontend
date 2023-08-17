@@ -101,20 +101,6 @@ const UserLayout = ({ children, contentHeightFixed }) => {
                     </Snackbar>
                 )
             }
-
-            {
-                //! Mostra a versão atual do sistema
-            }
-            {
-                latestVersionState && (
-                    <span
-                        className={`hidden sm:block fixed bottom-4 left-6 md:left-8 text-xs md:text-sm z-[99999999] ${mode === 'light' || mode === 'semi-dark' ? 'text-[#757575]' : 'text-[#bdbdbd]'}`}
-                    >
-                        v {latestVersionState}
-                    </span>
-
-                )
-            }
         </Layout>
     )
 }
