@@ -45,6 +45,7 @@ const SectionTwo = ({ handleNext, handlePrev, setDataGlobal, dataGlobal }) => {
     }
 
     useEffect(() => {
+
         setValue('telefone', dataGlobal?.sectionTwo?.telefone)
         setValue('cep', dataGlobal?.sectionTwo?.cep)
         setValue('logradouro', dataGlobal?.sectionTwo?.logradouro)

@@ -15,7 +15,7 @@ const FooterContent = () => {
 
     return (
         <div className='flex justify-between sm:justify-end items-center '>
-            <div className='block sm:hidden'>
+            <div className='block order-1 sm:order-2'>
                 {
                     latestVersionState && (
                         <span
@@ -27,7 +27,7 @@ const FooterContent = () => {
                     )
                 }
             </div>
-            <div>
+            <div className='order-2 sm:order-1'>
                 <p className='text-sm pr-2 md:text-sm'>
                     {`© ${new Date().getFullYear()}, por `}
                     <Link target='_blank' href='https://sisprecisa.com.br/'>

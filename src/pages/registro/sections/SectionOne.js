@@ -124,6 +124,13 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                 razaoSocial: value.razaoSocial,
                 email: value.email,
                 senha: value.senha,
+            },
+            sectionTwo: {
+                ...dataGlobal?.sectionTwo,
+                logradouro: dataGlobal?.sectionTwo.logradouro ?? '--',
+                bairro: dataGlobal?.sectionTwo.bairro ?? '--',
+                cidade: dataGlobal?.sectionTwo.cidade ?? '--',
+                uf: dataGlobal?.sectionTwo.uf ?? '--',
             }
         });
         handleNext(value);
