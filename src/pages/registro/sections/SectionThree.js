@@ -8,11 +8,30 @@ import Icon from 'src/@core/components/icon'
 import { useAuth } from 'src/hooks/useAuth'
 import 'react-credit-cards/es/styles-compiled.css'
 import { useEffect, useState } from 'react'
+import { validationEmail } from 'src/configs/validations'
 
 const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
     const [rememberMe, setRememberMe] = useState(true)
     const [loadingConclusion, setLoadingConclusion] = useState(false)
     const auth = useAuth()
+
+    // Envia email confirmado o cadastro do novo fornecedor
+    const sendMailNewFornecedor = () => {
+        if (dataGlobal.sectionOne.email && validationEmail(dataGlobal.sectionOne.email)) {
+            const data = {
+                cnpj: dataGlobal.sectionOne.cnpj,
+                nomeFornecedor: dataGlobal.sectionOne.nomeFantasia,
+                destinatario: dataGlobal.sectionOne.email
+            }
+            api.post(`/registro-fornecedor/sendMailNewFornecedor`, { data })
+                .then(response => {
+                    toast.success('E-mail enviado com sucesso')
+                })
+                .catch(error => {
+                    console.error('Erro ao enviar email', error)
+                })
+        }
+    }
 
     const handleSubmit = () => {
         setLoadingConclusion(true);
@@ -26,6 +45,8 @@ const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
                     // Efetua login de forma automática após o cadastro
                     toast.success("Cadastro efetuado com sucesso!");
                     const { cnpj, senha: password } = dataGlobal?.sectionOne;
+                    // Envia email para o fornecedor, contendo dados de acesso
+                    sendMailNewFornecedor();
                     return auth.loginFornecedor({ cnpj, password, rememberMe });
                 }
             })
