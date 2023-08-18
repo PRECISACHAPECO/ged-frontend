@@ -255,7 +255,7 @@ const FormHeader = ({
                                 disabled={disabled || disabledSubmit}
                                 sx={{ display: 'flex', gap: 2 }}
                             >
-                                <Icon icon='material-symbols:save' />
+                                <Icon icon='mdi:check-bold' />
                                 <span className='hidden sm:block'>Salvar</span>
                             </Button>
                         )}

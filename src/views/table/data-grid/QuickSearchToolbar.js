@@ -61,6 +61,9 @@ const QuickSearchToolbar = (props) => {
             <ListHeader
                 btnNew={props.buttonsHeader.btnNew}
                 btnPrint={props.buttonsHeader.btnPrint}
+                btnSave={props.buttonsHeader.btnSave}
+                handleSave={props.buttonsHeader.handleSave}
+                hasListChange={props.hasChange}
                 openModal={props.buttonsHeader.openModal}
             />
         </Box>
