@@ -219,7 +219,6 @@ const FormUsuario = ({ id }) => {
                     setData(response.data)
                     setPhotoProfile(response.data.fields.imagem)
                     reset(response.data) //* Insere os dados no formulário
-                    console.log('🚀 ~ getData:', response.data)
                 })
             } catch (error) {
                 console.log(error)

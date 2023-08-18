@@ -22,7 +22,6 @@ const Fields = ({
     control,
     setCopiedDataContext
 }) => {
-    console.log('🚀 ~ Filds errors:', errors)
     const [dateStatus, setDateStatus] = useState({})
     const [watchRegistroEstabelecimento, setWatchRegistroEstabelecimento] = useState(null)
     const { loggedUnity, user } = useContext(AuthContext)

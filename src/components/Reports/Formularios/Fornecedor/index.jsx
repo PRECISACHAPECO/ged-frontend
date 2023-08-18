@@ -5,8 +5,6 @@ import getData from './getData'
 
 const ReportFornecedor = ({ params }) => {
     const data = getData(params)
-    console.log('data', data)
-
     return (
         <>
             {data && (

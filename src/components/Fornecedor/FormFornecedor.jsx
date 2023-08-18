@@ -71,8 +71,6 @@ const FormFornecedor = ({ id }) => {
         formState: { errors }
     } = useForm()
 
-    console.log('🚀 ~ ERRORS:', errors)
-
     const verifyFormPending = async () => {
         try {
             const parFormularioID = 1
@@ -222,13 +220,17 @@ const FormFornecedor = ({ id }) => {
         return active
     }
 
+    /// Verificar se existe dados no localStorage que não estão preenchidos
+    const verifyFields = field => {}
+
+    console.log('Verific', verifyFields)
+
     const getData = () => {
         try {
             setLoading(true)
             if (id) {
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
-                    console.log('getData: ', response.data)
-
+                    verifyFields(response.data.fields)
                     setFields(response.data.fields)
                     setCategorias(response.data.categorias)
                     setAtividades(response.data.atividades)
@@ -301,9 +303,6 @@ const FormFornecedor = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-
-        console.log('🚀 ~ onSubmit:', data.form)
-
         try {
             setLoadingSave(true)
             await enviarPDFsParaBackend()
@@ -392,7 +391,6 @@ const FormFornecedor = ({ id }) => {
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
     const handleFileSelect = (event, item) => {
         const selectedFile = event.target.files[0]
-        console.log('🚀 ~ selectedFile:', selectedFile)
 
         // Atualiza o objeto anexo com o arquivo selecionado
         const updatedItem = {
@@ -415,7 +413,6 @@ const FormFornecedor = ({ id }) => {
                     ...grupo,
                     itens: grupo.itens.map(item => {
                         if (item.grupoanexoitemID == updatedItem.grupoanexoitemID) {
-                            console.log('encontrou item')
                             return updatedItem
                         }
                         return item
