@@ -250,7 +250,7 @@ const FormRecebimentoMp = ({ id }) => {
         setLoading(true)
         if (id) {
             api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID }).then(response => {
-                console.log('getData: ', response.data)
+                console.log('getData: ', response.data.products)
 
                 setField(response.data.fields)
                 setProducts(response.data.products)
