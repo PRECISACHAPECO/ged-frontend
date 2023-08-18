@@ -34,7 +34,6 @@ const FormUnidade = ({ id }) => {
     const { user, setLoggedUnity, loggedUnity } = useContext(AuthContext)
     const { setId } = useContext(RouteContext)
     id = user.papelID === 1 ? id : loggedUnity.unidadeID
-    console.log('🚀 ~ id:', id)
 
     const [open, setOpen] = useState(false)
     const [data, setData] = useState()
@@ -63,7 +62,6 @@ const FormUnidade = ({ id }) => {
     //? Função que busca o CEP
     const handleCep = async cep => {
         if (cep.length == 9) {
-            console.log('🚀 ~ cep:', cep)
             //? Obter apenas núemros da string
             const cepNumber = cep.replace(/\D/g, '')
             api.get('https://viacep.com.br/ws/' + cepNumber + '/json/').then(response => {
@@ -86,7 +84,6 @@ const FormUnidade = ({ id }) => {
             ...datas.fields,
             dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD')
         }
-        console.log('🚀 ~ data:', data)
 
         delete data.cabecalhoRelatorioTitle
         delete data.cabecalhoRelatorio
@@ -153,12 +150,10 @@ const FormUnidade = ({ id }) => {
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     const getData = async () => {
-        console.log('no getdata....')
         if (type == 'edit') {
             try {
                 const response = await api.get(`${staticUrl}/${id}`)
                 reset(response.data)
-                console.log('🚀 ~ response.data:', response.data)
                 setData(response.data)
                 setFileCurrent(response.data.fields.cabecalhoRelatorioTitle)
                 setPhotoProfile(response.data?.fields?.cabecalhoRelatorio)

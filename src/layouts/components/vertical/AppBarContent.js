@@ -37,7 +37,6 @@ const AppBarContent = props => {
     const { hidden, settings, saveSettings, toggleNavVisibility } = props
     const { title } = useContext(ParametersContext)
     const { id, setId } = useContext(RouteContext)
-    console.log("🚀 ~ title:", id, title)
 
     const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
 
