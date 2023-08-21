@@ -31,7 +31,7 @@ import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 
 const FormUnidade = ({ id }) => {
-    const { user, setLoggedUnity, loggedUnity } = useContext(AuthContext)
+    const { user, loggedUnity } = useContext(AuthContext)
     const { setId } = useContext(RouteContext)
     id = user.papelID === 1 ? id : loggedUnity.unidadeID
 
@@ -87,30 +87,17 @@ const FormUnidade = ({ id }) => {
 
         delete data.cabecalhoRelatorioTitle
         delete data.cabecalhoRelatorio
-        const formData = new FormData()
-        formData.append('fileReport', fileSelect)
 
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, data).then(response => {
-                    const id = response.data
-                    //? Faz uma nova requisição para salvar a imagem
-                    if (fileSelect) {
-                        api.post(`${backRoute(staticUrl)}/updateData/report/${id}`, formData)
-                    }
                     router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
                     setId(response.data)
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
                 await api.post(`${staticUrl}/updateData/${id}`, data)
-                if (fileSelect) {
-                    await api.post(`${staticUrl}/updateData/report/${id}`, formData)
-                    toast.success(toastMessage.successUpdate)
-                }
-                if (!fileSelect) {
-                    toast.success(toastMessage.successUpdate)
-                }
+                toast.success(toastMessage.successUpdate)
                 getData()
             }
         } catch (error) {
@@ -121,14 +108,17 @@ const FormUnidade = ({ id }) => {
             }
         }
 
-        // Atualiza os dados do usuário logado no contexto
-        for (const key in loggedUnity) {
-            if (key in data) {
-                loggedUnity[key] = data[key]
+        //? Se for fornecedor, atualiza os dados do usuário logado
+        if (user.papelID == 2) {
+            // Atualiza os dados do usuário logado no contexto
+            for (const key in loggedUnity) {
+                if (key in data) {
+                    loggedUnity[key] = data[key]
+                }
             }
+            // Atualiza os dados do usuário logado no localStorage
+            localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
         }
-        // Atualiza os dados do usuário logado no localStorage
-        localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
     }
 
     // Função que deleta os dados
@@ -186,8 +176,10 @@ const FormUnidade = ({ id }) => {
     const handleFileSelect = async event => {
         const selectedFile = event.target.files[0]
         if (selectedFile) {
+            console.log('troca fotooo')
+
             const formData = new FormData()
-            formData.append('fileReport', selectedFile)
+            formData.append('file', selectedFile)
             await api
                 .post(`${staticUrl}/updateData/report/${id}`, formData)
                 .then(response => {
@@ -195,8 +187,7 @@ const FormUnidade = ({ id }) => {
                     toast.success('Foto atualizada com sucesso!')
                 })
                 .catch(error => {
-                    console.log(error)
-                    toast.error('Erro ao atualizar foto, tente novamente!')
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
                 })
         }
     }
@@ -478,7 +469,7 @@ const FormUnidade = ({ id }) => {
 
                                             <Select
                                                 xs={12}
-                                                md={12}
+                                                md={8}
                                                 multiple
                                                 title='Extensões de Arquivos Permitidas'
                                                 name={`fields.extensoes`}
@@ -487,6 +478,17 @@ const FormUnidade = ({ id }) => {
                                                 register={register}
                                                 setValue={setValue}
                                                 control={control}
+                                            />
+
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='Tamanho máximo dos anexos (MB)'
+                                                name='fields.anexosTamanhoMaximo'
+                                                required={true}
+                                                register={register}
+                                                control={control}
+                                                errors={errors?.fields?.anexosTamanhoMaximo}
                                             />
                                         </Grid>
                                     </Grid>

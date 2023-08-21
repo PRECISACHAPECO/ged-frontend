@@ -178,10 +178,10 @@ const FormUsuario = ({ id }) => {
         const selectedFile = event.target.files[0]
         if (selectedFile) {
             const formData = new FormData()
-            // formData.append('photoProfile', selectedFile)
             formData.append('file', selectedFile)
+
             await api
-                .post(`${staticUrl}/photo-profile/${id}`, formData)
+                .post(`${staticUrl}/photo-profile/${id}/${loggedUnity.unidadeID}`, formData)
                 .then(response => {
                     console.log('Response ===> ', response)
                     setPhotoProfile(response.data)
@@ -191,7 +191,6 @@ const FormUsuario = ({ id }) => {
                     toast.success('Foto de perfil atualizada com sucesso!')
                 })
                 .catch(error => {
-                    // console.log('=====> ', error.response.data.message)
                     toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
                 })
         }
