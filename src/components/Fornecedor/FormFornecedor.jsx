@@ -230,6 +230,8 @@ const FormFornecedor = ({ id }) => {
             setLoading(true)
             if (id) {
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
+                    console.log('🚀 ~ response.data:', response.data)
+
                     verifyFields(response.data.fields)
                     setFields(response.data.fields)
                     setCategorias(response.data.categorias)
@@ -305,7 +307,7 @@ const FormFornecedor = ({ id }) => {
         }
         try {
             setLoadingSave(true)
-            await enviarPDFsParaBackend()
+            // await enviarPDFsParaBackend()
             await api.put(`${staticUrl}/updateData/${id}`, data).then(response => {
                 toast.success(toastMessage.successUpdate)
                 setLoadingSave(false)
@@ -389,41 +391,77 @@ const FormFornecedor = ({ id }) => {
     }, [copiedDataContext])
 
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
-    const handleFileSelect = (event, item) => {
+    const handleFileSelect = async (event, item) => {
         const selectedFile = event.target.files[0]
+        if (selectedFile) {
+            const formData = new FormData()
+            formData.append('file', selectedFile)
 
-        // Atualiza o objeto anexo com o arquivo selecionado
-        const updatedItem = {
-            ...item,
-            anexo: {
-                exist: true,
-                path: null,
-                file: selectedFile,
-                nome: selectedFile.name,
-                type: selectedFile.type,
-                size: selectedFile.size,
-                time: selectedFile.lastModified
-            }
+            formData.append(`usuarioID`, user.usuarioID)
+            formData.append(`unidadeID`, loggedUnity.unidadeID)
+            formData.append(`file`, item.anexo.file)
+            formData.append(`titulo`, item.anexo.nome)
+            formData.append(`grupoanexoitemID`, item.grupoanexoitemID)
+
+            // let index = 0
+            // grupoAnexo.forEach((grupo, grupoIndex) => {
+            //     // grupo
+            //     grupo.itens.forEach((item, itemIndex) => {
+            //         // itens
+            //         if (item.anexo && item.anexo.file) {
+            //             formData.append(`file`, item.anexo.file)
+            //             formData.append(`titulo[${index}]`, item.anexo.nome)
+            //             formData.append(`grupoanexoitemID[${index}]`, item.grupoanexoitemID)
+            //             //
+            //             index++
+            //         }
+            //     })
+            // })
+
+            await api
+                .post(`${staticUrl}/saveAnexo/${id}/${unidade.unidadeID}`, formData)
+                .then(response => {
+                    toast.success('Anexo adicionado com sucesso!')
+                })
+                .catch(error => {
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
+                })
         }
 
-        // Atualiza estado grupoAnexo com o item atualizado
-        const updatedGrupoAnexo = grupoAnexo.map(grupo => {
-            if (grupo.grupoAnexoID == item.grupoanexoID) {
-                return {
-                    ...grupo,
-                    itens: grupo.itens.map(item => {
-                        if (item.grupoanexoitemID == updatedItem.grupoanexoitemID) {
-                            return updatedItem
-                        }
-                        return item
-                    })
-                }
-            }
-            return grupo
-        })
-        setGrupoAnexo(updatedGrupoAnexo)
+        // const selectedFile = event.target.files[0]
 
-        toast.success('Anexo adicionado, salve para concluir!')
+        // // Atualiza o objeto anexo com o arquivo selecionado
+        // const updatedItem = {
+        //     ...item,
+        //     anexo: {
+        //         exist: true,
+        //         path: null,
+        //         file: selectedFile,
+        //         nome: selectedFile.name,
+        //         type: selectedFile.type,
+        //         size: selectedFile.size,
+        //         time: selectedFile.lastModified
+        //     }
+        // }
+
+        // // Atualiza estado grupoAnexo com o item atualizado
+        // const updatedGrupoAnexo = grupoAnexo.map(grupo => {
+        //     if (grupo.grupoAnexoID == item.grupoanexoID) {
+        //         return {
+        //             ...grupo,
+        //             itens: grupo.itens.map(item => {
+        //                 if (item.grupoanexoitemID == updatedItem.grupoanexoitemID) {
+        //                     return updatedItem
+        //                 }
+        //                 return item
+        //             })
+        //         }
+        //     }
+        //     return grupo
+        // })
+        // setGrupoAnexo(updatedGrupoAnexo)
+
+        // toast.success('Anexo adicionado, salve para concluir!')
     }
 
     // Envia os arquivos de anexo para o backend
@@ -439,7 +477,7 @@ const FormFornecedor = ({ id }) => {
             grupo.itens.forEach((item, itemIndex) => {
                 // itens
                 if (item.anexo && item.anexo.file) {
-                    formData.append(`pdfFiles`, item.anexo.file)
+                    formData.append(`file`, item.anexo.file)
                     formData.append(`titulo[${index}]`, item.anexo.nome)
                     formData.append(`grupoanexoitemID[${index}]`, item.grupoanexoitemID)
                     //
@@ -453,7 +491,7 @@ const FormFornecedor = ({ id }) => {
             formData.append(`arrAnexoRemoved[${index}]`, item)
         })
 
-        await api.post(`/formularios/fornecedor/saveAnexo/${id}`, formData, {
+        await api.post(`/formularios/fornecedor/saveAnexo/${id}/${unidade.unidadeID}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
