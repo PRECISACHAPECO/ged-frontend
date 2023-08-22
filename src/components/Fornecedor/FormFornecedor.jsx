@@ -30,6 +30,7 @@ const FormFornecedor = ({ id }) => {
     const [isLoading, setLoading] = useState(false) //? loading de carregamento da página
     const [isLoadingSave, setLoadingSave] = useState(false) //? dependencia do useEffect pra atualizar a página após salvar
     // const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
+    const [loadingFile, setLoadingFile] = useState(false) //? loading de carregamento do arquivo
 
     const [fieldsState, setFields] = useState([])
     const [data, setData] = useState(null)
@@ -393,6 +394,7 @@ const FormFornecedor = ({ id }) => {
 
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
     const handleFileSelect = async (event, item) => {
+        setLoadingFile(true)
         const selectedFile = event.target.files[0]
         console.log('🚀 ~ selectedFile:', selectedFile)
 
@@ -409,6 +411,8 @@ const FormFornecedor = ({ id }) => {
                 .post(`${staticUrl}/saveAnexo/${id}/${unidade.unidadeID}`, formData)
                 .then(response => {
                     console.log('🚀 ~ response.data:', response.data)
+
+                    setLoadingFile(false)
 
                     toast.success('Anexo adicionado com sucesso!')
 
@@ -442,6 +446,7 @@ const FormFornecedor = ({ id }) => {
                     setGrupoAnexo(updatedGrupoAnexo)
                 })
                 .catch(error => {
+                    setLoadingFile(false)
                     toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
                 })
         }
@@ -625,10 +630,10 @@ const FormFornecedor = ({ id }) => {
                     {grupoAnexo &&
                         grupoAnexo.map((grupo, indexGrupo) => (
                             <AnexoModeView
-                                mode='grid'
                                 key={indexGrupo}
                                 values={{
                                     grupo: grupo,
+                                    loadingFile: loadingFile,
                                     indexGrupo: indexGrupo,
                                     handleFileSelect: handleFileSelect,
                                     handleRemove: handleRemoveAnexo,

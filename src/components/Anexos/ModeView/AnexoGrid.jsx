@@ -2,16 +2,15 @@ import { Card, CardContent, Grid, IconButton, Tooltip, Typography } from '@mui/m
 import Icon from 'src/@core/components/icon'
 import IconCloudUpload from 'src/icon/IconUpload'
 import IconAttach from '../IconAttach'
+import Loading from 'src/components/Loading'
 
 const AnexoGrid = ({
     item,
-
-    grupo,
-    indexGrupo,
     handleFileClick,
     selectedItem,
     handleFileSelect,
     handleRemove,
+    loadingFile,
     error,
     disabled,
     modeTheme,
@@ -20,7 +19,7 @@ const AnexoGrid = ({
     console.log('🚀 ~ AnexoGrid item:', item)
 
     return (
-        <Grid item xs={12} md={2}>
+        <Grid item xs={12} md={3}>
             <div
                 className={`border  ${
                     error?.[indexItem]
@@ -49,6 +48,9 @@ const AnexoGrid = ({
                             modeTheme === 'dark' ? ' border-[rgba(234, 234, 255, 0.10)]' : 'rgba(76, 78, 100, 0.12)'
                         }`}
                     >
+                        {selectedItem && selectedItem.grupoanexoitemID == item.grupoanexoitemID && (
+                            <Loading show={loadingFile} title='Enviando anexo...' />
+                        )}
                         <div className='flex items-center gap-3'>
                             {item.anexo && item.anexo.exist ? (
                                 <div>

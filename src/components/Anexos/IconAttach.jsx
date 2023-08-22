@@ -1,28 +1,48 @@
-import Icon from 'src/@core/components/icon'
-import IconFilePdf from '../../icon/IconPdf'
-import IconCloudUpload from '../../icon/IconUpload'
-import { useRef, useContext, useState, useEffect } from 'react'
-import { SettingsContext } from 'src/@core/context/settingsContext'
+//* Ícones
+import IconPdf from '../../icon/IconPdf'
+import IconWord from '../../icon/IconWord'
+import IconExcel from '../../icon/IconExcel'
+import IconPowerPoint from '../../icon/IconPowerPoint'
+import IconText from '../../icon/IconText'
+import IconZip from '../../icon/IconZip'
+import IconUnknown from '../../icon/IconUnknown'
 
 const IconAttach = ({ data }) => {
     console.log('🚀 ~ IconAttach data:', data)
 
-    return data && data.tipo == 'application/pdf' ? (
-        <IconFilePdf className='text-6xl fill-red-500' />
-    ) : data.tipo == 'image/jpeg' || data.tipo == 'image/png' ? (
-        // div com imagem de background com cover e posicionada ao centro
+    return data &&
+        //? PDF
+        data.tipo == 'application/pdf' ? (
+        <IconPdf className='text-6xl fill-red-500' />
+    ) : //? Imagem (cover)
+    data.tipo == 'image/jpeg' || data.tipo == 'image/png' ? (
         <div
             className='h-16 w-16 rounded-lg relative '
             style={{ backgroundImage: `url(${data.path})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         ></div>
-    ) : data.tipo == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? (
-        <Icon name='file-word' className='text-6xl fill-red-500' />
-    ) : data.tipo == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ? (
-        <Icon name='file-excel' className='text-6xl fill-red-500' />
-    ) : data.tipo == 'application/vnd.openxmlformats-officedocument.presentationml.presentation' ? (
-        <Icon name='file-powerpoint' className='text-6xl fill-red-500' />
+    ) : //? Word
+    data.tipo == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? (
+        <IconWord className='text-6xl fill-blue-500' />
+    ) : //? Excel
+    data.tipo == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ? (
+        <IconExcel className='text-6xl fill-green-500' />
+    ) : //? Zip/Rar
+    data.tipo == 'application/x-zip-compressed' ||
+      data.tipo == 'application/zip-compressed' ||
+      data.tipo == 'application/rar-compressed' ||
+      data.tipo == 'application/x-rar-compressed' ? (
+        <IconZip className='text-6xl fill-yellow-500' />
+    ) : //? PowerPoint
+    data.tipo == 'application/vnd.ms-powerpoint' ||
+      data.tipo == 'application/vnd.openxmlformats-officedocument.presentationml.slideshow' ||
+      data.tipo == 'application/vnd.openxmlformats-officedocument.presentationml.presentation' ? (
+        <IconPowerPoint className='text-6xl fill-[#D55736]' />
+    ) : //? Txt
+    data.tipo == 'text/plain' ? (
+        <IconText className='text-6xl fill-sky-600' />
     ) : (
-        <p>no icon</p>
+        //? Desconhecido
+        <IconUnknown className='text-6xl fill-gray-500' />
     )
 }
 
