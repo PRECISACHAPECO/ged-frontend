@@ -40,7 +40,6 @@ const Select = ({
                             }
                             disabled={disabled}
                             onChange={(e, newValue) => {
-                                console.log('🚀 Select => onChange:', newValue)
                                 setValue(name, newValue)
                                 type == 'registroestabelecimento'
                                     ? handleRegistroEstabelecimento(newValue ? newValue.id : null)
@@ -54,6 +53,7 @@ const Select = ({
                                     error={errors ? true : false}
                                 />
                             )}
+                            noOptionsText='Sem opções'
                         />
                     )}
                 />
