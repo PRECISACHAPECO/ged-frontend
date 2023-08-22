@@ -29,6 +29,7 @@ import { backRoute } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
+import { validationCNPJ } from 'src/configs/validations'
 
 const FormUnidade = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -53,6 +54,7 @@ const FormUnidade = ({ id }) => {
         trigger,
         handleSubmit,
         setValue,
+        setError,
         reset,
         control,
         formState: { errors },
@@ -78,8 +80,20 @@ const FormUnidade = ({ id }) => {
         }
     }
 
+    console.log('erross', errors)
+
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async datas => {
+        // Verifica se o CNPJ é válido se ele for envalido retorna erro e retorna
+        const cnpjValidation = validationCNPJ(datas.fields.cnpj)
+        if (!cnpjValidation) {
+            setError('fields.cnpj', {
+                type: 'required',
+                message: 'CNPJ inválido'
+            })
+            return
+        }
+
         const data = {
             ...datas.fields,
             dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD')
@@ -247,7 +261,7 @@ const FormUnidade = ({ id }) => {
                                         title='CNPJ'
                                         name='fields.cnpj'
                                         mask='cnpj'
-                                        required={true}
+                                        required
                                         register={register}
                                         control={control}
                                         errors={errors?.fields?.cnpj}

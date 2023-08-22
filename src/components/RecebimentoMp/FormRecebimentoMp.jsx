@@ -560,7 +560,7 @@ const FormRecebimentoMp = ({ id }) => {
                                         justifyContent='space-between'
                                         gap={4}
                                         key={indexData}
-                                        sx={{ mb: 4 }}
+                                        className='mb-4 flex-col md:flex-row'
                                     >
                                         {/* Monta as colunas dinâmicas dos produtos */}
                                         {fieldsProduct &&

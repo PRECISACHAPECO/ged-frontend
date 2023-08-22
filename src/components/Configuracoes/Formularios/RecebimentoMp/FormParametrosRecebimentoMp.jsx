@@ -343,7 +343,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                     <Grid container spacing={4}>
                                         <Input
                                             xs={12}
-                                            md={1}
+                                            md={3}
                                             title='Sequência'
                                             name={`blocks.[${index}].dados.ordem`}
                                             value={block.dados.ordem}
@@ -354,7 +354,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
 
                                         <Input
                                             xs={12}
-                                            md={9}
+                                            md={3}
                                             title='Nome do Bloco'
                                             name={`blocks.[${index}].dados.nome`}
                                             value={block.dados.nome}
@@ -365,7 +365,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
 
                                         <Check
                                             xs={12}
-                                            md={1}
+                                            md={3}
                                             title='Ativo'
                                             name={`blocks.[${index}].dados.status`}
                                             value={blocks[index].dados.status}
@@ -374,7 +374,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
 
                                         <Check
                                             xs={12}
-                                            md={1}
+                                            md={3}
                                             title='Observação'
                                             name={`blocks.[${index}].dados.obs`}
                                             value={blocks[index].dados.obs}
