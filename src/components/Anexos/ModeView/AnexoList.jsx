@@ -1,27 +1,21 @@
 import { Card, CardContent, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import Icon from 'src/@core/components/icon'
-import { useRef, useContext, useState, useEffect } from 'react'
-import { SettingsContext } from 'src/@core/context/settingsContext'
 import IconCloudUpload from 'src/icon/IconUpload'
-import IconFilePdf from '../../icon/IconPdf'
+import IconAttach from '../IconAttach'
 
-const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, error, disabled }) => {
-    console.log('🚀 ~ CardAnexo error:', error)
-
-    const [selectedItem, setSelectedItem] = useState(null)
-    const { settings } = useContext(SettingsContext)
-    const mode = settings.mode
-
-    const fileInputRef = useRef(null)
-
-    const handleAvatarClick = item => {
-        fileInputRef.current.click()
-        setSelectedItem(item)
-    }
-
-    useEffect(() => {
-        fileInputRef.current.value = ''
-    }, [handleFileSelect])
+const AnexoList = ({
+    grupo,
+    indexGrupo,
+    handleFileClick,
+    selectedItem,
+    handleFileSelect,
+    handleRemove,
+    error,
+    disabled,
+    modeTheme,
+    inputRef
+}) => {
+    console.log('🚀 ~ CardAnexo grupo:', grupo)
 
     return (
         <Card sx={{ mt: 4 }}>
@@ -34,18 +28,18 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, err
                 </Typography>
                 <Grid container spacing={4}>
                     {grupo.itens.map((item, indexItem) => (
-                        <Grid item xs={12} md={3} key={`${indexGrupo}-${indexItem}`}>
+                        <Grid item xs={12} md={2} key={`${indexGrupo}-${indexItem}`}>
                             <div
                                 className={`border  ${
                                     error?.[indexItem]
                                         ? 'border-red-500'
-                                        : mode === 'dark'
+                                        : modeTheme === 'dark'
                                         ? 'border-[#71717B]'
                                         : 'border-[#E1E1E6]'
                                 } rounded-lg flex flex-col relative z-10`}
                             >
                                 <div className={`flex items-center justify-center p-2 mt-1 `}>
-                                    <p className='font-medium'>{item.nome}</p>
+                                    <p className='font-medium text-sm '>{item.nome}</p>
                                 </div>
                                 <div
                                     className='flex justify-center items-center cursor-pointer p-1 h-[150px] w-full '
@@ -54,13 +48,13 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, err
                                         item.anexo && item.anexo.path && item.anexo.exist
                                             ? window.open(item.anexo.path, '_blank')
                                             : !disabled
-                                            ? handleAvatarClick(item)
+                                            ? handleFileClick(item)
                                             : null
                                     }}
                                 >
                                     <div
-                                        className={`flex p-2  justify-center items-center gap-2 rounded-lg w-full h-full m-3 border border-dashed hover:border-[#4A8B57] transition-colors ${
-                                            mode === 'dark'
+                                        className={`flex p-2 justify-center items-center gap-2 rounded-lg w-full h-full m-3 border border-dashed hover:border-[#4A8B57] transition-colors ${
+                                            modeTheme === 'dark'
                                                 ? ' border-[rgba(234, 234, 255, 0.10)]'
                                                 : 'rgba(76, 78, 100, 0.12)'
                                         }`}
@@ -68,8 +62,26 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, err
                                         <div className='flex items-center gap-3'>
                                             {item.anexo && item.anexo.exist ? (
                                                 <div>
-                                                    <div className='flex items-center gap-2'>
-                                                        <IconFilePdf className='text-6xl fill-red-500' />
+                                                    <div className='flex flex-col items-center gap-2'>
+                                                        <IconAttach data={item.anexo} />
+
+                                                        <p className='text-sm opacity-80'>
+                                                            {item.anexo.nome}
+                                                            <span className='text-xs opacity-50 ml-1'>{`(${(
+                                                                item.anexo.size /
+                                                                1024 /
+                                                                1024
+                                                            ).toFixed(2)}MB)`}</span>
+                                                        </p>
+                                                        <p className='text-xs opacity-50'>
+                                                            {new Date(item.anexo.time).toLocaleString('pt-BR', {
+                                                                day: '2-digit',
+                                                                month: '2-digit',
+                                                                year: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit'
+                                                            })}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             ) : (
@@ -100,7 +112,7 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, err
                                     >
                                         <IconButton
                                             color='error'
-                                            onClick={() => handleRemoveAnexo(item)}
+                                            onClick={() => handleRemove(item)}
                                             disabled={!item.anexo?.exist || disabled}
                                         >
                                             <Icon icon='tabler:trash-filled' />
@@ -109,7 +121,7 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, err
                                 </div>
                                 <input
                                     type='file'
-                                    ref={fileInputRef}
+                                    ref={inputRef}
                                     style={{ display: 'none' }}
                                     onChange={e => handleFileSelect(e, selectedItem)}
                                 />
@@ -122,4 +134,4 @@ const CardAnexo = ({ grupo, indexGrupo, handleFileSelect, handleRemoveAnexo, err
     )
 }
 
-export default CardAnexo
+export default AnexoList
