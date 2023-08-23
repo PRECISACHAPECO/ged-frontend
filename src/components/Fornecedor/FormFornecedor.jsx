@@ -64,6 +64,7 @@ const FormFornecedor = ({ id }) => {
     const {
         watch,
         register,
+        trigger,
         reset,
         control,
         getValues,
@@ -226,16 +227,13 @@ const FormFornecedor = ({ id }) => {
     /// Verificar se existe dados no localStorage que não estão preenchidos
     const verifyFields = field => {}
 
-    console.log('Verific', verifyFields)
-
     const getData = () => {
         try {
             setLoading(true)
             if (id) {
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
-                    console.log('🚀 ~ response.data:', response.data)
-
                     verifyFields(response.data.fields)
+                    console.log('🚀 ~ response.data:', response.data)
                     setFields(response.data.fields)
                     setCategorias(response.data.categorias)
                     setAtividades(response.data.atividades)
@@ -252,6 +250,19 @@ const FormFornecedor = ({ id }) => {
 
                     //* Insere os dados no formulário
                     reset(response.data)
+
+                    for (let i = 0; i < response.data.fields.length; i++) {
+                        const nomeCampo = response.data.fields[i].nomeColuna
+                        for (let propriedade in loggedUnity) {
+                            if (propriedade === nomeCampo && !getValues().nomeColuna) {
+                                console.log('vazio:', i, response.data.fields[i].nomeColuna)
+                                setValue(`fields[${i}].${nomeCampo}`, loggedUnity[propriedade])
+                            }
+                        }
+                    }
+
+                    // console.log('🚀 ~ response.data.fields:', response.data.fields)
+                    // console.log('🚀 ~ loggedUnity:', loggedUnity)
 
                     let objStatus = statusDefault[response.data.info.status]
                     setStatus(objStatus)
@@ -396,7 +407,6 @@ const FormFornecedor = ({ id }) => {
     const handleFileSelect = async (event, item) => {
         setLoadingFile(true)
         const selectedFile = event.target.files[0]
-        console.log('🚀 ~ selectedFile:', selectedFile)
 
         if (selectedFile) {
             const formData = new FormData()
@@ -410,8 +420,6 @@ const FormFornecedor = ({ id }) => {
             await api
                 .post(`${staticUrl}/saveAnexo/${id}/${unidade.unidadeID}`, formData)
                 .then(response => {
-                    console.log('🚀 ~ response.data:', response.data)
-
                     setLoadingFile(false)
 
                     toast.success('Anexo adicionado com sucesso!')
@@ -442,7 +450,6 @@ const FormFornecedor = ({ id }) => {
                         }
                         return grupo
                     })
-                    console.log('🚀 ~ updatedGrupoAnexo:', updatedGrupoAnexo)
                     setGrupoAnexo(updatedGrupoAnexo)
                 })
                 .catch(error => {
