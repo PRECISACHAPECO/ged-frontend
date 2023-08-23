@@ -492,7 +492,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 />
 
                                                 {/* Abre o modal que define a pontuação das respostas */}
-                                                <Grid item xs={3} md={2}>
+                                                <Grid item xs={2} md={1}>
                                                     <Box
                                                         height='100%'
                                                         display='flex'
