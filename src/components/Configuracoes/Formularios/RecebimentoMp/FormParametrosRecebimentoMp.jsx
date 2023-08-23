@@ -342,8 +342,9 @@ const FormParametrosRecebimentoMp = ({ id }) => {
 
                                     <Grid container spacing={4}>
                                         <Input
-                                            xs={12}
-                                            md={3}
+                                            className='order-1'
+                                            xs={10}
+                                            md={1}
                                             title='Sequência'
                                             name={`blocks.[${index}].dados.ordem`}
                                             value={block.dados.ordem}
@@ -353,8 +354,9 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                         />
 
                                         <Input
-                                            xs={12}
-                                            md={3}
+                                            className='order-3 md:order-2'
+                                            xs={10}
+                                            md={9}
                                             title='Nome do Bloco'
                                             name={`blocks.[${index}].dados.nome`}
                                             value={block.dados.nome}
@@ -364,8 +366,9 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                         />
 
                                         <Check
-                                            xs={12}
-                                            md={3}
+                                            className='order-2 md:order-3'
+                                            xs={2}
+                                            md={1}
                                             title='Ativo'
                                             name={`blocks.[${index}].dados.status`}
                                             value={blocks[index].dados.status}
@@ -373,8 +376,9 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                         />
 
                                         <Check
-                                            xs={12}
-                                            md={3}
+                                            className='order-4'
+                                            xs={2}
+                                            md={1}
                                             title='Observação'
                                             name={`blocks.[${index}].dados.obs`}
                                             value={blocks[index].dados.obs}
@@ -449,7 +453,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                     />
 
                                                     <Check
-                                                        xs={12}
+                                                        xs={3}
                                                         md={1}
                                                         title='Ativo'
                                                         index={indexItem}
@@ -459,7 +463,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                     />
 
                                                     <Check
-                                                        xs={12}
+                                                        xs={3}
                                                         md={1}
                                                         title='Obs'
                                                         index={indexItem}
@@ -469,7 +473,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                     />
 
                                                     <Check
-                                                        xs={12}
+                                                        xs={3}
                                                         md={1}
                                                         title='Obrigatório'
                                                         index={indexItem}
@@ -479,7 +483,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                                     />
 
                                                     <Remove
-                                                        xs={12}
+                                                        xs={3}
                                                         md={1}
                                                         title={indexItem == 0 ? 'Remover' : ''}
                                                         index={index}
