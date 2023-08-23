@@ -16,10 +16,11 @@ const Select = ({
     multiple,
     setValue,
     errors,
+    className,
     handleRegistroEstabelecimento
 }) => {
     return (
-        <Grid item xs={xs} md={md} sx={{ my: 1 }}>
+        <Grid item xs={xs} md={md} sx={{ my: 1 }} className={className}>
             <FormControl fullWidth>
                 <Controller
                     name={name}

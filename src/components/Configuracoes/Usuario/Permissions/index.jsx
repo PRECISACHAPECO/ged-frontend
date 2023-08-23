@@ -41,25 +41,25 @@ const Permissions = ({
                         <>
                             {/* Divisor */}
                             <Grid container spacing={5} sx={{ my: 2 }}>
-                                <Grid item xs={12} md={8}>
+                                <Grid item xs={4} md={8}>
                                     <Typography variant='body2'>{menuGroup.nome}</Typography>
                                 </Grid>
-                                <Grid item xs={12} md={1}>
+                                <Grid item xs={2} md={1}>
                                     <Typography variant='body2' sx={{ textAlign: 'center' }}>
                                         Ler
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12} md={1}>
+                                <Grid item xs={2} md={1}>
                                     <Typography variant='body2' sx={{ textAlign: 'center' }}>
                                         Inserir
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12} md={1}>
+                                <Grid item xs={2} md={1}>
                                     <Typography variant='body2' sx={{ textAlign: 'center' }}>
                                         Editar
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12} md={1}>
+                                <Grid item xs={2} md={1}>
                                     <Typography variant='body2' sx={{ textAlign: 'center' }}>
                                         Excluir
                                     </Typography>

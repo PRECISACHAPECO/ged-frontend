@@ -11,7 +11,7 @@ const PermissionSubmenu = ({ submenu, indexUnit, indexMenuGroup, indexMenu, inde
             }}
         >
             {/* Submenu título */}
-            <Grid item xs={12} md={8}>
+            <Grid item xs={4} md={8}>
                 <Typography variant='subtitle1'>{submenu.nome}</Typography>
             </Grid>
 
@@ -27,7 +27,7 @@ const PermissionSubmenu = ({ submenu, indexUnit, indexMenuGroup, indexMenu, inde
 
             {/* Ler */}
             <Check
-                xs={12}
+                xs={2}
                 md={1}
                 name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].ler`}
                 value={submenu.ler}
@@ -38,7 +38,7 @@ const PermissionSubmenu = ({ submenu, indexUnit, indexMenuGroup, indexMenu, inde
 
             {/* Inserir */}
             <Check
-                xs={12}
+                xs={2}
                 md={1}
                 name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].inserir`}
                 value={submenu.inserir}
@@ -49,7 +49,7 @@ const PermissionSubmenu = ({ submenu, indexUnit, indexMenuGroup, indexMenu, inde
 
             {/* Editar */}
             <Check
-                xs={12}
+                xs={2}
                 md={1}
                 name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].editar`}
                 value={submenu.editar}
@@ -60,7 +60,7 @@ const PermissionSubmenu = ({ submenu, indexUnit, indexMenuGroup, indexMenu, inde
 
             {/* Excluir */}
             <Check
-                xs={12}
+                xs={2}
                 md={1}
                 name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].excluir`}
                 value={submenu.excluir}
