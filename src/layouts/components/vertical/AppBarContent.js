@@ -14,6 +14,7 @@ import { toast } from 'react-hot-toast'
 // ** Next Import
 import { useRouter } from 'next/router'
 
+
 // ** Components
 import Autocomplete from 'src/layouts/components/vertical/Autocomplete'
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
@@ -23,13 +24,30 @@ import { Button, Snackbar, Typography } from '@mui/material'
 import DialogSelectUnit from 'src/components/Defaults/Dialogs/DialogSelectUnit'
 
 const notifications = [
-    // {
-    //     meta: 'Today',
-    //     avatarAlt: 'Flora',
-    //     title: 'Congratulation Flora! 🎉',
-    //     avatarImg: '/images/avatars/4.png',
-    //     subtitle: 'Won the monthly best seller badge'
-    // },
+    {
+        meta: 'Today',
+        new: true,
+        avatarAlt: 'Flora',
+        title: 'Congratulation Flora! 🎉',
+        avatarImg: '/images/avatars/4.png',
+        subtitle: 'Won the monthly best seller badge'
+    },
+    {
+        meta: 'Today',
+        new: true,
+        avatarAlt: 'Flora',
+        title: 'Congratulation Flora! 🎉',
+        avatarImg: '/images/avatars/4.png',
+        subtitle: 'Won the monthly best seller badge'
+    },
+    {
+        meta: 'Today',
+        new: false,
+        avatarAlt: 'Flora',
+        title: 'Congratulation Flora! 🎉',
+        avatarImg: '/images/avatars/4.png',
+        subtitle: 'Won the monthly best seller badge'
+    },
 ]
 
 const AppBarContent = props => {
