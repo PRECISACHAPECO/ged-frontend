@@ -18,7 +18,7 @@ const PermissionMenu = ({
             {/* Menu com rota => seleciona permissões */}
             <Grid container spacing={5} sx={{ my: 2 }}>
                 {/* Menu título */}
-                <Grid item xs={12} md={8}>
+                <Grid item xs={4} md={8}>
                     <Typography variant='subtitle1'>{menu.nome}</Typography>
                 </Grid>
 
@@ -32,7 +32,7 @@ const PermissionMenu = ({
 
                 {/* Ler */}
                 <Check
-                    xs={12}
+                    xs={2}
                     md={1}
                     name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].ler`}
                     value={menu.ler}
@@ -43,7 +43,7 @@ const PermissionMenu = ({
 
                 {/* Inserir */}
                 <Check
-                    xs={12}
+                    xs={2}
                     md={1}
                     name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].inserir`}
                     value={menu.inserir}
@@ -54,7 +54,7 @@ const PermissionMenu = ({
 
                 {/* Editar */}
                 <Check
-                    xs={12}
+                    xs={2}
                     md={1}
                     name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].editar`}
                     value={menu.editar}
@@ -65,7 +65,7 @@ const PermissionMenu = ({
 
                 {/* Excluir */}
                 <Check
-                    xs={12}
+                    xs={2}
                     md={1}
                     name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].excluir`}
                     value={menu.excluir}
