@@ -4,7 +4,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-
 html,
 * {
     box-sizing: border-box;
@@ -92,11 +91,25 @@ code[class*='language-'] {
     }
 }
 
-
 @media print {
     .no-print {
         display: none;
+    }
+}
 
+/* Animação bounce no envio de anexo */
+.animate-custom-bounce {
+    animation: animate-custom-bounce 1s infinite;
+}
+@keyframes animate-custom-bounce {
+    0%,
+    100% {
+        transform: translateY(-5%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
     }
 }
 
@@ -115,8 +128,6 @@ code[class*='language-'] {
     background-color: transparent;
 }
 
-
-
 /* Google Chrome */
 input:-webkit-autofill {
     background-color: red;
@@ -125,11 +136,11 @@ input:-webkit-autofill {
 
 /* Mozilla Firefox */
 input:-moz-autofill {
-    background-color: #F0F8FF;
+    background-color: #f0f8ff;
 }
 
 /* Microsoft Edge */
 input:-ms-input-placeholder,
 input::-ms-reveal {
-    background-color: #F0F8FF;
+    background-color: #f0f8ff;
 }

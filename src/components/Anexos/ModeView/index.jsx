@@ -31,7 +31,7 @@ const ModeView = ({ values }) => {
     return (
         <Card sx={{ mt: 4 }}>
             <CardContent>
-                <div className='flex justify-between items-center mb-0'>
+                <div className='flex justify-between items-center mb-2'>
                     <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                         {values.grupo.nome}
                         <Typography variant='body2' sx={{ mb: 2 }}>

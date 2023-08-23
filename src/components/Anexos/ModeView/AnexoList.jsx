@@ -22,12 +22,12 @@ const AnexoList = ({
     return (
         <Grid item xs={12} md={12}>
             <div
-                className={`border ${
+                className={`${
                     error?.[indexItem]
-                        ? 'border-red-500'
+                        ? 'border border-red-500'
                         : modeTheme === 'dark'
-                        ? 'border-[#71717B]'
-                        : 'border-[#E1E1E6]'
+                        ? 'bg-[#202023]'
+                        : ' bg-[#F6F6F8] '
                 } rounded-lg flex flex-col relative z-10`}
             >
                 <div className='px-4 py-2 pb-0 space-y-1'>
@@ -49,10 +49,8 @@ const AnexoList = ({
                             }}
                         >
                             <div
-                                className={`flex relative p-4 justify-start items-center gap-2 rounded-lg w-full mx-2 my-1 mb-2 border border-dashed hover:border-[#4A8B57] transition-colors ${
-                                    modeTheme === 'dark'
-                                        ? ' border-[rgba(234, 234, 255, 0.10)]'
-                                        : 'rgba(76, 78, 100, 0.12)'
+                                className={`flex relative p-4 justify-start items-center gap-2 rounded-lg w-full mx-2 my-1 mb-2 border-2 border-dashed hover:border-[#4A8B57] transition-colors ${
+                                    modeTheme === 'dark' ? ' border-[#27272a]' : 'rgba(76, 78, 100, 0.12)'
                                 }`}
                             >
                                 {selectedItem && selectedItem.grupoanexoitemID == item.grupoanexoitemID && (
@@ -94,11 +92,15 @@ const AnexoList = ({
                                         </div>
                                     ) : (
                                         <div className='flex items-center gap-2'>
+                                            {/* Animação bounce lenta */}
+
                                             <IconCloudUpload
                                                 className={`w-20 h-20 ${
                                                     item.anexo && item.anexo.exist ? 'fill-[#666CFF]' : 'fill-current'
-                                                }`}
+                                                } 
+                                                animate-custom-bounce`}
                                             />
+
                                             <div>
                                                 <h6 className='text-sm font-semibold opacity-80'>
                                                     Adicione um arquivo

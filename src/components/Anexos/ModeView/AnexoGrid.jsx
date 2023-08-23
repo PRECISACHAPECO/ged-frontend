@@ -21,12 +21,12 @@ const AnexoGrid = ({
     return (
         <Grid item xs={12} md={3}>
             <div
-                className={`border  ${
+                className={`${
                     error?.[indexItem]
-                        ? 'border-red-500'
+                        ? 'border border-red-500'
                         : modeTheme === 'dark'
-                        ? 'border-[#71717B]'
-                        : 'border-[#E1E1E6]'
+                        ? 'bg-[#202023]'
+                        : 'bg-[#F6F6F8]'
                 } rounded-lg flex flex-col relative z-10`}
             >
                 <div className={`flex items-center justify-center p-2 mt-1 `}>
@@ -44,8 +44,8 @@ const AnexoGrid = ({
                     }}
                 >
                     <div
-                        className={`flex p-2 justify-center items-center gap-2 rounded-lg w-full h-full m-3 border border-dashed hover:border-[#4A8B57] transition-colors ${
-                            modeTheme === 'dark' ? ' border-[rgba(234, 234, 255, 0.10)]' : 'rgba(76, 78, 100, 0.12)'
+                        className={`flex p-2 justify-center items-center gap-2 rounded-lg w-full h-full m-3 border-2 border-dashed hover:border-[#4A8B57] transition-colors ${
+                            modeTheme === 'dark' ? ' border-[#27272a]' : 'rgba(76, 78, 100, 0.12)'
                         }`}
                     >
                         {selectedItem && selectedItem.grupoanexoitemID == item.grupoanexoitemID && (
@@ -81,7 +81,8 @@ const AnexoGrid = ({
                                     <IconCloudUpload
                                         className={`w-20 h-20 ${
                                             item.anexo && item.anexo.exist ? 'fill-[#666CFF]' : 'fill-current'
-                                        }`}
+                                        }
+                                        animate-custom-bounce`}
                                     />
                                     <h6 className='text-sm font-normal opacity-80'>Adicione um arquivo</h6>
                                 </div>
