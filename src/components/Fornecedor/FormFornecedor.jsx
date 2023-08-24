@@ -7,7 +7,9 @@ import Fields from 'src/components/Defaults/Formularios/Fields'
 import Input from 'src/components/Form/Input'
 import CheckList from 'src/components/Defaults/Formularios/CheckList'
 import Block from 'src/components/Defaults/Formularios/Block'
-import CardAnexo from 'src/components/Anexos/CardAnexo'
+
+import AnexoModeView from 'src/components/Anexos/ModeView'
+
 import { RouteContext } from 'src/context/RouteContext'
 import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
 
@@ -28,6 +30,7 @@ const FormFornecedor = ({ id }) => {
     const [isLoading, setLoading] = useState(false) //? loading de carregamento da página
     const [isLoadingSave, setLoadingSave] = useState(false) //? dependencia do useEffect pra atualizar a página após salvar
     // const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
+    const [loadingFile, setLoadingFile] = useState(false) //? loading de carregamento do arquivo
 
     const [fieldsState, setFields] = useState([])
     const [data, setData] = useState(null)
@@ -61,6 +64,7 @@ const FormFornecedor = ({ id }) => {
     const {
         watch,
         register,
+        trigger,
         reset,
         control,
         getValues,
@@ -70,8 +74,6 @@ const FormFornecedor = ({ id }) => {
         handleSubmit,
         formState: { errors }
     } = useForm()
-
-    console.log('🚀 ~ ERRORS:', errors)
 
     const verifyFormPending = async () => {
         try {
@@ -222,13 +224,16 @@ const FormFornecedor = ({ id }) => {
         return active
     }
 
+    /// Verificar se existe dados no localStorage que não estão preenchidos
+    const verifyFields = field => {}
+
     const getData = () => {
         try {
             setLoading(true)
             if (id) {
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
-                    console.log('getData: ', response.data)
-
+                    verifyFields(response.data.fields)
+                    console.log('🚀 ~ response.data:', response.data)
                     setFields(response.data.fields)
                     setCategorias(response.data.categorias)
                     setAtividades(response.data.atividades)
@@ -245,6 +250,19 @@ const FormFornecedor = ({ id }) => {
 
                     //* Insere os dados no formulário
                     reset(response.data)
+
+                    for (let i = 0; i < response.data.fields.length; i++) {
+                        const nomeCampo = response.data.fields[i].nomeColuna
+                        for (let propriedade in loggedUnity) {
+                            if (propriedade === nomeCampo && !getValues().nomeColuna) {
+                                console.log('vazio:', i, response.data.fields[i].nomeColuna)
+                                setValue(`fields[${i}].${nomeCampo}`, loggedUnity[propriedade])
+                            }
+                        }
+                    }
+
+                    // console.log('🚀 ~ response.data.fields:', response.data.fields)
+                    // console.log('🚀 ~ loggedUnity:', loggedUnity)
 
                     let objStatus = statusDefault[response.data.info.status]
                     setStatus(objStatus)
@@ -301,12 +319,8 @@ const FormFornecedor = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-
-        console.log('🚀 ~ onSubmit:', data.form)
-
         try {
             setLoadingSave(true)
-            await enviarPDFsParaBackend()
             await api.put(`${staticUrl}/updateData/${id}`, data).then(response => {
                 toast.success(toastMessage.successUpdate)
                 setLoadingSave(false)
@@ -390,105 +404,105 @@ const FormFornecedor = ({ id }) => {
     }, [copiedDataContext])
 
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
-    const handleFileSelect = (event, item) => {
+    const handleFileSelect = async (event, item) => {
+        setLoadingFile(true)
         const selectedFile = event.target.files[0]
-        console.log('🚀 ~ selectedFile:', selectedFile)
 
-        // Atualiza o objeto anexo com o arquivo selecionado
-        const updatedItem = {
-            ...item,
-            anexo: {
-                exist: true,
-                path: null,
-                file: selectedFile,
-                nome: selectedFile.name,
-                type: selectedFile.type,
-                size: selectedFile.size,
-                time: selectedFile.lastModified
-            }
-        }
+        if (selectedFile) {
+            const formData = new FormData()
+            formData.append('file', selectedFile)
+            formData.append(`usuarioID`, user.usuarioID)
+            formData.append(`unidadeID`, loggedUnity.unidadeID)
+            formData.append(`file`, item.anexo.file)
+            formData.append(`titulo`, selectedFile.name)
+            formData.append(`grupoanexoitemID`, item.grupoanexoitemID)
+            //? Verifica se o arquivo é uma imagem (imagem redimensiona)
+            const isImage = selectedFile.type.includes('image')
 
-        // Atualiza estado grupoAnexo com o item atualizado
-        const updatedGrupoAnexo = grupoAnexo.map(grupo => {
-            if (grupo.grupoAnexoID == item.grupoanexoID) {
-                return {
-                    ...grupo,
-                    itens: grupo.itens.map(item => {
-                        if (item.grupoanexoitemID == updatedItem.grupoanexoitemID) {
-                            console.log('encontrou item')
-                            return updatedItem
+            await api
+                .post(`${staticUrl}/saveAnexo/${id}/${unidade.unidadeID}/${isImage}`, formData)
+                .then(response => {
+                    setLoadingFile(false)
+
+                    toast.success('Anexo adicionado com sucesso!')
+
+                    //? Atualiza grupoAnexo
+                    const updatedGrupoAnexo = grupoAnexo.map(grupo => {
+                        if (grupo.grupoAnexoID == item.grupoanexoID) {
+                            return {
+                                ...grupo,
+                                itens: grupo.itens.map(row => {
+                                    if (row.grupoanexoitemID == item.grupoanexoitemID) {
+                                        return {
+                                            ...item,
+                                            anexo: {
+                                                ...item.anexo,
+                                                exist: true,
+                                                nome: response.data.nome,
+                                                path: response.data.path,
+                                                tipo: response.data.tipo,
+                                                size: response.data.size,
+                                                time: response.data.time
+                                            }
+                                        }
+                                    }
+                                    return row
+                                })
+                            }
                         }
-                        return item
+                        return grupo
                     })
-                }
-            }
-            return grupo
-        })
-        setGrupoAnexo(updatedGrupoAnexo)
-
-        toast.success('Anexo adicionado, salve para concluir!')
-    }
-
-    // Envia os arquivos de anexo para o backend
-    const enviarPDFsParaBackend = async () => {
-        const formData = new FormData()
-
-        formData.append(`usuarioID`, user.usuarioID)
-        formData.append(`unidadeID`, loggedUnity.unidadeID)
-
-        let index = 0
-        grupoAnexo.forEach((grupo, grupoIndex) => {
-            // grupo
-            grupo.itens.forEach((item, itemIndex) => {
-                // itens
-                if (item.anexo && item.anexo.file) {
-                    formData.append(`pdfFiles`, item.anexo.file)
-                    formData.append(`titulo[${index}]`, item.anexo.nome)
-                    formData.append(`grupoanexoitemID[${index}]`, item.grupoanexoitemID)
-                    //
-                    index++
-                }
-            })
-        })
-
-        //? Envia array de anexos a serem removidos
-        arrAnexoRemoved.forEach((item, index) => {
-            formData.append(`arrAnexoRemoved[${index}]`, item)
-        })
-
-        await api.post(`/formularios/fornecedor/saveAnexo/${id}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
+                    setGrupoAnexo(updatedGrupoAnexo)
+                })
+                .catch(error => {
+                    setLoadingFile(false)
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
+                })
+        }
     }
 
     // Remove um anexo do array de anexos
-    const handleRemoveAnexo = item => {
-        // Array que envia pro backend deletar
-        setArrAnexoRemoved([...arrAnexoRemoved, item.grupoanexoitemID])
+    const handleRemoveAnexo = async item => {
+        if (item) {
+            await api
+                .delete(
+                    `${staticUrl}/deleteAnexo/${item.grupoanexoitemID}/${id}/${loggedUnity.unidadeID}/${user.usuarioID}`
+                )
+                .then(response => {
+                    toast.success('Anexo removido com sucesso!')
 
-        // Atualiza estado com setGrupoAnexo, removendo objeto de anexo
-        const updatedGrupoAnexo = grupoAnexo.map(grupo => {
-            if (grupo.grupoAnexoID == item.grupoanexoID) {
-                return {
-                    ...grupo,
-                    itens: grupo.itens.map(row => {
-                        if (row.grupoanexoitemID == item.grupoanexoitemID) {
+                    //? Atualiza grupoAnexo
+                    const updatedGrupoAnexo = grupoAnexo.map(grupo => {
+                        if (grupo.grupoAnexoID == item.grupoanexoID) {
                             return {
-                                ...item,
-                                anexo: null
+                                ...grupo,
+                                itens: grupo.itens.map(row => {
+                                    if (row.grupoanexoitemID == item.grupoanexoitemID) {
+                                        return {
+                                            ...item,
+                                            anexo: {
+                                                ...item.anexo,
+                                                exist: false,
+                                                nome: null,
+                                                path: null,
+                                                tipo: null,
+                                                size: null,
+                                                time: null
+                                            }
+                                        }
+                                    }
+                                    return row
+                                })
                             }
                         }
-                        return row
+                        return grupo
                     })
-                }
-            }
-            return grupo
-        })
-        setGrupoAnexo(updatedGrupoAnexo)
-
-        toast.success('Anexo pré-removido, salve para concluir!')
+                    setGrupoAnexo(updatedGrupoAnexo)
+                })
+                .catch(error => {
+                    toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
+                })
+        }
     }
 
     return (
@@ -624,14 +638,17 @@ const FormFornecedor = ({ id }) => {
                     {/* Grupo de anexos */}
                     {grupoAnexo &&
                         grupoAnexo.map((grupo, indexGrupo) => (
-                            <CardAnexo
+                            <AnexoModeView
                                 key={indexGrupo}
-                                grupo={grupo}
-                                indexGrupo={indexGrupo}
-                                handleFileSelect={handleFileSelect}
-                                handleRemoveAnexo={handleRemoveAnexo}
-                                disabled={!canEdit.status}
-                                error={errors?.grupoAnexo?.[indexGrupo]?.itens}
+                                values={{
+                                    grupo: grupo,
+                                    loadingFile: loadingFile,
+                                    indexGrupo: indexGrupo,
+                                    handleFileSelect: handleFileSelect,
+                                    handleRemove: handleRemoveAnexo,
+                                    disabled: !canEdit.status,
+                                    error: errors?.grupoAnexo?.[indexGrupo]?.itens
+                                }}
                             />
                         ))}
 

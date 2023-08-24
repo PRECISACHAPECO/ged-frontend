@@ -87,7 +87,6 @@ const FormApresentacao = ({ id }) => {
             const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route, { id }).then(response => {
                 setData(response.data)
-                console.log('🚀 ~ response.data:', response.data)
                 reset(response.data) //* Insere os dados no formulário
             })
         } catch (error) {

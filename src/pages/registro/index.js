@@ -11,6 +11,11 @@ const RegisterMultiStepsIllustration = styled('img')({
     maxHeight: '100%'
 })
 
+
+
+
+// dddd
+
 const LeftWrapper = styled(Box)(({ theme }) => ({
     width: '100%',
     display: 'flex',

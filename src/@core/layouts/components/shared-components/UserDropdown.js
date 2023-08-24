@@ -41,7 +41,6 @@ const UserDropdown = props => {
     // Controla troca de unidade
     const { saveSettings, settings } = useSettings()
     const mode = settings.mode
-    console.log("🚀 ~ mode:", mode)
     const [openModal, setOpenModal] = useState(false);
     const [unity, setSelectedUnit] = useState(null);
     const handleCloseModalSelectUnits = () => setOpenModal(false);

@@ -1,4 +1,5 @@
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
+import { useRouter } from 'next/router';
 
 const ParametersContext = createContext({})
 
@@ -15,6 +16,7 @@ const ParametersProvider = ({ children }) => {
     const [searchText, setSearchText] = useState('')
     const [filteredData, setFilteredData] = useState([])
     const [data, setData] = useState([])
+    const router = useRouter();
 
     //* Função para filtrar os dados da tabela
     const handleSearch = searchValue => {
@@ -44,6 +46,10 @@ const ParametersProvider = ({ children }) => {
         const id = JSON.parse(localStorage.getItem('dynamicId'))
         return id
     }
+
+    useEffect(() => {
+        setSearchText('');
+    }, [title])
 
     const values = {
         title,

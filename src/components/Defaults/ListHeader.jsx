@@ -8,7 +8,7 @@ import { useContext } from 'react'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-const ListHeader = ({ btnNew, btnPrint, openModal }) => {
+const ListHeader = ({ btnNew, btnPrint, btnSave, handleSave, hasListChange, openModal }) => {
     const router = Router
     const { routes } = useContext(AuthContext)
 
@@ -45,6 +45,23 @@ const ListHeader = ({ btnNew, btnPrint, openModal }) => {
                                 <span className='hidden sm:block'>Novo</span>
                             </Button>
                         </Link>
+                    )}
+                </div>
+
+                <div>
+                    {btnSave && (
+                        <Button
+                            onClick={handleSave}
+                            disabled={!hasListChange}
+                            type='button'
+                            variant='outlined'
+                            color='primary'
+                            size='medium'
+                            sx={{ display: 'flex', gap: 2 }}
+                        >
+                            <Icon icon='mdi:check-bold' />
+                            <span className='hidden sm:block'>Salvar</span>
+                        </Button>
                     )}
                 </div>
             </div>

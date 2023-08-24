@@ -29,12 +29,12 @@ import { backRoute } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
+import { validationCNPJ } from 'src/configs/validations'
 
 const FormUnidade = ({ id }) => {
-    const { user, setLoggedUnity, loggedUnity } = useContext(AuthContext)
+    const { user, loggedUnity } = useContext(AuthContext)
     const { setId } = useContext(RouteContext)
     id = user.papelID === 1 ? id : loggedUnity.unidadeID
-    console.log('🚀 ~ id:', id)
 
     const [open, setOpen] = useState(false)
     const [data, setData] = useState()
@@ -54,6 +54,7 @@ const FormUnidade = ({ id }) => {
         trigger,
         handleSubmit,
         setValue,
+        setError,
         reset,
         control,
         formState: { errors },
@@ -63,7 +64,6 @@ const FormUnidade = ({ id }) => {
     //? Função que busca o CEP
     const handleCep = async cep => {
         if (cep.length == 9) {
-            console.log('🚀 ~ cep:', cep)
             //? Obter apenas núemros da string
             const cepNumber = cep.replace(/\D/g, '')
             api.get('https://viacep.com.br/ws/' + cepNumber + '/json/').then(response => {
@@ -80,40 +80,38 @@ const FormUnidade = ({ id }) => {
         }
     }
 
+    console.log('erross', errors)
+
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async datas => {
+        // Verifica se o CNPJ é válido se ele for envalido retorna erro e retorna
+        const cnpjValidation = validationCNPJ(datas.fields.cnpj)
+        if (!cnpjValidation) {
+            setError('fields.cnpj', {
+                type: 'required',
+                message: 'CNPJ inválido'
+            })
+            return
+        }
+
         const data = {
             ...datas.fields,
             dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD')
         }
-        console.log('🚀 ~ data:', data)
 
         delete data.cabecalhoRelatorioTitle
         delete data.cabecalhoRelatorio
-        const formData = new FormData()
-        formData.append('fileReport', fileSelect)
 
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, data).then(response => {
-                    const id = response.data
-                    //? Faz uma nova requisição para salvar a imagem
-                    if (fileSelect) {
-                        api.post(`${backRoute(staticUrl)}/updateData/report/${id}`, formData)
-                    }
                     router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
                     setId(response.data)
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
                 await api.post(`${staticUrl}/updateData/${id}`, data)
-                if (fileSelect) {
-                    await api.post(`${staticUrl}/updateData/report/${id}`, formData)
-                    toast.success(toastMessage.successUpdate)
-                }
-                if (!fileSelect) {
-                    toast.success(toastMessage.successUpdate)
-                }
+                toast.success(toastMessage.successUpdate)
                 getData()
             }
         } catch (error) {
@@ -124,14 +122,17 @@ const FormUnidade = ({ id }) => {
             }
         }
 
-        // Atualiza os dados do usuário logado no contexto
-        for (const key in loggedUnity) {
-            if (key in data) {
-                loggedUnity[key] = data[key]
+        //? Se for fornecedor, atualiza os dados do usuário logado
+        if (user.papelID == 2) {
+            // Atualiza os dados do usuário logado no contexto
+            for (const key in loggedUnity) {
+                if (key in data) {
+                    loggedUnity[key] = data[key]
+                }
             }
+            // Atualiza os dados do usuário logado no localStorage
+            localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
         }
-        // Atualiza os dados do usuário logado no localStorage
-        localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
     }
 
     // Função que deleta os dados
@@ -153,12 +154,10 @@ const FormUnidade = ({ id }) => {
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     const getData = async () => {
-        console.log('no getdata....')
         if (type == 'edit') {
             try {
                 const response = await api.get(`${staticUrl}/${id}`)
                 reset(response.data)
-                console.log('🚀 ~ response.data:', response.data)
                 setData(response.data)
                 setFileCurrent(response.data.fields.cabecalhoRelatorioTitle)
                 setPhotoProfile(response.data?.fields?.cabecalhoRelatorio)
@@ -191,8 +190,10 @@ const FormUnidade = ({ id }) => {
     const handleFileSelect = async event => {
         const selectedFile = event.target.files[0]
         if (selectedFile) {
+            console.log('troca fotooo')
+
             const formData = new FormData()
-            formData.append('fileReport', selectedFile)
+            formData.append('file', selectedFile)
             await api
                 .post(`${staticUrl}/updateData/report/${id}`, formData)
                 .then(response => {
@@ -200,8 +201,7 @@ const FormUnidade = ({ id }) => {
                     toast.success('Foto atualizada com sucesso!')
                 })
                 .catch(error => {
-                    console.log(error)
-                    toast.error('Erro ao atualizar foto, tente novamente!')
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
                 })
         }
     }
@@ -261,7 +261,7 @@ const FormUnidade = ({ id }) => {
                                         title='CNPJ'
                                         name='fields.cnpj'
                                         mask='cnpj'
-                                        required={true}
+                                        required
                                         register={register}
                                         control={control}
                                         errors={errors?.fields?.cnpj}
@@ -483,7 +483,7 @@ const FormUnidade = ({ id }) => {
 
                                             <Select
                                                 xs={12}
-                                                md={12}
+                                                md={8}
                                                 multiple
                                                 title='Extensões de Arquivos Permitidas'
                                                 name={`fields.extensoes`}
@@ -492,6 +492,17 @@ const FormUnidade = ({ id }) => {
                                                 register={register}
                                                 setValue={setValue}
                                                 control={control}
+                                            />
+
+                                            <Input
+                                                xs={12}
+                                                md={4}
+                                                title='Tamanho máximo dos anexos (MB)'
+                                                name='fields.anexosTamanhoMaximo'
+                                                required={true}
+                                                register={register}
+                                                control={control}
+                                                errors={errors?.fields?.anexosTamanhoMaximo}
                                             />
                                         </Grid>
                                     </Grid>

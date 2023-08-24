@@ -82,8 +82,6 @@ const FormItem = ({ id }) => {
             await api.post(route).then(response => {
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
-
-                console.log('🚀 ~ getData:', response.data)
             })
         } catch (error) {
             console.log(error)

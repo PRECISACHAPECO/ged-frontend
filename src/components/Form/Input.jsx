@@ -1,6 +1,7 @@
 import { Controller } from 'react-hook-form'
 import { FormControl, Grid, TextField } from '@mui/material'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask, cpfMask, rgMask } from 'src/configs/masks'
+import { validationCNPJ } from 'src/configs/validations'
 
 const Input = ({
     xs,
@@ -18,12 +19,11 @@ const Input = ({
     control,
     errors,
     onChange,
+    className,
     ...props
 }) => {
-    console.log('🚀 ~ Input mask:', mask)
-
     return (
-        <Grid item xs={xs} md={md} sx={{ my: 1 }}>
+        <Grid item xs={xs} md={md} sx={{ my: 1 }} className={className}>
             <FormControl fullWidth>
                 <Controller
                     name={name}
@@ -33,7 +33,7 @@ const Input = ({
                         <TextField
                             {...props}
                             multiline={multiline}
-                            value={field.value}
+                            value={field?.value}
                             label={title}
                             placeholder={title}
                             rows={rows}
@@ -61,6 +61,7 @@ const Input = ({
                                     : null
 
                                 field.onChange(value)
+
                                 if (onChange) {
                                     onChange(value)
                                 }

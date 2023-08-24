@@ -7,7 +7,7 @@ import Select from 'src/components/Form/Select'
 import Input from 'src/components/Form/Input'
 
 const Product = ({ field, data, name, indexData, disabled, control, register, setValue, errors }) => {
-    console.log('🚀 ~ errors Product field:', errors)
+    console.log('🚀 ~~~~~~~~~~~~~ Product data:', field.options)
 
     return (
         <>

@@ -17,7 +17,6 @@ const DateField = ({
     errors,
     control // Add 'control' prop to receive the react-hook-form control object
 }) => {
-    console.log('🚀 ~ type:', type)
     const formatDate = dateString => {
         const date = new Date(dateString)
         const day = date.getDate().toString().padStart(2, '0')

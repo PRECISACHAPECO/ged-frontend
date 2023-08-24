@@ -16,10 +16,11 @@ const Select = ({
     multiple,
     setValue,
     errors,
+    className,
     handleRegistroEstabelecimento
 }) => {
     return (
-        <Grid item xs={xs} md={md} sx={{ my: 1 }}>
+        <Grid item xs={xs} md={md} sx={{ my: 1 }} className={className}>
             <FormControl fullWidth>
                 <Controller
                     name={name}
@@ -40,7 +41,6 @@ const Select = ({
                             }
                             disabled={disabled}
                             onChange={(e, newValue) => {
-                                console.log('🚀 Select => onChange:', newValue)
                                 setValue(name, newValue)
                                 type == 'registroestabelecimento'
                                     ? handleRegistroEstabelecimento(newValue ? newValue.id : null)
@@ -54,6 +54,7 @@ const Select = ({
                                     error={errors ? true : false}
                                 />
                             )}
+                            noOptionsText='Sem opções'
                         />
                     )}
                 />

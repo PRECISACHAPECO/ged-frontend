@@ -200,8 +200,6 @@ const FormParametrosFornecedor = ({ id }) => {
     const getData = () => {
         try {
             api.post(`${staticUrl}/fornecedor/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
-                console.log('getdata', response.data)
-
                 //* Estados
                 setHeaders(response.data.header)
                 setBlocks(response.data.blocks)
@@ -316,7 +314,8 @@ const FormParametrosFornecedor = ({ id }) => {
 
                                     <Grid container spacing={4}>
                                         <Input
-                                            xs={12}
+                                            className='order-1'
+                                            xs={10}
                                             md={1}
                                             title='Sequência'
                                             name={`blocks.[${index}].dados.ordem`}
@@ -327,7 +326,8 @@ const FormParametrosFornecedor = ({ id }) => {
                                         />
 
                                         <Input
-                                            xs={12}
+                                            className='order-3 md:order-2'
+                                            xs={10}
                                             md={9}
                                             title='Nome do Bloco'
                                             name={`blocks.[${index}].dados.nome`}
@@ -338,7 +338,8 @@ const FormParametrosFornecedor = ({ id }) => {
                                         />
 
                                         <Check
-                                            xs={12}
+                                            className='order-2 md:order-3'
+                                            xs={2}
                                             md={1}
                                             title='Ativo'
                                             name={`blocks.[${index}].dados.status`}
@@ -347,7 +348,8 @@ const FormParametrosFornecedor = ({ id }) => {
                                         />
 
                                         <Check
-                                            xs={12}
+                                            className='order-4 '
+                                            xs={2}
                                             md={1}
                                             title='Observação'
                                             name={`blocks.[${index}].dados.obs`}
@@ -357,6 +359,7 @@ const FormParametrosFornecedor = ({ id }) => {
 
                                         {/* Configurações de exibição */}
                                         <Select
+                                            className='order-5'
                                             xs={12}
                                             md={5}
                                             multiple
@@ -372,6 +375,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                         />
 
                                         <Select
+                                            className='order-6'
                                             xs={12}
                                             md={7}
                                             multiple
@@ -458,7 +462,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 />
 
                                                 <Check
-                                                    xs={12}
+                                                    xs={2}
                                                     md={1}
                                                     title='Ativo'
                                                     index={indexItem}
@@ -468,7 +472,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 />
 
                                                 <Check
-                                                    xs={12}
+                                                    xs={2}
                                                     md={1}
                                                     title='Obs'
                                                     index={indexItem}
@@ -478,7 +482,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 />
 
                                                 <Check
-                                                    xs={12}
+                                                    xs={2}
                                                     md={1}
                                                     title='Obrigatório'
                                                     index={indexItem}
@@ -488,7 +492,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 />
 
                                                 {/* Abre o modal que define a pontuação das respostas */}
-                                                <Grid item xs={12} md={1}>
+                                                <Grid item xs={2} md={1}>
                                                     <Box
                                                         height='100%'
                                                         display='flex'
@@ -516,7 +520,7 @@ const FormParametrosFornecedor = ({ id }) => {
 
                                                 {/* Deletar */}
                                                 <Remove
-                                                    xs={12}
+                                                    xs={2}
                                                     md={1}
                                                     title={indexItem == 0 ? 'Remover' : ''}
                                                     index={index}
