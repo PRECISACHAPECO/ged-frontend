@@ -406,9 +406,11 @@ const FormFornecedor = ({ id }) => {
             formData.append(`file`, item.anexo.file)
             formData.append(`titulo`, selectedFile.name)
             formData.append(`grupoanexoitemID`, item.grupoanexoitemID)
+            //? Verifica se o arquivo é uma imagem (imagem redimensiona)
+            const isImage = selectedFile.type.includes('image')
 
             await api
-                .post(`${staticUrl}/saveAnexo/${id}/${unidade.unidadeID}`, formData)
+                .post(`${staticUrl}/saveAnexo/${id}/${unidade.unidadeID}/${isImage}`, formData)
                 .then(response => {
                     console.log('🚀 ~ response.data:', response.data)
 
