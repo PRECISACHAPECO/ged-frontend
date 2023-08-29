@@ -50,6 +50,7 @@ const FormFornecedor = ({ id }) => {
     const [listErrors, setListErrors] = useState({ status: false, errors: [] })
     const [copiedDataContext, setCopiedDataContext] = useState(false)
     const [arrAnexoRemoved, setArrAnexoRemoved] = useState([])
+    const [dataCopiedMyData, setDataCopiedMyData] = useState([])
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -233,7 +234,6 @@ const FormFornecedor = ({ id }) => {
             if (id) {
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
                     verifyFields(response.data.fields)
-                    console.log('🚀 ~ response.data:', response.data)
                     setFields(response.data.fields)
                     setCategorias(response.data.categorias)
                     setAtividades(response.data.atividades)
@@ -251,19 +251,35 @@ const FormFornecedor = ({ id }) => {
                     //* Insere os dados no formulário
                     reset(response.data)
 
+                    ///? Copia os dados do fornecedor no contexto loggedUnity se o campo estiver vazio
+                    const dataOld = []
                     for (let i = 0; i < response.data.fields.length; i++) {
-                        const nomeCampo = response.data.fields[i].nomeColuna
+                        const nomeColuna = response.data.fields[i].nomeColuna
+                        const nomeCampo = response.data.fields[i].nomeCampo
+
+                        console.log('🚀 ~ loggedUnity:', loggedUnity)
                         for (let propriedade in loggedUnity) {
-                            if (propriedade === nomeCampo && !getValues().nomeColuna) {
-                                console.log('vazio:', i, response.data.fields[i].nomeColuna)
-                                setValue(`fields[${i}].${nomeCampo}`, loggedUnity[propriedade])
+                            if (nomeColuna == 'telefone') {
+                                console.log('telefone')
+                                const telefoneColuna = loggedUnity.telefone1 ?? loggedUnity.telefone2
+                                setValue(`fields[${i}].${nomeColuna}`, telefoneColuna ?? '')
+                            }
+                            if (
+                                propriedade === nomeColuna &&
+                                !getValues(`fields[${i}].${nomeColuna}`, loggedUnity[propriedade])
+                            ) {
+                                setValue(`fields[${i}].${nomeColuna}`, loggedUnity[propriedade])
+
+                                if (loggedUnity[propriedade] !== null && loggedUnity[propriedade] !== '') {
+                                    dataOld.push({
+                                        name: nomeCampo,
+                                        value: loggedUnity[propriedade]
+                                    })
+                                }
                             }
                         }
                     }
-
-                    // console.log('🚀 ~ response.data.fields:', response.data.fields)
-                    // console.log('🚀 ~ loggedUnity:', loggedUnity)
-
+                    setDataCopiedMyData(dataOld)
                     let objStatus = statusDefault[response.data.info.status]
                     setStatus(objStatus)
 
@@ -283,6 +299,8 @@ const FormFornecedor = ({ id }) => {
             console.log(error)
         }
     }
+    // Depois que a iteração estiver completa
+    console.log('Valores definidos:', dataCopiedMyData)
 
     const noPermissions = () => {
         router.push('/formularios/fornecedor/')
@@ -503,6 +521,8 @@ const FormFornecedor = ({ id }) => {
         }
     }
 
+    console.log('Valores copiados, deve mostarr alerteeee:', dataCopiedMyData)
+
     return (
         <>
             {isLoading ? (
@@ -548,6 +568,22 @@ const FormFornecedor = ({ id }) => {
                             type={type}
                             status={status}
                         />
+
+                        {/* Foi copiado pelo menos uma informação de meus dados */}
+                        {dataCopiedMyData && dataCopiedMyData.length > 0 && (
+                            <Alert severity='info' sx={{ mb: 2, ml: 4, mr: 4 }}>
+                                <h1>
+                                    Os seguintes campos foram copiados de <strong>Meus Dados</strong>:
+                                </h1>
+                                <div className='pt-2'>
+                                    {dataCopiedMyData.map(row => (
+                                        <div className='flex opacity-80'>
+                                            <p>{`- ${row.name} (${row.value})`}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Alert>
+                        )}
 
                         <CardContent>
                             {unidade && user.papelID == 2 && (
