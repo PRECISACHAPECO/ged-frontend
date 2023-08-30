@@ -202,9 +202,6 @@ const UserDropdown = props => {
                                 unidades={unitsUser}
                                 setSelectedUnit={setSelectedUnit}
                             />
-
-
-
                             <MenuItem
                                 onClick={handleLogout}
                                 sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}

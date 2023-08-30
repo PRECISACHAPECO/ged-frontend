@@ -35,6 +35,7 @@ import { AuthProvider } from 'src/context/AuthContext'
 import { ParametersProvider } from 'src/context/ParametersContext'
 import { RouteProvider } from 'src/context/RouteContext'
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
+import { NotificationProvider } from 'src/context/NotificationContext'
 
 // ** Styled Components
 import ReactHotToast from 'src/@core/styles/libs/react-hot-toast'
@@ -109,30 +110,32 @@ const App = props => {
             <RouteProvider>
                 <ParametersProvider>
                     <AuthProvider>
-                        <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
-                            <SettingsConsumer>
-                                {({ settings }) => {
-                                    return (
-                                        <ThemeComponent settings={settings}>
-                                            <WindowWrapper>
-                                                <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                                                    <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
-                                                        {getLayout(<Component {...pageProps} />)}
-                                                    </AclGuard>
-                                                </Guard>
-                                            </WindowWrapper>
-                                            <ReactHotToast>
-                                                <Toaster
-                                                    position={settings.toastPosition}
-                                                    toastOptions={{ className: 'react-hot-toast' }}
-                                                    style={{ zIndex: 999999 }}
-                                                />
-                                            </ReactHotToast>
-                                        </ThemeComponent>
-                                    )
-                                }}
-                            </SettingsConsumer>
-                        </SettingsProvider>
+                        <NotificationProvider>
+                            <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+                                <SettingsConsumer>
+                                    {({ settings }) => {
+                                        return (
+                                            <ThemeComponent settings={settings}>
+                                                <WindowWrapper>
+                                                    <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                                                        <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
+                                                            {getLayout(<Component {...pageProps} />)}
+                                                        </AclGuard>
+                                                    </Guard>
+                                                </WindowWrapper>
+                                                <ReactHotToast>
+                                                    <Toaster
+                                                        position={settings.toastPosition}
+                                                        toastOptions={{ className: 'react-hot-toast' }}
+                                                        style={{ zIndex: 999999 }}
+                                                    />
+                                                </ReactHotToast>
+                                            </ThemeComponent>
+                                        )
+                                    }}
+                                </SettingsConsumer>
+                            </SettingsProvider>
+                        </NotificationProvider>
                     </AuthProvider>
                 </ParametersProvider>
             </RouteProvider>

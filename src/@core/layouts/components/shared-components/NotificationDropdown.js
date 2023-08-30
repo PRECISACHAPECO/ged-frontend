@@ -55,13 +55,6 @@ const PerfectScrollbar = styled(PerfectScrollbarComponent)({
     maxHeight: 344
 })
 
-// ** Styled Avatar component
-const Avatar = styled(CustomAvatar)({
-    width: 38,
-    height: 38,
-    fontSize: '1.125rem'
-})
-
 // ** Styled component for the title in MenuItems
 const MenuItemTitle = styled(Typography)(({ theme }) => ({
     fontWeight: 600,
@@ -110,25 +103,6 @@ const NotificationDropdown = props => {
         setAnchorEl(null)
     }
 
-    const RenderAvatar = ({ notification }) => {
-        const { avatarAlt, avatarImg, avatarIcon, avatarText, avatarColor } = notification
-        if (avatarImg) {
-            return <Avatar alt={avatarAlt} src={avatarImg} />
-        } else if (avatarIcon) {
-            return (
-                <Avatar skin='light' color={avatarColor}>
-                    {avatarIcon}
-                </Avatar>
-            )
-        } else {
-            return (
-                <Avatar skin='light' color={avatarColor}>
-                    {getInitials(avatarText)}
-                </Avatar>
-            )
-        }
-    }
-
     return (
 
         <Fragment>
@@ -136,7 +110,7 @@ const NotificationDropdown = props => {
                 <Badge
                 >
                     {
-                        notifications.length && (
+                        notifications && notifications.length && (
 
                             <div className='absolute right-[10px] top-1'>
                                 <span class="relative flex justify-center items-center h-3 w-3 -top-1 -right-[10px]">
@@ -177,13 +151,13 @@ const NotificationDropdown = props => {
                     {notifications?.map((notification, index) => (
                         <MenuItem key={index} onClick={handleDropdownClose}>
                             <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-                                <RenderAvatar notification={notification} />
+                                <Icon icon={notification.icone} style={{ color: notification.cor }} fontSize={24} />
                                 <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                                    <MenuItemTitle>{notification.title}</MenuItemTitle>
-                                    <MenuItemSubtitle variant='body2'>{notification.subtitle}</MenuItemSubtitle>
+                                    <MenuItemTitle>{notification.titulo}</MenuItemTitle>
+                                    <MenuItemSubtitle variant='body2'>{notification.descricao}</MenuItemSubtitle>
                                 </Box>
                                 <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                                    {notification.meta}
+                                    {notification.dataFormatada}
                                 </Typography>
                             </Box>
                         </MenuItem>

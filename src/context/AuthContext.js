@@ -1,5 +1,5 @@
 // ** React Imports
-import { createContext, use, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { api } from 'src/configs/api'
 
 // ** Next Import
@@ -12,6 +12,7 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { toast } from 'react-hot-toast'
 import { backRoute } from 'src/configs/defaultConfigs'
+import { NotificationContext } from './NotificationContext'
 
 // ** Defaults
 const defaultProvider = {
@@ -50,6 +51,11 @@ const AuthProvider = ({ children }) => {
 
     const router = useRouter();
     const staticUrl = backRoute(router.pathname) // Url sem ID
+
+    const data = {
+        unidadeID: loggedUnity?.unidadeID ?? user?.unidadeID,
+        usuarioID: user?.usuarioID
+    };
 
     // ** Hooks
     useEffect(() => {
