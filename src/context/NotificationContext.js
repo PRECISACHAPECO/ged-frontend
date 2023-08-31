@@ -5,7 +5,6 @@ import { AuthContext } from './AuthContext';
 const NotificationContext = createContext({});
 
 const NotificationProvider = ({ children }) => {
-    const [refresh, setRefresh] = useState(false);
     const [notifications, setNotifications] = useState(null);
     const { loggedUnity, user } = useContext(AuthContext);
 
@@ -40,8 +39,6 @@ const NotificationProvider = ({ children }) => {
         if (!data) return
         try {
             const response = await api.post("notificacao/insertData", data);
-            setRefresh(!refresh)
-            console.log("🚀 ~ response:", response)
         } catch (err) {
             console.log(err)
         }
@@ -49,8 +46,7 @@ const NotificationProvider = ({ children }) => {
 
     useEffect(() => {
         getDataNotification();
-        console.log('Atualiza notificaçãooooooooo')
-    }, [user, loggedUnity, refresh]);
+    }, [user, loggedUnity]);
 
     const values = {
         notifications,
