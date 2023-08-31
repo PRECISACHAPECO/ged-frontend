@@ -5,9 +5,9 @@ import { AuthContext } from './AuthContext';
 const NotificationContext = createContext({});
 
 const NotificationProvider = ({ children }) => {
+    const [refresh, setRefresh] = useState(false);
     const [notifications, setNotifications] = useState(null);
     const { loggedUnity, user } = useContext(AuthContext);
-
 
     const getDataNotification = async () => {
         if (user && loggedUnity) {
@@ -24,7 +24,6 @@ const NotificationProvider = ({ children }) => {
         }
     };
 
-
     // Exemplo de data
     // const data = {
     //     titulo: 'Notificação de teste',
@@ -33,13 +32,15 @@ const NotificationProvider = ({ children }) => {
     //     urlID: null,
     //     tipoNotificacaoID: 1,
     //     usuarioGeradorID: null,
-    //     usuario: 1,
-    //     unidadeID: 1
+    //     usuarioID: 1,
+    //     unidadeID: 1,
+    //     papelID: 1
     // }
     const createNeWNotification = async (data) => {
         if (!data) return
         try {
             const response = await api.post("notificacao/insertData", data);
+            setRefresh(!refresh)
             console.log("🚀 ~ response:", response)
         } catch (err) {
             console.log(err)
@@ -48,7 +49,8 @@ const NotificationProvider = ({ children }) => {
 
     useEffect(() => {
         getDataNotification();
-    }, [user, loggedUnity]);
+        console.log('Atualiza notificaçãooooooooo')
+    }, [user, loggedUnity, refresh]);
 
     const values = {
         notifications,

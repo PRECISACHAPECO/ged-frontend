@@ -186,7 +186,18 @@ const NotificationDropdown = props => {
                                         </Typography>
                                         {
                                             notification.url && (
-                                                <Icon icon='ci:external-link' fontSize={16} style={{ color: '#4a8b57' }} />
+                                                <CustomChip
+                                                    skin='light'
+                                                    size='small'
+                                                    color='primary'
+                                                    label={
+                                                        <div className="flex items-center gap-1">
+                                                            <Icon icon='ci:external-link' fontSize={14} style={{ color: '#4a8b57' }} />
+                                                            <Typography variant='caption' color='primary' >Acessar</Typography>
+                                                        </div>
+                                                    }
+                                                    sx={{ height: 20, fontSize: '0.75rem', fontWeight: 500, borderRadius: '10px' }}
+                                                />
                                             )
                                         }
                                     </div>

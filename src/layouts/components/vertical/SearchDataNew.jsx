@@ -49,63 +49,66 @@ const SearchDataNew = () => {
     }
     let data = []
     let category = ''
-    for (const divisor of menu) {
-        if (hasMenu(divisor)) {
-            category = divisor.nome
-            for (const item of divisor.menu) {
-                if (hasPermission(item.rota)) {
-                    data.push({
-                        id: item.id,
-                        url: item.rota,
-                        icon: item.icone,
-                        title: item.nome,
-                        category: divisor.nome
-                    })
-                    // Mostra apenas se usuário tiver permissão de inserir
-                    if (
-                        routes.find(
-                            row =>
-                                row.rota === item.rota &&
-                                row.inserir &&
-                                row.rota !== '/formularios/fornecedor' &&
-                                row.rota !== '/home'
-                        )
-                    ) {
+
+    if (menu) {
+        for (const divisor of menu) {
+            if (hasMenu(divisor)) {
+                category = divisor.nome
+                for (const item of divisor.menu) {
+                    if (hasPermission(item.rota)) {
                         data.push({
                             id: item.id,
-                            url: `${item.rota}/novo`,
+                            url: item.rota,
                             icon: item.icone,
-                            title: `${item.nome} (Novo)`,
+                            title: item.nome,
                             category: divisor.nome
                         })
-                    }
-                } else if (item && item.submenu) {
-                    for (const subitem of item.submenu) {
-                        if (hasPermission(subitem.rota)) {
+                        // Mostra apenas se usuário tiver permissão de inserir
+                        if (
+                            routes.find(
+                                row =>
+                                    row.rota === item.rota &&
+                                    row.inserir &&
+                                    row.rota !== '/formularios/fornecedor' &&
+                                    row.rota !== '/home'
+                            )
+                        ) {
                             data.push({
-                                id: subitem.id,
-                                url: subitem.rota,
-                                icon: subitem.icone,
-                                title: subitem.nome,
-                                category: item.nome
+                                id: item.id,
+                                url: `${item.rota}/novo`,
+                                icon: item.icone,
+                                title: `${item.nome} (Novo)`,
+                                category: divisor.nome
                             })
-                            // Mostra apenas se usuário tiver permissão de inserir
-                            if (routes.find(row => row.rota === subitem.rota && row.inserir)) {
+                        }
+                    } else if (item && item.submenu) {
+                        for (const subitem of item.submenu) {
+                            if (hasPermission(subitem.rota)) {
                                 data.push({
                                     id: subitem.id,
-                                    url: `${subitem.rota}/novo`,
+                                    url: subitem.rota,
                                     icon: subitem.icone,
-                                    title: `${subitem.nome} (Novo)`,
+                                    title: subitem.nome,
                                     category: item.nome
                                 })
+                                // Mostra apenas se usuário tiver permissão de inserir
+                                if (routes.find(row => row.rota === subitem.rota && row.inserir)) {
+                                    data.push({
+                                        id: subitem.id,
+                                        url: `${subitem.rota}/novo`,
+                                        icon: subitem.icone,
+                                        title: `${subitem.nome} (Novo)`,
+                                        category: item.nome
+                                    })
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        return data
     }
-    return data
 }
 
 export default SearchDataNew

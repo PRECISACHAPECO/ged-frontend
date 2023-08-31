@@ -5,6 +5,7 @@ import IconAttach from '../IconAttach'
 import Loading from 'src/components/Loading'
 
 const AnexoGrid = ({
+    key,
     item,
     handleFileClick,
     selectedItem,
@@ -22,11 +23,7 @@ const AnexoGrid = ({
         <Grid item xs={12} md={3}>
             <div
                 className={`${
-                    error?.[indexItem]
-                        ? 'border border-red-500'
-                        : modeTheme === 'dark'
-                        ? 'bg-[#202023]'
-                        : 'bg-[#F6F6F8]'
+                    error?.[key] ? 'border border-red-500' : modeTheme === 'dark' ? 'bg-[#202023]' : 'bg-[#F6F6F8]'
                 } rounded-lg flex flex-col relative z-10`}
             >
                 <div className={`flex items-center justify-center p-2 mt-1 `}>

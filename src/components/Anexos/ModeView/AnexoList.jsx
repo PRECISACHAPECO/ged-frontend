@@ -6,6 +6,7 @@ import Remove from 'src/components/Form/Remove'
 import Loading from 'src/components/Loading'
 
 const AnexoList = ({
+    key,
     item,
     handleFileClick,
     selectedItem,
@@ -23,7 +24,7 @@ const AnexoList = ({
         <Grid item xs={12} md={12}>
             <div
                 className={`${
-                    error?.[indexItem]
+                    error && error?.[key]
                         ? 'border border-red-500'
                         : modeTheme === 'dark'
                         ? 'bg-[#202023]'

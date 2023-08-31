@@ -10,7 +10,7 @@ import Block from 'src/components/Defaults/Formularios/Block'
 
 import AnexoModeView from 'src/components/Anexos/ModeView'
 
-import { RouteContext } from 'src/context/RouteContext'
+import { NotificationContext } from 'src/context/NotificationContext'
 import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
 
 import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
@@ -27,6 +27,7 @@ import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
 
 const FormFornecedor = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
+    const { createNeWNotification } = useContext(NotificationContext)
     const [isLoading, setLoading] = useState(false) //? loading de carregamento da página
     const [isLoadingSave, setLoadingSave] = useState(false) //? dependencia do useEffect pra atualizar a página após salvar
     // const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
@@ -233,6 +234,8 @@ const FormFornecedor = ({ id }) => {
             setLoading(true)
             if (id) {
                 api.post(`${staticUrl}/getData/${id}`, { unidadeLogadaID: loggedUnity.unidadeID }).then(response => {
+                    console.log('🚀 ~ getData:', response.data)
+
                     verifyFields(response.data.fields)
                     setFields(response.data.fields)
                     setCategorias(response.data.categorias)
@@ -327,6 +330,10 @@ const FormFornecedor = ({ id }) => {
         if (param.conclusion === true) {
             values['status'] = user && user.papelID == 1 ? param.status : 40 //? Seta o status somente se for fábrica
             values['obsConclusao'] = param.obsConclusao
+
+            //? Trata notificações
+            console.log('manage notification....')
+            manageNotifications(values['status'])
         }
 
         const data = {
@@ -345,6 +352,25 @@ const FormFornecedor = ({ id }) => {
             })
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    //? Trata notificações
+    const manageNotifications = status => {
+        if (user.papelID == 2 && status == 40) {
+            //? Fornecedor concluiu o formulário
+            const data = {
+                titulo: 'Formulário concluído',
+                descricao: `O Fornecedor ${loggedUnity.nomeFantasia} concluiu o formulário #${id}.`,
+                url: '/formularios/fornecedor/',
+                urlID: id,
+                tipoNotificacaoID: 3, //? fornecedor
+                usuarioGeradorID: user.usuarioID,
+                usuarioID: 0, //? Todos da unidade
+                unidadeID: unidade.unidadeID, //? UnidadeID da fábrica (que verá a notificação)
+                papelID: 1 //? Notificação pra fábrica
+            }
+            createNeWNotification(data) //* Cria nova notificação
         }
     }
 
