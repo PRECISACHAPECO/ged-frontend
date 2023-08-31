@@ -33,7 +33,7 @@ const Select = ({
                             multiple={multiple}
                             limitTags={limitTags}
                             options={options}
-                            getOptionLabel={option => option.nome}
+                            getOptionLabel={option => (option.cnpj ? `${option.cnpj} - ${option.nome}` : option.nome)}
                             value={
                                 multiple
                                     ? field.value.map(item => options.find(option => option.nome === item.nome))

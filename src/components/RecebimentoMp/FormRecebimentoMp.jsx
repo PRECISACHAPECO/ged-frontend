@@ -250,7 +250,7 @@ const FormRecebimentoMp = ({ id }) => {
         setLoading(true)
         if (id) {
             api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID }).then(response => {
-                console.log('getData: ', response.data.products)
+                console.log('getData: ', response.data)
 
                 setField(response.data.fields)
                 setProducts(response.data.products)
@@ -480,7 +480,7 @@ const FormRecebimentoMp = ({ id }) => {
                             btnCancel
                             btnSave={info?.status < 40 || type == 'new'}
                             btnSend={type == 'edit' && info?.status < 50 ? true : false}
-                            btnPrint
+                            btnPrint={type == 'edit' ? true : false}
                             generateReport={generateReport}
                             dataReports={dataReports}
                             handleSubmit={() => handleSubmit(onSubmit)}
