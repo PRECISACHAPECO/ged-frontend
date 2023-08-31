@@ -13,8 +13,10 @@ import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 import CustomChip from 'src/@core/components/mui/chip'
 import { Checkbox, FormControlLabel } from '@mui/material'
 import { RouteContext } from 'src/context/RouteContext'
+import { NotificationContext } from 'src/context/NotificationContext'
 import Router from 'next/router'
 import { api } from 'src/configs/api'
+import toast from 'react-hot-toast'
 
 const Menu = styled(MuiMenu)(({ theme }) => ({
     '& .MuiMenu-paper': {
@@ -77,6 +79,7 @@ const NotificationDropdown = props => {
     const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
     const [notificationsRead, setNotificationsRead] = useState([])
     const { setId } = useContext(RouteContext)
+    const { getDataNotification } = useContext(NotificationContext)
     const router = Router
 
     const { direction } = settings
@@ -84,19 +87,20 @@ const NotificationDropdown = props => {
         setAnchorEl(event.currentTarget)
     }
 
-    // Faz update da notificação, seta como lida
+    // Faz update das notificação, seta como lida
     const notificationUpdate = async (data) => {
-        if (notificationsRead) {
-            try {
-                const response = await api.put("notificacao/update", data);
-                console.log("response", response);
-            } catch (error) {
-                console.error("Error fetching notification data:", error);
-            }
+        try {
+            const response = await api.put("notificacao/updateData", data);
+            const message = notificationsRead.length == 0 ? 'Notificação lida com sucesso!' : 'Notificações lidas com sucesso!'
+            getDataNotification()
+            toast.success(message)
+            setNotificationsRead([])
+        } catch (error) {
+            console.error("Error fetching notification data:", error);
         }
     }
 
-    // Seta no estado o id das notificações selecionadas como lidas
+    // Seta no estado o id das notificações selecionadas
     const handleChangeNotification = async (notification, isChecked) => {
         if (isChecked) {
             setNotificationsRead(prevState => [...prevState, notification.notificacaoID]);
@@ -128,7 +132,7 @@ const NotificationDropdown = props => {
                 <Badge
                 >
                     {
-                        notifications && notifications.length && (
+                        notifications && notifications.length > 0 && (
                             <div className='absolute right-[10px] top-1'>
                                 <span class="relative flex justify-center items-center h-3 w-3 -top-1 -right-[10px]">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>

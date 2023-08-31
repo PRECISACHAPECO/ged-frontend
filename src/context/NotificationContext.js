@@ -9,7 +9,7 @@ const NotificationProvider = ({ children }) => {
     const { loggedUnity, user } = useContext(AuthContext);
 
 
-    const getData = async () => {
+    const getDataNotification = async () => {
         if (user && loggedUnity) {
             const data = {
                 unidadeID: loggedUnity.unidadeID,
@@ -17,7 +17,6 @@ const NotificationProvider = ({ children }) => {
             }
             try {
                 const response = await api.post("notificacao/getData", data);
-                console.log("response", response);
                 setNotifications(response.data);
             } catch (error) {
                 console.error("Error fetching notification data:", error);
@@ -25,14 +24,37 @@ const NotificationProvider = ({ children }) => {
         }
     };
 
+
+    // Exemplo de data
+    // const data = {
+    //     titulo: 'Notificação de teste',
+    //     descricao: 'Descricao de teste',
+    //     url: null,
+    //     urlID: null,
+    //     tipoNotificacaoID: 1,
+    //     usuarioGeradorID: null,
+    //     usuario: 1,
+    //     unidadeID: 1
+    // }
+    const createNeWNotification = async (data) => {
+        if (!data) return
+        try {
+            const response = await api.post("notificacao/insertData", data);
+            console.log("🚀 ~ response:", response)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     useEffect(() => {
-        getData();
+        getDataNotification();
     }, [user, loggedUnity]);
 
     const values = {
         notifications,
         setNotifications,
-        getData
+        getDataNotification,
+        createNeWNotification
     };
 
     return (

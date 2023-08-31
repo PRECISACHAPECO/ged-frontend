@@ -7,13 +7,16 @@ import toast from 'react-hot-toast'
 import Icon from 'src/@core/components/icon'
 import { useAuth } from 'src/hooks/useAuth'
 import 'react-credit-cards/es/styles-compiled.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { validationEmail } from 'src/configs/validations'
+import { NotificationContext } from 'src/context/NotificationContext'
 
 const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
+    console.log("🚀 ~ dataGlobal:", dataGlobal)
     const [rememberMe, setRememberMe] = useState(true)
     const [loadingConclusion, setLoadingConclusion] = useState(false)
     const auth = useAuth()
+    const { createNeWNotification } = useContext(NotificationContext)
 
     // Envia email confirmado o cadastro do novo fornecedor
     const sendMailNewFornecedor = () => {
@@ -33,9 +36,9 @@ const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
         }
     }
 
+
     const handleSubmit = () => {
         setLoadingConclusion(true);
-
         // Salva o fornecedor no banco de dados
         api.post('/registro-fornecedor/registerNew', { data: dataGlobal })
             .then(response => {
@@ -43,7 +46,19 @@ const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
                     toast.error(response.data.message);
                 } else {
                     // Efetua login de forma automática após o cadastro
+                    const data = {
+                        titulo: 'Cadastro realizado com sucesso',
+                        descricao: `Olá ${dataGlobal.sectionOne.nomeFantasia}, seja bem-vindo(a) ao GEDagro!`,
+                        url: null,
+                        urlID: null,
+                        tipoNotificacaoID: 1,
+                        usuarioGeradorID: null,
+                        usuarioID: response.data.usuarioID,
+                        unidadeID: response.data.unidadeID,
+                    }
+                    createNeWNotification(data)
                     toast.success("Cadastro efetuado com sucesso!");
+
                     const { cnpj, senha: password } = dataGlobal?.sectionOne;
                     // Envia email para o fornecedor, contendo dados de acesso
                     sendMailNewFornecedor();
