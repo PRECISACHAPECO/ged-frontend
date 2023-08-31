@@ -11,13 +11,11 @@ const NotificationProvider = ({ children }) => {
 
     const getData = async () => {
         if (user && loggedUnity) {
-
             const data = {
                 unidadeID: loggedUnity.unidadeID,
                 usuarioID: user.usuarioID
             }
             try {
-
                 const response = await api.post("notificacao/getData", data);
                 console.log("response", response);
                 setNotifications(response.data);

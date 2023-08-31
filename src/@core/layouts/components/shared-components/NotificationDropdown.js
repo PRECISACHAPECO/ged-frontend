@@ -1,7 +1,4 @@
-// ** React Imports
-import { useState, Fragment } from 'react'
-
-// ** MUI Imports
+import { useState, Fragment, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Badge from '@mui/material/Badge'
 import Button from '@mui/material/Button'
@@ -11,22 +8,14 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import MuiMenu from '@mui/material/Menu'
 import MuiMenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
-
-// ** Icon Imports
 import Icon from 'src/@core/components/icon'
-
-// ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
-
-// ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
-import CustomAvatar from 'src/@core/components/mui/avatar'
+import { Checkbox, FormControlLabel } from '@mui/material'
+import { RouteContext } from 'src/context/RouteContext'
+import Router from 'next/router'
+import { api } from 'src/configs/api'
 
-// ** Util Import
-import { getInitials } from 'src/@core/utils/get-initials'
-import IconPdf from 'src/icon/IconPdf'
-
-// ** Styled Menu component
 const Menu = styled(MuiMenu)(({ theme }) => ({
     '& .MuiMenu-paper': {
         width: 380,
@@ -41,7 +30,7 @@ const Menu = styled(MuiMenu)(({ theme }) => ({
     }
 }))
 
-// ** Styled MenuItem component
+
 const MenuItem = styled(MuiMenuItem)(({ theme }) => ({
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
@@ -50,12 +39,12 @@ const MenuItem = styled(MuiMenuItem)(({ theme }) => ({
     }
 }))
 
-// ** Styled PerfectScrollbar component
+
 const PerfectScrollbar = styled(PerfectScrollbarComponent)({
     maxHeight: 344
 })
 
-// ** Styled component for the title in MenuItems
+
 const MenuItemTitle = styled(Typography)(({ theme }) => ({
     fontWeight: 600,
     flex: '1 1 100%',
@@ -66,7 +55,7 @@ const MenuItemTitle = styled(Typography)(({ theme }) => ({
     marginBottom: theme.spacing(0.75)
 }))
 
-// ** Styled component for the subtitle in MenuItems
+
 const MenuItemSubtitle = styled(Typography)({
     flex: '1 1 100%',
     overflow: 'hidden',
@@ -83,35 +72,64 @@ const ScrollWrapper = ({ children, hidden }) => {
 }
 
 const NotificationDropdown = props => {
-    // ** Props
     const { settings, notifications } = props
-
-    // ** States
     const [anchorEl, setAnchorEl] = useState(null)
-
-    // ** Hook
     const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
+    const [notificationsRead, setNotificationsRead] = useState([])
+    const { setId } = useContext(RouteContext)
+    const router = Router
 
-    // ** Vars
     const { direction } = settings
-
     const handleDropdownOpen = event => {
         setAnchorEl(event.currentTarget)
     }
 
-    const handleDropdownClose = () => {
+    // Faz update da notificação, seta como lida
+    const notificationUpdate = async (data) => {
+        if (notificationsRead) {
+            try {
+                const response = await api.put("notificacao/update", data);
+                console.log("response", response);
+            } catch (error) {
+                console.error("Error fetching notification data:", error);
+            }
+        }
+    }
+
+    // Seta no estado o id das notificações selecionadas como lidas
+    const handleChangeNotification = async (notification, isChecked) => {
+        if (isChecked) {
+            setNotificationsRead(prevState => [...prevState, notification.notificacaoID]);
+        } else {
+            setNotificationsRead(prevState =>
+                prevState.filter(id => id !== notification.notificacaoID)
+            );
+        }
+    };
+
+
+    // Fecha modal de notificações e chama funções
+    const handleDropdownClose = async (notification) => {
         setAnchorEl(null)
+        const data = [notification.notificacaoID]
+        // Verifica se notifição clicada tem url
+        if (notification && notification.url && notificationsRead.length == 0) {
+            notificationUpdate(data)
+            setId(notification.urlID ?? null)
+            router.push(notification.url)
+        }
+        if (notificationsRead.length > 0) {
+            notificationUpdate(notificationsRead)
+        }
     }
 
     return (
-
         <Fragment>
-            <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu' className='relative'>
+            <IconButton color='inherit' aria-haspopup='true' aria-controls='customized-menu' onClick={handleDropdownOpen} className='relative'>
                 <Badge
                 >
                     {
                         notifications && notifications.length && (
-
                             <div className='absolute right-[10px] top-1'>
                                 <span class="relative flex justify-center items-center h-3 w-3 -top-1 -right-[10px]">
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -120,7 +138,6 @@ const NotificationDropdown = props => {
                             </div>
                         )
                     }
-
                     <Icon icon='mdi:bell-outline' />
                 </Badge>
             </IconButton>
@@ -149,16 +166,36 @@ const NotificationDropdown = props => {
                 </MenuItem>
                 <ScrollWrapper hidden={hidden}>
                     {notifications?.map((notification, index) => (
-                        <MenuItem key={index} onClick={handleDropdownClose}>
-                            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-                                <Icon icon={notification.icone} style={{ color: notification.cor }} fontSize={24} />
+
+                        <MenuItem key={index} sx={{ position: 'relative' }}>
+                            <Box sx={{ width: '95%', display: 'flex', alignItems: 'center' }} onClick={() => { notification.url ? handleDropdownClose(notification) : null }}>
+                                <div className="flex items-center gap-1">
+                                    <Icon icon={notification.icone} style={{ color: notification.cor }} fontSize={24} />
+                                </div>
                                 <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                                    <MenuItemTitle>{notification.titulo}</MenuItemTitle>
-                                    <MenuItemSubtitle variant='body2'>{notification.descricao}</MenuItemSubtitle>
+                                    <div>
+                                        <MenuItemTitle>{notification.titulo}</MenuItemTitle>
+                                        <MenuItemSubtitle variant='body2'>{notification.descricao}</MenuItemSubtitle>
+                                    </div>
+                                    <div className='flex items-center gap-2'>
+                                        <Typography variant='caption' sx={{ color: 'text.disabled' }}>
+                                            {notification.dataFormatada}
+                                        </Typography>
+                                        {
+                                            notification.url && (
+                                                <Icon icon='ci:external-link' fontSize={16} style={{ color: '#4a8b57' }} />
+                                            )
+                                        }
+                                    </div>
                                 </Box>
-                                <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                                    {notification.dataFormatada}
+                            </Box>
+                            <Box sx={{ position: 'absolute', right: '-8px', display: 'flex', flexDirection: 'column' }}>
+                                <Typography sx={{ fontSize: '10px', opacity: '.6' }} >
+                                    Ler
                                 </Typography>
+                                <FormControlLabel
+                                    control={<Checkbox name='color-secondary' color='primary' size='small' onChange={e => handleChangeNotification(notification, e.target.checked)} />}
+                                />
                             </Box>
                         </MenuItem>
                     ))}
@@ -180,7 +217,7 @@ const NotificationDropdown = props => {
                     </Button>
                 </MenuItem>
             </Menu>
-        </Fragment>
+        </Fragment >
     )
 }
 
