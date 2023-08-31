@@ -107,7 +107,6 @@ const NotificationDropdown = props => {
         }
     };
 
-
     // Fecha modal de notificações e chama funções
     const handleDropdownClose = async (notification) => {
         setAnchorEl(null)
