@@ -57,7 +57,6 @@ const AppBarContent = props => {
     const { title } = useContext(ParametersContext)
     const { id, setId } = useContext(RouteContext)
     const { notifications } = useContext(NotificationContext)
-    console.log("🚀 ~ notifications do comtextooooooo:", notifications)
 
     const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
 
