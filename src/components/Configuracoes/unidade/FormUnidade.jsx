@@ -194,6 +194,14 @@ const FormUnidade = ({ id }) => {
 
             const formData = new FormData()
             formData.append('file', selectedFile)
+
+            //? Verifica se o arquivo é uma imagem
+            const isImage = selectedFile.type.includes('image')
+            if (!isImage) {
+                toast.error('O arquivo selecionado não é uma imagem!')
+                return
+            }
+
             await api
                 .post(`${staticUrl}/updateData/report/${id}`, formData)
                 .then(response => {
