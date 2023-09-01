@@ -87,6 +87,10 @@ const NotificationDropdown = props => {
         setAnchorEl(event.currentTarget)
     }
 
+
+
+
+
     // Faz update das notificação, seta como lida
     const notificationUpdate = async (data) => {
         try {
@@ -99,6 +103,9 @@ const NotificationDropdown = props => {
             console.error("Error fetching notification data:", error);
         }
     }
+
+
+
 
     // Seta no estado o id das notificações selecionadas
     const handleChangeNotification = async (notification, isChecked) => {

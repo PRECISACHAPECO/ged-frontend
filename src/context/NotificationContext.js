@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, useContext } from 'react';
 import { api } from 'src/configs/api';
 import { AuthContext } from './AuthContext';
+import { Howl } from 'howler';
 
 const NotificationContext = createContext({});
 
@@ -8,17 +9,14 @@ const NotificationProvider = ({ children }) => {
     const [notifications, setNotifications] = useState([]);
     const { loggedUnity, user } = useContext(AuthContext);
 
-    const updateNotifications = (newNotifications) => {
-        if (newNotifications.length > 0) {
-            const newNotificationsFiltered = newNotifications.filter((notification) => {
-                const notificationExists = notifications.find((notificationOld) => {
-                    return notificationOld.notificacaoID === notification.notificacaoID
-                })
-                return !notificationExists
-            })
-            setNotifications([...notifications, ...newNotificationsFiltered])
-        }
-    }
+    const sound = new Howl({
+        src: ['/sounds/message.mp3'],
+        volume: 1, // Volume (entre 0 e 1)
+    });
+
+    const playNotificationSound = () => {
+        sound.play();
+    };
 
     const getDataNotification = async () => {
         if (user && loggedUnity) {
@@ -27,48 +25,33 @@ const NotificationProvider = ({ children }) => {
                 usuarioID: user.usuarioID
             }
             try {
-                const response = await api.post("notificacao/getData", data)
-                // updateNotifications(response.data)
-                setNotifications(response.data)
+                const response = await api.post("notificacao/getData", data);
+                setNotifications(response.data);
             } catch (error) {
                 console.error("Erro ao atualizar notificações:", error);
             }
         }
     };
 
-    //? Exemplo de data
-    // const data = {
-    //     titulo: 'Notificação de teste',
-    //     descricao: 'Descricao de teste',
-    //     url: null,
-    //     urlID: null,
-    //     tipoNotificacaoID: 1,
-    //     usuarioGeradorID: null,
-    //     usuarioID: 1,
-    //     unidadeID: 1,
-    //     papelID: 1
-    // }
-    const createNeWNotification = async (data) => {
-        if (!data) return
-        try {
-            const response = await api.post("notificacao/insertData", data);
-        } catch (err) {
-            console.log(err)
-        }
-    }
     useEffect(() => {
         getDataNotification();
         const intervalId = setInterval(() => {
             getDataNotification();
         }, 30000);
+
         return () => clearInterval(intervalId);
     }, [user, loggedUnity]);
+
+    useEffect(() => {
+        if (notifications.length > 0) {
+            playNotificationSound()
+        }
+    }, [notifications])
 
     const values = {
         notifications,
         setNotifications,
-        getDataNotification,
-        createNeWNotification
+        getDataNotification
     };
 
     return (
