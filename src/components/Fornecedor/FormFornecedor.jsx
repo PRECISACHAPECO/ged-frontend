@@ -27,7 +27,7 @@ import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
 
 const FormFornecedor = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
-    const { createNeWNotification } = useContext(NotificationContext)
+    const { createNewNotification } = useContext(NotificationContext)
     const [isLoading, setLoading] = useState(false) //? loading de carregamento da página
     const [isLoadingSave, setLoadingSave] = useState(false) //? dependencia do useEffect pra atualizar a página após salvar
     // const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
@@ -261,10 +261,8 @@ const FormFornecedor = ({ id }) => {
                         const nomeColuna = response.data.fields[i].nomeColuna
                         const nomeCampo = response.data.fields[i].nomeCampo
 
-                        console.log('🚀 ~ loggedUnity:', loggedUnity)
                         for (let propriedade in loggedUnity) {
                             if (nomeColuna == 'telefone') {
-                                console.log('telefone')
                                 const telefoneColuna = loggedUnity.telefone1 ?? loggedUnity.telefone2
                                 setValue(`fields[${i}].${nomeColuna}`, telefoneColuna ?? '')
                             }
@@ -303,8 +301,6 @@ const FormFornecedor = ({ id }) => {
             console.log(error)
         }
     }
-    // Depois que a iteração estiver completa
-    console.log('Valores definidos:', dataCopiedMyData)
 
     const noPermissions = () => {
         router.push('/formularios/fornecedor/')
@@ -407,10 +403,7 @@ const FormFornecedor = ({ id }) => {
             }
         }
 
-        if (data) {
-            console.log('🚀 ~ Cria notificação:', data)
-            createNeWNotification(data) //* Cria nova notificação
-        }
+        if (data) createNewNotification(data) //* Cria nova notificação
     }
 
     const checkErrors = () => {
@@ -587,8 +580,6 @@ const FormFornecedor = ({ id }) => {
                 })
         }
     }
-
-    console.log('Valores copiados, deve mostarr alerteeee:', dataCopiedMyData)
 
     return (
         <>

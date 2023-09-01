@@ -46,6 +46,7 @@ import FormHeader from 'src/components/Defaults/FormHeader'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
+import { NotificationContext } from 'src/context/NotificationContext'
 import Loading from 'src/components/Loading'
 import toast from 'react-hot-toast'
 import { Checkbox } from '@mui/material'
@@ -64,22 +65,17 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br' // import locale
 
 const FormRecebimentoMp = ({ id }) => {
-    console.log('🚀 ~ id:', id)
     const { user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
     const [status, setStatus] = useState(null)
-
+    const { createNeWNotification } = useContext(NotificationContext)
     const [openModalStatus, setOpenModalStatus] = useState(false)
-
     const [field, setField] = useState([])
-    console.log('🚀 ~ field:', field)
     const [fieldsProduct, setFieldsProduct] = useState([])
     const [products, setProducts] = useState([])
-    console.log('🚀 ~ products:', products)
-
     const [data, setData] = useState(null)
     const [dataProducts, setDataProducts] = useState([])
     const [removedProducts, setRemovedProducts] = useState([])
@@ -100,7 +96,6 @@ const FormRecebimentoMp = ({ id }) => {
     const { setTitle, setStorageId, getStorageId } = useContext(ParametersContext)
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
-    console.log('🚀 ~~~ type:', type, id)
     const staticUrl = router.pathname
 
     const {
@@ -150,6 +145,9 @@ const FormRecebimentoMp = ({ id }) => {
             await api.post(`${staticUrl}/changeFormStatus/${id}`, data).then(response => {
                 toast.success(toastMessage.successUpdate)
                 setSavingForm(false)
+
+                //? Trata notificações
+                manageNotifications(status)
             })
         } catch (error) {
             console.log(error)
@@ -187,24 +185,37 @@ const FormRecebimentoMp = ({ id }) => {
             }
         }
     ]
-    // const dataReports = [
-    //     {
-    //         id: 1,
-    //         name: 'recebimentoMP',
-    //         identification: '01',
-    //         route: 'relatorio/recebimentoMP',
-    //         params: {
-    //             recebimentompID: id,
-    //             unidadeID: loggedUnity.unidadeID
-    //         }
-    //     },
-    //     {
-    //         id: 2,
-    //         name: 'Recepção',
-    //         identification: '02',
-    //         route: '/relatorio/recepcao'
-    //     }
-    // ]
+
+    //? Trata notificações
+    const manageNotifications = status => {
+        const statusName =
+            status == 30
+                ? 'Em preenchimento'
+                : status == 40
+                ? 'Concluído'
+                : status == 50
+                ? 'Reprovado'
+                : status == 60
+                ? 'Aprovado parcialmente'
+                : status == 70
+                ? 'Aprovado'
+                : 'Pendente'
+
+        //? Fornecedor concluiu o formulário
+        const data = {
+            titulo: `Formulário de MP ${statusName}`,
+            descricao: `O formulário de Recebimento de MP #${id} está ${statusName}.`,
+            url: '/formularios/recebimento-mp/',
+            urlID: id,
+            tipoNotificacaoID: 4, //? recebimento de mp
+            usuarioGeradorID: user.usuarioID,
+            usuarioID: 0, //? Todos da unidade
+            unidadeID: loggedUnity.unidadeID, //? UnidadeID da fábrica (que verá a notificação)
+            papelID: 1 //? Notificação pra fábrica
+        }
+
+        if (data) createNeWNotification(data) //* Cria nova notificação
+    }
 
     const verifyFormPending = async () => {
         try {
@@ -342,7 +353,6 @@ const FormRecebimentoMp = ({ id }) => {
         field?.forEach((field, index) => {
             const fieldName = field.tabela ? `fields[${index}].${field.tabela}` : `fields[${index}].${field.nomeColuna}`
             const fieldValue = getValues(fieldName)
-            console.log('🚀 ~ checkErrors:', fieldName, fieldValue)
             if (field.obrigatorio === 1 && !fieldValue) {
                 setError(fieldName, {
                     type: 'manual',
@@ -361,7 +371,6 @@ const FormRecebimentoMp = ({ id }) => {
                         ? `products[${indexData}].${field.tabela}`
                         : `products[${indexData}].${field.nomeColuna}`
                     const fieldValue = getValues(fieldName)
-                    console.log('🚀 ~ checkErrors produto:', fieldName)
 
                     if (field.obrigatorio === 1 && !fieldValue) {
                         setError(fieldName, {
@@ -434,7 +443,6 @@ const FormRecebimentoMp = ({ id }) => {
 
                     //? Se gerou uma não conformidade, redireciona pra não conformidade gerada
                     if (response.data && response.data.naoConformidade && response.data.id > 0) {
-                        console.log('🚀 ~ redireciona pra nao conformidade')
                         router.push('/formularios/recebimento-mp/nao-conformidade/')
                         setId(response.data.id)
                     }

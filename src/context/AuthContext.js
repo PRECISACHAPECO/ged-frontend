@@ -186,6 +186,7 @@ const AuthProvider = ({ children }) => {
         window.localStorage.removeItem('loggedUnity')
         window.localStorage.removeItem('routes')
         window.localStorage.removeItem('menu')
+        window.localStorage.removeItem('notifications')
         window.localStorage.removeItem(authConfig.storageTokenKeyName)
         router.push(user?.papelID === 2 ? '/fornecedor' : '/login') //? /login ou /login-fornecedor
     }
