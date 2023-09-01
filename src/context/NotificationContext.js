@@ -16,7 +16,9 @@ const NotificationProvider = ({ children }) => {
             }
             try {
                 const response = await api.post("notificacao/getData", data);
-                setNotifications(response.data);
+                if (response.data.length !== notifications.length) {
+                    setNotifications(response.data);
+                }
             } catch (error) {
                 console.error("Error fetching notification data:", error);
             }
@@ -43,9 +45,12 @@ const NotificationProvider = ({ children }) => {
             console.log(err)
         }
     }
-
     useEffect(() => {
         getDataNotification();
+        const intervalId = setInterval(() => {
+            getDataNotification();
+        }, 5000);
+        return () => clearInterval(intervalId);
     }, [user, loggedUnity]);
 
     const values = {
