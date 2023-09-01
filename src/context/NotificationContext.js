@@ -28,7 +28,8 @@ const NotificationProvider = ({ children }) => {
             }
             try {
                 const response = await api.post("notificacao/getData", data)
-                updateNotifications(response.data)
+                // updateNotifications(response.data)
+                setNotifications(response.data)
             } catch (error) {
                 console.error("Erro ao atualizar notificações:", error);
             }
