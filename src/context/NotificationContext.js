@@ -5,8 +5,20 @@ import { AuthContext } from './AuthContext';
 const NotificationContext = createContext({});
 
 const NotificationProvider = ({ children }) => {
-    const [notifications, setNotifications] = useState(null);
+    const [notifications, setNotifications] = useState([]);
     const { loggedUnity, user } = useContext(AuthContext);
+
+    const updateNotifications = (newNotifications) => {
+        if (newNotifications.length > 0) {
+            const newNotificationsFiltered = newNotifications.filter((notification) => {
+                const notificationExists = notifications.find((notificationOld) => {
+                    return notificationOld.notificacaoID === notification.notificacaoID
+                })
+                return !notificationExists
+            })
+            setNotifications([...notifications, ...newNotificationsFiltered])
+        }
+    }
 
     const getDataNotification = async () => {
         if (user && loggedUnity) {
@@ -15,17 +27,15 @@ const NotificationProvider = ({ children }) => {
                 usuarioID: user.usuarioID
             }
             try {
-                const response = await api.post("notificacao/getData", data);
-                if (response.data.length !== notifications.length) {
-                    setNotifications(response.data);
-                }
+                const response = await api.post("notificacao/getData", data)
+                updateNotifications(response.data)
             } catch (error) {
-                console.error("Error fetching notification data:", error);
+                console.error("Erro ao atualizar notificações:", error);
             }
         }
     };
 
-    // Exemplo de data
+    //? Exemplo de data
     // const data = {
     //     titulo: 'Notificação de teste',
     //     descricao: 'Descricao de teste',
@@ -49,7 +59,7 @@ const NotificationProvider = ({ children }) => {
         getDataNotification();
         const intervalId = setInterval(() => {
             getDataNotification();
-        }, 5000);
+        }, 30000);
         return () => clearInterval(intervalId);
     }, [user, loggedUnity]);
 

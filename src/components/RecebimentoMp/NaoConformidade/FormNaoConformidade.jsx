@@ -501,6 +501,7 @@ const FormNaoConformidade = ({ id }) => {
                         text={`Deseja realmente concluir este formulário?`}
                         info={info}
                         canChange={!hasFormPending}
+                        register={register}
                         btnCancel
                         btnConfirm
                         btnConfirmColor='primary'

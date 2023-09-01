@@ -104,6 +104,7 @@ const FormFornecedor = ({ id }) => {
             setLoadingSave(true)
             await api.post(`${staticUrl}/changeFormStatus/${id}`, data).then(response => {
                 toast.success(toastMessage.successUpdate)
+                manageNotifications(status)
                 setLoadingSave(false)
             })
         } catch (error) {
@@ -332,7 +333,6 @@ const FormFornecedor = ({ id }) => {
             values['obsConclusao'] = param.obsConclusao
 
             //? Trata notificações
-            console.log('manage notification....')
             manageNotifications(values['status'])
         }
 
@@ -357,10 +357,11 @@ const FormFornecedor = ({ id }) => {
 
     //? Trata notificações
     const manageNotifications = status => {
+        let data = null
         if (user.papelID == 2 && status == 40) {
             //? Fornecedor concluiu o formulário
-            const data = {
-                titulo: 'Formulário concluído',
+            data = {
+                titulo: 'Fornecedor concluiu o formulário',
                 descricao: `O Fornecedor ${loggedUnity.nomeFantasia} concluiu o formulário #${id}.`,
                 url: '/formularios/fornecedor/',
                 urlID: id,
@@ -370,6 +371,44 @@ const FormFornecedor = ({ id }) => {
                 unidadeID: unidade.unidadeID, //? UnidadeID da fábrica (que verá a notificação)
                 papelID: 1 //? Notificação pra fábrica
             }
+        } else if (user.papelID == 1 && status > 40) {
+            //? Fábrica concluiu o formulário
+            const statusName =
+                status == 50
+                    ? 'reprovou'
+                    : status == 60
+                    ? 'aprovou parcialmente'
+                    : status == 70
+                    ? 'aprovou'
+                    : 'concluiu'
+            data = {
+                titulo: `Fábrica ${statusName} o formulário`,
+                descricao: `A Fábrica ${loggedUnity.nomeFantasia} ${statusName} o formulário #${id}.`,
+                url: '/formularios/fornecedor/',
+                urlID: id,
+                tipoNotificacaoID: 3, //? fornecedor
+                usuarioGeradorID: user.usuarioID,
+                usuarioID: 0, //? Todos da unidade
+                unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
+                papelID: 2 //? Notificação pro fornecedor
+            }
+        } else if (user.papelID == 1 && status == 30) {
+            //? Fábrica reabriu o formulário pra "Em preenchimento"
+            data = {
+                titulo: `Fábrica reabriu o formulário`,
+                descricao: `A Fábrica ${loggedUnity.nomeFantasia} reabriu o formulário #${id} para preenchimento.`,
+                url: '/formularios/fornecedor/',
+                urlID: id,
+                tipoNotificacaoID: 3, //? fornecedor
+                usuarioGeradorID: user.usuarioID,
+                usuarioID: 0, //? Todos da unidade
+                unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
+                papelID: 2 //? Notificação pro fornecedor
+            }
+        }
+
+        if (data) {
+            console.log('🚀 ~ Cria notificação:', data)
             createNeWNotification(data) //* Cria nova notificação
         }
     }
@@ -750,6 +789,7 @@ const FormFornecedor = ({ id }) => {
                 title={info.status >= 40 ? 'Aprovar Fornecedor' : 'Concluir Formulário'}
                 text={`Deseja realmente concluir este formulário?`}
                 info={info}
+                register={register}
                 btnCancel
                 canChange={!hasFormPending}
                 btnConfirm
