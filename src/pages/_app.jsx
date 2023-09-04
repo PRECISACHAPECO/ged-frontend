@@ -32,10 +32,10 @@ import Spinner from 'src/@core/components/spinner'
 
 // ** Contexts
 import { AuthProvider } from 'src/context/AuthContext'
+import { NotificationProvider } from 'src/context/NotificationContext'
 import { ParametersProvider } from 'src/context/ParametersContext'
 import { RouteProvider } from 'src/context/RouteContext'
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
-import { NotificationProvider } from 'src/context/NotificationContext'
 
 // ** Styled Components
 import ReactHotToast from 'src/@core/styles/libs/react-hot-toast'
@@ -55,7 +55,7 @@ import 'src/iconify-bundle/icons-bundle-react'
 
 // ** Global css styles
 import '../../styles/globals.css'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -99,7 +99,9 @@ const App = props => {
     return (
         <CacheProvider value={emotionCache}>
             <Head>
-                <title className='print-no-title'>{`${themeConfig.templateName}`}</title>
+                {/* <title className='print-no-title'>{`${themeConfig.templateName}`}</title> */}
+                {/* <title className='print-no-title'>Esse é um teste {}</title> */}
+
                 <meta
                     name='description'
                     content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}

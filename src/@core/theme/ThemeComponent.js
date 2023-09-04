@@ -3,6 +3,8 @@ import { deepmerge } from '@mui/utils'
 import CssBaseline from '@mui/material/CssBaseline'
 import GlobalStyles from '@mui/material/GlobalStyles'
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles'
+import { NotificationContext } from 'src/context/NotificationContext'
+import { useContext } from 'react'
 
 // ** Theme Config
 import themeConfig from 'src/configs/themeConfig'
@@ -20,6 +22,7 @@ import UserThemeOptions from 'src/layouts/UserThemeOptions'
 
 // ** Global Styles
 import GlobalStyling from './globalStyles'
+import Head from 'next/head'
 
 const ThemeComponent = props => {
   // ** Props
@@ -49,14 +52,22 @@ const ThemeComponent = props => {
     theme = responsiveFontSizes(theme)
   }
 
+  const { notifications } = useContext(NotificationContext)
+
   return (
-    <ThemeProvider theme={theme}>
-      <Direction direction={settings.direction}>
-        <CssBaseline />
-        <GlobalStyles styles={() => GlobalStyling(theme)} />
-        {children}
-      </Direction>
-    </ThemeProvider>
+    <>
+      <Head>
+        <title className='print-no-title'>GEDagro {`${notifications.length > 0 ? `(${notifications.length})` : ''} `}</title>
+
+      </Head>
+      <ThemeProvider theme={theme}>
+        <Direction direction={settings.direction}>
+          <CssBaseline />
+          <GlobalStyles styles={() => GlobalStyling(theme)} />
+          {children}
+        </Direction>
+      </ThemeProvider>
+    </>
   )
 }
 

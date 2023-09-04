@@ -112,6 +112,7 @@ const NotificationDropdown = props => {
 
     // Fecha modal de notificações e chama funções
     const handleDropdownClose = async (notification) => {
+        // localStorage.setItem('dataLength', notification.length);
         setAnchorEl(null)
         const data = [notification.notificacaoID]
         // Verifica se notifição clicada tem url
