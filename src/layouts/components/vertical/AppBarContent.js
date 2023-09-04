@@ -24,33 +24,6 @@ import NotificationDropdown from 'src/@core/layouts/components/shared-components
 import { Button, Snackbar, Typography } from '@mui/material'
 import DialogSelectUnit from 'src/components/Defaults/Dialogs/DialogSelectUnit'
 
-// const notifications = [
-//     {
-//         meta: 'Today',
-//         new: true,
-//         avatarAlt: 'Flora',
-//         title: 'Congratulation Flora! 🎉',
-//         avatarImg: '/images/avatars/4.png',
-//         subtitle: 'Won the monthly best seller badge'
-//     },
-//     {
-//         meta: 'Today',
-//         new: true,
-//         avatarAlt: 'Flora',
-//         title: 'Congratulation Flora! 🎉',
-//         avatarImg: '/images/avatars/4.png',
-//         subtitle: 'Won the monthly best seller badge'
-//     },
-//     {
-//         meta: 'Today',
-//         new: false,
-//         avatarAlt: 'Flora',
-//         title: 'Congratulation Flora! 🎉',
-//         avatarImg: '/images/avatars/4.png',
-//         subtitle: 'Won the monthly best seller badge'
-//     },
-// ]
-
 const AppBarContent = props => {
     // ** Props
     const { hidden, settings, saveSettings, toggleNavVisibility } = props

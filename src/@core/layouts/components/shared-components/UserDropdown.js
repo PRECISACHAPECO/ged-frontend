@@ -25,6 +25,8 @@ import { useAuth, user } from 'src/hooks/useAuth'
 import DialogSelectUnit from 'src/components/Defaults/Dialogs/DialogSelectUnit'
 import { toast } from 'react-hot-toast'
 import ModeToggler from './ModeToggler'
+import NotificationDropdown from './NotificationDropdown'
+import { NotificationContext } from 'src/context/NotificationContext'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -38,11 +40,14 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 const UserDropdown = props => {
     // ** Props
     const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
+    const [anchorEl, setAnchorEl] = useState(null)
     // Controla troca de unidade
     const { saveSettings, settings } = useSettings()
     const mode = settings.mode
     const [openModal, setOpenModal] = useState(false);
+    const [open, setOpen] = useState(false)
     const [unity, setSelectedUnit] = useState(null);
+    const { notifications } = useContext(NotificationContext)
     const handleCloseModalSelectUnits = () => setOpenModal(false);
 
 
@@ -64,7 +69,6 @@ const UserDropdown = props => {
     }
 
     // ** States
-    const [anchorEl, setAnchorEl] = useState(null)
     const { setId } = useContext(RouteContext)
 
     // ** Hooks
@@ -161,6 +165,22 @@ const UserDropdown = props => {
                                 </Box>
                             </Box>
                             <Divider sx={{ mt: '0 !important' }} />
+
+
+                            <MenuItem>
+                                <div
+                                    className='block sm:hidden -ml-2'
+                                    onClick={() => setOpen(!open)}
+                                >
+                                    <NotificationDropdown settings={settings} notifications={notifications} open={open} />
+                                    <span>
+                                        Notificações
+                                    </span>
+                                </div>
+                            </MenuItem>
+
+
+
                             <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
                                 <Box sx={styles}
                                     onClick={() => {

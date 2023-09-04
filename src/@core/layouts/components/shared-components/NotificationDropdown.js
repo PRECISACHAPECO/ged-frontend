@@ -1,4 +1,4 @@
-import { useState, Fragment, useContext } from 'react'
+import { useState, Fragment, useContext, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Badge from '@mui/material/Badge'
 import Button from '@mui/material/Button'
@@ -73,7 +73,7 @@ const ScrollWrapper = ({ children, hidden }) => {
 }
 
 const NotificationDropdown = props => {
-    const { settings, notifications } = props
+    const { settings, notifications, open } = props
     const [anchorEl, setAnchorEl] = useState(null)
     const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
     const [notificationsRead, setNotificationsRead] = useState([])
@@ -83,7 +83,7 @@ const NotificationDropdown = props => {
 
     const { direction } = settings
     const handleDropdownOpen = event => {
-        setAnchorEl(event.currentTarget)
+        setAnchorEl(event?.currentTarget)
     }
 
     // Faz update das notificação, seta como lida
@@ -125,6 +125,7 @@ const NotificationDropdown = props => {
             notificationUpdate(notificationsRead)
         }
     }
+
 
     return (
         <Fragment>
