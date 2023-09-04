@@ -29,17 +29,14 @@ const NotificationProvider = ({ children }) => {
 
     const verifyNewNotification = (data) => {
         const dataLength = localStorage.getItem('dataLength');
-        if (dataLength != data.length) {
+        if (dataLength != data.length && data.length > dataLength) {
             playNotificationSound()
-            setTimeout(() => {
-                setNotifications(data)
-                localStorage.setItem('dataLength', data.length);
-            }, 2000);
         }
+        setTimeout(() => {
+            setNotifications(data)
+            localStorage.setItem('dataLength', data.length);
+        }, 2000);
     }
-
-
-
 
     const getDataNotification = async () => {
         if (user && loggedUnity) {
