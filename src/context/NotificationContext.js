@@ -35,7 +35,7 @@ const NotificationProvider = ({ children }) => {
         setTimeout(() => {
             setNotifications(data)
             localStorage.setItem('dataLength', data.length);
-        }, 2000);
+        }, 2500);
     }
 
     const getDataNotification = async () => {
@@ -46,10 +46,7 @@ const NotificationProvider = ({ children }) => {
             }
             try {
                 const response = await api.post("notificacao/getData", data);
-                setTimeout(() => {
-                    verifyNewNotification(response.data);
-                }, 2000);
-
+                verifyNewNotification(response.data);
             } catch (error) {
                 console.error("Erro ao atualizar notificações:", error);
             }
