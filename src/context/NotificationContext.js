@@ -40,27 +40,6 @@ const NotificationProvider = ({ children }) => {
         sound.play();
     };
 
-    //? Exemplo de data
-    // const data = {
-    //     titulo: 'Notificação de teste',
-    //     descricao: 'Descricao de teste',
-    //     url: null,
-    //     urlID: null,
-    //     tipoNotificacaoID: 1,
-    //     usuarioGeradorID: null,
-    //     usuarioID: 1,
-    //     unidadeID: 1,
-    //     papelID: 1
-    // }
-    const createNeWNotification = async (data) => {
-        if (!data) return
-        try {
-            const response = await api.post("notificacao/insertData", data);
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
 
     const getDataNotification = async () => {
         if (user && loggedUnity) {
@@ -85,14 +64,6 @@ const NotificationProvider = ({ children }) => {
 
         return () => clearInterval(intervalId);
     }, [user, loggedUnity]);
-
-    // chamar getDataNotification a cada 5 segundos 
-    useEffect(() => {
-        if (notifications.length > 0 && !notificationPlayed) {
-            playNotificationSound();
-            setNotificationPlayed(true);
-        }
-    }, [notifications, notificationPlayed]);
 
     const values = {
         createNewNotification,
