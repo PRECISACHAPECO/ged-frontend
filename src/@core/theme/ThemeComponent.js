@@ -57,7 +57,7 @@ const ThemeComponent = props => {
   return (
     <>
       <Head>
-        <title className='print-no-title'>GEDagro {`${notifications.length > 0 ? `(${notifications.length})` : ''} `}</title>
+        <title className='print-no-title'>{`GEDagro ${notifications.length > 0 ? `(${notifications.length})` : ``} `}</title>
 
       </Head>
       <ThemeProvider theme={theme}>

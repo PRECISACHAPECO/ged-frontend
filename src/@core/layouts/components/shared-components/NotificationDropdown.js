@@ -17,7 +17,6 @@ import { NotificationContext } from 'src/context/NotificationContext'
 import Router from 'next/router'
 import { api } from 'src/configs/api'
 import toast from 'react-hot-toast'
-import InfoProgress from 'src/components/Defaults/InfoProgress'
 
 const Menu = styled(MuiMenu)(({ theme }) => ({
     '& .MuiMenu-paper': {

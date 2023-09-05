@@ -94,7 +94,7 @@ const ResetPassword = () => {
         }
         const dataNotification = {
             titulo: 'Redefinição de senha',
-            descricao: `Sua senha senha foi redefinida com sucesso. A nova senha é ${data.senha}`,
+            descricao: `Sua senha senha foi redefinida com sucesso.`,
             url: null,
             urlID: null,
             tipoNotificacaoID: 2,
