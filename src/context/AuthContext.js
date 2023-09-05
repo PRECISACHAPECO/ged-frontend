@@ -90,6 +90,7 @@ const AuthProvider = ({ children }) => {
                 localStorage.removeItem('loggedUnity')
                 localStorage.removeItem('routes')
                 localStorage.removeItem('menu')
+                window.localStorage.removeItem('dataLength')
                 setUser(null)
                 setLoading(false)
                 if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
@@ -186,7 +187,7 @@ const AuthProvider = ({ children }) => {
         window.localStorage.removeItem('loggedUnity')
         window.localStorage.removeItem('routes')
         window.localStorage.removeItem('menu')
-        window.localStorage.removeItem('notifications')
+        window.localStorage.removeItem('dataLength')
         window.localStorage.removeItem(authConfig.storageTokenKeyName)
         router.push(user?.papelID === 2 ? '/fornecedor' : '/login') //? /login ou /login-fornecedor
     }

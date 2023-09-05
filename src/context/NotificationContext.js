@@ -55,6 +55,7 @@ const NotificationProvider = ({ children }) => {
 
     useEffect(() => {
         getDataNotification();
+
         const intervalId = setInterval(() => {
             getDataNotification();
         }, 5000);
