@@ -12,7 +12,6 @@ import { validationEmail } from 'src/configs/validations'
 import { NotificationContext } from 'src/context/NotificationContext'
 
 const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
-    console.log("🚀 ~ dataGlobal:", dataGlobal)
     const [rememberMe, setRememberMe] = useState(true)
     const [loadingConclusion, setLoadingConclusion] = useState(false)
     const auth = useAuth()
@@ -95,8 +94,6 @@ const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
                 setLoadingConclusion(false);
             });
     };
-
-
 
     useEffect(() => {
         const endereco = {

@@ -17,6 +17,7 @@ import { NotificationContext } from 'src/context/NotificationContext'
 import Router from 'next/router'
 import { api } from 'src/configs/api'
 import toast from 'react-hot-toast'
+import InfoProgress from 'src/components/Defaults/InfoProgress'
 
 const Menu = styled(MuiMenu)(({ theme }) => ({
     '& .MuiMenu-paper': {
@@ -126,7 +127,6 @@ const NotificationDropdown = props => {
         }
     }
 
-
     return (
         <Fragment>
             <IconButton color='inherit' aria-haspopup='true' aria-controls='customized-menu' onClick={handleDropdownOpen} className='relative'>
@@ -170,7 +170,6 @@ const NotificationDropdown = props => {
                 </MenuItem>
                 <ScrollWrapper hidden={hidden}>
                     {notifications?.map((notification, index) => (
-
                         <MenuItem key={index} sx={{ position: 'relative' }}>
                             <Box sx={{ width: '95%', display: 'flex', alignItems: 'center' }} onClick={() => { notification.url ? handleDropdownClose(notification) : null }}>
                                 <div className="flex items-center gap-1">

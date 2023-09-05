@@ -100,7 +100,6 @@ const App = props => {
         <CacheProvider value={emotionCache}>
             <Head>
                 {/* <title className='print-no-title'>{`${themeConfig.templateName}`}</title> */}
-                {/* <title className='print-no-title'>Esse é um teste {}</title> */}
 
                 <meta
                     name='description'

@@ -147,7 +147,7 @@ const FormRecebimentoMp = ({ id }) => {
                 setSavingForm(false)
 
                 //? Trata notificações
-                manageNotifications(status)
+                manageNotifications(status, null, null)
             })
         } catch (error) {
             console.log(error)
@@ -185,37 +185,6 @@ const FormRecebimentoMp = ({ id }) => {
             }
         }
     ]
-
-    //? Trata notificações
-    const manageNotifications = status => {
-        const statusName =
-            status == 30
-                ? 'Em preenchimento'
-                : status == 40
-                ? 'Concluído'
-                : status == 50
-                ? 'Reprovado'
-                : status == 60
-                ? 'Aprovado parcialmente'
-                : status == 70
-                ? 'Aprovado'
-                : 'Pendente'
-
-        //? Fornecedor concluiu o formulário
-        const data = {
-            titulo: `Formulário de MP ${statusName}`,
-            descricao: `O formulário de Recebimento de MP #${id} está ${statusName}.`,
-            url: '/formularios/recebimento-mp/',
-            urlID: id,
-            tipoNotificacaoID: 4, //? recebimento de mp
-            usuarioGeradorID: user.usuarioID,
-            usuarioID: 0, //? Todos da unidade
-            unidadeID: loggedUnity.unidadeID, //? UnidadeID da fábrica (que verá a notificação)
-            papelID: 1 //? Notificação pra fábrica
-        }
-
-        if (data) createNewNotification(data) //* Cria nova notificação
-    }
 
     const verifyFormPending = async () => {
         try {
@@ -416,11 +385,62 @@ const FormRecebimentoMp = ({ id }) => {
         await handleSubmit(onSubmit)(values)
     }
 
+    //? Trata notificações
+    const manageNotifications = (status, nãoConformidade, idNãoConformidade) => {
+        const statusName =
+            status == 30
+                ? 'Em preenchimento'
+                : status == 40
+                ? 'Concluído'
+                : status == 50
+                ? 'Reprovado'
+                : status == 60
+                ? 'Aprovado parcialmente'
+                : status == 70
+                ? 'Aprovado'
+                : 'Pendente'
+
+        //? Fornecedor concluiu o formulário
+        const data = {
+            titulo: `Formulário de MP ${statusName}`,
+            descricao: `O formulário de Recebimento de MP #${id} está ${statusName}.`,
+            url: '/formularios/recebimento-mp/',
+            urlID: id,
+            tipoNotificacaoID: 4, //? recebimento de mp
+            usuarioGeradorID: user.usuarioID,
+            usuarioID: 0, //? Todos da unidade
+            unidadeID: loggedUnity.unidadeID, //? UnidadeID da fábrica (que verá a notificação)
+            papelID: 1 //? Notificação pra fábrica
+        }
+
+        if (data) {
+            createNewNotification(data) //* Cria nova notificação
+            if (nãoConformidade) {
+                //? Gera não conformidade
+                const dataNãoConformidade = {
+                    titulo: `Não conformidade gerada`,
+                    descricao: `O formulário de Recebimento de MP #${id} está ${statusName} e gerou uma não conformidade.`,
+                    url: '/formularios/recebimento-mp/nao-conformidade/',
+                    urlID: idNãoConformidade,
+                    tipoNotificacaoID: 5, //? Não conformidade
+                    usuarioGeradorID: user.usuarioID,
+                    usuarioID: 0, //? Todos da unidade
+                    unidadeID: loggedUnity.unidadeID, //? UnidadeID da fábrica (que verá a notificação)
+                    papelID: 1 //? Notificação pra fábrica
+                }
+                createNewNotification(dataNãoConformidade)
+            }
+        }
+    }
+
     const onSubmit = async (values, param = false) => {
         if (param.conclusion === true && param.status > 10) {
             values['status'] = param.status
             values['obsConclusao'] = param.obsConclusao
         }
+
+        // //? Trata notificações
+        // manageNotifications(values.status, values.naoConformidade)
 
         const data = {
             form: values,
@@ -431,8 +451,6 @@ const FormRecebimentoMp = ({ id }) => {
             }
         }
         data['form']['removedProducts'] = removedProducts
-        console.log('🚀 ~ onSubmit:', data)
-        // return
 
         try {
             if (type == 'edit') {
@@ -440,12 +458,17 @@ const FormRecebimentoMp = ({ id }) => {
                 await api.post(`${staticUrl}/updateData/${id}`, data).then(response => {
                     toast.success(toastMessage.successUpdate)
                     setSavingForm(false)
+                    let idNãoConformidade = null
 
                     //? Se gerou uma não conformidade, redireciona pra não conformidade gerada
                     if (response.data && response.data.naoConformidade && response.data.id > 0) {
                         router.push('/formularios/recebimento-mp/nao-conformidade/')
                         setId(response.data.id)
+                        idNãoConformidade = response.data.id
                     }
+
+                    //? Trata notificações
+                    manageNotifications(values.status, values.naoConformidade, idNãoConformidade)
                 })
             } else if (type == 'new') {
                 await api.post(`${backRoute(staticUrl)}/insertData`, data).then(response => {

@@ -103,7 +103,6 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
             }
             await api.post(`/login-fornecedor/setAcessLink`, { data })
                 .then((response, err) => {
-                    console.log("response", response.data)
                     setUnidadeID(response.data[0].unidadeID)
                     if (response.data && response.data[0] && response.data[0].cnpj) {
                         handleGetCnpj(response.data[0].cnpj)
