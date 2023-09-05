@@ -48,7 +48,7 @@ const ResetPassword = () => {
     })
     const router = Router
     const type = router.query.type
-    const { createNeWNotification } = useContext(NotificationContext)
+    const { createNewNotification } = useContext(NotificationContext)
 
     // ** Hook
     const theme = useTheme()
@@ -106,7 +106,7 @@ const ResetPassword = () => {
             if (response.status === 200) {
                 toast.success('Senha redefinida com sucesso!')
                 router.push(type === 'login' ? '/login' : '/fornecedor')
-                createNeWNotification(dataNotification)
+                createNewNotification(dataNotification)
             } else {
                 toast.error('Erro ao redefinir senha!')
             }

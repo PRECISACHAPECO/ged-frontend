@@ -71,7 +71,7 @@ const FormRecebimentoMp = ({ id }) => {
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
     const [status, setStatus] = useState(null)
-    const { createNeWNotification } = useContext(NotificationContext)
+    const { createNewNotification } = useContext(NotificationContext)
     const [openModalStatus, setOpenModalStatus] = useState(false)
     const [field, setField] = useState([])
     const [fieldsProduct, setFieldsProduct] = useState([])
@@ -214,7 +214,7 @@ const FormRecebimentoMp = ({ id }) => {
             papelID: 1 //? Notificação pra fábrica
         }
 
-        if (data) createNeWNotification(data) //* Cria nova notificação
+        if (data) createNewNotification(data) //* Cria nova notificação
     }
 
     const verifyFormPending = async () => {

@@ -16,7 +16,7 @@ const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
     const [rememberMe, setRememberMe] = useState(true)
     const [loadingConclusion, setLoadingConclusion] = useState(false)
     const auth = useAuth()
-    const { createNeWNotification } = useContext(NotificationContext)
+    const { createNewNotification } = useContext(NotificationContext)
 
     // Envia email confirmado o cadastro do novo fornecedor
     const sendMailNewFornecedor = () => {
@@ -36,6 +36,35 @@ const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
         }
     }
 
+    //? Trata notificações
+    const manageNotifications = (data) => {
+        const dataCreateNotificationFactory = {
+            titulo: 'Cadastro realizado com sucesso',
+            descricao: `Olá ${data.factory.nomeFantasia}, o fornecedor ${dataGlobal.sectionOne.nomeFantasia} acabou de realizar o cadastro.`,
+            url: null,
+            urlID: null,
+            tipoNotificacaoID: 1,
+            usuarioGeradorID: null,
+            usuarioID: 0,
+            unidadeID: data.factory.unidadeID,
+            papelID: 1 //? Notificação pra fábrica
+        }
+        const dataCreateNotificationSupplier = {
+            titulo: 'Cadastro realizado com sucesso',
+            descricao: `Olá ${dataGlobal.sectionOne.nomeFantasia}, seja bem-vindo(a) ao GEDagro!`,
+            url: null,
+            urlID: null,
+            tipoNotificacaoID: 1,
+            usuarioGeradorID: null,
+            usuarioID: data.supplier.usuarioID,
+            unidadeID: data.supplier.unidadeID,
+        }
+        // Envia notificação para o fornecedor após cadastro
+        createNewNotification(dataCreateNotificationSupplier)
+        // Envia notificação para a fábrica após cadastro
+        createNewNotification(dataCreateNotificationFactory)
+    }
+
 
     const handleSubmit = () => {
         setLoadingConclusion(true);
@@ -45,23 +74,12 @@ const SectionThree = ({ handlePrev, dataGlobal, setDataGlobal }) => {
                 if (response.status === 201) {
                     toast.error(response.data.message);
                 } else {
-                    // Efetua login de forma automática após o cadastro
-                    const data = {
-                        titulo: 'Cadastro realizado com sucesso',
-                        descricao: `Olá ${dataGlobal.sectionOne.nomeFantasia}, seja bem-vindo(a) ao GEDagro!`,
-                        url: null,
-                        urlID: null,
-                        tipoNotificacaoID: 1,
-                        usuarioGeradorID: null,
-                        usuarioID: response.data.usuarioID,
-                        unidadeID: response.data.unidadeID,
-                    }
-                    createNeWNotification(data)
+                    manageNotifications(response.data)
                     toast.success("Cadastro efetuado com sucesso!");
-
                     const { cnpj, senha: password } = dataGlobal?.sectionOne;
                     // Envia email para o fornecedor, contendo dados de acesso
                     sendMailNewFornecedor();
+                    // Efetua login de forma automática após o cadastro
                     return auth.loginFornecedor({ cnpj, password, rememberMe });
                 }
             })
