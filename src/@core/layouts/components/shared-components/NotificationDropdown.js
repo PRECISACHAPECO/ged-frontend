@@ -14,9 +14,11 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { Checkbox, FormControlLabel } from '@mui/material'
 import { RouteContext } from 'src/context/RouteContext'
 import { NotificationContext } from 'src/context/NotificationContext'
+import { AuthContext } from 'src/context/AuthContext'
 import Router from 'next/router'
 import { api } from 'src/configs/api'
 import toast from 'react-hot-toast'
+import { Howl } from 'howler';
 
 const Menu = styled(MuiMenu)(({ theme }) => ({
     '& .MuiMenu-paper': {
@@ -78,7 +80,8 @@ const NotificationDropdown = props => {
     const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
     const [notificationsRead, setNotificationsRead] = useState([])
     const { setId } = useContext(RouteContext)
-    const { getDataNotification } = useContext(NotificationContext)
+    const { setNotifications } = useContext(NotificationContext)
+    const { user, loggedUnity } = useContext(AuthContext)
     const router = Router
 
     const { direction } = settings
@@ -126,6 +129,52 @@ const NotificationDropdown = props => {
         }
     }
 
+    // Gera o som de notificação
+    const playNotificationSound = () => {
+        const sound = new Howl({
+            src: ['/sounds/message.mp3'],
+            volume: 1,
+        });
+        sound.play();
+    };
+
+    // Verifica se o length do localStorage é igual do response.data se diferente ou maior gera o som de notificação
+    const verifyNewNotification = (data) => {
+        const dataLength = localStorage.getItem('dataLength');
+        if (dataLength != data.length && data.length > dataLength) {
+            playNotificationSound()
+        }
+        setTimeout(() => {
+            setNotifications(data)
+            localStorage.setItem('dataLength', data.length);
+        }, 2500);
+    }
+
+    // Busca as notificações do banco de dados
+    const getDataNotification = async () => {
+        if (user && loggedUnity) {
+            const data = {
+                unidadeID: loggedUnity.unidadeID,
+                usuarioID: user.usuarioID
+            }
+            try {
+                const response = await api.post("notificacao/getData", data);
+                verifyNewNotification(response.data);
+            } catch (error) {
+                console.error("Erro ao atualizar notificações:", error);
+            }
+        }
+    };
+
+    // Chama a função getDataNotification a cada 5 segundos para verificar se tem novas notificações
+    useEffect(() => {
+        getDataNotification();
+        const intervalId = setInterval(() => {
+            getDataNotification();
+        }, 5000);
+        return () => clearInterval(intervalId);
+    }, []);
+
     return (
         <Fragment>
             <IconButton color='inherit' aria-haspopup='true' aria-controls='customized-menu' onClick={handleDropdownOpen} className='relative'>
@@ -169,16 +218,18 @@ const NotificationDropdown = props => {
                 </MenuItem>
                 <ScrollWrapper hidden={hidden}>
                     {notifications?.map((notification, index) => (
+
                         <MenuItem key={index} sx={{ position: 'relative' }}>
+
                             <Box sx={{ width: '95%', display: 'flex', alignItems: 'center' }} onClick={() => { notification.url ? handleDropdownClose(notification) : null }}>
-                                <div className="flex items-center gap-1">
-                                    <Icon icon={notification.icone} style={{ color: notification.cor }} fontSize={24} />
-                                </div>
+
+                                <Icon icon={notification.icone} style={{ color: notification.cor }} fontSize={24} />
+
                                 <Box sx={{ mx: 4, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                                    <div>
-                                        <MenuItemTitle>{notification.titulo}</MenuItemTitle>
-                                        <MenuItemSubtitle variant='body2'>{notification.descricao}</MenuItemSubtitle>
-                                    </div>
+
+                                    <MenuItemTitle>{notification.titulo}</MenuItemTitle>
+                                    <MenuItemSubtitle variant='body2'>{notification.descricao}</MenuItemSubtitle>
+
                                     <div className='flex items-center gap-2'>
                                         <Typography variant='caption' sx={{ color: 'text.disabled' }}>
                                             {notification.dataFormatada}
@@ -210,6 +261,7 @@ const NotificationDropdown = props => {
                                     control={<Checkbox name='color-secondary' color='primary' size='small' onChange={e => handleChangeNotification(notification, e.target.checked)} />}
                                 />
                             </Box>
+
                         </MenuItem>
                     ))}
                 </ScrollWrapper>

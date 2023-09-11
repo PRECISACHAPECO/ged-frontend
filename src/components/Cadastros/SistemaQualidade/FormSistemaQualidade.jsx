@@ -136,7 +136,7 @@ const FormSistemaQualidade = ({ id }) => {
                                     md={1}
                                     title='Ativo'
                                     name='fields.status'
-                                    value={data?.fields.status}
+                                    value={data?.fields?.status}
                                     typePage={type}
                                     register={register}
                                 />

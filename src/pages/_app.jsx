@@ -111,11 +111,11 @@ const App = props => {
             <RouteProvider>
                 <ParametersProvider>
                     <AuthProvider>
-                        <NotificationProvider>
-                            <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
-                                <SettingsConsumer>
-                                    {({ settings }) => {
-                                        return (
+                        <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+                            <SettingsConsumer>
+                                {({ settings }) => {
+                                    return (
+                                        <NotificationProvider>
                                             <ThemeComponent settings={settings}>
                                                 <WindowWrapper>
                                                     <Guard authGuard={authGuard} guestGuard={guestGuard}>
@@ -132,11 +132,11 @@ const App = props => {
                                                     />
                                                 </ReactHotToast>
                                             </ThemeComponent>
-                                        )
-                                    }}
-                                </SettingsConsumer>
-                            </SettingsProvider>
-                        </NotificationProvider>
+                                        </NotificationProvider>
+                                    )
+                                }}
+                            </SettingsConsumer>
+                        </SettingsProvider>
                     </AuthProvider>
                 </ParametersProvider>
             </RouteProvider>

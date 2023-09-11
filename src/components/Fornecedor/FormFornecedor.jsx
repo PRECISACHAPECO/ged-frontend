@@ -395,7 +395,7 @@ const FormFornecedor = ({ id }) => {
                 descricao: `A Fábrica ${loggedUnity.nomeFantasia} reabriu o formulário #${id} para preenchimento.`,
                 url: '/formularios/fornecedor/',
                 urlID: id,
-                tipoNotificacaoID: 3, //? fornecedor
+                tipoNotificacaoID: 3, //? fornecedorF
                 usuarioGeradorID: user.usuarioID,
                 usuarioID: 0, //? Todos da unidade
                 unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)

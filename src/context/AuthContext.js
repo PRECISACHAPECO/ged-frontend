@@ -90,7 +90,7 @@ const AuthProvider = ({ children }) => {
                 localStorage.removeItem('loggedUnity')
                 localStorage.removeItem('routes')
                 localStorage.removeItem('menu')
-                window.localStorage.removeItem('dataLength')
+                localStorage.removeItem('dataLength')
                 setUser(null)
                 setLoading(false)
                 if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
@@ -107,6 +107,7 @@ const AuthProvider = ({ children }) => {
 
     //* Login da fabrica (CPF)
     const handleLogin = (params, errorCallback) => {
+        window.localStorage.removeItem('dataLength')
         api.post('/login', params).then(async response => {
             setUnitsUser(response.data.unidades)
             localStorage.setItem('userUnits', JSON.stringify(response.data.unidades))
