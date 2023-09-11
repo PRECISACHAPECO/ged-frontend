@@ -7,6 +7,7 @@ const CheckLabel = ({ xs, md, title, index, name, typePage, value, disabled, reg
                 <FormControlLabel
                     control={<Checkbox name={name} {...register(name)} defaultChecked={value} disabled={disabled} />}
                     label={title}
+                    size='small'
                     sx={{
                         '&:hover': {
                             '& .MuiFormControlLabel-label': {

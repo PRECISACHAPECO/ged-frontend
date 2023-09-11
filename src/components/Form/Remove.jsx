@@ -13,6 +13,7 @@ const Remove = ({ xs, md, title, removeItem, item, pending, index, textSuccess, 
                 <Tooltip title={pending == 1 ? textError : textSuccess}>
                     <IconButton
                         color='error'
+                        size='small'
                         onClick={() => {
                             pending != 1 ? removeItem(item, index) : null
                         }}

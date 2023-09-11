@@ -10,7 +10,7 @@ const input = theme => {
     MuiInput: {
       styleOverrides: {
         root: {
-          lineHeight: '1.5rem',
+          lineHeight: '.2rem',
           '&:before': {
             borderBottom: `1px solid rgba(${theme.palette.customColors.main}, 0.22)`
           },

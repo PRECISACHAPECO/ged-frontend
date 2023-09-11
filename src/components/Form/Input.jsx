@@ -1,7 +1,6 @@
 import { Controller } from 'react-hook-form'
 import { FormControl, Grid, TextField } from '@mui/material'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask, cpfMask, rgMask } from 'src/configs/masks'
-import { validationCNPJ } from 'src/configs/validations'
 
 const Input = ({
     xs,
@@ -38,6 +37,7 @@ const Input = ({
                             placeholder={title}
                             rows={rows}
                             type={type ?? 'text'}
+                            size='small'
                             disabled={disabled}
                             aria-describedby='validation-schema-nome'
                             error={errors}

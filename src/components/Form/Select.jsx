@@ -32,6 +32,7 @@ const Select = ({
                             {...field}
                             multiple={multiple}
                             limitTags={limitTags}
+                            size='small'
                             options={options}
                             getOptionLabel={option => (option.cnpj ? `${option.cnpj} - ${option.nome}` : option.nome)}
                             value={

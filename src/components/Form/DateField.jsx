@@ -34,6 +34,7 @@ const DateField = ({
                     render={({ field }) => (
                         <TextField
                             type='date'
+                            size='small'
                             label={title}
                             disabled={disabled ? true : false}
                             defaultValue={value ? formatDate(value) : ''}
