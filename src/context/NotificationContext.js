@@ -4,7 +4,7 @@ import { api } from 'src/configs/api';
 const NotificationContext = createContext({});
 
 const NotificationProvider = ({ children }) => {
-    const [notifications, setNotifications] = useState([]);
+
 
     const createNewNotification = async (data) => {
         if (!data) return;
@@ -14,11 +14,7 @@ const NotificationProvider = ({ children }) => {
             console.log(err);
         }
     }
-    const values = {
-        createNewNotification,
-        notifications,
-        setNotifications,
-    };
+    const values = { createNewNotification }
 
     return (
         <NotificationContext.Provider value={values}>

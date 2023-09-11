@@ -90,7 +90,7 @@ const AuthProvider = ({ children }) => {
                 localStorage.removeItem('loggedUnity')
                 localStorage.removeItem('routes')
                 localStorage.removeItem('menu')
-                localStorage.removeItem('dataLength')
+                localStorage.removeItem('unreadNotifications')
                 setUser(null)
                 setLoading(false)
                 if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
@@ -107,7 +107,7 @@ const AuthProvider = ({ children }) => {
 
     //* Login da fabrica (CPF)
     const handleLogin = (params, errorCallback) => {
-        window.localStorage.removeItem('dataLength')
+        window.localStorage.removeItem('unreadNotifications')
         api.post('/login', params).then(async response => {
             setUnitsUser(response.data.unidades)
             localStorage.setItem('userUnits', JSON.stringify(response.data.unidades))
@@ -188,7 +188,7 @@ const AuthProvider = ({ children }) => {
         window.localStorage.removeItem('loggedUnity')
         window.localStorage.removeItem('routes')
         window.localStorage.removeItem('menu')
-        window.localStorage.removeItem('dataLength')
+        window.localStorage.removeItem('unreadNotifications')
         window.localStorage.removeItem(authConfig.storageTokenKeyName)
         router.push(user?.papelID === 2 ? '/fornecedor' : '/login') //? /login ou /login-fornecedor
     }

@@ -75,12 +75,12 @@ const ScrollWrapper = ({ children, hidden }) => {
 }
 
 const NotificationDropdown = props => {
-    const { settings, notifications, open } = props
+    const [notifications, setNotifications] = useState([]);
+    const { settings, open } = props
     const [anchorEl, setAnchorEl] = useState(null)
     const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
     const [notificationsRead, setNotificationsRead] = useState([])
     const { setId } = useContext(RouteContext)
-    const { setNotifications } = useContext(NotificationContext)
     const { user, loggedUnity } = useContext(AuthContext)
     const router = Router
 
@@ -115,7 +115,7 @@ const NotificationDropdown = props => {
 
     // Fecha modal de notificações e chama funções
     const handleDropdownClose = async (notification) => {
-        // localStorage.setItem('dataLength', notification.length);
+        // localStorage.setItem('unreadNotifications', notification.length);
         setAnchorEl(null)
         const data = [notification.notificacaoID]
         // Verifica se notifição clicada tem url
@@ -140,13 +140,13 @@ const NotificationDropdown = props => {
 
     // Verifica se o length do localStorage é igual do response.data se diferente ou maior gera o som de notificação
     const verifyNewNotification = (data) => {
-        const dataLength = localStorage.getItem('dataLength');
-        if (dataLength != data.length && data.length > dataLength) {
+        const unreadNotifications = localStorage.getItem('unreadNotifications');
+        if (unreadNotifications != data.length && data.length > unreadNotifications) {
             playNotificationSound()
         }
         setTimeout(() => {
             setNotifications(data)
-            localStorage.setItem('dataLength', data.length);
+            localStorage.setItem('unreadNotifications', data.length);
         }, 2500);
     }
 
