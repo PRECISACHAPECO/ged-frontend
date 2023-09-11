@@ -250,7 +250,10 @@ const FornecedorPage = ({ units }) => {
                                 <Logo />
                             </Box>
                             <Box sx={{ mb: 6 }}>
-                                <TypographyStyled variant='h4'>{`Bem-vindo Fornecedor`}</TypographyStyled>
+                                <TypographyStyled
+                                    variant='h6'
+                                    sx={{ fontWeight: 600 }}
+                                >{`Bem-vindo Fornecedor`}</TypographyStyled>
                                 <Typography variant='body2'>Digite seu CNPJ e senha para começar</Typography>
                             </Box>
 
@@ -264,6 +267,7 @@ const FornecedorPage = ({ units }) => {
                                             <TextField
                                                 autoFocus
                                                 label='CNPJ'
+                                                size='small'
                                                 value={cnpjMask(value ?? '')}
                                                 onBlur={onBlur}
                                                 onChange={e => {
@@ -287,46 +291,45 @@ const FornecedorPage = ({ units }) => {
                                     )}
                                 </FormControl>
                                 <FormControl fullWidth>
-                                    <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>
-                                        Senha
-                                    </InputLabel>
                                     <Controller
                                         name='password'
                                         control={control}
                                         rules={{ required: true }}
-                                        render={({ field: { value, onChange, onBlur } }) => (
-                                            <OutlinedInput
-                                                value={value}
-                                                onBlur={onBlur}
+                                        render={({ field }) => (
+                                            <TextField
+                                                {...field}
                                                 label='Senha'
-                                                onChange={onChange}
+                                                variant='outlined'
+                                                size='small'
                                                 id='auth-login-v2-password'
                                                 error={Boolean(errors.password)}
                                                 type={showPassword ? 'text' : 'password'}
-                                                endAdornment={
-                                                    <InputAdornment position='end'>
-                                                        <IconButton
-                                                            edge='end'
-                                                            onMouseDown={e => e.preventDefault()}
-                                                            onClick={() => setShowPassword(!showPassword)}
-                                                        >
-                                                            <Icon
-                                                                icon={
-                                                                    showPassword
-                                                                        ? 'mdi:eye-outline'
-                                                                        : 'mdi:eye-off-outline'
-                                                                }
-                                                                fontSize={20}
-                                                            />
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
+                                                InputProps={{
+                                                    endAdornment: (
+                                                        <InputAdornment position='end'>
+                                                            <IconButton
+                                                                edge='end'
+                                                                onMouseDown={e => e.preventDefault()}
+                                                                onClick={() => setShowPassword(!showPassword)}
+                                                            >
+                                                                <Icon
+                                                                    icon={
+                                                                        showPassword
+                                                                            ? 'mdi:eye-outline'
+                                                                            : 'mdi:eye-off-outline'
+                                                                    }
+                                                                    fontSize={20}
+                                                                />
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    )
+                                                }}
                                             />
                                         )}
                                     />
                                     {errors.password && (
                                         <FormHelperText sx={{ color: 'error.main' }} id=''>
-                                            {errors.password.message}
+                                            Campo obrigatório
                                         </FormHelperText>
                                     )}
                                 </FormControl>

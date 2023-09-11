@@ -256,7 +256,10 @@ const LoginPage = ({ units }) => {
                                 <Logo />
                             </Box>
                             <Box sx={{ mb: 6 }}>
-                                <TypographyStyled variant='h5'>{`Bem-vindo ao ${themeConfig.templateName}! 👋🏻`}</TypographyStyled>
+                                <TypographyStyled
+                                    variant='h6'
+                                    sx={{ fontWeight: 600 }}
+                                >{`Bem-vindo ao ${themeConfig.templateName}! 👋🏻`}</TypographyStyled>
                                 <Typography variant='body2'>Digite seu CPF e senha para começar</Typography>
                             </Box>
 
@@ -272,6 +275,7 @@ const LoginPage = ({ units }) => {
                                                 label='CPF'
                                                 value={cpfMask(value ?? '')}
                                                 onBlur={onBlur}
+                                                size='small'
                                                 onChange={onChange}
                                                 error={Boolean(errors.cpf)}
                                                 placeholder='000.000.000-00'
@@ -290,46 +294,45 @@ const LoginPage = ({ units }) => {
                                     )}
                                 </FormControl>
                                 <FormControl fullWidth>
-                                    <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>
-                                        Senha
-                                    </InputLabel>
                                     <Controller
                                         name='password'
                                         control={control}
                                         rules={{ required: true }}
-                                        render={({ field: { value, onChange, onBlur } }) => (
-                                            <OutlinedInput
-                                                value={value}
-                                                onBlur={onBlur}
+                                        render={({ field }) => (
+                                            <TextField
+                                                {...field}
                                                 label='Senha'
-                                                onChange={onChange}
+                                                variant='outlined'
+                                                size='small'
                                                 id='auth-login-v2-password'
                                                 error={Boolean(errors.password)}
                                                 type={showPassword ? 'text' : 'password'}
-                                                endAdornment={
-                                                    <InputAdornment position='end'>
-                                                        <IconButton
-                                                            edge='end'
-                                                            onMouseDown={e => e.preventDefault()}
-                                                            onClick={() => setShowPassword(!showPassword)}
-                                                        >
-                                                            <Icon
-                                                                icon={
-                                                                    showPassword
-                                                                        ? 'mdi:eye-outline'
-                                                                        : 'mdi:eye-off-outline'
-                                                                }
-                                                                fontSize={20}
-                                                            />
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
+                                                InputProps={{
+                                                    endAdornment: (
+                                                        <InputAdornment position='end'>
+                                                            <IconButton
+                                                                edge='end'
+                                                                onMouseDown={e => e.preventDefault()}
+                                                                onClick={() => setShowPassword(!showPassword)}
+                                                            >
+                                                                <Icon
+                                                                    icon={
+                                                                        showPassword
+                                                                            ? 'mdi:eye-outline'
+                                                                            : 'mdi:eye-off-outline'
+                                                                    }
+                                                                    fontSize={20}
+                                                                />
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    )
+                                                }}
                                             />
                                         )}
                                     />
                                     {errors.password && (
                                         <FormHelperText sx={{ color: 'error.main' }} id=''>
-                                            {errors.password.message}
+                                            Campo obrigatório
                                         </FormHelperText>
                                     )}
                                 </FormControl>
