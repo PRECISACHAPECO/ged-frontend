@@ -24,6 +24,7 @@ import toast from 'react-hot-toast'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
+import FormNotification from './Dialog/FormNotification'
 
 const FormFornecedor = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -32,6 +33,7 @@ const FormFornecedor = ({ id }) => {
     const [isLoadingSave, setLoadingSave] = useState(false) //? dependencia do useEffect pra atualizar a página após salvar
     // const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [loadingFile, setLoadingFile] = useState(false) //? loading de carregamento do arquivo
+    const [openOptions, setOpenOptions] = useState(false) //? Abre as opções do botão 3 pontinho do sidebar
 
     const [fieldsState, setFields] = useState([])
     const [data, setData] = useState(null)
@@ -154,17 +156,39 @@ const FormFornecedor = ({ id }) => {
         }
     }
 
+    const sendNotification = values => {
+        console.log('vai enviart emailllllllkl', values)
+    }
+
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
-    const dataReports = [
+    const actionsData = [
         {
             id: 1,
             name: 'Formulário do fornecedor',
             component: <ReportFornecedor params={{ id: id }} />,
             route: '/relatorio/fornecedor/dadosFornecedor',
             papelID: user.papelID,
+            modal: false,
+            type: 'report',
             identification: '01',
             params: {
                 fornecedorID: id
+            }
+        },
+        {
+            id: 2,
+            name: 'Gerar notificação',
+            component: <FormNotification />,
+            route: null,
+            type: null,
+            modal: true,
+            action: sendNotification,
+            icon: 'mdi:bell-outline',
+            identification: null,
+            params: {
+                fornecedorID: id,
+                usuarioID: user.usuarioID,
+                unidadeID: loggedUnity.unidadeID
             }
         }
     ]
@@ -615,7 +639,7 @@ const FormFornecedor = ({ id }) => {
                             disabledSubmit={blocks.length === 0 ? true : false}
                             disabledPrint={blocks.length === 0 ? true : false}
                             btnPrint
-                            dataReports={dataReports}
+                            actionsData={actionsData}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             handleSend={handleSendForm}
                             iconConclusion={info.status >= 40 ? 'mdi:check-bold' : 'carbon:send-filled'}

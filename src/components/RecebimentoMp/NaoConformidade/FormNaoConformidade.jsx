@@ -139,7 +139,7 @@ const FormNaoConformidade = ({ id }) => {
     }
 
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
-    const dataReports = [
+    const actionsData = [
         {
             id: 1,
             name: 'recebimentoMP',
@@ -388,7 +388,7 @@ const FormNaoConformidade = ({ id }) => {
                             btnSend={type == 'edit' ? true : false}
                             btnPrint
                             generateReport={generateReport}
-                            dataReports={dataReports}
+                            actionsData={actionsData}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             // handleSend={handleConclusionForm}
                             handleSend={() => setOpenSendModal(true)}
