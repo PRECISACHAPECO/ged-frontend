@@ -1,4 +1,4 @@
-import FormNotificacao from 'src/components/Configuracoes/Notificacao/FormNotificacao'
+import FormNotificacao from 'src/components/Configuracoes/Notificacao'
 
 const Notificacao = () => {
     return <FormNotificacao />

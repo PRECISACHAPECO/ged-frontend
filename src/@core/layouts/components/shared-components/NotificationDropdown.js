@@ -206,7 +206,7 @@ const NotificationDropdown = props => {
                     sx={{ cursor: 'default', userSelect: 'auto', backgroundColor: 'transparent !important' }}
                 >
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                        <Typography sx={{ cursor: 'text', fontWeight: 600 }}>Notificações</Typography>
+                        <Typography sx={{ cursor: 'text', fontWeight: 600 }}>Notificaçõesss</Typography>
                         <CustomChip
                             skin='light'
                             size='small'
