@@ -5,7 +5,7 @@ import { ParametersContext } from 'src/context/ParametersContext'
 import { useContext } from 'react'
 import LayoutReport from 'src/components/Reports/Layout'
 
-export default function MenuReports({ dataReports, open, anchorEl, handleClick, handleClose }) {
+export default function MenuReports({ actionsData, open, anchorEl, handleClick, handleClose }) {
     return (
         <Menu
             id='fade-menu'
@@ -17,7 +17,7 @@ export default function MenuReports({ dataReports, open, anchorEl, handleClick, 
             onClose={handleClose}
             TransitionComponent={Fade}
         >
-            {dataReports.map(item => (
+            {actionsData.map(item => (
                 <MenuItem
                     key={item.id}
                     onClick={() => {

@@ -1,19 +1,25 @@
-import { IconButton, Menu, MenuItem } from '@mui/material'
+import { Button, IconButton, Menu, MenuItem } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import LayoutReport from 'src/components/Reports/Layout'
+import DialogActs from '../Dialogs/DialogActs'
+import { useState } from 'react'
 
-const OptionsDots = ({ anchorEl, open, handleClose, handleClick, dataReports }) => {
+const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData, openModal, setOpenModal }) => {
+    const [item, setItem] = useState(null)
+
     return (
         <div className='relative'>
-            <IconButton
-                id='basic-button'
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup='true'
-                aria-expanded={open ? 'true' : undefined}
+            <Button
+                type='button'
                 onClick={handleClick}
+                variant='outlined'
+                color='primary'
+                size='medium'
+                sx={{ display: 'flex', gap: 2 }}
             >
-                <Icon icon='tabler:dots' fontSize={20} />
-            </IconButton>
+                <Icon icon='svg-spinners:3-dots-move' />
+                <span className='hidden sm:block'>Ações</span>
+            </Button>
 
             <Menu
                 id='basic-menu'
@@ -40,20 +46,48 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, dataReports }) 
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                {dataReports.map(item => (
+                {actionsData.map(item => (
                     <MenuItem
                         key={item.id}
                         onClick={() => {
                             handleClose()
                         }}
-                        style={{ textAlign: 'left' }}
+                        style={{ textAlign: 'left', display: 'flex', alignItems: 'center', gap: '4px' }}
                     >
-                        <span>{item.identification}</span>
-                        <span style={{ padding: '0 5px' }}>-</span>
-                        <LayoutReport title={item.name} content={item.component} />
+                        {item.identification ? (
+                            <span style={{ padding: '0 7px' }}>
+                                <span>{item.identification}</span> -
+                            </span>
+                        ) : (
+                            <Icon icon={item.icon} />
+                        )}
+
+                        {item.type == 'report' ? (
+                            <LayoutReport title={item.name} content={item.component} />
+                        ) : item.modal ? (
+                            <>
+                                <p
+                                    onClick={() => {
+                                        setOpenModal(true)
+                                        setItem(item)
+                                    }}
+                                >
+                                    {item.name}
+                                </p>
+                            </>
+                        ) : (
+                            <h1>...</h1>
+                        )}
                     </MenuItem>
                 ))}
             </Menu>
+
+            {/* Modal */}
+            {item && (
+                <DialogActs title={item.name} setOpenModal={setOpenModal} open={openModal}>
+                    {item.component}
+                </DialogActs>
+            )}
         </div>
     )
 }

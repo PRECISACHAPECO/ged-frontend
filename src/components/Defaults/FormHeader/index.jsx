@@ -29,7 +29,7 @@ const FormHeader = ({
     btnPrint,
     disabledPrint,
     disabled,
-    dataReports,
+    actionsData,
     type,
     status
 }) => {
@@ -38,6 +38,7 @@ const FormHeader = ({
     const { setId } = useContext(RouteContext)
     const [isVisible, setIsVisible] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
+    const [openModal, setOpenModal] = useState(false)
     const matches = useMediaQuery('(min-width:640px)')
 
     const open = Boolean(anchorEl)
@@ -78,23 +79,6 @@ const FormHeader = ({
         },
         {
             id: 2,
-            title: 'Imprimir',
-            color: 'default',
-            size: 'large',
-            type: 'button',
-            variant: 'outlined',
-            disabled: disabled || disabledPrint,
-            icon: (
-                <LayoutReport
-                    titleButton={<Icon icon='material-symbols:print' />}
-                    title='Imprimir'
-                    content={dataReports?.[0].component}
-                />
-            ),
-            function: handleClick
-        },
-        {
-            id: 3,
             title: 'Voltar ao topo',
             color: 'default',
             size: 'large',
@@ -105,7 +89,7 @@ const FormHeader = ({
             function: backToTop
         },
         {
-            id: 4,
+            id: 3,
             title: 'Voltar para a página anterior',
             color: 'default',
             size: 'large',
@@ -147,7 +131,8 @@ const FormHeader = ({
                         handleBtnStatus={handleBtnStatus}
                     />
                     {/* // 3 pontinhos ao clicar abre opções de seleção */}
-                    <div className='flex items-center gap-4 '>
+                    <div className='flex items-center gap-2'>
+                        {/*Div direita */}
                         <OptionsDots
                             anchorEl={anchorEl}
                             open={open}
@@ -156,11 +141,11 @@ const FormHeader = ({
                             disabled={disabled}
                             disabledPrint={disabledPrint}
                             btnPrint={btnPrint}
-                            dataReports={dataReports}
+                            actionsData={actionsData}
                             matches={matches}
+                            openModal={openModal}
+                            setOpenModal={setOpenModal}
                         />
-
-                        {/*Div direita */}
                         <ButtonsFixedRight
                             btnSave={btnSave}
                             btnSend={btnSend}

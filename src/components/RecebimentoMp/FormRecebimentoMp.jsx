@@ -165,7 +165,7 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
-    const dataReports = [
+    const actionsData = [
         {
             id: 1,
             name: 'Dados do Recebimento de MP',
@@ -531,7 +531,7 @@ const FormRecebimentoMp = ({ id }) => {
                             btnSend={type == 'edit' && info?.status < 50 ? true : false}
                             btnPrint={type == 'edit' ? true : false}
                             generateReport={generateReport}
-                            dataReports={dataReports}
+                            actionsData={actionsData}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             handleSend={handleSendForm}
                             iconConclusion={'mdi:check-bold'}

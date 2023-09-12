@@ -4,13 +4,12 @@ import GenerateReport from 'src/components/Reports'
 import { styles } from './Style'
 import getHeader from './getHeader'
 
-const Layout = ({ title, titleButton, unidadeID, content }) => {
+const Layout = ({ title, unidadeID, content }) => {
     const data = getHeader(unidadeID)
 
     return (
         <>
             <GenerateReport
-                // title={titleButton}
                 title={title}
                 component={
                     <Document>
