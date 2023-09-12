@@ -5,32 +5,30 @@ import { ParametersContext } from 'src/context/ParametersContext'
 import { useContext } from 'react'
 import LayoutReport from 'src/components/Reports/Layout'
 
-export default function MenuReports({ disabled, dataReports, open, anchorEl, handleClick, handleClose }) {
+export default function MenuReports({ dataReports, open, anchorEl, handleClick, handleClose }) {
     return (
-        <div>
-            <Menu
-                id='fade-menu'
-                MenuListProps={{
-                    'aria-labelledby': 'fade-button'
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                TransitionComponent={Fade}
-            >
-                {dataReports.map(item => (
-                    <MenuItem
-                        key={item.id}
-                        onClick={() => {
-                            handleClose()
-                        }}
-                    >
-                        <span>{item.identification}</span>
-                        <span style={{ padding: '0 5px' }}>-</span>
-                        <LayoutReport title={item.name} content={item.component} />
-                    </MenuItem>
-                ))}
-            </Menu>
-        </div>
+        <Menu
+            id='fade-menu'
+            MenuListProps={{
+                'aria-labelledby': 'fade-button'
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            TransitionComponent={Fade}
+        >
+            {dataReports.map(item => (
+                <MenuItem
+                    key={item.id}
+                    onClick={() => {
+                        handleClose()
+                    }}
+                >
+                    <span>{item.identification}</span>
+                    <span style={{ padding: '0 5px' }}>-</span>
+                    <LayoutReport title={item.name} content={item.component} />
+                </MenuItem>
+            ))}
+        </Menu>
     )
 }

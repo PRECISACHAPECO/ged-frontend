@@ -1,21 +1,10 @@
-import { IconButton, Menu, MenuItem, Box, Button } from '@mui/material'
+import { IconButton, Menu, MenuItem } from '@mui/material'
 import Icon from 'src/@core/components/icon'
-import MenuReports from '../MenuReports'
 import LayoutReport from 'src/components/Reports/Layout'
 
-const OptionsDots = ({
-    anchorEl,
-    open,
-    handleClose,
-    handleClick,
-    disabled,
-    disabledPrint,
-    btnPrint,
-    dataReports,
-    matches
-}) => {
+const OptionsDots = ({ anchorEl, open, handleClose, handleClick, dataReports }) => {
     return (
-        <div>
+        <div className='relative'>
             <IconButton
                 id='basic-button'
                 aria-controls={open ? 'basic-menu' : undefined}
@@ -25,6 +14,7 @@ const OptionsDots = ({
             >
                 <Icon icon='tabler:dots' fontSize={20} />
             </IconButton>
+
             <Menu
                 id='basic-menu'
                 anchorEl={anchorEl}
@@ -33,47 +23,36 @@ const OptionsDots = ({
                 MenuListProps={{
                     'aria-labelledby': 'basic-button'
                 }}
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        overflow: 'visible',
+                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                        mt: 1.5,
+                        '& .MuiAvatar-root': {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1
+                        }
+                    }
+                }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                {/* Imprimir com 1 opção */}
-                {btnPrint && dataReports.length === 1 && matches && (
-                    <MenuItem onClick={handleClose}>
-                        <div className='flex items-center gap-1'>
-                            <Icon icon='material-symbols:print' />
-                            <LayoutReport
-                                titleButton={dataReports[0].titleButton}
-                                title={dataReports[0].title}
-                                content={dataReports[0].component}
-                            />
-                        </div>
+                {dataReports.map(item => (
+                    <MenuItem
+                        key={item.id}
+                        onClick={() => {
+                            handleClose()
+                        }}
+                        style={{ textAlign: 'left' }}
+                    >
+                        <span>{item.identification}</span>
+                        <span style={{ padding: '0 5px' }}>-</span>
+                        <LayoutReport title={item.name} content={item.component} />
                     </MenuItem>
-                )}
-                {/* Imprimir com +1 opção (dropdown) */}
-                {btnPrint && dataReports.length > 1 && matches && (
-                    <MenuItem onClick={handleClose}>
-                        <Box>
-                            <Button
-                                id='fade-button'
-                                onClick={handleClick}
-                                color='primary'
-                                disabled={disabled || disabledPrint}
-                                variant='outlined'
-                                size='medium'
-                                type='button'
-                                sx={{ display: 'flex', gap: 2 }}
-                            >
-                                <Icon icon='material-symbols:print' />
-                                <span className='hidden sm:block'>Imprimir</span>
-                            </Button>
-                            <MenuReports
-                                dataReports={dataReports}
-                                handleClick={handleClick}
-                                handleClose={handleClose}
-                                open={open}
-                                anchorEl={anchorEl}
-                            />
-                        </Box>
-                    </MenuItem>
-                )}
+                ))}
             </Menu>
         </div>
     )

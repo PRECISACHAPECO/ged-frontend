@@ -168,7 +168,7 @@ const FormRecebimentoMp = ({ id }) => {
     const dataReports = [
         {
             id: 1,
-            name: 'Formulário do Recebimento de MP',
+            name: 'Dados do Recebimento de MP',
             component: (
                 <ReportRecebimentoMP
                     params={{
@@ -180,6 +180,24 @@ const FormRecebimentoMp = ({ id }) => {
             route: '/relatorio/recebimentoMp/dadosRecebimentoMp',
             papelID: user.papelID,
             identification: '01',
+            params: {
+                fornecedorID: id
+            }
+        },
+        {
+            id: 2,
+            name: 'Declaração de prolificiência',
+            component: (
+                <ReportRecebimentoMP
+                    params={{
+                        id: id,
+                        unidadeID: 1 //loggedUnity.unidadeID
+                    }}
+                />
+            ),
+            route: '/relatorio/recebimentoMp/dadosRecebimentoMp',
+            papelID: user.papelID,
+            identification: '02',
             params: {
                 fornecedorID: id
             }

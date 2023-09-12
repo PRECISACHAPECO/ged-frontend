@@ -10,7 +10,8 @@ const Layout = ({ title, titleButton, unidadeID, content }) => {
     return (
         <>
             <GenerateReport
-                title={titleButton}
+                // title={titleButton}
+                title={title}
                 component={
                     <Document>
                         <Page size='A4' style={styles.page}>
