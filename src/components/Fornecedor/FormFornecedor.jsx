@@ -32,6 +32,7 @@ const FormFornecedor = ({ id }) => {
     const [isLoadingSave, setLoadingSave] = useState(false) //? dependencia do useEffect pra atualizar a página após salvar
     // const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [loadingFile, setLoadingFile] = useState(false) //? loading de carregamento do arquivo
+    const [openOptions, setOpenOptions] = useState(false) //? Abre as opções do botão 3 pontinho do sidebar
 
     const [fieldsState, setFields] = useState([])
     const [data, setData] = useState(null)

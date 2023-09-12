@@ -114,6 +114,7 @@ const EsqueceuSenha = () => {
                                 <TextField
                                     label='CPF'
                                     placeholder='CPF'
+                                    size='small'
                                     aria-describedby='validation-schema-nome'
                                     name='cpf'
                                     {...register(`cpf`, {
