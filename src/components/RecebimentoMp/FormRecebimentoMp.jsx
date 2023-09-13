@@ -532,6 +532,7 @@ const FormRecebimentoMp = ({ id }) => {
                             btnPrint={type == 'edit' ? true : false}
                             generateReport={generateReport}
                             actionsData={actionsData}
+                            actions
                             handleSubmit={() => handleSubmit(onSubmit)}
                             handleSend={handleSendForm}
                             iconConclusion={'mdi:check-bold'}

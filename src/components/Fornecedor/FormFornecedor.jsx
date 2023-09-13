@@ -170,13 +170,14 @@ const FormFornecedor = ({ id }) => {
                 tipoNotificacaoID: 3, //? fornecedor
                 usuarioGeradorID: user.usuarioID,
                 usuarioID: 0, //? Todos da unidade
-                // unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
+                unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
                 unidadeID: 1,
                 papelID: 2, //? Notificação pro fornecedor
                 //? Email / Alerta
                 email: values.email,
                 alerta: values.alerta
             }
+            console.log('🚀 ~ data dat notificação:', data)
             createNewNotification(data)
 
             //* Envia e-mail
@@ -698,6 +699,7 @@ const FormFornecedor = ({ id }) => {
                             actionsData={actionsData}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             handleSend={handleSendForm}
+                            actions
                             iconConclusion={info.status >= 40 ? 'mdi:check-bold' : 'carbon:send-filled'}
                             titleConclusion={info.status >= 40 ? 'Aprovar Fornecedor' : 'Concluir Formulário'}
                             title='Fornecedor'

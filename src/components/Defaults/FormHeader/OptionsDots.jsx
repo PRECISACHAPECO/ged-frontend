@@ -18,7 +18,7 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                 size='medium'
                 sx={{ display: 'flex', gap: 2 }}
             >
-                <Icon icon='svg-spinners:3-dots-move' />
+                <Icon icon='pepicons-pencil:dots-x' />
                 <span className='hidden sm:block'>Ações</span>
             </Button>
 

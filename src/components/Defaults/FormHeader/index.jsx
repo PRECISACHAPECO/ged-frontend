@@ -25,10 +25,12 @@ const FormHeader = ({
     titleConclusion,
     disabledSend,
     handleBtnStatus,
+    onclickDelete,
     btnDelete,
     btnPrint,
     disabledPrint,
     disabled,
+    actions,
     actionsData,
     type,
     status
@@ -129,23 +131,26 @@ const FormHeader = ({
                         btnDelete={btnDelete}
                         btnStatus={btnStatus}
                         handleBtnStatus={handleBtnStatus}
+                        onclickDelete={onclickDelete}
                         setId={setId}
                         router={router}
                     />
                     {/* // 3 pontinhos ao clicar abre opções de seleção */}
                     <div className='flex items-center gap-2'>
                         {/*Div direita */}
-                        <OptionsDots
-                            anchorEl={anchorEl}
-                            open={open}
-                            handleClose={handleClose}
-                            handleClick={handleClick}
-                            disabled={disabled}
-                            disabledPrint={disabledPrint}
-                            btnPrint={btnPrint}
-                            actionsData={actionsData}
-                            matches={matches}
-                        />
+                        {actions && (
+                            <OptionsDots
+                                anchorEl={anchorEl}
+                                open={open}
+                                handleClose={handleClose}
+                                handleClick={handleClick}
+                                disabled={disabled}
+                                disabledPrint={disabledPrint}
+                                btnPrint={btnPrint}
+                                actionsData={actionsData}
+                                matches={matches}
+                            />
+                        )}
                         <ButtonsFixedRight
                             btnSave={btnSave}
                             btnSend={btnSend}
