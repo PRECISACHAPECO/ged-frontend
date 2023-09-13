@@ -47,7 +47,7 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                {actionsData.map(item => (
+                {actionsData?.map(item => (
                     <MenuItem
                         key={item.id}
                         onClick={() => {

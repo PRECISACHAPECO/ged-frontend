@@ -170,7 +170,8 @@ const FormFornecedor = ({ id }) => {
                 tipoNotificacaoID: 3, //? fornecedor
                 usuarioGeradorID: user.usuarioID,
                 usuarioID: 0, //? Todos da unidade
-                unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
+                // unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
+                unidadeID: 1,
                 papelID: 2, //? Notificação pro fornecedor
                 //? Email / Alerta
                 email: values.email,
