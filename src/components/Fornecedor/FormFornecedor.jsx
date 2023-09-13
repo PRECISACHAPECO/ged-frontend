@@ -157,27 +157,28 @@ const FormFornecedor = ({ id }) => {
     }
 
     const sendNotification = async values => {
-        console.log('vai enviart emailllllllkl', values)
+        console.log('===> ', values)
         try {
-            //* Alerta
-            if (values.alerta) {
-                const data = {
-                    titulo: values.assunto,
-                    descricao: values.descricao,
-                    url: '/formularios/fornecedor/',
-                    urlID: id,
-                    tipoNotificacaoID: 3, //? fornecedor
-                    usuarioGeradorID: user.usuarioID,
-                    usuarioID: 0, //? Todos da unidade
-                    unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
-                    papelID: 2 //? Notificação pro fornecedor
-                }
+            if (!values.email && !values.alerta) return toast.error('Selecione ao menos um tipo de notificação!')
 
-                createNewNotification(data)
-                toast.success('Alerta criado com sucesso!')
+            //* Gera notificação (podendo ser alerta e/ou email)
+            const data = {
+                titulo: values.assunto,
+                descricao: values.descricao,
+                url: '/formularios/fornecedor/',
+                urlID: id,
+                tipoNotificacaoID: 3, //? fornecedor
+                usuarioGeradorID: user.usuarioID,
+                usuarioID: 0, //? Todos da unidade
+                unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
+                papelID: 2, //? Notificação pro fornecedor
+                //? Email / Alerta
+                email: values.email,
+                alerta: values.alerta
             }
+            createNewNotification(data)
 
-            //* E-mail
+            //* Envia e-mail
             if (values.email) {
                 const data = {
                     values: values,
@@ -188,10 +189,20 @@ const FormFornecedor = ({ id }) => {
                         unidadeID: loggedUnity.unidadeID
                     }
                 }
-
                 const response = await api.post(`${staticUrl}/sendNotification`, data)
-                toast.success('E-mail enviado com sucesso!')
             }
+
+            //* Envia toast de sucesso
+            const toastMessage =
+                values.alerta && values.email
+                    ? 'E-mail e alerta enviados com sucesso!'
+                    : values.alerta && !values.email
+                    ? 'Alerta criado com sucesso!'
+                    : !values.alerta && values.email
+                    ? 'E-mail enviado com sucesso!'
+                    : null
+
+            toast.success(toastMessage)
         } catch (error) {
             console.log(error)
         }
