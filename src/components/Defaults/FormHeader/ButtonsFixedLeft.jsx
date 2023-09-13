@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 
-const ButtonsFixedLeft = ({ routes, currentUrl, btnCancel, btnDelete, btnStatus, handleBtnStatus }) => {
+const ButtonsFixedLeft = ({ routes, currentUrl, btnCancel, btnDelete, btnStatus, handleBtnStatus, setId, router }) => {
     return (
         <div className='flex gap-2'>
             {btnCancel && (

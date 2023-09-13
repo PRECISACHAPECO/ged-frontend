@@ -129,6 +129,8 @@ const FormHeader = ({
                         btnDelete={btnDelete}
                         btnStatus={btnStatus}
                         handleBtnStatus={handleBtnStatus}
+                        setId={setId}
+                        router={router}
                     />
                     {/* // 3 pontinhos ao clicar abre opções de seleção */}
                     <div className='flex items-center gap-2'>
