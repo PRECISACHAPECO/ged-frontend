@@ -1,33 +1,54 @@
-import { Button, DialogActions, DialogContent, TextField } from '@mui/material'
-import { useForm } from 'react-hook-form'
+import { FormGroup } from '@mui/material'
+import { useState } from 'react'
 import Input from 'src/components/Form/Input'
+import SwitchLabel from 'src/components/Form/SwitchLabel'
 
-const FormNotification = () => {
-    const {
-        control,
-        handleSubmit,
-        formState: { errors }
-    } = useForm()
-
-    const onSubmit = values => {
-        console.log('🚀 ~ values:', values)
-    }
+const FormNotification = ({ data, control, setValue, register, errors }) => {
+    const [hasEmail, setHasEmail] = useState(true)
+    setValue('emailDestinatario', data.email)
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <DialogContent>
-                <Input xs={12} md={4} title='Email' name='email' control={control} errors={errors?.email} />
-            </DialogContent>
-            <DialogActions className='dialog-actions-dense'>
-                <Button variant='outlined' color='primary' onClick={() => setOpenModal(false)}>
-                    Fechar
-                </Button>
-
-                <Button type='submit' variant='contained' color='primary'>
-                    Confirmar
-                </Button>
-            </DialogActions>
-        </form>
+        <div className='flex flex-col gap-2 pt-2'>
+            {hasEmail && (
+                <Input
+                    name='emailDestinatario'
+                    type='email'
+                    title='E-mail do destinatário'
+                    required
+                    control={control}
+                    errors={errors.emailDestinatario}
+                />
+            )}
+            <Input
+                name='assunto'
+                title='Assunto'
+                required={true}
+                register={register}
+                control={control}
+                defaultValue=''
+                errors={errors.assunto}
+            />
+            <Input
+                name='descricao'
+                title='Descrição'
+                multiline
+                rows={4}
+                required
+                control={control}
+                defaultValue=''
+                errors={errors.descricao}
+            />
+            <FormGroup row>
+                <SwitchLabel
+                    name='email'
+                    title='E-mail'
+                    value={true}
+                    register={register}
+                    onChange={() => setHasEmail(!hasEmail)}
+                />
+                <SwitchLabel name='alerta' title='Alerta' value={true} register={register} />
+            </FormGroup>
+        </div>
     )
 }
 

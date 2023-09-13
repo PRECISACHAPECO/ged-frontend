@@ -4,7 +4,8 @@ import LayoutReport from 'src/components/Reports/Layout'
 import DialogActs from '../Dialogs/DialogActs'
 import { useState } from 'react'
 
-const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData, openModal, setOpenModal }) => {
+const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) => {
+    const [openModal, setOpenModal] = useState(false)
     const [item, setItem] = useState(null)
 
     return (
@@ -84,7 +85,13 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData, op
 
             {/* Modal */}
             {item && (
-                <DialogActs title={item.name} setOpenModal={setOpenModal} open={openModal}>
+                <DialogActs
+                    title={item.name}
+                    description={item.description}
+                    handleConclusion={item.action}
+                    setOpenModal={setOpenModal}
+                    openModal={openModal}
+                >
                     {item.component}
                 </DialogActs>
             )}

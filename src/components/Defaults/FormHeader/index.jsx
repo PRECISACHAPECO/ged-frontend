@@ -38,7 +38,7 @@ const FormHeader = ({
     const { setId } = useContext(RouteContext)
     const [isVisible, setIsVisible] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
-    const [openModal, setOpenModal] = useState(false)
+
     const matches = useMediaQuery('(min-width:640px)')
 
     const open = Boolean(anchorEl)
@@ -145,8 +145,6 @@ const FormHeader = ({
                             btnPrint={btnPrint}
                             actionsData={actionsData}
                             matches={matches}
-                            openModal={openModal}
-                            setOpenModal={setOpenModal}
                         />
                         <ButtonsFixedRight
                             btnSave={btnSave}

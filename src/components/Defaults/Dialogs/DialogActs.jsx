@@ -1,13 +1,62 @@
+import { Alert, DialogActions, DialogContent, DialogContentText, TextField } from '@mui/material'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import Input from 'src/components/Form/Input'
 
-const DialogActs = ({ title, setOpenModal, open, children }) => {
+const DialogActs = ({ title, description, setOpenModal, openModal, children, handleConclusion }) => {
+    const {
+        control,
+        register,
+        handleSubmit,
+        reset,
+        setValue,
+        formState: { errors }
+    } = useForm()
+
+    const validateForm = values => {
+        handleSubmit(onSubmit)(values)
+    }
+
+    const onSubmit = values => {
+        // limpa formulario
+        reset()
+        setOpenModal(false)
+        handleConclusion(values)
+    }
+
     return (
         <>
-            <Dialog open={open} onClose={() => setOpenModal(false)} aria-labelledby='form-dialog-title'>
-                <DialogTitle id='form-dialog-title'>{title}</DialogTitle>
-                {children}
+            <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+                <form>
+                    <DialogTitle id='form-dialog-title'>{title}</DialogTitle>
+                    <DialogContent>
+                        <Alert severity='info'>{description}</Alert>
+                    </DialogContent>
+
+                    {/* Passa children com props */}
+                    <DialogContent>
+                        {React.cloneElement(children, {
+                            control: control,
+                            register: register,
+                            setValue: setValue,
+                            errors: errors,
+                            onSubmit: onSubmit
+                        })}
+                    </DialogContent>
+
+                    <DialogActions className='dialog-actions-dense'>
+                        <Button variant='outlined' color='primary' onClick={() => setOpenModal(false)}>
+                            Fechar
+                        </Button>
+
+                        <Button type='button' variant='contained' color='primary' onClick={validateForm}>
+                            Confirmar
+                        </Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         </>
     )

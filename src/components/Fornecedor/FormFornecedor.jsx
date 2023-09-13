@@ -156,8 +156,45 @@ const FormFornecedor = ({ id }) => {
         }
     }
 
-    const sendNotification = values => {
+    const sendNotification = async values => {
         console.log('vai enviart emailllllllkl', values)
+        try {
+            //* Alerta
+            if (values.alerta) {
+                const data = {
+                    titulo: values.assunto,
+                    descricao: values.descricao,
+                    url: '/formularios/fornecedor/',
+                    urlID: id,
+                    tipoNotificacaoID: 3, //? fornecedor
+                    usuarioGeradorID: user.usuarioID,
+                    usuarioID: 0, //? Todos da unidade
+                    unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
+                    papelID: 2 //? Notificação pro fornecedor
+                }
+
+                createNewNotification(data)
+                toast.success('Alerta criado com sucesso!')
+            }
+
+            //* E-mail
+            if (values.email) {
+                const data = {
+                    values: values,
+                    auth: {
+                        id: id,
+                        usuarioID: user.usuarioID,
+                        papelID: user.papelID,
+                        unidadeID: loggedUnity.unidadeID
+                    }
+                }
+
+                const response = await api.post(`${staticUrl}/sendNotification`, data)
+                toast.success('E-mail enviado com sucesso!')
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
@@ -178,18 +215,25 @@ const FormFornecedor = ({ id }) => {
         {
             id: 2,
             name: 'Gerar notificação',
-            component: <FormNotification />,
+            description: 'Gerar uma nova notificação para o fornecedor, podendo ser um e-mail e/ou alerta do sistema.',
+            component: (
+                <FormNotification
+                    data={{
+                        email: fieldsState.find(field => field.nomeColuna == 'email')?.email
+                    }}
+                />
+            ),
             route: null,
             type: null,
             modal: true,
             action: sendNotification,
             icon: 'mdi:bell-outline',
-            identification: null,
-            params: {
-                fornecedorID: id,
-                usuarioID: user.usuarioID,
-                unidadeID: loggedUnity.unidadeID
-            }
+            identification: null
+            // params: {
+            //     fornecedorID: id,
+            //     usuarioID: user.usuarioID,
+            //     unidadeID: loggedUnity.unidadeID
+            // }
         }
     ]
 
