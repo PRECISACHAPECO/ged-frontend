@@ -46,6 +46,7 @@ const FormFornecedor = ({ id }) => {
     const [info, setInfo] = useState('')
     const [openModal, setOpenModal] = useState(false)
     const [unidade, setUnidade] = useState(null)
+    console.log('🚀 ~ unidadesssssssssssssssssss:', unidade)
     const [status, setStatus] = useState(null)
     // const [statusEdit, setStatusEdit] = useState(false)
     const [openModalStatus, setOpenModalStatus] = useState(false)
@@ -171,7 +172,6 @@ const FormFornecedor = ({ id }) => {
                 usuarioGeradorID: user.usuarioID,
                 usuarioID: 0, //? Todos da unidade
                 unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
-                unidadeID: 1,
                 papelID: 2, //? Notificação pro fornecedor
                 //? Email / Alerta
                 email: values.email,
