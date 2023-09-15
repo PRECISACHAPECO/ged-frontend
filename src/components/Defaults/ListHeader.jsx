@@ -5,46 +5,27 @@ import Link from 'next/link'
 import { AuthContext } from 'src/context/AuthContext'
 import { useContext, useState } from 'react'
 import { RouteContext } from 'src/context/RouteContext'
+import { backRoute } from 'src/configs/defaultConfigs'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 const ListHeader = ({ btnNew, btnPrint, btnSave, btnCancel, handleSave, hasListChange, openModal }) => {
     const router = Router
-    const currentURL = router.asPath
-    console.log('🚀 ~ currentURL:', currentURL)
     const { setId } = useContext(RouteContext)
     const { routes } = useContext(AuthContext)
 
     return (
         <>
             <div className='flex items-center justify-between my-2 w-full'>
-                <div>
-                    {/* <div>
-                        {btnCancel && (
-                            <Button
-                                onClick={() => {
-                                    setId(null)
-                                    router.push(currentURL)
-                                }}
-                                type='button'
-                                variant='outlined'
-                                color='primary'
-                                size='medium'
-                            >
-                                <Icon icon='material-symbols:arrow-back-rounded' />
-                            </Button>
-                        )}
-                    </div> */}
-                </div>
+                <div></div>
                 {/* Div Direira */}
                 <div className='flex items-center gap-4 '>
                     <div>
                         {btnCancel && (
                             <Button
                                 onClick={() => {
-                                    setId(null)
-                                    router.push(currentURL)
+                                    backRoute(router.pathname)
                                 }}
                                 type='button'
                                 variant='outlined'
