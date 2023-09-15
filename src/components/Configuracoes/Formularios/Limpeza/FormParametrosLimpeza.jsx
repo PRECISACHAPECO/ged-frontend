@@ -49,6 +49,7 @@ const FormParametrosLimpeza = ({ id }) => {
 
     const onSubmit = async values => {
         const data = {
+            id: id,
             unidadeID: loggedUnity.unidadeID,
             header: values.header,
             blocks: values.blocks,
@@ -61,14 +62,14 @@ const FormParametrosLimpeza = ({ id }) => {
 
         console.log('🚀 ~ onSubmit:', data)
 
-        // try {
-        //     await api.put(`${staticUrl}/updateData`, data).then(response => {
-        //         toast.success(toastMessage.successUpdate)
-        //         setSavingForm(!savingForm)
-        //     })
-        // } catch (error) {
-        //     console.log(error)
-        // }
+        try {
+            await api.put(`${staticUrl}/updateData`, data).then(response => {
+                toast.success(toastMessage.successUpdate)
+                setSavingForm(!savingForm)
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const refreshOptions = (block, index, blocks, allOptions) => {
@@ -144,7 +145,7 @@ const FormParametrosLimpeza = ({ id }) => {
 
         // Inserir no array de blocos removidos
         let newRemovedBlocks = [...arrRemovedBlocks]
-        newRemovedBlocks.push(block.dados.parFornecedorBlocoID)
+        newRemovedBlocks.push(block.dados.parLimpezaModeloBlocoID)
         setArrRemovedBlocks(newRemovedBlocks)
 
         // Remove bloco
@@ -268,12 +269,12 @@ const FormParametrosLimpeza = ({ id }) => {
 
                                         {headers.map((header, index) => (
                                             <>
-                                                <input
+                                                {/* <input
                                                     type='hidden'
-                                                    name={`header.[${index}].parFornecedorID`}
-                                                    defaultValue={header.parFornecedorID}
-                                                    {...register(`header.[${index}].parFornecedorID`)}
-                                                />
+                                                    name={`header.[${index}].parLimpezaModeloID`}
+                                                    defaultValue={header.parLimpezaModeloID}
+                                                    {...register(`header.[${index}].parLimpezaModeloID`)}
+                                                /> */}
 
                                                 <Grid item md={4} xs={6}>
                                                     {header.nomeCampo}
@@ -311,12 +312,12 @@ const FormParametrosLimpeza = ({ id }) => {
                             <Card key={index} md={12} sx={{ mt: 4 }}>
                                 <CardContent>
                                     {/* Header */}
-                                    <input
+                                    {/* <input
                                         type='hidden'
-                                        name={`blocks.[${index}].dados.parFornecedorBlocoID`}
-                                        value={block.dados.parFornecedorBlocoID}
-                                        {...register(`blocks.[${index}].dados.parFornecedorBlocoID`)}
-                                    />
+                                        name={`blocks.[${index}].dados.parLimpezaModeloBlocoID`}
+                                        value={block.dados.parLimpezaModeloBlocoID}
+                                        {...register(`blocks.[${index}].dados.parLimpezaModeloBlocoID`)}
+                                    /> */}
 
                                     <Grid container spacing={4}>
                                         <Input
@@ -377,14 +378,14 @@ const FormParametrosLimpeza = ({ id }) => {
                                                 spacing={2}
                                                 sx={{ my: 1 }}
                                             >
-                                                <input
+                                                {/* <input
                                                     type='hidden'
                                                     name={`blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`}
                                                     value={item.parFornecedorBlocoItemID}
                                                     {...register(
                                                         `blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`
                                                     )}
-                                                />
+                                                /> */}
 
                                                 {/* Sequência do item */}
                                                 <Input
@@ -401,7 +402,7 @@ const FormParametrosLimpeza = ({ id }) => {
                                                 {/* Item */}
                                                 <Select
                                                     xs={12}
-                                                    md={4}
+                                                    md={5}
                                                     title={
                                                         blocks[index].itens[indexItem].itemID
                                                             ? `Item [${blocks[index].itens[indexItem].itemID}]`
@@ -463,33 +464,6 @@ const FormParametrosLimpeza = ({ id }) => {
                                                     value={blocks[index].itens[indexItem].obrigatorio}
                                                     register={register}
                                                 />
-
-                                                {/* Abre o modal que define a pontuação das respostas */}
-                                                <Grid item xs={2} md={1}>
-                                                    <Box
-                                                        height='100%'
-                                                        display='flex'
-                                                        flexDirection='column'
-                                                        justifyContent='center'
-                                                        alignItems='center'
-                                                    >
-                                                        <Typography variant='caption'>
-                                                            {indexItem == 0 ? 'Pontuação' : ''}
-                                                        </Typography>
-                                                        <Button
-                                                            style={item.pontuacao === 0 ? { opacity: 0.3 } : {}}
-                                                            title={
-                                                                !item.parFornecedorBlocoID
-                                                                    ? 'Salve o bloco para definir a pontuação'
-                                                                    : 'Definir pontuação para as respostas'
-                                                            }
-                                                            disabled={!item.parFornecedorBlocoID}
-                                                            onClick={() => openScoreModal(item)}
-                                                        >
-                                                            <Icon icon='ic:baseline-assessment' />
-                                                        </Button>
-                                                    </Box>
-                                                </Grid>
 
                                                 {/* Deletar */}
                                                 <Remove
