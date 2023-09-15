@@ -33,7 +33,8 @@ const FormHeader = ({
     actions,
     actionsData,
     type,
-    status
+    status,
+    partialRoute
 }) => {
     const router = Router
     const { routes } = useContext(AuthContext)
@@ -65,7 +66,7 @@ const FormHeader = ({
         setId(null)
     }
 
-    const currentUrl = type === 'new' ? backRoute(router.pathname) : router.pathname
+    const currentUrl = type === 'new' || partialRoute ? backRoute(router.pathname) : router.pathname
 
     const dataButtons = [
         {
