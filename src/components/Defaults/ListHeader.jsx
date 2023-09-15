@@ -1,16 +1,16 @@
 import Router from 'next/router'
 
-import { CardContent, Button, Box, IconButton } from '@mui/material'
+import { Button } from '@mui/material'
 import Link from 'next/link'
 import { AuthContext } from 'src/context/AuthContext'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { RouteContext } from 'src/context/RouteContext'
 import { backRoute } from 'src/configs/defaultConfigs'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-const ListHeader = ({ btnNew, btnPrint, btnSave, btnCancel, handleSave, hasListChange, openModal }) => {
+const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, handleSave, hasListChange, openModal }) => {
     const router = Router
     const { setId } = useContext(RouteContext)
     const { routes } = useContext(AuthContext)
@@ -22,10 +22,11 @@ const ListHeader = ({ btnNew, btnPrint, btnSave, btnCancel, handleSave, hasListC
                 {/* Div Direira */}
                 <div className='flex items-center gap-4 '>
                     <div>
-                        {btnCancel && (
+                        {btnBack && (
                             <Button
                                 onClick={() => {
-                                    backRoute(router.pathname)
+                                    router.push(backRoute(router.pathname))
+                                    setId(null)
                                 }}
                                 type='button'
                                 variant='outlined'

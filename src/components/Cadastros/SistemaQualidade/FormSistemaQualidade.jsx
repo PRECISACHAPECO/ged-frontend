@@ -115,6 +115,7 @@ const FormSistemaQualidade = ({ id }) => {
                         <FormHeader
                             btnCancel
                             btnSave
+                            btnNew
                             handleSubmit={() => handleSubmit(onSubmit)}
                             btnDelete={type === 'edit' ? true : false}
                             onclickDelete={() => setOpen(true)}
