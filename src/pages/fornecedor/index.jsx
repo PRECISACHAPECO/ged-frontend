@@ -194,6 +194,7 @@ const FornecedorPage = ({ units }) => {
             setAcessLink(unidadeIDRouter, cnpjRouter)
         }
     }, [[unidadeIDRouter, cnpjRouter]])
+
     return (
         <>
             <Box className='content-right'>

@@ -20,6 +20,7 @@ import { configColumns } from 'src/configs/defaultConfigs'
 const Fornecedor = () => {
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState(null)
+    console.log('🚀 ~ result:', result)
     const router = useRouter()
     const currentLink = router.pathname
     const { setTitle } = useContext(ParametersContext)
@@ -185,6 +186,11 @@ const Fornecedor = () => {
             : []
 
     const columns = configColumns(currentLink, arrColumns)
+
+    useEffect(() => {
+        const statusForm = router.query.s
+        console.log('🚀 ~ statusForm:', statusForm)
+    }, [])
 
     return (
         <>

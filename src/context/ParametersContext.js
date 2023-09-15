@@ -27,7 +27,7 @@ const ParametersProvider = ({ children }) => {
         const filteredRows = data.filter(row => {
             return searchWords.every(word => {
                 return Object.keys(row).some(field => {
-                    return row[field].toString().toLowerCase().indexOf(word) !== -1
+                    return row[field]?.toString().toLowerCase().indexOf(word) !== -1
                 })
             })
         })
