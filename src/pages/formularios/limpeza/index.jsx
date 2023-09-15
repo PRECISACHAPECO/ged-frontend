@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { api } from 'src/configs/api'
 import Table from 'src/components/Defaults/Table'
-import FormRecebimentoMp from 'src/components/RecebimentoMp/FormRecebimentoMp'
+import FormLimpeza from 'src/components/Limpeza/FormLimpeza'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
@@ -57,6 +57,11 @@ const Limpeza = () => {
             size: 0.2
         },
         {
+            headerName: 'Modelo',
+            field: 'modelo',
+            size: 0.2
+        },
+        {
             headerName: 'Status',
             field: 'status',
             size: 0.2
@@ -72,7 +77,7 @@ const Limpeza = () => {
                 <Loading show />
             ) : //? Se tem id, exibe o formulário
             id && id > 0 ? (
-                <FormRecebimentoMp id={id} />
+                <FormLimpeza id={id} />
             ) : (
                 //? Lista tabela de resultados da listagem
                 <Table result={result} columns={columns} />
