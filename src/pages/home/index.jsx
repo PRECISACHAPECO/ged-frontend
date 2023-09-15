@@ -27,13 +27,13 @@ const Home = () => {
     return user.papelID === 1 ? (
         <Grid container spacing={6}>
             <Grid item xs={12}>
-                <Company />
+                <Factory />
             </Grid>
         </Grid>
     ) : user.papelID === 2 ? (
         <Grid container spacing={6}>
             <Grid item xs={12}>
-                <Factory />
+                <Company />
             </Grid>
         </Grid>
     ) : null

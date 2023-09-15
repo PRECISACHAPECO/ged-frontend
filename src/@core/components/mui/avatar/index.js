@@ -41,8 +41,7 @@ const Avatar = forwardRef((props, ref) => {
     info: getAvatarStyles(skin, 'info')
   }
 
-  // return <MuiAvatar ref={ref} {...props} sx={!src && skin && color ? Object.assign(colors[color], sx) : sx} />
-  return <h1>helooo</h1>
+  return <MuiAvatar ref={ref} {...props} sx={!src && skin && color ? Object.assign(colors[color], sx) : sx} />
 })
 Avatar.defaultProps = {
   skin: 'filled',
