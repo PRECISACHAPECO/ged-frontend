@@ -22,7 +22,6 @@ const Atividade = () => {
     useEffect(() => {
         const getList = async () => {
             await api.get(currentLink).then(response => {
-                console.log('🚀 ~ response.data:', response.data)
                 setResult(response.data)
                 setTitle({
                     title: 'Atividade',

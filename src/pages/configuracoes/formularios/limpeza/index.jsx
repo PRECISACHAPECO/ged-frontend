@@ -66,7 +66,7 @@ const ListParametrosLimpeza = () => {
                 <FormParametrosLimpeza id={id} />
             ) : (
                 //? Lista tabela de resultados da listagem
-                <Table result={result} columns={columns} />
+                <Table result={result} columns={columns} btnBack />
             )}
         </>
     )

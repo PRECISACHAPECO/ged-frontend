@@ -151,6 +151,7 @@ const FormGrupoAnexos = ({ id }) => {
                         <FormHeader
                             btnCancel
                             btnSave
+                            btnNew
                             btnDelete={type === 'edit' ? true : false}
                             onclickDelete={() => setOpenDelete(true)}
                             type={type}

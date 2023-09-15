@@ -19,6 +19,7 @@ const FormHeader = ({
     btnSend,
     btnStatus,
     handleSubmit,
+    btnNew,
     disabledSubmit,
     handleSend,
     iconConclusion,
@@ -154,6 +155,7 @@ const FormHeader = ({
                         )}
                         <ButtonsFixedRight
                             btnSave={btnSave}
+                            btnNew={btnNew}
                             btnSend={btnSend}
                             routes={routes}
                             currentUrl={currentUrl}

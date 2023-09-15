@@ -108,6 +108,7 @@ const FormItem = ({ id }) => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <FormHeader
                             btnCancel
+                            btnNew
                             btnSave
                             handleSubmit={() => handleSubmit(onSubmit)}
                             btnDelete={type === 'edit' ? true : false}

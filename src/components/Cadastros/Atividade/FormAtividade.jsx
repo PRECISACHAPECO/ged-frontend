@@ -1,6 +1,5 @@
 import Router from 'next/router'
-import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { api } from 'src/configs/api'
 import { Button, Card, CardContent, Grid } from '@mui/material'
 import { useForm } from 'react-hook-form'
@@ -25,6 +24,7 @@ const FormAtividade = ({ id }) => {
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname // Url sem ID
+    const inputRef = useRef(null)
 
     const {
         trigger,
@@ -107,6 +107,7 @@ const FormAtividade = ({ id }) => {
         //? Seta error nos campos obrigatórios
         if (type === 'new') {
             setTimeout(() => {
+                inputRef.current.focus()
                 trigger()
             }, 300)
         }
@@ -121,6 +122,7 @@ const FormAtividade = ({ id }) => {
                         <FormHeader
                             btnCancel
                             btnSave
+                            btnNew
                             handleSubmit={() => handleSubmit(onSubmit)}
                             btnDelete={type === 'edit' ? true : false}
                             onclickDelete={() => setOpen(true)}
@@ -131,6 +133,7 @@ const FormAtividade = ({ id }) => {
                                 <Input
                                     xs={11}
                                     md={11}
+                                    // ref={inputRef}
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
