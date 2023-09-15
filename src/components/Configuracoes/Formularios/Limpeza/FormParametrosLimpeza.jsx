@@ -24,6 +24,7 @@ import Remove from 'src/components/Form/Remove'
 
 const FormParametrosLimpeza = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
+    const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
     const [allOptions, setAllOptions] = useState(null)
     const [blocks, setBlocks] = useState()
@@ -51,6 +52,7 @@ const FormParametrosLimpeza = ({ id }) => {
         const data = {
             id: id,
             unidadeID: loggedUnity.unidadeID,
+            model: values.model,
             header: values.header,
             blocks: values.blocks,
             arrRemovedBlocks: arrRemovedBlocks,
@@ -59,8 +61,6 @@ const FormParametrosLimpeza = ({ id }) => {
         }
 
         setHeaders(null) //? Pra exibir loading
-
-        console.log('🚀 ~ onSubmit:', data)
 
         try {
             await api.put(`${staticUrl}/updateData`, data).then(response => {
@@ -105,7 +105,6 @@ const FormParametrosLimpeza = ({ id }) => {
     }
 
     const removeItem = (item, indexBlock, indexItem) => {
-        console.log('🚀 ~ length:', blocks[indexBlock].itens.length)
         if (blocks[indexBlock].itens.length === 1) {
             toast.error('Você deve ter ao menos um item!')
             return
@@ -202,8 +201,7 @@ const FormParametrosLimpeza = ({ id }) => {
         try {
             api.post(`${staticUrl}/getData`, { id: id }).then(response => {
                 //* Estados
-                console.log('🚀 ~ getData:', response.data)
-
+                setModel(response.data.model)
                 setHeaders(response.data.header)
                 setBlocks(response.data.blocks)
                 setAllOptions({
@@ -236,8 +234,8 @@ const FormParametrosLimpeza = ({ id }) => {
                 <Loading />
             ) : (
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    {/* Cabeçalho */}
-                    {headers && (
+                    {/* Modelo */}
+                    {model && (
                         <Card>
                             <FormHeader
                                 partialRoute
@@ -246,6 +244,48 @@ const FormParametrosLimpeza = ({ id }) => {
                                 handleSubmit={() => handleSubmit(onSubmit)}
                                 type={type}
                             />
+                            <CardContent>
+                                <Grid container spacing={4}>
+                                    <Input
+                                        className='order-1'
+                                        xs={12}
+                                        md={8}
+                                        title='Modelo'
+                                        name={`model.nome`}
+                                        value={model.nome}
+                                        required={true}
+                                        control={control}
+                                        errors={errors?.model?.nome}
+                                    />
+                                    <Input
+                                        className='order-1'
+                                        xs={12}
+                                        md={3}
+                                        type='number'
+                                        title='Ciclo (dias)'
+                                        name={`model.ciclo`}
+                                        value={model.ciclo}
+                                        required={true}
+                                        control={control}
+                                        errors={errors?.model?.ciclo}
+                                    />
+                                    <Check
+                                        className='order-2 md:order-3'
+                                        xs={2}
+                                        md={1}
+                                        title='Ativo'
+                                        name={`model.status`}
+                                        value={model.status}
+                                        register={register}
+                                    />
+                                </Grid>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Cabeçalho */}
+                    {headers && (
+                        <Card sx={{ mt: 4 }}>
                             <CardContent>
                                 {/* Lista campos */}
                                 <List component='nav' aria-label='main mailbox'>
@@ -269,13 +309,6 @@ const FormParametrosLimpeza = ({ id }) => {
 
                                         {headers.map((header, index) => (
                                             <>
-                                                {/* <input
-                                                    type='hidden'
-                                                    name={`header.[${index}].parLimpezaModeloID`}
-                                                    defaultValue={header.parLimpezaModeloID}
-                                                    {...register(`header.[${index}].parLimpezaModeloID`)}
-                                                /> */}
-
                                                 <Grid item md={4} xs={6}>
                                                     {header.nomeCampo}
                                                 </Grid>
@@ -311,14 +344,6 @@ const FormParametrosLimpeza = ({ id }) => {
                         blocks.map((block, index) => (
                             <Card key={index} md={12} sx={{ mt: 4 }}>
                                 <CardContent>
-                                    {/* Header */}
-                                    {/* <input
-                                        type='hidden'
-                                        name={`blocks.[${index}].dados.parLimpezaModeloBlocoID`}
-                                        value={block.dados.parLimpezaModeloBlocoID}
-                                        {...register(`blocks.[${index}].dados.parLimpezaModeloBlocoID`)}
-                                    /> */}
-
                                     <Grid container spacing={4}>
                                         <Input
                                             className='order-1'
