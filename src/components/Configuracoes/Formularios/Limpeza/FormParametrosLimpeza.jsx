@@ -61,14 +61,14 @@ const FormParametrosLimpeza = ({ id }) => {
 
         console.log('🚀 ~ onSubmit:', data)
 
-        try {
-            await api.put(`${staticUrl}/fornecedor/updateData`, data).then(response => {
-                toast.success(toastMessage.successUpdate)
-                setSavingForm(!savingForm)
-            })
-        } catch (error) {
-            console.log(error)
-        }
+        // try {
+        //     await api.put(`${staticUrl}/updateData`, data).then(response => {
+        //         toast.success(toastMessage.successUpdate)
+        //         setSavingForm(!savingForm)
+        //     })
+        // } catch (error) {
+        //     console.log(error)
+        // }
     }
 
     const refreshOptions = (block, index, blocks, allOptions) => {
@@ -199,8 +199,10 @@ const FormParametrosLimpeza = ({ id }) => {
 
     const getData = () => {
         try {
-            api.post(`${staticUrl}/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
+            api.post(`${staticUrl}/getData`, { id: id }).then(response => {
                 //* Estados
+                console.log('🚀 ~ getData:', response.data)
+
                 setHeaders(response.data.header)
                 setBlocks(response.data.blocks)
                 setAllOptions({
@@ -236,7 +238,13 @@ const FormParametrosLimpeza = ({ id }) => {
                     {/* Cabeçalho */}
                     {headers && (
                         <Card>
-                            <FormHeader btnCancel btnSave handleSubmit={() => handleSubmit(onSubmit)} type={type} />
+                            <FormHeader
+                                partialRoute
+                                btnCancel
+                                btnSave
+                                handleSubmit={() => handleSubmit(onSubmit)}
+                                type={type}
+                            />
                             <CardContent>
                                 {/* Lista campos */}
                                 <List component='nav' aria-label='main mailbox'>
@@ -353,39 +361,6 @@ const FormParametrosLimpeza = ({ id }) => {
                                             name={`blocks.[${index}].dados.obs`}
                                             value={blocks[index].dados.obs}
                                             register={register}
-                                        />
-
-                                        {/* Configurações de exibição */}
-                                        <Select
-                                            className='order-5'
-                                            xs={12}
-                                            md={5}
-                                            multiple
-                                            title='Mostrar esse bloco quando é'
-                                            name={`blocks.[${index}].categorias`}
-                                            value={block.categorias}
-                                            required={true}
-                                            options={allOptions.categorias}
-                                            register={register}
-                                            setValue={setValue}
-                                            control={control}
-                                            errors={errors?.blocks?.[index]?.categorias}
-                                        />
-
-                                        <Select
-                                            className='order-6'
-                                            xs={12}
-                                            md={7}
-                                            multiple
-                                            title='Atividade(s)'
-                                            name={`blocks.[${index}].atividades`}
-                                            value={block.atividades}
-                                            required={false}
-                                            options={allOptions.atividades}
-                                            register={register}
-                                            setValue={setValue}
-                                            control={control}
-                                            errors={errors?.blocks?.[index]?.atividades}
                                         />
                                     </Grid>
 
