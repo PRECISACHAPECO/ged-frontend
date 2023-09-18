@@ -52,36 +52,36 @@ const Factory = () => {
 
                     <Grid item xs={6} md={2}>
                         <CardStatisticsVertical
-                            stats={data.fornecedorPorStatus[0]?.nome_status}
+                            stats={data.fornecedorPorStatus[0]?.nome_status ?? 'Pendente'}
                             color='primary'
-                            title={data.fornecedorPorStatus[0]?.total}
+                            title={data.fornecedorPorStatus[0]?.total ?? '0'}
                             chipText='Last 4 Month'
                             icon={<Icon icon='mdi:cart-plus' />}
                         />
                     </Grid>
                     <Grid item xs={6} md={2}>
                         <CardStatisticsVertical
-                            stats={data.fornecedorPorStatus[1]?.nome_status}
+                            stats={data.fornecedorPorStatus[1]?.nome_status ?? 'Acessou o link'}
                             color='primary'
-                            title={data.fornecedorPorStatus[1]?.total}
+                            title={data.fornecedorPorStatus[1]?.total ?? '0'}
                             chipText='Last 4 Month'
                             icon={<Icon icon='mdi:cart-plus' />}
                         />
                     </Grid>
                     <Grid item xs={6} md={2}>
                         <CardStatisticsVertical
-                            stats={data.fornecedorPorStatus[2]?.nome_status}
+                            stats={data.fornecedorPorStatus[2]?.nome_status ?? 'Em preenchimento'}
                             color='primary'
-                            title={data.fornecedorPorStatus[2]?.total}
+                            title={data.fornecedorPorStatus[2]?.total ?? '0'}
                             chipText='Last 4 Month'
                             icon={<Icon icon='mdi:cart-plus' />}
                         />
                     </Grid>
                     <Grid item xs={6} md={2}>
                         <CardStatisticsVertical
-                            stats={data.fornecedorPorStatus[3]?.nome_status}
+                            stats={data.fornecedorPorStatus[3]?.nome_status ?? 'Concluiu preenchimento'}
                             color='primary'
-                            title={data.fornecedorPorStatus[3]?.total}
+                            title={data.fornecedorPorStatus[3]?.total ?? '0'}
                             chipText='Last 4 Month'
                             icon={<Icon icon='mdi:cart-plus' />}
                         />

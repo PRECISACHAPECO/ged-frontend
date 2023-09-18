@@ -20,10 +20,10 @@ import { configColumns } from 'src/configs/defaultConfigs'
 const Fornecedor = () => {
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState(null)
-    console.log('🚀 ~ result:', result)
     const router = useRouter()
     const currentLink = router.pathname
-    const { setTitle } = useContext(ParametersContext)
+    const { setTitle, setSearchText, setFilteredData, handleSearch } = useContext(ParametersContext)
+    const [statusFornecedor, setStatusFornecedor] = useState(null)
     const [open, setOpen] = useState(false)
     const [loadingSave, setLoadingSave] = useState(false) //? Dependencia do useEffect pra atualizar listagem ao salvar
     const { id } = useContext(RouteContext)
@@ -90,6 +90,7 @@ const Fornecedor = () => {
                 cnpj: user.cnpj ? user.cnpj : null
             })
             .then(response => {
+                console.log('🚀 ~ response:', response.data)
                 setResult(response.data)
                 setTitle({
                     title: 'Fornecedor',
@@ -141,7 +142,10 @@ const Fornecedor = () => {
                   },
                   {
                       headerName: 'Status',
-                      field: 'status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
                       size: 1
                   }
               ]
@@ -188,9 +192,17 @@ const Fornecedor = () => {
     const columns = configColumns(currentLink, arrColumns)
 
     useEffect(() => {
-        const statusForm = router.query.s
-        console.log('🚀 ~ statusForm:', statusForm)
+        setStatusFornecedor(router.query.s)
     }, [])
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (statusFornecedor && arrColumns) {
+                setSearchText(statusFornecedor)
+                handleSearch(statusFornecedor)
+            }
+        }, 10)
+    }, [statusFornecedor])
 
     return (
         <>

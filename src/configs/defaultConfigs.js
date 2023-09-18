@@ -45,18 +45,18 @@ const configColumns = (currentLink, arrColumns) => {
                 <Typography variant='body2' sx={{ color: 'text.primary' }}>
                     {arrColumns &&
                         arrColumns.map((c, j) => {
+
+
                             if (c.field === currentColumns) {
-                                // Encotrou a coluna
-                                if (c.field == 'status') {
-                                    const status = statusDefault[params.row.status]
+                                if (c.field.name == 'status') {
 
                                     return (
                                         <CustomChip
                                             key={j}
                                             size='small'
                                             skin='light'
-                                            color={status.color}
-                                            label={status.title}
+                                            color={params.row.cor}
+                                            label={params.row.status}
                                             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
                                         />
                                     )
