@@ -90,7 +90,6 @@ const Fornecedor = () => {
                 cnpj: user.cnpj ? user.cnpj : null
             })
             .then(response => {
-                console.log('🚀 ~ response:', response.data)
                 setResult(response.data)
                 setTitle({
                     title: 'Fornecedor',
@@ -183,7 +182,10 @@ const Fornecedor = () => {
                   },
                   {
                       headerName: 'Status',
-                      field: 'status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
                       size: 1
                   }
               ]

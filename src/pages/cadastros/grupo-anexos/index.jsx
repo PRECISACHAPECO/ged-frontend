@@ -29,7 +29,6 @@ const GrupoAnexos = () => {
     const getList = async () => {
         await api.post(currentLink, { unidadeID: loggedUnity.unidadeID }).then(response => {
             setResult(response.data)
-            console.log('ta vindo', response.data)
             setTitle({
                 title: 'Grupo de Anexos',
                 subtitle: {
@@ -63,7 +62,10 @@ const GrupoAnexos = () => {
         },
         {
             headerName: 'Status',
-            field: 'status',
+            field: {
+                name: 'status',
+                cor: 'cor'
+            },
             size: 0.1
         }
     ]

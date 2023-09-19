@@ -45,8 +45,6 @@ const configColumns = (currentLink, arrColumns) => {
                 <Typography variant='body2' sx={{ color: 'text.primary' }}>
                     {arrColumns &&
                         arrColumns.map((c, j) => {
-
-
                             if (c.field === currentColumns) {
                                 if (c.field.name == 'status') {
 
@@ -55,8 +53,8 @@ const configColumns = (currentLink, arrColumns) => {
                                             key={j}
                                             size='small'
                                             skin='light'
-                                            color={params.row.cor}
-                                            label={params.row.status}
+                                            color={params?.row.cor}
+                                            label={params?.row.status}
                                             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
                                         />
                                     )

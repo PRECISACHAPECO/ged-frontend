@@ -50,8 +50,11 @@ const Profissao = () => {
             size: 0.8
         },
         {
-            title: 'Status',
-            field: 'status',
+            headerName: 'Status',
+            field: {
+                name: 'status',
+                cor: 'cor'
+            },
             size: 0.1
         }
     ]

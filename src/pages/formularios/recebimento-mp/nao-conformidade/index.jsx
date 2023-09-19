@@ -33,7 +33,6 @@ const NaoConformidade = () => {
             })
             .then(response => {
                 setResult(response.data)
-                console.log('🚀 ~ getList:', response.data)
                 setTitle({
                     title: 'Não Conformidade',
                     subtitle: {
@@ -89,7 +88,10 @@ const NaoConformidade = () => {
                   },
                   {
                       headerName: 'Status',
-                      field: 'status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
                       size: 0.2
                   }
               ]
@@ -126,7 +128,10 @@ const NaoConformidade = () => {
                   },
                   {
                       headerName: 'Status',
-                      field: 'status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
                       size: 0.2
                   }
               ]

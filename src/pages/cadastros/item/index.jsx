@@ -55,8 +55,11 @@ const Item = () => {
         },
 
         {
-            title: 'Status',
-            field: 'status',
+            headerName: 'Status',
+            field: {
+                name: 'status',
+                cor: 'cor'
+            },
             size: 0.1
         }
     ]
@@ -77,11 +80,6 @@ const Item = () => {
             )}
         </>
     )
-}
-
-Item.acl = {
-    action: 'read',
-    subject: 'acl-page'
 }
 
 export default Item
