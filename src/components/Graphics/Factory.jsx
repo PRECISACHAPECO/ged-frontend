@@ -16,26 +16,20 @@ import CrmExternalLinks from 'src/views/dashboards/crm/CrmExternalLinks'
 import CrmAward from 'src/views/dashboards/crm/CrmAward'
 import CrmSocialNetworkVisits from 'src/views/dashboards/crm/CrmSocialNetworkVisits'
 import CardStatsVertical from 'src/@core/components/card-statistics/card-stats-vertical'
+import EcommerceSalesOverview from 'src/views/dashboards/ecommerce/EcommerceSalesOverview'
 
 const Factory = () => {
     const { loggedUnity } = useContext(AuthContext)
     const [data, setData] = useState(null)
-    const router = Router
+    const [dataFornecedor, setDataFornecedor] = useState(null)
 
     const getData = async () => {
         try {
             const response = await api.get(`dashboard/fabrica/getData/${loggedUnity.unidadeID}`)
-            setData(response.data)
+            setDataFornecedor(response.data.fornecedorPorStatus)
         } catch (err) {
             console.log(err)
         }
-    }
-
-    // Ao clicar é diferionado para a listagem de fornecedores aplicando o filtro selecionado
-    const handleClickStatus = status => {
-        const urlBase = 'formularios/fornecedor/'
-        router.push(`${urlBase}?s=${status.statusID}`)
-        console.log('🚀 ~ status:', status)
     }
 
     useEffect(() => {
@@ -43,60 +37,41 @@ const Factory = () => {
     }, [])
 
     return (
-        data && (
+        dataFornecedor && (
             <ApexChartWrapper>
                 <Grid container spacing={6} className='match-height'>
                     <Grid item xs={12} md={12}>
-                        <Alert severity='info'>Dados em desenvolvimento...sssssss</Alert>
+                        <Alert severity='info'>Dados em desenvolvimento...</Alert>
                     </Grid>
 
-                    <Grid item xs={6} md={2}>
-                        <CardStatisticsVertical
-                            stats={data.fornecedorPorStatus[0]?.nome_status ?? 'Pendente'}
-                            color='primary'
-                            title={data.fornecedorPorStatus[0]?.total ?? '0'}
-                            chipText='Last 4 Month'
-                            icon={<Icon icon='mdi:cart-plus' />}
-                        />
-                    </Grid>
-                    <Grid item xs={6} md={2}>
-                        <CardStatisticsVertical
-                            stats={data.fornecedorPorStatus[1]?.nome_status ?? 'Acessou o link'}
-                            color='primary'
-                            title={data.fornecedorPorStatus[1]?.total ?? '0'}
-                            chipText='Last 4 Month'
-                            icon={<Icon icon='mdi:cart-plus' />}
-                        />
-                    </Grid>
-                    <Grid item xs={6} md={2}>
-                        <CardStatisticsVertical
-                            stats={data.fornecedorPorStatus[2]?.nome_status ?? 'Em preenchimento'}
-                            color='primary'
-                            title={data.fornecedorPorStatus[2]?.total ?? '0'}
-                            chipText='Last 4 Month'
-                            icon={<Icon icon='mdi:cart-plus' />}
-                        />
-                    </Grid>
-                    <Grid item xs={6} md={2}>
-                        <CardStatisticsVertical
-                            stats={data.fornecedorPorStatus[3]?.nome_status ?? 'Concluiu preenchimento'}
-                            color='primary'
-                            title={data.fornecedorPorStatus[3]?.total ?? '0'}
-                            chipText='Last 4 Month'
-                            icon={<Icon icon='mdi:cart-plus' />}
-                        />
-                    </Grid>
+                    {/* Por estatus em blocos separadosç */}
+                    {dataFornecedor.map(row => (
+                        <Grid item xs={6} md={3}>
+                            <CardStatisticsVertical
+                                stats={row.stats}
+                                color={row.color}
+                                title={row.title ?? '0'}
+                                chipText='Last 4 Month'
+                                icon={<Icon icon='mdi:truck-fast-outline' />}
+                            />
+                        </Grid>
+                    ))}
 
-                    <Grid item xs={12} md={4}>
-                        <CrmOrganicSessions data={data} />
-                    </Grid>
-                    <Grid item xs={6} sm={3} md={2}>
+                    {/* Tudo em uma bloco */}
+                    {/* <Grid item xs={12} md={12}>
+                        <EcommerceSalesOverview title='Fornecedor' data={dataFornecedor} />
+                    </Grid> */}
+
+                    <Grid item xs={6} sm={3} md={6}>
                         <CrmTotalProfit />
                     </Grid>
-                    <Grid item xs={6} sm={3} md={2}>
+                    <Grid item xs={6} sm={3} md={6}>
                         <CrmTotalGrowth />
                     </Grid>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={6}>
+                        <CrmOrganicSessions data={data} />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
                         <CrmWeeklyOverview />
                     </Grid>
                     <Grid item xs={12} md={12}>
