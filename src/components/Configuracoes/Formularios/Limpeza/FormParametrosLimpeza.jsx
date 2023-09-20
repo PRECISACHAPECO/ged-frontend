@@ -21,6 +21,7 @@ import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import CheckLabel from 'src/components/Form/CheckLabel'
 import Remove from 'src/components/Form/Remove'
+import HelpText from 'src/components/Defaults/HelpText'
 
 const FormParametrosLimpeza = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -262,12 +263,17 @@ const FormParametrosLimpeza = ({ id }) => {
                                         xs={12}
                                         md={3}
                                         type='number'
-                                        title='Ciclo (dias)'
+                                        title={`Ciclo (dias)`}
                                         name={`model.ciclo`}
                                         value={model.ciclo}
                                         required={true}
                                         control={control}
                                         errors={errors?.model?.ciclo}
+                                        help={{
+                                            text: 'opaopoaspoasp opaso',
+                                            position: 'top',
+                                            gapLeft: '10px'
+                                        }}
                                     />
                                     <Check
                                         className='order-2 md:order-3'

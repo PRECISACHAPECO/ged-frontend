@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
-
 import { useForm } from 'react-hook-form'
-import { Box, Button, Card, CardContent, Grid, List, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Grid, List, Typography, Tooltip } from '@mui/material'
 import Router from 'next/router'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
@@ -21,6 +20,7 @@ import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import CheckLabel from 'src/components/Form/CheckLabel'
 import Remove from 'src/components/Form/Remove'
+import HelpText from 'src/components/Defaults/HelpText'
 
 const FormParametrosFornecedor = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -270,7 +270,14 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 />
 
                                                 <Grid item md={4} xs={6}>
-                                                    {header.nomeCampo}
+                                                    {
+                                                        <>
+                                                            <Box display='flex' alignItems='center' sx={{ gap: 2 }}>
+                                                                {header.nomeCampo}
+                                                                <HelpText text='Opa blz irmao??' position='top' />
+                                                            </Box>
+                                                        </>
+                                                    }
                                                 </Grid>
                                                 <Grid item md={3} xs={3}>
                                                     <CheckLabel

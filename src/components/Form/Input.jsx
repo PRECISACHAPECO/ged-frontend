@@ -1,6 +1,9 @@
 import { Controller } from 'react-hook-form'
 import { FormControl, Grid, TextField } from '@mui/material'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask, cpfMask, rgMask } from 'src/configs/masks'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline' // Importe o ícone que deseja usar
+
+import HelpText from 'src/components/Defaults/HelpText'
 
 const Input = ({
     xs,
@@ -19,10 +22,12 @@ const Input = ({
     errors,
     onChange,
     className,
+    help,
     ...props
 }) => {
     return (
         <Grid item xs={xs} md={md} sx={{ my: 1 }} className={className}>
+            {/* {help && <HelpText text={help.text} position={help.position} />} */}
             <FormControl fullWidth>
                 <Controller
                     name={name}
@@ -37,6 +42,7 @@ const Input = ({
                             placeholder={title}
                             rows={rows}
                             type={type ?? 'text'}
+                            title='uhsauhsauuashuhsau'
                             size='small'
                             disabled={disabled}
                             aria-describedby='validation-schema-nome'
@@ -65,6 +71,10 @@ const Input = ({
                                 if (onChange) {
                                     onChange(value)
                                 }
+                            }}
+                            InputLabelProps={{
+                                shrink: true
+                                // Icone de ajuda
                             }}
                             inputProps={
                                 mask === 'cnpj'
