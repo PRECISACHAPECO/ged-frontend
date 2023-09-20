@@ -91,6 +91,7 @@ const Fornecedor = () => {
             })
             .then(response => {
                 setResult(response.data)
+                console.log('🚀 ~ response.data:', response.data)
                 setTitle({
                     title: 'Fornecedor',
                     subtitle: {
