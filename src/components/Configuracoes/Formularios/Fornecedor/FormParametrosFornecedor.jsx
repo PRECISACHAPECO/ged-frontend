@@ -274,7 +274,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                         <>
                                                             <Box display='flex' alignItems='center' sx={{ gap: 2 }}>
                                                                 {header.nomeCampo}
-                                                                <HelpText text='Opa blz irmao??' position='top' />
+                                                                {/* <HelpText text='Opa blz irmao??' position='top' /> */}
                                                             </Box>
                                                         </>
                                                     }
