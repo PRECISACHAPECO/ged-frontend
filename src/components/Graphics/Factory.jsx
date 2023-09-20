@@ -59,9 +59,12 @@ const Factory = () => {
                     {/* <Grid item xs={12} md={12}>
                         <EcommerceSalesOverview title='Fornecedor' data={dataFornecedor} />
                     </Grid> */}
+
+                    {/* Recebimento MP e Não Conformidade */}
                     <Grid item xs={12} md={6}>
                         <CrmWeeklyOverview data={dataRecebimentoNC} />
                     </Grid>
+
                     {/* <Grid item xs={12} md={12}>
                         <CrmProjectTimeline />
                     </Grid>

@@ -36,6 +36,7 @@ const CrmWeeklyOverview = ({ data }) => {
                             from: 40,
                             color: hexToRGBA(theme.palette.primary.main, 1),
                         },
+
                     ],
                 },
             },
@@ -45,12 +46,12 @@ const CrmWeeklyOverview = ({ data }) => {
             strokeWidth: 2,
             fillOpacity: 1,
             strokeOpacity: 1,
-            colors: [theme.palette.background.paper],
+            colors: [theme.palette.background.paper, theme.palette.error.main],
             strokeColors: hexToRGBA(theme.palette.primary.main, 1),
         },
         stroke: {
             width: [0, 2],
-            colors: [theme.palette.customColors.trackBg, theme.palette.primary.main],
+            colors: [theme.palette.customColors.trackBg, theme.palette.error.main],
         },
         legend: { show: false },
         dataLabels: { enabled: false },
@@ -94,11 +95,30 @@ const CrmWeeklyOverview = ({ data }) => {
             name: 'MP',
             type: 'column',
             data: last13MonthsData.map((item) => item.mp),
+            // data: last13MonthsData.map((item) => ({
+            //     x: item.month,
+            //     y: item.mp,
+            //     fillColor: {
+            //         colors: [
+            //             {
+            //                 opacity: 1,
+            //             },
+            //             {
+            //                 opacity: 0.5,
+            //             },
+            //         ],
+            //     },
+
+
+
+            // })),
+
         },
         {
             name: 'Não Conformidade',
             type: 'line',
             data: last13MonthsData.map((item) => item.nc),
+            color: theme.palette.error.main,
         },
     ];
 
