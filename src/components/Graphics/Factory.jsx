@@ -61,7 +61,7 @@ const Factory = () => {
                     </Grid> */}
 
                     {/* Recebimento MP e Não Conformidade */}
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={9}>
                         <CrmWeeklyOverview data={dataRecebimentoNC} />
                     </Grid>
 
