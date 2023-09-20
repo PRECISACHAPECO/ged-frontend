@@ -199,11 +199,9 @@ const Fornecedor = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            if (statusFornecedor && arrColumns) {
-                setSearchText(statusFornecedor)
-                handleSearch(statusFornecedor)
-            }
-        }, 10)
+            setSearchText(statusFornecedor)
+            handleSearch(statusFornecedor)
+        }, 100)
     }, [statusFornecedor])
 
     return (

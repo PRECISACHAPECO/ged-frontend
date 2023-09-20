@@ -22,16 +22,16 @@ const ParametersProvider = ({ children }) => {
     const handleSearch = searchValue => {
 
         setSearchText(searchValue)
-        const searchWords = searchValue.toLowerCase().split(' ').filter(word => word !== '')
+        const searchWords = searchValue?.toLowerCase().split(' ').filter(word => word !== '')
 
-        const filteredRows = data.filter(row => {
-            return searchWords.every(word => {
+        const filteredRows = data && data.filter(row => {
+            return searchWords?.every(word => {
                 return Object.keys(row).some(field => {
                     return row[field]?.toString().toLowerCase().indexOf(word) !== -1
                 })
             })
         })
-        if (searchValue.length && filteredRows.length > 0) {
+        if (searchValue && searchValue.length && filteredRows.length > 0) {
             setFilteredData(filteredRows)
         } else {
             setFilteredData([])
