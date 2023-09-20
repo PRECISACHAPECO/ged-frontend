@@ -22,11 +22,13 @@ const Factory = () => {
     const { loggedUnity } = useContext(AuthContext)
     const [data, setData] = useState(null)
     const [dataFornecedor, setDataFornecedor] = useState(null)
+    const [dataRecebimentoNC, setDataRecebimentoNC] = useState(null)
 
     const getData = async () => {
         try {
             const response = await api.get(`dashboard/fabrica/getData/${loggedUnity.unidadeID}`)
             setDataFornecedor(response.data.fornecedorPorStatus)
+            setDataRecebimentoNC(response.data.totalRecebimentoNC)
         } catch (err) {
             console.log(err)
         }
@@ -40,10 +42,6 @@ const Factory = () => {
         dataFornecedor && (
             <ApexChartWrapper>
                 <Grid container spacing={6} className='match-height'>
-                    <Grid item xs={12} md={12}>
-                        <Alert severity='info'>Dados em desenvolvimento...</Alert>
-                    </Grid>
-
                     {/* Por estatus em blocos separadosç */}
                     {dataFornecedor.map(row => (
                         <Grid item xs={6} md={3}>
@@ -61,7 +59,16 @@ const Factory = () => {
                     {/* <Grid item xs={12} md={12}>
                         <EcommerceSalesOverview title='Fornecedor' data={dataFornecedor} />
                     </Grid> */}
+                    <Grid item xs={12} md={6}>
+                        <CrmWeeklyOverview data={dataRecebimentoNC} />
+                    </Grid>
+                    {/* <Grid item xs={12} md={12}>
+                        <CrmProjectTimeline />
+                    </Grid>
 
+                    <Grid item xs={12} md={6}>
+                        <CrmOrganicSessions data={data} />
+                    </Grid>
                     <Grid item xs={6} sm={3} md={6}>
                         <CrmTotalProfit />
                     </Grid>
@@ -69,14 +76,8 @@ const Factory = () => {
                         <CrmTotalGrowth />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <CrmOrganicSessions data={data} />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
                         <CrmWeeklyOverview />
-                    </Grid>
-                    <Grid item xs={12} md={12}>
-                        <CrmProjectTimeline />
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </ApexChartWrapper>
         )
