@@ -18,12 +18,12 @@ const EcommerceImpressionsOrders = () => {
                         <CircularProgress
                             size={60}
                             value={100}
-                            thickness={5}
+                            thickness={4}
                             variant='determinate'
                             sx={{
                                 position: 'absolute',
                                 color: 'customColors.trackBg',
-                                '& .MuiCircularProgress-circle': { strokeWidth: 4 }
+                                '& .MuiCircularProgress-circle': { strokeLinecap: 'round' }
                             }}
                         />
                         <CircularProgress
@@ -32,7 +32,7 @@ const EcommerceImpressionsOrders = () => {
                             thickness={5}
                             color='primary'
                             variant='determinate'
-                            sx={{ '& .MuiCircularProgress-circle': { strokeWidth: 4, strokeLinecap: 'round' } }}
+                            sx={{ '& .MuiCircularProgress-circle': { strokeLinecap: 'round' } }}
                         />
                         <Box
                             sx={{

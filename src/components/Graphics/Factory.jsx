@@ -17,19 +17,21 @@ import CrmAward from 'src/views/dashboards/crm/CrmAward'
 import CrmSocialNetworkVisits from 'src/views/dashboards/crm/CrmSocialNetworkVisits'
 import CardStatsVertical from 'src/@core/components/card-statistics/card-stats-vertical'
 import EcommerceSalesOverview from 'src/views/dashboards/ecommerce/EcommerceSalesOverview'
-import EcommerceImpressionsOrders from 'src/views/dashboards/ecommerce/EcommerceImpressionsOrders'
+import AnalyticsOverview from 'src/views/dashboards/analytics/AnalyticsOverview'
+import GraphLimpeza from 'src/components/Graphics/home/GraphLimpeza'
 
 const Factory = () => {
     const { loggedUnity } = useContext(AuthContext)
-    const [data, setData] = useState(null)
     const [dataFornecedor, setDataFornecedor] = useState(null)
     const [dataRecebimentoNC, setDataRecebimentoNC] = useState(null)
+    const [limpeza, setLimpeza] = useState(null)
 
     const getData = async () => {
         try {
             const response = await api.get(`dashboard/fabrica/getData/${loggedUnity.unidadeID}`)
             setDataFornecedor(response.data.fornecedorPorStatus)
             setDataRecebimentoNC(response.data.totalRecebimentoNC)
+            setLimpeza(response.data.limpeza)
         } catch (err) {
             console.log(err)
         }
@@ -68,7 +70,7 @@ const Factory = () => {
 
                     {/* Limpeza e Higienização */}
                     <Grid item xs={12} md={3}>
-                        <EcommerceImpressionsOrders />
+                        <GraphLimpeza data={limpeza} />
                     </Grid>
 
                     {/* <Grid item xs={12} md={12}>
