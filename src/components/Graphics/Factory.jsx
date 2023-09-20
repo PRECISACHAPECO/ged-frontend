@@ -17,6 +17,7 @@ import CrmAward from 'src/views/dashboards/crm/CrmAward'
 import CrmSocialNetworkVisits from 'src/views/dashboards/crm/CrmSocialNetworkVisits'
 import CardStatsVertical from 'src/@core/components/card-statistics/card-stats-vertical'
 import EcommerceSalesOverview from 'src/views/dashboards/ecommerce/EcommerceSalesOverview'
+import EcommerceImpressionsOrders from 'src/views/dashboards/ecommerce/EcommerceImpressionsOrders'
 
 const Factory = () => {
     const { loggedUnity } = useContext(AuthContext)
@@ -63,6 +64,11 @@ const Factory = () => {
                     {/* Recebimento MP e Não Conformidade */}
                     <Grid item xs={12} md={9}>
                         <CrmWeeklyOverview data={dataRecebimentoNC} />
+                    </Grid>
+
+                    {/* Limpeza e Higienização */}
+                    <Grid item xs={12} md={3}>
+                        <EcommerceImpressionsOrders />
                     </Grid>
 
                     {/* <Grid item xs={12} md={12}>
