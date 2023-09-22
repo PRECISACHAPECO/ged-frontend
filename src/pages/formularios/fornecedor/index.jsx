@@ -23,50 +23,113 @@ const Fornecedor = () => {
     const { id } = useContext(RouteContext)
 
     const getList = async () => {
-        await api.get(`${currentLink}/getList/${loggedUnity.unidadeID}`).then(response => {
-            setResult(response.data)
-            setTitle({
-                title: 'Fornecedor',
-                subtitle: {
-                    id: id,
-                    count: response.data.length,
-                    new: false
-                }
+        await api
+            .post(`${currentLink}/getList/`, {
+                unidadeID: loggedUnity.unidadeID,
+                papelID: user.papelID,
+                cnpj: user.cnpj ? user.cnpj : null
             })
-        })
+            .then(response => {
+                setResult(response.data)
+                setTitle({
+                    title: 'Fornecedor',
+                    subtitle: {
+                        id: id,
+                        count: response.data.length,
+                        new: false
+                    }
+                })
+            })
     }
 
     useEffect(() => {
         getList()
     }, [id])
 
-    const arrColumns = [
-        {
-            headerName: 'ID',
-            field: 'id',
-            size: 0.1
-        },
-        {
-            headerName: 'Data',
-            field: 'data',
-            size: 0.1
-        },
-        {
-            headerName: 'Profissional',
-            field: 'profissional',
-            size: 0.2
-        },
-        {
-            headerName: 'Modelo',
-            field: 'modelo',
-            size: 0.2
-        },
-        {
-            headerName: 'Status',
-            field: 'status',
-            size: 0.2
-        }
-    ]
+    const arrColumns =
+        user.papelID == 1
+            ? [
+                  {
+                      headerName: 'ID',
+                      field: 'id',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Fornecedor',
+                      field: 'fornecedor',
+                      size: 1
+                  },
+                  {
+                      headerName: 'CNPJ',
+                      field: 'cnpj',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Data da Avaliação',
+                      field: 'data',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Cidade',
+                      field: 'cidade',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Responsável',
+                      field: 'responsavel',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
+                      size: 1
+                  }
+              ]
+            : user.papelID == 2
+            ? [
+                  {
+                      headerName: 'ID',
+                      field: 'id',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Fábrica',
+                      field: 'fabrica',
+                      size: 1
+                  },
+                  {
+                      headerName: 'CNPJ',
+                      field: 'cnpj',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Data da Avaliação',
+                      field: 'data',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Cidade',
+                      field: 'cidade',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Responsável',
+                      field: 'responsavel',
+                      size: 1
+                  },
+                  {
+                      headerName: 'Status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
+                      size: 1
+                  }
+              ]
+            : []
 
     const columns = configColumns(currentLink, arrColumns)
 

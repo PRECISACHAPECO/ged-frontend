@@ -200,7 +200,10 @@ const FormParametrosLimpeza = ({ id }) => {
 
     const getData = () => {
         try {
-            api.post(`${staticUrl}/getData`, { id: id }).then(response => {
+            api.post(`${staticUrl}/getData`, {
+                id: id,
+                unidadeID: loggedUnity.unidadeID
+            }).then(response => {
                 //* Estados
                 setModel(response.data.model)
                 setHeaders(response.data.header)

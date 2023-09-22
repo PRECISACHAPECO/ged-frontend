@@ -201,14 +201,18 @@ const FormParametrosFornecedor = ({ id }) => {
 
     const getData = () => {
         try {
-            api.post(`${staticUrl}/getData`, { id: id }).then(response => {
+            api.post(`${staticUrl}/getData`, {
+                id: id,
+                unidadeID: loggedUnity.unidadeID
+            }).then(response => {
+                console.log('🚀 ~ getData: ', response.data)
                 //* Estados
                 setModel(response.data.model)
                 setHeaders(response.data.header)
                 setBlocks(response.data.blocks)
                 setAllOptions({
-                    itens: response.data.options.itens,
-                    alternativas: response.data.options.alternativas
+                    itens: response.data.options?.itens,
+                    alternativas: response.data.options?.alternativas
                 })
                 setOrientacoes(response.data.orientations)
 
@@ -216,9 +220,10 @@ const FormParametrosFornecedor = ({ id }) => {
                 reset(response.data)
 
                 setTimeout(() => {
-                    response.data.blocks.map((block, indexBlock) => {
-                        refreshOptions(block, indexBlock, response.data.blocks, response.data.options)
-                    })
+                    response.data.blocks &&
+                        response.data.blocks.map((block, indexBlock) => {
+                            refreshOptions(block, indexBlock, response.data.blocks, response.data.options)
+                        })
                 }, 3000)
             })
         } catch (error) {
