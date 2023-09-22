@@ -69,7 +69,7 @@ const CrmWeeklyOverview = ({ data }) => {
             },
         },
         xaxis: {
-            categories: last13MonthsData.map((item) => item.month), // Substitua 'month' pelo campo real em seus dados
+            categories: last13MonthsData?.map((item) => item.month), // Substitua 'month' pelo campo real em seus dados
             tickPlacement: 'on',
             labels: { show: true },
             axisTicks: { show: false },
@@ -94,7 +94,7 @@ const CrmWeeklyOverview = ({ data }) => {
         {
             name: 'MP',
             type: 'column',
-            data: last13MonthsData.map((item) => item.mp),
+            data: last13MonthsData?.map((item) => item.mp),
             // data: last13MonthsData.map((item) => ({
             //     x: item.month,
             //     y: item.mp,
@@ -117,7 +117,7 @@ const CrmWeeklyOverview = ({ data }) => {
         {
             name: 'Não Conformidade',
             type: 'line',
-            data: last13MonthsData.map((item) => item.nc),
+            data: last13MonthsData?.map((item) => item.nc),
             color: theme.palette.error.main,
         },
     ];

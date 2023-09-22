@@ -15,6 +15,7 @@ import { toastMessage } from 'src/configs/defaultConfigs'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
+import { AuthContext } from 'src/context/AuthContext'
 
 const FormItem = ({ id }) => {
     const [open, setOpen] = useState(false)
@@ -24,6 +25,7 @@ const FormItem = ({ id }) => {
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
+    const { loggedUnity } = useContext(AuthContext)
 
     const {
         trigger,
@@ -36,7 +38,11 @@ const FormItem = ({ id }) => {
     } = useForm()
 
     //? Envia dados para a api
-    const onSubmit = async values => {
+    const onSubmit = async data => {
+        const values = {
+            ...data,
+            unidadeID: loggedUnity.unidadeID
+        }
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
