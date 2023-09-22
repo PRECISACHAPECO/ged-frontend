@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
 import { api } from 'src/configs/api'
-import FormItem from 'src/components/Cadastros/Item/FormItem'
+import FormProduto from 'src/components/Cadastros/Produto/FormProduto'
 import Table from 'src/components/Defaults/Table'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
@@ -13,19 +13,21 @@ import { useRouter } from 'next/router'
 import { configColumns } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
 
-const Item = () => {
+const Produto = () => {
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
+    console.log('🚀 ~ currentLink:', currentLink)
     const { setTitle } = useContext(ParametersContext)
     const { loggedUnity } = useContext(AuthContext)
     const { id } = useContext(RouteContext)
 
     const getList = async () => {
-        await api.get(`${currentLink}/${loggedUnity.unidadeID}`).then(response => {
+        await api.get(`${currentLink}`).then(response => {
             setResult(response.data)
+            console.log('🚀 ~ response.data do produto:', response.data)
             setTitle({
-                title: 'Item',
+                title: 'Produto',
                 subtitle: {
                     id: id,
                     count: response.data.length,
@@ -41,20 +43,20 @@ const Item = () => {
 
     const arrColumns = [
         {
-            title: 'ID',
+            headerName: 'ID',
             field: 'id',
             size: 0.1
         },
         {
-            title: 'Nome',
+            headerName: 'Nome',
             field: 'nome',
             size: 0.6
         },
-        {
-            title: 'Formulário',
-            field: 'formulario',
-            size: 0.2
-        },
+        // {
+        //     headerName: 'Unidade de medida',
+        //     field: 'unidadeMedida',
+        //     size: 0.2
+        // },
 
         {
             headerName: 'Status',
@@ -84,4 +86,4 @@ const Item = () => {
     )
 }
 
-export default Item
+export default Produto

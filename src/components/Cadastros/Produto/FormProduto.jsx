@@ -17,7 +17,7 @@ import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 
-const FormItem = ({ id }) => {
+const FormProduto = ({ id }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
@@ -173,4 +173,4 @@ const FormItem = ({ id }) => {
     )
 }
 
-export default FormItem
+export default FormProduto
