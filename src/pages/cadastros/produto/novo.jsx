@@ -1,6 +1,6 @@
-import FormItem from 'src/components/Cadastros/Item/FormItem'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { useContext, useEffect } from 'react'
+import FormProduto from 'src/components/Cadastros/Produto/FormProduto'
 
 const ProdutoNovo = () => {
     const { setTitle } = useContext(ParametersContext)
@@ -16,7 +16,7 @@ const ProdutoNovo = () => {
         })
     }, [])
 
-    return <FormItem />
+    return <FormProduto />
 }
 
 ProdutoNovo.acl = {

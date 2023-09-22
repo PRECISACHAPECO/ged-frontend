@@ -17,15 +17,13 @@ const Produto = () => {
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
-    console.log('🚀 ~ currentLink:', currentLink)
     const { setTitle } = useContext(ParametersContext)
     const { loggedUnity } = useContext(AuthContext)
     const { id } = useContext(RouteContext)
 
     const getList = async () => {
-        await api.get(`${currentLink}`).then(response => {
+        await api.get(`${currentLink}/${loggedUnity.unidadeID}`).then(response => {
             setResult(response.data)
-            console.log('🚀 ~ response.data do produto:', response.data)
             setTitle({
                 title: 'Produto',
                 subtitle: {
@@ -52,12 +50,11 @@ const Produto = () => {
             field: 'nome',
             size: 0.6
         },
-        // {
-        //     headerName: 'Unidade de medida',
-        //     field: 'unidadeMedida',
-        //     size: 0.2
-        // },
-
+        {
+            headerName: 'Unidade de medida',
+            field: 'unidadeMedida',
+            size: 0.2
+        },
         {
             headerName: 'Status',
             field: {
@@ -77,7 +74,7 @@ const Produto = () => {
                 <Loading />
             ) : //? Se tem id, exibe o formulário
             id && id > 0 ? (
-                <FormItem id={id} />
+                <FormProduto id={id} />
             ) : (
                 //? Lista tabela de resultados da listagem
                 <Table result={result} columns={columns} />

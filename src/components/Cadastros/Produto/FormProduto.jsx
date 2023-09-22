@@ -144,15 +144,15 @@ const FormProduto = ({ id }) => {
                                 <Select
                                     xs={12}
                                     md={12}
-                                    title='Formulários'
-                                    name='formulario.fields'
-                                    value={data?.formulario.fields}
+                                    title='Unidade de medida'
+                                    name='unidadeMedida.fields'
+                                    value={data?.unidadeMedida.fields}
                                     required={true}
-                                    options={data.formulario.options}
+                                    options={data.unidadeMedida.options}
                                     register={register}
                                     setValue={setValue}
                                     control={control}
-                                    errors={errors?.formulario?.fields}
+                                    errors={errors?.unidadeMedida?.fields}
                                 />
                             </Grid>
                         </CardContent>
