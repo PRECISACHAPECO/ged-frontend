@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from 'react'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { api } from 'src/configs/api'
-import { Card, CardContent, Grid } from '@mui/material'
+import { Button, Card, CardContent, CardHeader, Grid } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Loading from 'src/components/Loading'
@@ -16,6 +16,7 @@ import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
+import Icon from 'src/@core/components/icon'
 
 const FormProduto = ({ id }) => {
     const [open, setOpen] = useState(false)
@@ -26,6 +27,7 @@ const FormProduto = ({ id }) => {
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
     const { loggedUnity } = useContext(AuthContext)
+    const [anexos, setAnexos] = useState(null)
 
     const {
         trigger,
@@ -86,12 +88,26 @@ const FormProduto = ({ id }) => {
         try {
             const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
+                setAnexos(response.data.anexos)
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
             })
         } catch (error) {
             console.log(error)
         }
+    }
+
+    //? Adiciona um novo anexo
+    const addAnexo = () => {
+        const newAnexo = {
+            nome: '',
+            obrigatorio: 1,
+            status: 1,
+            observacao: ''
+        }
+
+        const updatedDataAnexos = [...anexos, newAnexo]
+        setAnexos(updatedDataAnexos)
     }
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
@@ -110,8 +126,8 @@ const FormProduto = ({ id }) => {
         <>
             {!data && <Loading />}
             {data && (
-                <Card>
-                    <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)} className='space-y-3'>
+                    <Card>
                         <FormHeader
                             btnCancel
                             btnNew
@@ -125,25 +141,16 @@ const FormProduto = ({ id }) => {
                             <Grid container spacing={5}>
                                 <Input
                                     xs={11}
-                                    md={11}
+                                    md={7}
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
                                     control={control}
                                     errors={errors?.fields?.nome}
                                 />
-                                <Check
-                                    xs={1}
-                                    md={1}
-                                    title='Ativo'
-                                    name='fields.status'
-                                    value={data.fields.status}
-                                    typePage={type}
-                                    register={register}
-                                />
                                 <Select
                                     xs={12}
-                                    md={12}
+                                    md={4}
                                     title='Unidade de medida'
                                     name='unidadeMedida.fields'
                                     value={data?.unidadeMedida.fields}
@@ -154,10 +161,83 @@ const FormProduto = ({ id }) => {
                                     control={control}
                                     errors={errors?.unidadeMedida?.fields}
                                 />
+                                <Check
+                                    xs={1}
+                                    md={1}
+                                    title='Ativo'
+                                    name='fields.status'
+                                    value={data.fields.status}
+                                    typePage={type}
+                                    register={register}
+                                />
                             </Grid>
                         </CardContent>
-                    </form>
-                </Card>
+                    </Card>
+                    <Card>
+                        <CardHeader title='Anexos' />
+                        <CardContent>
+                            <Grid container spacing={5}>
+                                {anexos &&
+                                    anexos.map((row, index) => (
+                                        <>
+                                            <Input
+                                                xs={11}
+                                                md={10}
+                                                title='Nome'
+                                                name={`anexos[${index}].nome`}
+                                                required={true}
+                                                control={control}
+                                                errors={errors?.fields?.nome}
+                                            />
+                                            <Check
+                                                xs={1}
+                                                md={1}
+                                                title='Obrigatório'
+                                                name={`anexos[${index}].obrigatorio`}
+                                                value={row.obrigatorio == 1 ? true : false}
+                                                typePage={type}
+                                                register={register}
+                                            />
+                                            <Check
+                                                xs={1}
+                                                md={1}
+                                                title='Ativo'
+                                                name={`anexos[${index}].status`}
+                                                value={row.obrigatorio == 1 ? true : false}
+                                                typePage={type}
+                                                register={register}
+                                            />
+                                            <Input
+                                                xs={11}
+                                                md={12}
+                                                multiline
+                                                rows={4}
+                                                title='Descrição (opcional)'
+                                                name={`anexos[${index}].descricao`}
+                                                required={true}
+                                                control={control}
+                                                errors={errors?.fields?.nome}
+                                            />
+                                        </>
+                                    ))}
+
+                                <Grid item xs={12}>
+                                    <Button
+                                        variant='outlined'
+                                        color='primary'
+                                        sx={{ mt: 1 }}
+                                        startIcon={<Icon icon='material-symbols:add-circle-outline-rounded' />}
+                                        onClick={() => {
+                                            addAnexo()
+                                        }}
+                                    >
+                                        Inserir Anexo
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </form>
             )}
 
             <DialogForm
