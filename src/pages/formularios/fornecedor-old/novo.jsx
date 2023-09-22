@@ -1,13 +1,13 @@
-import FormRecebimentoMp from 'src/components/RecebimentoMp/FormRecebimentoMp'
+import FormFornecedor from 'src/components/Fornecedor/FormFornecedor'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { useContext, useEffect } from 'react'
 
-const RecebimentoMpNovo = () => {
+const FornecedorNovo = () => {
     const { setTitle } = useContext(ParametersContext)
 
     useEffect(() => {
         setTitle({
-            title: 'Recebimento de Matéria Prima',
+            title: 'Fornecedor',
             subtitle: {
                 id: null,
                 count: null,
@@ -16,7 +16,7 @@ const RecebimentoMpNovo = () => {
         })
     }, [])
 
-    return <FormRecebimentoMp />
+    return <FormFornecedor />
 }
 
-export default RecebimentoMpNovo
+export default FornecedorNovo

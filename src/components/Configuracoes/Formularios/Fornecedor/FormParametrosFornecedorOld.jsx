@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
-
 import { useForm } from 'react-hook-form'
-import { Box, Button, Card, CardContent, Grid, List, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Grid, List, Typography, Tooltip } from '@mui/material'
 import Router from 'next/router'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
@@ -24,9 +23,7 @@ import Remove from 'src/components/Form/Remove'
 import HelpText from 'src/components/Defaults/HelpText'
 
 const FormParametrosFornecedor = ({ id }) => {
-    console.log('🚀 ~ FormParametrosFornecedor: ', id)
     const { user, loggedUnity } = useContext(AuthContext)
-    const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
     const [allOptions, setAllOptions] = useState(null)
     const [blocks, setBlocks] = useState()
@@ -52,9 +49,7 @@ const FormParametrosFornecedor = ({ id }) => {
 
     const onSubmit = async values => {
         const data = {
-            id: id,
             unidadeID: loggedUnity.unidadeID,
-            model: values.model,
             header: values.header,
             blocks: values.blocks,
             arrRemovedBlocks: arrRemovedBlocks,
@@ -64,8 +59,10 @@ const FormParametrosFornecedor = ({ id }) => {
 
         setHeaders(null) //? Pra exibir loading
 
+        console.log('🚀 ~ onSubmit:', data)
+
         try {
-            await api.put(`${staticUrl}/updateData`, data).then(response => {
+            await api.put(`${staticUrl}/fornecedor/updateData`, data).then(response => {
                 toast.success(toastMessage.successUpdate)
                 setSavingForm(!savingForm)
             })
@@ -107,6 +104,7 @@ const FormParametrosFornecedor = ({ id }) => {
     }
 
     const removeItem = (item, indexBlock, indexItem) => {
+        console.log('🚀 ~ length:', blocks[indexBlock].itens.length)
         if (blocks[indexBlock].itens.length === 1) {
             toast.error('Você deve ter ao menos um item!')
             return
@@ -146,7 +144,7 @@ const FormParametrosFornecedor = ({ id }) => {
 
         // Inserir no array de blocos removidos
         let newRemovedBlocks = [...arrRemovedBlocks]
-        newRemovedBlocks.push(block.dados.parFornecedorModeloBlocoID)
+        newRemovedBlocks.push(block.dados.parFornecedorBlocoID)
         setArrRemovedBlocks(newRemovedBlocks)
 
         // Remove bloco
@@ -201,12 +199,13 @@ const FormParametrosFornecedor = ({ id }) => {
 
     const getData = () => {
         try {
-            api.post(`${staticUrl}/getData`, { id: id }).then(response => {
+            api.post(`${staticUrl}/fornecedor/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
                 //* Estados
-                setModel(response.data.model)
                 setHeaders(response.data.header)
                 setBlocks(response.data.blocks)
                 setAllOptions({
+                    categorias: response.data.options.categorias,
+                    atividades: response.data.options.atividades,
                     itens: response.data.options.itens,
                     alternativas: response.data.options.alternativas
                 })
@@ -236,63 +235,10 @@ const FormParametrosFornecedor = ({ id }) => {
                 <Loading />
             ) : (
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    {/* Modelo */}
-                    {model && (
-                        <Card>
-                            <FormHeader
-                                partialRoute
-                                btnCancel
-                                btnSave
-                                handleSubmit={() => handleSubmit(onSubmit)}
-                                type={type}
-                            />
-                            <CardContent>
-                                <Grid container spacing={4}>
-                                    <Input
-                                        className='order-1'
-                                        xs={12}
-                                        md={8}
-                                        title='Modelo'
-                                        name={`model.nome`}
-                                        value={model.nome}
-                                        required={true}
-                                        control={control}
-                                        errors={errors?.model?.nome}
-                                    />
-                                    <Input
-                                        className='order-1'
-                                        xs={12}
-                                        md={3}
-                                        type='number'
-                                        title={`Ciclo (dias)`}
-                                        name={`model.ciclo`}
-                                        value={model.ciclo}
-                                        required={true}
-                                        control={control}
-                                        errors={errors?.model?.ciclo}
-                                        help={{
-                                            text: 'opaopoaspoasp opaso',
-                                            position: 'top',
-                                            gapLeft: '10px'
-                                        }}
-                                    />
-                                    <Check
-                                        className='order-2 md:order-3'
-                                        xs={2}
-                                        md={1}
-                                        title='Ativo'
-                                        name={`model.status`}
-                                        value={model.status}
-                                        register={register}
-                                    />
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    )}
-
                     {/* Cabeçalho */}
                     {headers && (
-                        <Card sx={{ mt: 4 }}>
+                        <Card>
+                            <FormHeader btnCancel btnSave handleSubmit={() => handleSubmit(onSubmit)} type={type} />
                             <CardContent>
                                 {/* Lista campos */}
                                 <List component='nav' aria-label='main mailbox'>
@@ -316,8 +262,22 @@ const FormParametrosFornecedor = ({ id }) => {
 
                                         {headers.map((header, index) => (
                                             <>
+                                                <input
+                                                    type='hidden'
+                                                    name={`header.[${index}].parFornecedorID`}
+                                                    defaultValue={header.parFornecedorID}
+                                                    {...register(`header.[${index}].parFornecedorID`)}
+                                                />
+
                                                 <Grid item md={4} xs={6}>
-                                                    {header.nomeCampo}
+                                                    {
+                                                        <>
+                                                            <Box display='flex' alignItems='center' sx={{ gap: 2 }}>
+                                                                {header.nomeCampo}
+                                                                {/* <HelpText text='Opa blz irmao??' position='top' /> */}
+                                                            </Box>
+                                                        </>
+                                                    }
                                                 </Grid>
                                                 <Grid item md={3} xs={3}>
                                                     <CheckLabel
@@ -351,6 +311,14 @@ const FormParametrosFornecedor = ({ id }) => {
                         blocks.map((block, index) => (
                             <Card key={index} md={12} sx={{ mt: 4 }}>
                                 <CardContent>
+                                    {/* Header */}
+                                    <input
+                                        type='hidden'
+                                        name={`blocks.[${index}].dados.parFornecedorBlocoID`}
+                                        value={block.dados.parFornecedorBlocoID}
+                                        {...register(`blocks.[${index}].dados.parFornecedorBlocoID`)}
+                                    />
+
                                     <Grid container spacing={4}>
                                         <Input
                                             className='order-1'
@@ -395,6 +363,39 @@ const FormParametrosFornecedor = ({ id }) => {
                                             value={blocks[index].dados.obs}
                                             register={register}
                                         />
+
+                                        {/* Configurações de exibição */}
+                                        <Select
+                                            className='order-5'
+                                            xs={12}
+                                            md={5}
+                                            multiple
+                                            title='Mostrar esse bloco quando é'
+                                            name={`blocks.[${index}].categorias`}
+                                            value={block.categorias}
+                                            required={true}
+                                            options={allOptions.categorias}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                            errors={errors?.blocks?.[index]?.categorias}
+                                        />
+
+                                        <Select
+                                            className='order-6'
+                                            xs={12}
+                                            md={7}
+                                            multiple
+                                            title='Atividade(s)'
+                                            name={`blocks.[${index}].atividades`}
+                                            value={block.atividades}
+                                            required={false}
+                                            options={allOptions.atividades}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                            errors={errors?.blocks?.[index]?.atividades}
+                                        />
                                     </Grid>
 
                                     {/* Itens */}
@@ -410,14 +411,14 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 spacing={2}
                                                 sx={{ my: 1 }}
                                             >
-                                                {/* <input
+                                                <input
                                                     type='hidden'
                                                     name={`blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`}
                                                     value={item.parFornecedorBlocoItemID}
                                                     {...register(
                                                         `blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`
                                                     )}
-                                                /> */}
+                                                />
 
                                                 {/* Sequência do item */}
                                                 <Input
@@ -434,7 +435,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 {/* Item */}
                                                 <Select
                                                     xs={12}
-                                                    md={5}
+                                                    md={4}
                                                     title={
                                                         blocks[index].itens[indexItem].itemID
                                                             ? `Item [${blocks[index].itens[indexItem].itemID}]`
@@ -496,6 +497,33 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     value={blocks[index].itens[indexItem].obrigatorio}
                                                     register={register}
                                                 />
+
+                                                {/* Abre o modal que define a pontuação das respostas */}
+                                                <Grid item xs={2} md={1}>
+                                                    <Box
+                                                        height='100%'
+                                                        display='flex'
+                                                        flexDirection='column'
+                                                        justifyContent='center'
+                                                        alignItems='center'
+                                                    >
+                                                        <Typography variant='caption'>
+                                                            {indexItem == 0 ? 'Pontuação' : ''}
+                                                        </Typography>
+                                                        <Button
+                                                            style={item.pontuacao === 0 ? { opacity: 0.3 } : {}}
+                                                            title={
+                                                                !item.parFornecedorBlocoID
+                                                                    ? 'Salve o bloco para definir a pontuação'
+                                                                    : 'Definir pontuação para as respostas'
+                                                            }
+                                                            disabled={!item.parFornecedorBlocoID}
+                                                            onClick={() => openScoreModal(item)}
+                                                        >
+                                                            <Icon icon='ic:baseline-assessment' />
+                                                        </Button>
+                                                    </Box>
+                                                </Grid>
 
                                                 {/* Deletar */}
                                                 <Remove

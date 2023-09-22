@@ -3,8 +3,7 @@ import { api } from 'src/configs/api'
 import Table from 'src/components/Defaults/Table'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
-import FormParametrosFornecedor from 'src/components/Configuracoes/Formularios/Fornecedor/FormParametrosFornecedorOld'
-import FormParametrosRecebimentoMp from 'src/components/Configuracoes/Formularios/RecebimentoMp/FormParametrosRecebimentoMp'
+import FormParametrosFornecedor from 'src/components/Configuracoes/Formularios/Fornecedor/FormParametrosFornecedor'
 import Loading from 'src/components/Loading'
 
 // ** Next
@@ -12,20 +11,24 @@ import { useRouter } from 'next/router'
 
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
+import { AuthContext } from 'src/context/AuthContext'
 
-const ListParametrosFormularios = () => {
+const ListParametrosFornecedor = () => {
+    console.log('lista...')
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
     const { setTitle } = useContext(ParametersContext)
     const { id, setId } = useContext(RouteContext)
+    const { loggedUnity } = useContext(AuthContext)
 
     useEffect(() => {
         const getList = async () => {
-            await api.get(currentLink).then(response => {
+            console.log('getList')
+            await api.get(`${currentLink}/getList/${loggedUnity.unidadeID}`).then(response => {
                 setResult(response.data)
                 setTitle({
-                    title: 'Formulários',
+                    title: 'Formulários de Fornecedor',
                     subtitle: {
                         id: id,
                         count: response.data.length,
@@ -36,6 +39,10 @@ const ListParametrosFormularios = () => {
         }
         getList()
     }, [id])
+
+    useEffect(() => {
+        setId(null)
+    }, [])
 
     const arrColumns = [
         {
@@ -52,32 +59,19 @@ const ListParametrosFormularios = () => {
 
     const columns = configColumns(currentLink, arrColumns)
 
-    const handleRoute = route => {
-        router.push(`${currentLink}/${route}`)
-    }
-
     return (
         <>
-            {/* Exibe loading enquanto não existe result */}
             {!result ? (
-                <Loading />
+                <Loading show />
             ) : //? Se tem id, exibe o formulário
             id && id > 0 ? (
-                id == 1 ? (
-                    handleRoute('fornecedor')
-                ) : id == 2 ? (
-                    <FormParametrosRecebimentoMp id={id} />
-                ) : id == 3 ? (
-                    <h3>Em desenvolvimento...</h3>
-                ) : id == 4 ? (
-                    handleRoute('limpeza')
-                ) : null
+                <FormParametrosFornecedor id={id} />
             ) : (
                 //? Lista tabela de resultados da listagem
-                <Table result={result} columns={columns} />
+                <Table result={result} columns={columns} btnBack />
             )}
         </>
     )
 }
 
-export default ListParametrosFormularios
+export default ListParametrosFornecedor
