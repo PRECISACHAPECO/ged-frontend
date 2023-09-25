@@ -101,10 +101,10 @@ const NewFornecedor = ({ handleClose, openModal }) => {
                             Insira o CNPJ da empresa que deseja habilitar como um novo fornecedor. Com isso, a empresa
                             ficará apta a preencher formulários para a {loggedUnity.nomeFantasia}.
                         </DialogContentText>
-                        <Grid container spacing={4}>
+                        <Grid container>
                             <Input
                                 xs={12}
-                                md={6}
+                                md={5}
                                 title='CNPJ'
                                 name='fields.cnpj'
                                 value={fields?.cnpj}
@@ -120,7 +120,7 @@ const NewFornecedor = ({ handleClose, openModal }) => {
                                     <Alert severity='error'>CNPJ inválido!</Alert>
                                 </Grid>
                             )}
-                            <Grid item>
+                            <Grid item sx={{ pl: 4 }}>
                                 {/* Se fornecedor já está cadastrado no sistema */}
                                 {fields && fields?.fornecedorExist?.isFornecedor && (
                                     <IsFornecedor data={fields.fornecedorExist.fornecedor} />
