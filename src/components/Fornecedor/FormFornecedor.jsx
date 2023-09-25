@@ -25,6 +25,8 @@ import Loading from 'src/components/Loading'
 import toast from 'react-hot-toast'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
+import FormNotification from './Dialog/FormNotification'
+import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
 
 const FormFornecedor = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -32,6 +34,7 @@ const FormFornecedor = ({ id }) => {
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
+    const [unidade, setUnidade] = useState(null)
     const [status, setStatus] = useState(null)
     const { createNewNotification } = useContext(NotificationContext)
     const [openModalStatus, setOpenModalStatus] = useState(false)
@@ -69,9 +72,10 @@ const FormFornecedor = ({ id }) => {
     } = useForm()
 
     //* Reabre o formulário pro fornecedor alterar novamente se ainda nao estiver vinculado com recebimento
-    const changeFormStatus = async status => {
+    const changeFormStatus = async (status, observacao) => {
         const data = {
             status: status,
+            observacao: observacao,
             auth: {
                 usuarioID: user.usuarioID,
                 papelID: user.papelID,
@@ -93,21 +97,69 @@ const FormFornecedor = ({ id }) => {
         }
     }
 
+    const sendNotification = async values => {
+        console.log('===> ', values)
+        try {
+            if (!values.email && !values.alerta) return toast.error('Selecione ao menos um tipo de notificação!')
+
+            //* Gera notificação (podendo ser alerta e/ou email)
+            const data = {
+                titulo: values.assunto,
+                descricao: values.descricao,
+                url: '/formularios/fornecedor/',
+                urlID: id,
+                tipoNotificacaoID: 3, //? fornecedor
+                usuarioGeradorID: user.usuarioID,
+                usuarioID: 0, //? Todos da unidade
+                unidadeID: unidade.fornecedor.unidadeID, //? UnidadeID do fornecedor (que verá a notificação)
+                papelID: 2, //? Notificação pro fornecedor
+                //? Email / Alerta
+                email: values.email,
+                alerta: values.alerta
+            }
+            console.log('🚀 ~ data dat notificação:', data)
+            createNewNotification(data)
+
+            //* Envia e-mail
+            if (values.email) {
+                const data = {
+                    values: values,
+                    auth: {
+                        id: id,
+                        usuarioID: user.usuarioID,
+                        papelID: user.papelID,
+                        unidadeID: loggedUnity.unidadeID
+                    }
+                }
+                const response = await api.post(`${staticUrl}/sendNotification`, data)
+            }
+
+            //* Envia toast de sucesso
+            const toastMessage =
+                values.alerta && values.email
+                    ? 'E-mail e alerta enviados com sucesso!'
+                    : values.alerta && !values.email
+                    ? 'Alerta criado com sucesso!'
+                    : !values.alerta && values.email
+                    ? 'E-mail enviado com sucesso!'
+                    : null
+
+            toast.success(toastMessage)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
     const actionsData = [
         {
             id: 1,
-            name: 'Dados do Recebimento de MP',
-            component: (
-                <ReportRecebimentoMP
-                    params={{
-                        id: id,
-                        unidadeID: 1 //loggedUnity.unidadeID
-                    }}
-                />
-            ),
-            route: '/relatorio/recebimentoMp/dadosRecebimentoMp',
+            name: 'Formulário do fornecedor',
+            component: <ReportFornecedor params={{ id: id }} />,
+            route: '/relatorio/fornecedor/dadosFornecedor',
             papelID: user.papelID,
+            modal: false,
+            type: 'report',
             identification: '01',
             params: {
                 fornecedorID: id
@@ -115,27 +167,27 @@ const FormFornecedor = ({ id }) => {
         },
         {
             id: 2,
-            name: 'Declaração de prolificiência',
+            name: 'Gerar notificação',
+            description: 'Gerar uma nova notificação para o fornecedor, podendo ser um e-mail e/ou alerta do sistema.',
             component: (
-                <ReportRecebimentoMP
-                    params={{
-                        id: id,
-                        unidadeID: 1 //loggedUnity.unidadeID
+                <FormNotification
+                    data={{
+                        email: field.find(row => row.nomeColuna == 'email')?.email
                     }}
                 />
             ),
-            route: '/relatorio/recebimentoMp/dadosRecebimentoMp',
-            papelID: user.papelID,
-            identification: '02',
-            params: {
-                fornecedorID: id
-            }
+            route: null,
+            type: null,
+            modal: true,
+            action: sendNotification,
+            icon: 'mdi:bell-outline',
+            identification: null
         }
     ]
 
     const verifyFormPending = async () => {
         try {
-            const parFormularioID = 4
+            const parFormularioID = 1 //? Fornecedor
             await api.post(`${staticUrl}/verifyFormPending/${id}`, { parFormularioID }).then(response => {
                 setHasFormPending(response.data) //! true/false
             })
@@ -180,6 +232,7 @@ const FormFornecedor = ({ id }) => {
                 setField(response.data.fields)
                 setBlocos(response.data.blocos)
                 setInfo(response.data.info)
+                setUnidade(response.data.unidade)
 
                 //* Insere os dados no formulário
                 reset(response.data)
@@ -188,10 +241,12 @@ const FormFornecedor = ({ id }) => {
                 setStatus(objStatus)
 
                 setCanEdit({
-                    status: response?.data?.info?.status < 40 ? true : false,
+                    status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
                     message:
-                        'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
-                    messageType: 'info'
+                        user.papelID == 2
+                            ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
+                            : 'Somente o fornecedor pode alterar as informações deste formulário!',
+                    messageType: user.papelID == 2 ? 'warning' : 'info'
                 })
 
                 verifyFormPending()
@@ -240,6 +295,37 @@ const FormFornecedor = ({ id }) => {
         })
     }
 
+    const getAddressByCep = async cepString => {
+        if (cepString.length === 9) {
+            const cep = cepString.replace(/[^0-9]/g, '')
+            try {
+                const response = await api.get(`https://viacep.com.br/ws/${cep}/json/`)
+                if (response.data.localidade) {
+                    field.forEach(async (row, index) => {
+                        if (
+                            row.nomeColuna === 'logradouro' ||
+                            row.nomeColuna === 'bairro' ||
+                            row.nomeColuna === 'cidade' ||
+                            row.nomeColuna === 'estado'
+                        ) {
+                            await setValue(`fields[${index}].logradouro`, response.data.logradouro)
+                            await setValue(`fields[${index}].bairro`, response.data.bairro)
+                            await setValue(`fields[${index}].cidade`, response.data.localidade)
+                            await setValue(`fields[${index}].estado`, response.data.uf)
+                        }
+                    })
+
+                    toast.success('Endereço encontrado!')
+                } else {
+                    toast.error('Endereço não encontrado!')
+                }
+            } catch (error) {
+                // Handle error
+                console.error(error)
+            }
+        }
+    }
+
     const handleSendForm = () => {
         checkErrors()
         setOpenModal(true)
@@ -248,7 +334,6 @@ const FormFornecedor = ({ id }) => {
 
     const conclusionForm = async values => {
         values['conclusion'] = true
-
         await handleSubmit(onSubmit)(values)
     }
 
@@ -301,8 +386,8 @@ const FormFornecedor = ({ id }) => {
     }
 
     const onSubmit = async (values, param = false) => {
-        if (param.conclusion === true && param.status > 10) {
-            values['status'] = param.status
+        if (param.conclusion === true) {
+            values['status'] = user && user.papelID == 1 ? param.status : 40 //? Seta o status somente se for fábrica
             values['obsConclusao'] = param.obsConclusao
         }
 
@@ -314,6 +399,8 @@ const FormFornecedor = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
+        console.log('🚀 ~ onSubmit: ', data)
+        // return
 
         try {
             if (type == 'edit') {
@@ -396,6 +483,7 @@ const FormFornecedor = ({ id }) => {
                             control={control}
                             fields={field}
                             values={field}
+                            getAddressByCep={getAddressByCep}
                             disabled={!canEdit.status}
                         />
                     </CardContent>
@@ -448,15 +536,15 @@ const FormFornecedor = ({ id }) => {
                 {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}
                 {openModalStatus && (
                     <DialogFormStatus
+                        title='Histórico do Formulário'
+                        text={`Listagem do histórico das movimentações do formulário ${id} do Fornecedor.`}
                         id={id}
-                        parFormularioID={2} // Recebimento MP
+                        parFormularioID={1} // Fornecedor
                         formStatus={info.status}
                         hasFormPending={hasFormPending}
-                        canChangeStatus={info.status > 30 && !hasFormPending}
+                        canChangeStatus={user.papelID == 1 && !hasFormPending && info.status > 30}
                         openModal={openModalStatus}
                         handleClose={() => setOpenModalStatus(false)}
-                        title='Histórico do Formulário'
-                        text={`Listagem do histórico das movimentações do formulário ${id} de Fornecedor.`}
                         btnCancel
                         btnConfirm
                         handleSubmit={changeFormStatus}

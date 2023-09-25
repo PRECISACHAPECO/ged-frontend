@@ -24,7 +24,7 @@ import toast from 'react-hot-toast'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
-import FormNotification from './Dialog/FormNotification'
+import FormNotification from '../Fornecedor/Dialog/FormNotification'
 
 const FormFornecedor = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
