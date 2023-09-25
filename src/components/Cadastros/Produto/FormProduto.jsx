@@ -17,6 +17,7 @@ import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 import Icon from 'src/@core/components/icon'
+import Remove from 'src/components/Form/Remove'
 
 const FormProduto = ({ id }) => {
     const [open, setOpen] = useState(false)
@@ -27,7 +28,8 @@ const FormProduto = ({ id }) => {
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
     const { loggedUnity } = useContext(AuthContext)
-    const [anexos, setAnexos] = useState(null)
+    const [anexos, setAnexos] = useState([])
+    const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
 
     const {
         trigger,
@@ -43,7 +45,8 @@ const FormProduto = ({ id }) => {
     const onSubmit = async data => {
         const values = {
             ...data,
-            unidadeID: loggedUnity.unidadeID
+            unidadeID: loggedUnity.unidadeID,
+            removedItems
         }
         try {
             if (type === 'new') {
@@ -88,6 +91,7 @@ const FormProduto = ({ id }) => {
         try {
             const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
+                console.log('🚀 ~ response:', response.data)
                 setAnexos(response.data.anexos)
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
@@ -95,6 +99,20 @@ const FormProduto = ({ id }) => {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const removeItem = (value, index) => {
+        const newValue = [...anexos]
+
+        //* Adiciona item removido ao array
+        if (value.produtoAnexoID) {
+            setRemovedItems([...removedItems, value.produtoAnexoID])
+        }
+
+        newValue.splice(index, 1)
+        setAnexos(newValue)
+
+        setValue('anexo', newValue)
     }
 
     //? Adiciona um novo anexo
@@ -141,7 +159,7 @@ const FormProduto = ({ id }) => {
                             <Grid container spacing={5}>
                                 <Input
                                     xs={11}
-                                    md={7}
+                                    md={6}
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
@@ -178,11 +196,10 @@ const FormProduto = ({ id }) => {
                         <CardContent>
                             <Grid container spacing={5}>
                                 {anexos &&
-                                    anexos.map((row, index) => (
+                                    anexos.map((item, index) => (
                                         <>
                                             <Input
-                                                xs={11}
-                                                md={10}
+                                                md={9}
                                                 title='Nome'
                                                 name={`anexos[${index}].nome`}
                                                 required={true}
@@ -194,7 +211,7 @@ const FormProduto = ({ id }) => {
                                                 md={1}
                                                 title='Obrigatório'
                                                 name={`anexos[${index}].obrigatorio`}
-                                                value={row.obrigatorio == 1 ? true : false}
+                                                value={item.obrigatorio == 1 ? true : false}
                                                 typePage={type}
                                                 register={register}
                                             />
@@ -203,15 +220,26 @@ const FormProduto = ({ id }) => {
                                                 md={1}
                                                 title='Ativo'
                                                 name={`anexos[${index}].status`}
-                                                value={row.obrigatorio == 1 ? true : false}
+                                                value={item.obrigatorio == 1 ? true : false}
                                                 typePage={type}
                                                 register={register}
+                                            />
+                                            <Remove
+                                                xs={4}
+                                                md={1}
+                                                title='Remover'
+                                                index={index}
+                                                removeItem={removeItem}
+                                                item={item}
+                                                pending={item.hasPending}
+                                                textSuccess='Remover este item'
+                                                textError='Este item não pode mais ser removido pois possui anexo vinculado a ele'
                                             />
                                             <Input
                                                 xs={11}
                                                 md={12}
                                                 multiline
-                                                rows={4}
+                                                items={4}
                                                 title='Descrição (opcional)'
                                                 name={`anexos[${index}].descricao`}
                                                 required={true}
