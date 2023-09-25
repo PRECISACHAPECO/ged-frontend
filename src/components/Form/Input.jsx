@@ -1,9 +1,6 @@
 import { Controller } from 'react-hook-form'
 import { FormControl, Grid, TextField } from '@mui/material'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask, cpfMask, rgMask } from 'src/configs/masks'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline' // Importe o ícone que deseja usar
-
-import HelpText from 'src/components/Defaults/HelpText'
 
 const Input = ({
     xs,
@@ -27,7 +24,6 @@ const Input = ({
 }) => {
     return (
         <Grid item xs={xs} md={md} sx={{ my: 1 }} className={className}>
-            {/* {help && <HelpText text={help.text} position={help.position} />} */}
             <FormControl fullWidth>
                 <Controller
                     name={name}
