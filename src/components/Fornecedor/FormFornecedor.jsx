@@ -25,8 +25,9 @@ import Loading from 'src/components/Loading'
 import toast from 'react-hot-toast'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
-import FormNotification from './Dialog/FormNotification'
+import FormNotification from './Dialogs/Notification/FormNotification'
 import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
+import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 
 const FormFornecedor = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -43,6 +44,7 @@ const FormFornecedor = ({ id }) => {
     const [blocos, setBlocos] = useState([])
     const [info, setInfo] = useState('')
     const [openModal, setOpenModal] = useState(false)
+    const [openModalNewFornecedor, setOpenModalNewFornecedor] = useState(false)
     const [listErrors, setListErrors] = useState({ status: false, errors: [] })
     const { settings } = useContext(SettingsContext)
     const { setId } = useContext(RouteContext)
@@ -174,6 +176,24 @@ const FormFornecedor = ({ id }) => {
                     data={{
                         email: field.find(row => row.nomeColuna == 'email')?.email
                     }}
+                />
+            ),
+            route: null,
+            type: null,
+            modal: true,
+            action: sendNotification,
+            icon: 'mdi:bell-outline',
+            identification: null
+        },
+        {
+            id: 3,
+            name: 'Gerar novo preenchimento',
+            description: 'Gerar um novo formulário de preenchimento para este fornecedor.',
+            component: (
+                <NewFornecedor
+                    openModal={openModalNewFornecedor}
+                    handleClose={() => setOpenModalNewFornecedor(false)}
+                    title='Gerar novo preenchimento do Fornecedor'
                 />
             ),
             route: null,

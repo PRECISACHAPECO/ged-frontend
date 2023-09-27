@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
-import NewFornecedor from 'src/components/Fornecedor/Dialogs/newFornecedor'
+import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 
 const Fornecedor = () => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -21,7 +21,7 @@ const Fornecedor = () => {
     const router = useRouter()
     const currentLink = router.pathname
     const { setTitle } = useContext(ParametersContext)
-    const { id } = useContext(RouteContext)
+    const { id, setId } = useContext(RouteContext)
     const [open, setOpen] = useState(false)
 
     //* Controles modal pra inserir fornecedor
@@ -52,6 +52,8 @@ const Fornecedor = () => {
     useEffect(() => {
         getList()
     }, [id])
+
+    console.log('==> ', id)
 
     const arrColumns =
         user.papelID == 1
@@ -152,12 +154,7 @@ const Fornecedor = () => {
                 //? Lista tabela de resultados da listagem
                 <Table result={result} columns={columns} openModal={user.papelID == 1 ? openModal : null} />
             )}
-            <NewFornecedor
-                openModal={open}
-                setOpenModal={setOpen}
-                handleClose={() => setOpen(false)}
-                title='Novo fornecedor'
-            />
+            <NewFornecedor openModal={open} handleClose={() => setOpen(false)} title='Habilitar Fornecedor' />
         </>
     )
 }

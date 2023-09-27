@@ -16,11 +16,12 @@ import { useForm } from 'react-hook-form'
 import { validationCNPJ } from '../../../../configs/validations'
 import { api } from 'src/configs/api'
 import { useRouter } from 'next/router'
-import IsFornecedor from './isFornecedor'
-import FornecedorNew from './FornecedorNew'
+import FormNewFornecedor from './FormNewFornecedor'
 import toast from 'react-hot-toast'
+import { cnpjMask } from 'src/configs/masks'
+import CustomChip from 'src/@core/components/mui/chip'
 
-const NewFornecedor = ({ handleClose, openModal, setOpenModal }) => {
+const NewFornecedor = ({ title, handleClose, openModal }) => {
     const { setId } = useContext(RouteContext)
     const { user, loggedUnity } = useContext(AuthContext)
     const [fields, setFields] = useState(null)
@@ -42,6 +43,7 @@ const NewFornecedor = ({ handleClose, openModal, setOpenModal }) => {
     const handleCnpj = cnpj => {
         if (cnpj.length == 18) {
             if (validationCNPJ(cnpj)) {
+                setValidationCnpj(true)
                 getFornecedorByCnpj(cnpj)
             } else {
                 setValidationCnpj(false)
@@ -60,25 +62,81 @@ const NewFornecedor = ({ handleClose, openModal, setOpenModal }) => {
                 cnpj: cnpj
             })
 
-            setFields({
-                cnpj
-            })
-            // setFields({
-            //     fornecedorExist: response.data
-            // })
+            //? Seta informações do último preenchimento desse fornecedor
+            const lastForm = {
+                new: response.data.new,
+                fornecedorID: response.data.fornecedorID,
+                data: response.data.dataAvaliacao,
+                modelo: response.data.modelo,
+                produtos: response.data.produtos,
+                gruposAnexo: response.data.gruposAnexo
+            }
+            console.log('🚀 ~ lastForm:', lastForm)
 
-            // if (!response.data.isFornecedor) {
-            //     setFields({ cnpj })
-            // }
+            //? Chama função pra obter dados da API e preencher as informações do fornecedor
+            const result = await getFornecedorAPIData(cnpj)
+
+            //? Seta informações do fornecedor
+            setFields({
+                ...fields,
+                cnpj: cnpjMask(result.data['CNPJ']),
+                status: result.data['STATUS'],
+                dataAbertura: result.data['DATA ABERTURA'],
+                telefone: result.data['DDD'] + ' ' + result.data['TELEFONE'],
+                razaoSocial: result.data['RAZAO SOCIAL'],
+                nomeFantasia: result.data['NOME FANTASIA'],
+                email: result.data['EMAIL'],
+                cidade: result.data['MUNICIPIO'] + '/' + result.data['UF'],
+                preenchimento: lastForm
+            })
+
+            //? Seta informações do formulário
+            setValue('fields.razaoSocial', result.data['RAZAO SOCIAL'])
+            setValue('fields.nome', result.data['NOME FANTASIA'])
+            setValue('fields.email', result.data['EMAIL'])
         } catch (err) {
             console.error(err)
         }
     }
 
+    const getFornecedorAPIData = async cnpj => {
+        const cnpjNumber = cnpj.replace(/\D/g, '')
+
+        //* Requisição a API
+        // const result = await api.get(`https://api-publica.speedio.com.br/buscarcnpj?cnpj=${cnpjNumber}`)
+
+        const result = {
+            data: {
+                'NOME FANTASIA': 'RDA DESENVOLVIMENTO WEB',
+                'RAZAO SOCIAL': 'ROBERTO DELAVI DE ARAUJO 02116471010',
+                CNPJ: '41153569000174',
+                STATUS: 'ATIVA',
+                'CNAE PRINCIPAL DESCRICAO': 'Outras atividades de telecomunicações não especificadas anteriormente',
+                'CNAE PRINCIPAL CODIGO': '6190699',
+                CEP: '89812600',
+                'DATA ABERTURA': '09/03/2021',
+                DDD: '49',
+                TELEFONE: '33160672',
+                EMAIL: 'roberto.delavy@gmail.com',
+                'TIPO LOGRADOURO': 'RUA',
+                LOGRADOURO: 'EUCLIDES PRADE',
+                NUMERO: '465 E',
+                COMPLEMENTO: 'COND BOULEVARD DAS ACACIAS;BLOCO A;APT 406',
+                BAIRRO: 'SANTA MARIA',
+                MUNICIPIO: 'Chapecó',
+                UF: 'SC'
+            }
+        }
+
+        return result
+    }
+
     const onSubmit = async values => {
         console.log('🚀 ~ onSubmit ~ values:', values)
+
         try {
-            setOpenModal(false)
+            // setOpenModal(false)
+            handleClose()
             const response = await api.post(`/formularios/fornecedor/makeFornecedor`, {
                 usuarioID: user.usuarioID,
                 papelID: user.papelID,
@@ -124,7 +182,7 @@ const NewFornecedor = ({ handleClose, openModal, setOpenModal }) => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogTitle id='form-dialog-title'>
                         <div className='flex justify-between items-center'>
-                            <span>Habilitar Fornecedor</span>
+                            <span>{title}</span>
                             <IconButton size='medium' title='Clear' aria-label='Clear' onClick={handleClose}>
                                 <Icon icon='mdi:close' fontSize={20} />
                             </IconButton>
@@ -136,34 +194,16 @@ const NewFornecedor = ({ handleClose, openModal, setOpenModal }) => {
                             {/* Esquerda */}
                             <Grid item xs={12} md={6}>
                                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
-                                    <Input
-                                        xs={12}
-                                        md={12}
-                                        title='CNPJ'
-                                        name='fields.cnpj'
-                                        value={fields?.cnpj}
-                                        onChange={handleCnpj}
-                                        mask='cnpj'
-                                        required
+                                    <FormNewFornecedor
+                                        setFields={setFields}
+                                        fields={fields ?? null}
                                         control={control}
-                                        errors={errors?.fields?.cnpj}
+                                        errors={errors}
+                                        setValue={setValue}
+                                        register={register}
+                                        handleCnpj={handleCnpj}
+                                        validCnpj={validationCnpj}
                                     />
-                                    {validationCnpj == false && (
-                                        <Grid item xs={12} md={12} sx={{ mt: 2 }}>
-                                            <Alert severity='error'>CNPJ inválido!</Alert>
-                                        </Grid>
-                                    )}
-
-                                    {fields && fields.cnpj && (
-                                        <FornecedorNew
-                                            setFields={setFields}
-                                            fields={fields}
-                                            control={control}
-                                            errors={errors}
-                                            setValue={setValue}
-                                            register={register}
-                                        />
-                                    )}
                                 </Box>
                             </Grid>
 
@@ -209,12 +249,28 @@ const NewFornecedor = ({ handleClose, openModal, setOpenModal }) => {
                                             <Typography variant='body2'>
                                                 <strong>Dados do último formulário</strong>
                                             </Typography>
-                                            <Typography variant='caption'>
-                                                <strong>Data de preenchimento:</strong> 10/10/2022
-                                            </Typography>
-                                            <Typography variant='caption'>
-                                                <strong>Produtos:</strong> Aveia, Trigo
-                                            </Typography>
+                                            {fields?.preenchimento?.new ? (
+                                                <Typography variant='body2' color='primary'>
+                                                    <strong>Novo fornecedor</strong>
+                                                </Typography>
+                                            ) : (
+                                                <>
+                                                    <Typography variant='caption'>
+                                                        <strong>Data de preenchimento:</strong>{' '}
+                                                        {fields?.preenchimento?.data}
+                                                    </Typography>
+                                                    <Typography variant='caption'>
+                                                        <strong>Modelo:</strong> {fields?.preenchimento?.modelo}
+                                                    </Typography>
+                                                    <Typography variant='caption'>
+                                                        <strong>Produtos:</strong> {fields?.preenchimento?.produtos}
+                                                    </Typography>
+                                                    <Typography variant='caption'>
+                                                        <strong>Grupos de anexo:</strong>{' '}
+                                                        {fields?.preenchimento?.gruposAnexo}
+                                                    </Typography>
+                                                </>
+                                            )}
                                         </Box>
                                     </CardContent>
                                 </Card>
@@ -233,6 +289,7 @@ const NewFornecedor = ({ handleClose, openModal, setOpenModal }) => {
                     </DialogActions>
                 </form>
             </Dialog>
+
             {/* Modal pra exibir mensagem de conslusão */}
             <Dialog
                 open={openModalConclusion}

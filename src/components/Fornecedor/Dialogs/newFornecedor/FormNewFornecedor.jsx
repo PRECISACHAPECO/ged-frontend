@@ -3,60 +3,14 @@ import { api } from 'src/configs/api'
 import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
-import { cnpjMask } from 'src/configs/masks'
+import Icon from 'src/@core/components/icon'
+import { Alert, Box, Typography } from '@mui/material'
 
-const FornecedorNew = ({ fields, setFields, control, errors, setValue, register }) => {
+const FormNewFornecedor = ({ fields, setFields, handleCnpj, validCnpj, control, errors, setValue, register }) => {
     const { loggedUnity } = useContext(AuthContext)
     const [models, setModels] = useState([])
     const [products, setProducts] = useState([])
     const [gruposAnexo, setGruposAnexo] = useState([])
-
-    const getFornecedorAPIData = async () => {
-        const cnpjNumber = fields.cnpj.replace(/\D/g, '')
-        console.log('🚀 ~ cnpjNumber:', cnpjNumber)
-        //* Requisição a API
-        // const result = await api.get(`https://api-publica.speedio.com.br/buscarcnpj?cnpj=${cnpjNumber}`)
-        const result = {
-            data: {
-                'NOME FANTASIA': 'RDA DESENVOLVIMENTO WEB',
-                'RAZAO SOCIAL': 'ROBERTO DELAVI DE ARAUJO 02116471010',
-                CNPJ: '41153569000174',
-                STATUS: 'ATIVA',
-                'CNAE PRINCIPAL DESCRICAO': 'Outras atividades de telecomunicações não especificadas anteriormente',
-                'CNAE PRINCIPAL CODIGO': '6190699',
-                CEP: '89812600',
-                'DATA ABERTURA': '09/03/2021',
-                DDD: '49',
-                TELEFONE: '33160672',
-                EMAIL: 'roberto.delavy@gmail.com',
-                'TIPO LOGRADOURO': 'RUA',
-                LOGRADOURO: 'EUCLIDES PRADE',
-                NUMERO: '465 E',
-                COMPLEMENTO: 'COND BOULEVARD DAS ACACIAS;BLOCO A;APT 406',
-                BAIRRO: 'SANTA MARIA',
-                MUNICIPIO: 'Chapecó',
-                UF: 'SC'
-            }
-        }
-
-        console.log('🚀 ~ result: ', result)
-        setFields({
-            ...fields,
-            cnpj: cnpjMask(result.data['CNPJ']),
-            status: result.data['STATUS'],
-            dataAbertura: result.data['DATA ABERTURA'],
-            telefone: result.data['DDD'] + ' ' + result.data['TELEFONE'],
-            razaoSocial: result.data['RAZAO SOCIAL'],
-            nomeFantasia: result.data['NOME FANTASIA'],
-            email: result.data['EMAIL'],
-            cidade: result.data['MUNICIPIO'] + '/' + result.data['UF'],
-            produtos: []
-        })
-
-        setValue('fields.razaoSocial', result.data['RAZAO SOCIAL'])
-        setValue('fields.nome', result.data['NOME FANTASIA'])
-        setValue('fields.email', result.data['EMAIL'])
-    }
 
     const getModels = async () => {
         const result = await api.post(`/formularios/fornecedor/getModels`, { unidadeID: loggedUnity.unidadeID })
@@ -74,7 +28,7 @@ const FornecedorNew = ({ fields, setFields, control, errors, setValue, register 
     }
 
     useEffect(() => {
-        getFornecedorAPIData()
+        // getFornecedorAPIData()
         getModels()
         getProducts()
         getGruposAnexo()
@@ -84,12 +38,32 @@ const FornecedorNew = ({ fields, setFields, control, errors, setValue, register 
         models &&
         products && (
             <>
+                <Box>
+                    <Input
+                        xs={12}
+                        md={12}
+                        title='CNPJ'
+                        name='fields.cnpj'
+                        value={fields?.cnpj}
+                        onChange={handleCnpj}
+                        mask='cnpj'
+                        required
+                        control={control}
+                        errors={errors?.fields?.cnpj}
+                    />
+                    {validCnpj == false && (
+                        <Typography variant='body2' color='error'>
+                            CNPJ inválido!
+                        </Typography>
+                    )}
+                </Box>
                 <Input
                     xs={12}
                     md={12}
                     title='Razão Social'
                     name='fields.razaoSocial'
                     value={fields?.razaoSocial}
+                    disabled={!validCnpj}
                     required
                     control={control}
                     errors={errors?.fields?.razaoSocial}
@@ -101,6 +75,7 @@ const FornecedorNew = ({ fields, setFields, control, errors, setValue, register 
                     title='E-mail'
                     name='fields.email'
                     value={fields?.email}
+                    disabled={!validCnpj}
                     required
                     control={control}
                     errors={errors?.fields?.email}
@@ -113,6 +88,7 @@ const FornecedorNew = ({ fields, setFields, control, errors, setValue, register 
                     options={models}
                     required
                     value={fields?.modelo}
+                    disabled={!validCnpj}
                     register={register}
                     setValue={setValue}
                     control={control}
@@ -124,7 +100,8 @@ const FornecedorNew = ({ fields, setFields, control, errors, setValue, register 
                     title='Grupos de Anexo'
                     multiple
                     name={`fields.gruposAnexo`}
-                    value={fields.gruposAnexo ?? []}
+                    value={fields?.gruposAnexo ?? []}
+                    disabled={!validCnpj}
                     options={gruposAnexo ?? []}
                     register={register}
                     setValue={setValue}
@@ -136,7 +113,8 @@ const FornecedorNew = ({ fields, setFields, control, errors, setValue, register 
                     md={12}
                     title='Produtos'
                     name='fields.produtos'
-                    value={fields.produtos ?? []}
+                    value={fields?.produtos ?? []}
+                    disabled={!validCnpj}
                     multiple
                     required
                     options={products ?? []}
@@ -150,4 +128,4 @@ const FornecedorNew = ({ fields, setFields, control, errors, setValue, register 
     )
 }
 
-export default FornecedorNew
+export default FormNewFornecedor

@@ -1,5 +1,5 @@
 // ** React Imports
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { api } from 'src/configs/api'
 
 // ** Next Import
@@ -13,6 +13,7 @@ import authConfig from 'src/configs/auth'
 import { toast } from 'react-hot-toast'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { NotificationContext } from './NotificationContext'
+import { RouteContext } from 'src/context/RouteContext'
 
 // ** Defaults
 const defaultProvider = {
@@ -28,6 +29,7 @@ const defaultProvider = {
 const AuthContext = createContext(defaultProvider)
 
 const AuthProvider = ({ children }) => {
+    const { setId } = useContext(RouteContext)
     // ** States
     const [user, setUser] = useState(defaultProvider.user)
     const [loading, setLoading] = useState(defaultProvider.loading)
@@ -50,12 +52,26 @@ const AuthProvider = ({ children }) => {
     })
 
     const router = useRouter();
+    console.log("🚀 ~ router:", router)
     const staticUrl = backRoute(router.pathname) // Url sem ID
 
     const data = {
         unidadeID: loggedUnity?.unidadeID ?? user?.unidadeID,
         usuarioID: user?.usuarioID
     };
+
+    const idGET = router.query.id
+
+    const verifyGetRedirect = () => {
+        if (idGET && idGET > 0) {
+            router.push(router.pathname)
+            setId(idGET)
+        }
+    }
+
+    useEffect(() => {
+        verifyGetRedirect()
+    }, [idGET])
 
     // ** Hooks
     useEffect(() => {
@@ -96,7 +112,6 @@ const AuthProvider = ({ children }) => {
                 if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
                     router.replace('/login')
                 }
-
             } else {
                 setLoading(false)
             }
