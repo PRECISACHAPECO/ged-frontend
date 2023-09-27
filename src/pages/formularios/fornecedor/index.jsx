@@ -152,7 +152,12 @@ const Fornecedor = () => {
                 //? Lista tabela de resultados da listagem
                 <Table result={result} columns={columns} openModal={user.papelID == 1 ? openModal : null} />
             )}
-            <NewFornecedor openModal={open} handleClose={() => setOpen(false)} title='Novo fornecedor' />
+            <NewFornecedor
+                openModal={open}
+                setOpenModal={setOpen}
+                handleClose={() => setOpen(false)}
+                title='Novo fornecedor'
+            />
         </>
     )
 }

@@ -25,6 +25,7 @@ const FormGrupoAnexos = ({ id }) => {
     const { setId } = useContext(RouteContext)
     const router = Router
     const [data, setData] = useState(null)
+    console.log('🚀 ~ data:', data)
     const [openDelete, setOpenDelete] = useState(false) //? Dialog de confirmação de exclusão
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname

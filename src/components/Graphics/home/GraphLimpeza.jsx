@@ -22,8 +22,8 @@ const GraphLimpeza = ({ data }) => {
                             <Grid container className='flex items-center' spacing={2}>
                                 <Grid item xs={12}>
                                     <div className='flex items-center gap-4'>
-                                        <CustomAvatar skin='light' variant='rounded' color='info'>
-                                            <Icon icon='carbon:clean' className='text-base text-[#26C6F9]' />
+                                        <CustomAvatar skin='light' variant='rounded' color='primary'>
+                                            <Icon icon='carbon:clean' className='text-base text-[#35553B]' />
                                         </CustomAvatar>
                                         <Typography variant='body1' className='font-bold'>
                                             {row.nome} ({row.ciclo} {row.ciclo > 1 ? 'dias' : 'dia'})
