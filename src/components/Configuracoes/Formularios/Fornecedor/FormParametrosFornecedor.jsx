@@ -37,6 +37,7 @@ const FormParametrosFornecedor = ({ id }) => {
     const [savingForm, setSavingForm] = useState(false)
     const [arrRemovedItems, setArrRemovedItems] = useState([])
     const [arrRemovedBlocks, setArrRemovedBlocks] = useState([])
+    const [change, setChange] = useState(false)
 
     const router = Router
     const type = 'edit'
@@ -47,6 +48,7 @@ const FormParametrosFornecedor = ({ id }) => {
         register,
         handleSubmit,
         reset,
+        getValues,
         control,
         formState: { errors }
     } = useForm()
