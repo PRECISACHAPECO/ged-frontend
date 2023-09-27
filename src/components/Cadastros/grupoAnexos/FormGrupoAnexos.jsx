@@ -66,8 +66,8 @@ const FormGrupoAnexos = ({ id }) => {
             obrigatorio: true
         }
 
-        const updatedDataAnexos = [...getValues('items'), newValue]
-        setValue('items', updatedDataAnexos)
+        const updatedData = [...getValues('items'), newValue]
+        setValue('items', updatedData)
         setChange(!change)
     }
 
