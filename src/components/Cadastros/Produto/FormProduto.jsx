@@ -27,9 +27,8 @@ const FormProduto = ({ id }) => {
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
     const { loggedUnity } = useContext(AuthContext)
-    const [anexos, setAnexos] = useState([])
     const [removedItems, setRemovedItems] = useState([])
-    const [anexosListKey, setAnexosListKey] = useState(0)
+    const [change, setChange] = useState(false)
 
     const {
         trigger,
@@ -37,6 +36,7 @@ const FormProduto = ({ id }) => {
         setValue,
         reset,
         control,
+        getValues,
         formState: { errors },
         register
     } = useForm()
@@ -92,7 +92,7 @@ const FormProduto = ({ id }) => {
             const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
                 console.log('🚀 ~ response:', response.data)
-                setAnexos(response.data.anexos)
+                // setAnexos(response.data.anexos)
                 setData(response.data)
                 reset(response.data)
             })
@@ -102,17 +102,14 @@ const FormProduto = ({ id }) => {
     }
 
     // Remove anexo
-    // Remove anexo
     const removeAnexo = (value, index) => {
         if (value.produtoAnexoID) {
             setRemovedItems([...removedItems, value.produtoAnexoID])
         }
 
-        const newAnexos = anexos.filter((_, i) => i !== index)
-        setAnexos(newAnexos)
+        const newAnexos = getValues('anexos').filter((_, i) => i !== index)
         setValue('anexos', newAnexos)
-
-        setAnexosListKey(prevKey => prevKey + 1)
+        setChange(!change)
     }
 
     // Adiciona um novo anexo
@@ -125,16 +122,9 @@ const FormProduto = ({ id }) => {
             observacao: ''
         }
 
-        const updatedDataAnexos = [...anexos, newAnexo]
-        setAnexos(updatedDataAnexos)
-
-        // Adicione um novo campo para o novo anexo
-        const fieldName = `anexos[${updatedDataAnexos.length - 1}]`
-        setValue(`${fieldName}.nome`, newAnexo.nome)
-        setValue(`${fieldName}.obrigatorio`, newAnexo.obrigatorio)
-        setValue(`${fieldName}.status`, newAnexo.status)
-        setValue(`${fieldName}.descricao`, newAnexo.descricao)
-        setValue(`${fieldName}.observacao`, newAnexo.observacao)
+        const updatedDataAnexos = [...getValues('anexos'), newAnexo]
+        setValue('anexos', updatedDataAnexos)
+        setChange(!change)
     }
 
     // Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
@@ -205,8 +195,8 @@ const FormProduto = ({ id }) => {
                         <CardContent>
                             <Grid container spacing={5}>
                                 <AnexosList
-                                    key={anexosListKey}
-                                    anexos={anexos}
+                                    key={change}
+                                    getValues={getValues}
                                     removeAnexo={removeAnexo}
                                     control={control}
                                     register={register}

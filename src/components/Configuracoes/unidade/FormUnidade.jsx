@@ -29,6 +29,7 @@ import { backRoute } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
+import CheckLabel from 'src/components/Form/CheckLabel'
 import { validationCNPJ } from 'src/configs/validations'
 
 const FormUnidade = ({ id }) => {
@@ -396,7 +397,7 @@ const FormUnidade = ({ id }) => {
                     </Card>
 
                     {/* Parâmetros da unidade */}
-                    {user.admin == 1 && type == 'edit' && (
+                    {type == 'edit' && (
                         <Card sx={{ mt: 4 }}>
                             <CardHeader title='Parâmetros' />
                             <CardContent>
@@ -511,6 +512,13 @@ const FormUnidade = ({ id }) => {
                                                 register={register}
                                                 control={control}
                                                 errors={errors?.fields?.anexosTamanhoMaximo}
+                                            />
+
+                                            <CheckLabel
+                                                title='Obrigatório o produto no formulário de qualificação do fornecedor'
+                                                name={`fields.obrigatorioProdutoFornecedor`}
+                                                value={data.fields.obrigatorioProdutoFornecedor}
+                                                register={register}
                                             />
                                         </Grid>
                                     </Grid>

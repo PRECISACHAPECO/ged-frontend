@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import Remove from 'src/components/Form/Remove'
 
-const AnexosList = ({ anexos, removeAnexo, control, register, errors, type }) => {
+const AnexosList = ({ getValues, removeAnexo, control, register, errors, type }) => {
     return (
-        anexos &&
-        anexos.map((item, index) => (
-            <>
+        getValues('anexos') &&
+        getValues('anexos').map((item, index) => (
+            <Fragment key={index}>
                 <Input
                     md={9}
                     title='Nome'
@@ -55,7 +55,7 @@ const AnexosList = ({ anexos, removeAnexo, control, register, errors, type }) =>
                     control={control}
                     errors={errors?.anexos?.[index]?.descricao}
                 />
-            </>
+            </Fragment>
         ))
     )
 }
