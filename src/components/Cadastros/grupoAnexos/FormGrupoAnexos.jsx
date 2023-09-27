@@ -48,7 +48,6 @@ const FormGrupoAnexos = ({ id }) => {
     const getData = async () => {
         try {
             const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
-            console.log('🚀 ~ route:', route)
             await api.post(route, { unidadeID: loggedUnity.unidadeID }).then(response => {
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário

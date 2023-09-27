@@ -52,7 +52,6 @@ const AuthProvider = ({ children }) => {
     })
 
     const router = useRouter();
-    console.log("🚀 ~ router:", router)
     const staticUrl = backRoute(router.pathname) // Url sem ID
 
     const data = {

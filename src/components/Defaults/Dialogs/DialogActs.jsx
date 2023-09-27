@@ -5,8 +5,18 @@ import DialogTitle from '@mui/material/DialogTitle'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import Input from 'src/components/Form/Input'
+import Icon from 'src/@core/components/icon'
 
-const DialogActs = ({ title, description, setOpenModal, openModal, children, handleConclusion }) => {
+const DialogActs = ({
+    title,
+    description,
+    setOpenModal,
+    openModal,
+    children,
+    handleConclusion,
+    handleCopyLink,
+    size
+}) => {
     const {
         control,
         register,
@@ -15,6 +25,8 @@ const DialogActs = ({ title, description, setOpenModal, openModal, children, han
         setValue,
         formState: { errors }
     } = useForm()
+
+    console.log('🚀 ~ DialogActs control:', control)
 
     const validateForm = values => {
         handleSubmit(onSubmit)(values)
@@ -29,7 +41,12 @@ const DialogActs = ({ title, description, setOpenModal, openModal, children, han
 
     return (
         <>
-            <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+            <Dialog
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                fullWidth={size ? true : false}
+                maxWidth={size ? size : null}
+            >
                 <form>
                     <DialogTitle id='form-dialog-title'>{title}</DialogTitle>
                     <DialogContent>
@@ -52,9 +69,22 @@ const DialogActs = ({ title, description, setOpenModal, openModal, children, han
                             Fechar
                         </Button>
 
-                        <Button type='button' variant='contained' color='primary' onClick={validateForm}>
-                            Confirmar
-                        </Button>
+                        {handleConclusion && (
+                            <Button type='button' variant='contained' color='primary' onClick={validateForm}>
+                                Confirmar
+                            </Button>
+                        )}
+
+                        {handleCopyLink && (
+                            <Button
+                                variant='contained'
+                                color='primary'
+                                startIcon={<Icon icon='uil:copy' fontSize={20} />}
+                                onClick={handleCopyLink}
+                            >
+                                Copiar Link
+                            </Button>
+                        )}
                     </DialogActions>
                 </form>
             </Dialog>
