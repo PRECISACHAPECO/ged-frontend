@@ -29,7 +29,7 @@ import FormNotification from './Dialogs/Notification/FormNotification'
 import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
 import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 
-const FormFornecedor = ({ id }) => {
+const FormFornecedor = ({ id, makeFornecedor }) => {
     const { user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
     const [savingForm, setSavingForm] = useState(false)
@@ -99,8 +99,8 @@ const FormFornecedor = ({ id }) => {
         }
     }
 
+    //? handleSubmit do modal gerar notificação
     const sendNotification = async values => {
-        console.log('===> ', values)
         try {
             if (!values.email && !values.alerta) return toast.error('Selecione ao menos um tipo de notificação!')
 
@@ -155,6 +155,18 @@ const FormFornecedor = ({ id }) => {
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
     const actionsData = [
         {
+            id: 3,
+            name: 'Gerar novo formulário',
+            description: 'Gerar um novo formulário de preenchimento para este fornecedor.',
+            component: <NewFornecedor />,
+            route: null,
+            type: null,
+            modal: true,
+            action: makeFornecedor,
+            icon: 'fluent:form-new-20-regular',
+            identification: null
+        },
+        {
             id: 1,
             name: 'Formulário do fornecedor',
             component: <ReportFornecedor params={{ id: id }} />,
@@ -162,7 +174,8 @@ const FormFornecedor = ({ id }) => {
             papelID: user.papelID,
             modal: false,
             type: 'report',
-            identification: '01',
+            icon: 'fluent:print-24-regular',
+            identification: null,
             params: {
                 fornecedorID: id
             }
@@ -182,25 +195,7 @@ const FormFornecedor = ({ id }) => {
             type: null,
             modal: true,
             action: sendNotification,
-            icon: 'mdi:bell-outline',
-            identification: null
-        },
-        {
-            id: 3,
-            name: 'Gerar novo preenchimento',
-            description: 'Gerar um novo formulário de preenchimento para este fornecedor.',
-            component: (
-                <NewFornecedor
-                    openModal={openModalNewFornecedor}
-                    handleClose={() => setOpenModalNewFornecedor(false)}
-                    title='Gerar novo preenchimento do Fornecedor'
-                />
-            ),
-            route: null,
-            type: null,
-            modal: true,
-            action: sendNotification,
-            icon: 'mdi:bell-outline',
+            icon: 'cil:bell',
             identification: null
         }
     ]

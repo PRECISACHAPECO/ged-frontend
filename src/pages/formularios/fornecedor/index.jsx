@@ -5,7 +5,8 @@ import FormFornecedor from 'src/components/Fornecedor/FormFornecedor'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
-
+import DialogActs from 'src/components/Defaults/Dialogs/DialogActs'
+import toast from 'react-hot-toast'
 import Loading from 'src/components/Loading'
 
 // ** Next
@@ -14,6 +15,7 @@ import { useRouter } from 'next/router'
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
 import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
+import FormFornecedorConclusion from 'src/components/Fornecedor/Dialogs/NewFornecedor/FormFornecedorConclusion'
 
 const Fornecedor = () => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -22,7 +24,11 @@ const Fornecedor = () => {
     const currentLink = router.pathname
     const { setTitle } = useContext(ParametersContext)
     const { id, setId } = useContext(RouteContext)
+
+    //? Controles novo fornecedor
     const [open, setOpen] = useState(false)
+    const [openModalConclusion, setOpenModalConclusion] = useState(true)
+    const [responseConclusion, setResponseConclusion] = useState(null)
 
     //* Controles modal pra inserir fornecedor
     const openModal = () => {
@@ -47,6 +53,38 @@ const Fornecedor = () => {
                     }
                 })
             })
+    }
+
+    //? handleSubmit do modal de gerar um novo fornecedor
+    const makeFornecedor = async values => {
+        console.log('🚀 ~ makeFornecedor : ', values)
+
+        try {
+            // setOpenModal(false)
+            // handleClose()
+            const response = await api.post(`/formularios/fornecedor/makeFornecedor`, {
+                usuarioID: user.usuarioID,
+                papelID: user.papelID,
+                unidadeID: loggedUnity.unidadeID,
+                values: values.fields
+            })
+
+            if (response.status == 200) {
+                setResponseConclusion(response.data)
+                setId(response.data.fornecedorID)
+                setOpenModalConclusion(true)
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    const copyLink = () => {
+        const link = responseConclusion?.link
+        if (link) {
+            navigator.clipboard.writeText(link)
+            toast.success('Link copiado com sucesso!')
+        }
     }
 
     useEffect(() => {
@@ -149,12 +187,34 @@ const Fornecedor = () => {
                 <Loading show />
             ) : //? Se tem id, exibe o formulário
             id && id > 0 ? (
-                <FormFornecedor id={id} />
+                <FormFornecedor id={id} makeFornecedor={makeFornecedor} />
             ) : (
                 //? Lista tabela de resultados da listagem
                 <Table result={result} columns={columns} openModal={user.papelID == 1 ? openModal : null} />
             )}
-            <NewFornecedor openModal={open} handleClose={() => setOpen(false)} title='Habilitar Fornecedor' />
+
+            {/* Modal pra habilitar um novo fornecedor */}
+            <DialogActs
+                title='Habilitar Fornecedor'
+                description='Habilitar novo preenchimento de formulário pro fornecedor'
+                handleConclusion={makeFornecedor}
+                setOpenModal={setOpen}
+                openModal={open}
+                size='lg'
+            >
+                <NewFornecedor />
+            </DialogActs>
+
+            {/* Modal que exibe mensagem de novo fornecedor habilitado */}
+            <DialogActs
+                title='Formulário enviado ao fornecedor'
+                description='Um novo formulário de qualificação de fornecedor foi enviado'
+                handleCopyLink={copyLink}
+                setOpenModal={setOpenModalConclusion}
+                openModal={openModalConclusion}
+            >
+                <FormFornecedorConclusion values={responseConclusion} />
+            </DialogActs>
         </>
     )
 }

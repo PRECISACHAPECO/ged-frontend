@@ -3,10 +3,9 @@ import { api } from 'src/configs/api'
 import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
-import Icon from 'src/@core/components/icon'
-import { Alert, Box, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
-const FormNewFornecedor = ({ fields, setFields, handleCnpj, validCnpj, control, errors, setValue, register }) => {
+const FormNewFornecedor = ({ fields, handleCnpj, validCnpj, control, errors, setValue, register }) => {
     const { loggedUnity } = useContext(AuthContext)
     const [models, setModels] = useState([])
     const [products, setProducts] = useState([])
@@ -28,7 +27,6 @@ const FormNewFornecedor = ({ fields, setFields, handleCnpj, validCnpj, control, 
     }
 
     useEffect(() => {
-        // getFornecedorAPIData()
         getModels()
         getProducts()
         getGruposAnexo()
