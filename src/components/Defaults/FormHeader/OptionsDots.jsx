@@ -18,7 +18,7 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                 size='medium'
                 sx={{ display: 'flex', gap: 2 }}
             >
-                <Icon icon='pepicons-pencil:dots-x' />
+                <Icon icon='akar-icons:edit' />
                 <span className='hidden sm:block'>Ações</span>
             </Button>
 
@@ -65,19 +65,21 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
 
                         {item.type == 'report' ? (
                             <LayoutReport title={item.name} content={item.component} />
-                        ) : item.modal ? (
+                        ) : (
                             <>
                                 <p
-                                    onClick={() => {
-                                        setOpenModal(true)
-                                        setItem(item)
-                                    }}
+                                    onClick={
+                                        item.modal
+                                            ? () => {
+                                                  setOpenModal(true)
+                                                  setItem(item)
+                                              }
+                                            : item.action
+                                    }
                                 >
                                     {item.name}
                                 </p>
                             </>
-                        ) : (
-                            <h1>...</h1>
                         )}
                     </MenuItem>
                 ))}
@@ -89,6 +91,7 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                     title={item.name}
                     description={item.description}
                     handleConclusion={item.action}
+                    size={item.size}
                     setOpenModal={setOpenModal}
                     openModal={openModal}
                 >

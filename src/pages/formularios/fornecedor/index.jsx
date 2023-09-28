@@ -27,7 +27,7 @@ const Fornecedor = () => {
 
     //? Controles novo fornecedor
     const [open, setOpen] = useState(false)
-    const [openModalConclusion, setOpenModalConclusion] = useState(true)
+    const [openModalConclusion, setOpenModalConclusion] = useState(false)
     const [responseConclusion, setResponseConclusion] = useState(null)
 
     //* Controles modal pra inserir fornecedor
@@ -90,8 +90,6 @@ const Fornecedor = () => {
     useEffect(() => {
         getList()
     }, [id])
-
-    console.log('==> ', id)
 
     const arrColumns =
         user.papelID == 1

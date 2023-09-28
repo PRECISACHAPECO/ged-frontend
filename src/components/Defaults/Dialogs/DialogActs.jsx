@@ -55,13 +55,19 @@ const DialogActs = ({
 
                     {/* Passa children com props */}
                     <DialogContent>
-                        {React.cloneElement(children, {
-                            control: control,
-                            register: register,
-                            setValue: setValue,
-                            errors: errors,
-                            onSubmit: onSubmit
-                        })}
+                        <DialogContentText
+                            sx={{
+                                py: 2
+                            }}
+                        >
+                            {React.cloneElement(children, {
+                                control: control,
+                                register: register,
+                                setValue: setValue,
+                                errors: errors,
+                                onSubmit: onSubmit
+                            })}
+                        </DialogContentText>
                     </DialogContent>
 
                     <DialogActions className='dialog-actions-dense'>

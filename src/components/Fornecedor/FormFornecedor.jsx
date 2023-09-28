@@ -40,7 +40,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const { createNewNotification } = useContext(NotificationContext)
     const [openModalStatus, setOpenModalStatus] = useState(false)
     const [field, setField] = useState([])
-    const [data, setData] = useState(null)
+    const [link, setLink] = useState(null)
     const [blocos, setBlocos] = useState([])
     const [info, setInfo] = useState('')
     const [openModal, setOpenModal] = useState(false)
@@ -152,33 +152,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
+    const copyLinkForm = () => {
+        navigator.clipboard.writeText(link)
+        toast.success('Link copiado com sucesso!')
+    }
+
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
     const actionsData = [
         {
-            id: 3,
+            id: 1,
             name: 'Gerar novo formulário',
             description: 'Gerar um novo formulário de preenchimento para este fornecedor.',
-            component: <NewFornecedor />,
+            component: <NewFornecedor cnpj={unidade?.fornecedor?.cnpj} />,
             route: null,
             type: null,
             modal: true,
             action: makeFornecedor,
+            size: 'lg',
             icon: 'fluent:form-new-20-regular',
             identification: null
-        },
-        {
-            id: 1,
-            name: 'Formulário do fornecedor',
-            component: <ReportFornecedor params={{ id: id }} />,
-            route: '/relatorio/fornecedor/dadosFornecedor',
-            papelID: user.papelID,
-            modal: false,
-            type: 'report',
-            icon: 'fluent:print-24-regular',
-            identification: null,
-            params: {
-                fornecedorID: id
-            }
         },
         {
             id: 2,
@@ -197,6 +189,32 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             action: sendNotification,
             icon: 'cil:bell',
             identification: null
+        },
+        {
+            id: 3,
+            name: 'Copiar link do formulário',
+            description: 'Copiar o link deste formulário.',
+            component: <NewFornecedor />,
+            route: null,
+            type: null,
+            action: copyLinkForm,
+            modal: false,
+            icon: 'solar:copy-outline',
+            identification: null
+        },
+        {
+            id: 4,
+            name: 'Formulário do fornecedor',
+            component: <ReportFornecedor params={{ id: id }} />,
+            route: '/relatorio/fornecedor/dadosFornecedor',
+            papelID: user.papelID,
+            modal: false,
+            type: 'report',
+            icon: 'fluent:print-24-regular',
+            identification: null,
+            params: {
+                fornecedorID: id
+            }
         }
     ]
 
@@ -248,6 +266,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 setBlocos(response.data.blocos)
                 setInfo(response.data.info)
                 setUnidade(response.data.unidade)
+                setLink(response.data.link)
 
                 //* Insere os dados no formulário
                 reset(response.data)
