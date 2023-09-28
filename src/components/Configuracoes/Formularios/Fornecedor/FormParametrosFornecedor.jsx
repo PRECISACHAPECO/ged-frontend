@@ -25,7 +25,6 @@ import HelpText from 'src/components/Defaults/HelpText'
 import Blocos from './Blocos'
 
 const FormParametrosFornecedor = ({ id }) => {
-    console.log('🚀 ~ FormParametrosFornecedor: ', id)
     const { user, loggedUnity } = useContext(AuthContext)
     const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
@@ -93,7 +92,6 @@ const FormParametrosFornecedor = ({ id }) => {
     }
 
     const addItem = index => {
-        // setChangeItem(!changeItem)
         const newBlock = [...blocks]
 
         newBlock[index].itens.push({
@@ -109,40 +107,21 @@ const FormParametrosFornecedor = ({ id }) => {
         refreshOptions(newBlock[index], index, blocks, allOptions)
     }
 
-    // const addItem = () => {
-    //     const newValue = {
-    //         nome: '',
-    //         descricao: '',
-    //         status: true,
-    //         obrigatorio: true
-    //     }
-
-    //     const updatedDataAnexos = [...getValues('items'), newValue]
-    //     setValue('items', updatedDataAnexos)
-    //     setChange(!change)
-    // }
-
     const removeItem = (item, indexBlock, indexItem) => {
         if (blocks[indexBlock].itens.length === 1) {
             toast.error('Você deve ter ao menos um item!')
             return
         }
 
-        // Inserir no array de itens removidos
-        let newRemovedItems = [...arrRemovedItems]
-        newRemovedItems.push(item)
-        setArrRemovedItems(newRemovedItems)
+        const updatedBlocks = [...getValues('blocks')]
+        updatedBlocks[indexBlock].itens.splice(indexItem, 1)
 
-        // Remove item do bloco
-        const updatedBlocks = [...blocks]
-        const newBlock = [...blocks[indexBlock].itens]
-        newBlock.splice(indexItem, 1)
-        updatedBlocks[indexBlock].itens = newBlock
+        setValue('blocks', updatedBlocks)
+
         setBlocks(updatedBlocks)
 
-        setValue(`blocks.[${indexBlock}].itens`, newBlock) //* Remove item do formulário
-
         refreshOptions(blocks[indexBlock], indexBlock, blocks, allOptions)
+        setChange(!change)
     }
 
     const removeBlock = (block, index) => {
@@ -376,9 +355,11 @@ const FormParametrosFornecedor = ({ id }) => {
                             register={register}
                             removeItem={removeItem}
                             addItem={addItem}
+                            getValues={getValues}
                             removeBlock={removeBlock}
                             setValue={setValue}
                             allOptions={allOptions}
+                            key={change}
                         />
                     )}
                     {/* Botão inserir bloco */}

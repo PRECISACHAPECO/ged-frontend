@@ -6,10 +6,21 @@ import Input from 'src/components/Form/Input'
 import Remove from 'src/components/Form/Remove'
 import Select from 'src/components/Form/Select'
 
-const Blocos = ({ blocks, errors, control, register, removeItem, addItem, removeBlock, setValue, allOptions }) => {
+const Blocos = ({
+    blocks,
+    errors,
+    control,
+    register,
+    getValues,
+    removeItem,
+    addItem,
+    removeBlock,
+    setValue,
+    allOptions
+}) => {
     return (
-        blocks &&
-        blocks.map((block, index) => (
+        getValues('blocks') &&
+        getValues('blocks').map((block, index) => (
             <Card key={index} md={12} sx={{ mt: 4 }}>
                 <CardContent>
                     <Grid container spacing={4}>
@@ -164,7 +175,7 @@ const Blocos = ({ blocks, errors, control, register, removeItem, addItem, remove
                                     md={1}
                                     title={indexItem == 0 ? 'Remover' : ''}
                                     index={index}
-                                    removeItem={removeItem}
+                                    removeItem={() => removeItem(item, index, indexItem)}
                                     item={item}
                                     pending={item.hasPending}
                                     textSuccess='Remover este item'
