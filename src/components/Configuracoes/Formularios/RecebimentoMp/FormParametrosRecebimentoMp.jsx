@@ -115,7 +115,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
 
     // Adiciona item no array do bloco
     const addBlock = () => {
-        const newBlock = [...blocks]
+        const newBlock = [...getValues('blocks')]
         newBlock.push({
             dados: {
                 ordem: newBlock.length + 1,
@@ -132,6 +132,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                 }
             ]
         })
+        setValue('blocks', newBlock)
         setBlocks(newBlock)
     }
 
