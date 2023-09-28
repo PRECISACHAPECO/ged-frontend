@@ -236,10 +236,10 @@ const FormParametrosFornecedor = ({ id }) => {
     }, [id, savingForm])
 
     const handleSave = async data => {
-        console.log('🚀 ~ data:', data)
-        console.log('deu certoooooo')
-        setNewChange(!newChange)
-        getData()
+        console.log('deu certoooooo: ', data)
+
+        setNewChange(true)
+        // getData()
         setOpenModalNew(false)
     }
 
@@ -425,7 +425,7 @@ const FormParametrosFornecedor = ({ id }) => {
                 setOpenModal={setOpenModalNew}
                 handleSave={handleSave}
             >
-                <FormItem newChange={newChange} />
+                <FormItem setNewChange={setNewChange} newChange={newChange} />
             </DialogNewCreate>
         </>
     )

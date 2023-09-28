@@ -17,7 +17,7 @@ import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 
-const FormItem = ({ id, newChange }) => {
+const FormItem = ({ id, setNewChange, newChange }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
@@ -46,12 +46,15 @@ const FormItem = ({ id, newChange }) => {
             unidadeID: loggedUnity.unidadeID
         }
 
-        console.log('entrou no submit', values)
+        console.log('entrou no submit do ITEM', values)
         try {
             if (type === 'new') {
                 await api.post(`cadastros/item/new/insertData`, values).then(response => {
-                    // router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
-                    setId(response.data)
+                    if (!newChange) {
+                        console.log('REDIRECIONA PRO NOVO CADASTRO')
+                        router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                        setId(response.data)
+                    }
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
@@ -111,7 +114,8 @@ const FormItem = ({ id, newChange }) => {
     }, [id])
 
     useEffect(() => {
-        handleSubmit(onSubmit)()
+        if (newChange) handleSubmit(onSubmit)()
+        setNewChange(false)
     }, [newChange])
 
     return (
