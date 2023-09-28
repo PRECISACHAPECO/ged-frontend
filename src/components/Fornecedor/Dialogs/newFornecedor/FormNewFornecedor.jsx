@@ -10,6 +10,7 @@ const FormNewFornecedor = ({
     setFields,
     handleCnpj,
     validCnpj,
+    getValues,
     control,
     errors,
     setValue,
@@ -65,7 +66,7 @@ const FormNewFornecedor = ({
                         name='fields.cnpj'
                         value={fields?.cnpj}
                         onChange={handleCnpj}
-                        clearField={clearCnpj}
+                        clearField={getValues('fields.cnpj') ? clearCnpj : null}
                         mask='cnpj'
                         required
                         control={control}

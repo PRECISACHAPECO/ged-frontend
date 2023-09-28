@@ -8,7 +8,7 @@ import FormNewFornecedor from './FormNewFornecedor'
 import toast from 'react-hot-toast'
 import { cnpjMask } from 'src/configs/masks'
 
-const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset }) => {
+const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getValues }) => {
     const [change, setChange] = useState(false)
     const { loggedUnity } = useContext(AuthContext)
     const [fields, setFields] = useState(null)
@@ -126,10 +126,10 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset }) => 
                                 setFields={setFields}
                                 fields={fields ?? null}
                                 control={control}
-                                clearCnpj={clearCnpj}
                                 errors={errors}
                                 reset={reset}
                                 setValue={setValue}
+                                getValues={getValues}
                                 register={register}
                                 handleCnpj={handleCnpj}
                                 validCnpj={validationCnpj}
