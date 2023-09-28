@@ -9,6 +9,7 @@ import Select from 'src/components/Form/Select'
 const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addItem, setValue, options }) => {
     return (
         getValues('blocks') &&
+        blocks &&
         getValues('blocks').map((block, index) => (
             <Card key={index} md={12} sx={{ mt: 4 }}>
                 <CardContent>
@@ -54,7 +55,7 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
                             md={1}
                             title='Ativo'
                             name={`blocks.[${index}].dados.status`}
-                            value={blocks[index].dados.status}
+                            value={blocks[index]?.dados.status}
                             register={register}
                         />
 
@@ -64,7 +65,7 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
                             md={1}
                             title='Observação'
                             name={`blocks.[${index}].dados.obs`}
-                            value={blocks[index].dados.obs}
+                            value={blocks[index]?.dados.obs}
                             register={register}
                         />
                     </Grid>
@@ -76,7 +77,9 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
                                 {`Itens`}
                             </Typography>
                         </Grid>
-                        {block.itens &&
+                        {getValues('blocks') &&
+                            blocks &&
+                            block.itens &&
                             block.itens.map((item, indexItem) => (
                                 <>
                                     <input
@@ -103,12 +106,12 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
                                         xs={12}
                                         md={5}
                                         title={
-                                            blocks[index].itens[indexItem].itemID
+                                            blocks[index]?.itens[indexItem]?.itemID
                                                 ? `Item [${blocks[index].itens[indexItem].itemID}]`
                                                 : 'Item'
                                         }
                                         name={`blocks.[${index}].itens.[${indexItem}].item`}
-                                        value={blocks[index].itens[indexItem].item ?? null}
+                                        value={blocks[index]?.itens[indexItem]?.item ?? null}
                                         required={true}
                                         disabled={item.hasPending == 1 ? true : false}
                                         options={options.itens}
@@ -123,7 +126,7 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
                                         md={2}
                                         title='Alternativa'
                                         name={`blocks.[${index}].itens.[${indexItem}].alternativa`}
-                                        value={blocks[index].itens[indexItem].alternativa ?? null}
+                                        value={blocks[index]?.itens[indexItem]?.alternativa ?? null}
                                         required={true}
                                         disabled={item.hasPending == 1 ? true : false}
                                         options={options.alternativas}
@@ -139,7 +142,7 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
                                         title='Ativo'
                                         index={indexItem}
                                         name={`blocks.[${index}].itens.[${indexItem}].status`}
-                                        value={blocks[index].itens[indexItem].status}
+                                        value={blocks[index]?.itens[indexItem]?.status}
                                         register={register}
                                     />
 
@@ -149,7 +152,7 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
                                         title='Obs'
                                         index={indexItem}
                                         name={`blocks.[${index}].itens.[${indexItem}].obs`}
-                                        value={blocks[index].itens[indexItem].obs}
+                                        value={blocks[index]?.itens[indexItem]?.obs}
                                         register={register}
                                     />
 
@@ -159,7 +162,7 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
                                         title='Obrigatório'
                                         index={indexItem}
                                         name={`blocks.[${index}].itens.[${indexItem}].obrigatorio`}
-                                        value={blocks[index].itens[indexItem].obrigatorio}
+                                        value={blocks[index]?.itens[indexItem]?.obrigatorio}
                                         register={register}
                                     />
 

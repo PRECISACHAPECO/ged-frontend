@@ -112,6 +112,10 @@ const FormParametrosFornecedor = ({ id }) => {
             toast.error('Você deve ter ao menos um item!')
             return
         }
+        // Inserir no array de itens removidos
+        let newRemovedItems = [...arrRemovedItems]
+        newRemovedItems.push(item)
+        setArrRemovedItems(newRemovedItems)
 
         const updatedBlocks = [...getValues('blocks')]
         updatedBlocks[indexBlock].itens.splice(indexItem, 1)
@@ -166,7 +170,7 @@ const FormParametrosFornecedor = ({ id }) => {
     }
 
     const addBlock = () => {
-        const newBlock = [...blocks]
+        const newBlock = [...getValues('blocks')]
         newBlock.push({
             dados: {
                 ordem: newBlock.length + 1,
@@ -191,6 +195,7 @@ const FormParametrosFornecedor = ({ id }) => {
                 }
             ]
         })
+        setValue('blocks', newBlock)
         setBlocks(newBlock)
     }
 
@@ -359,6 +364,10 @@ const FormParametrosFornecedor = ({ id }) => {
                             removeBlock={removeBlock}
                             setValue={setValue}
                             allOptions={allOptions}
+                            openModalConfirmScore={openModalConfirmScore}
+                            setOpenModalConfirmScore={setOpenModalConfirmScore}
+                            itemScore={itemScore}
+                            setItemScore
                             key={change}
                         />
                     )}

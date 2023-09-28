@@ -5,7 +5,6 @@ import Check from 'src/components/Form/Check'
 import Input from 'src/components/Form/Input'
 import Remove from 'src/components/Form/Remove'
 import Select from 'src/components/Form/Select'
-import DialogConfirmScore from 'src/components/Defaults/Dialogs/DialogConfirmScore'
 
 const Blocos = ({
     blocks,
@@ -60,7 +59,7 @@ const Blocos = ({
                             md={1}
                             title='Ativo'
                             name={`blocks.[${index}].dados.status`}
-                            value={blocks[index]?.dados?.status}
+                            value={blocks[index]?.dados.status}
                             register={register}
                         />
 
@@ -79,7 +78,8 @@ const Blocos = ({
                     <Typography variant='subtitle1' sx={{ fontWeight: 600, mt: 4 }}>
                         Itens
                     </Typography>
-                    {block.itens &&
+                    {getValues('blocks') &&
+                        block.itens &&
                         block.itens.map((item, indexItem) => (
                             <Grid
                                 id={`item-${index}-${indexItem}`}
@@ -89,13 +89,13 @@ const Blocos = ({
                                 sx={{ my: 1 }}
                             >
                                 {/* <input
-                                type='hidden'
-                                name={`blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`}
-                                value={item.parFornecedorBlocoItemID}
-                                {...register(
-                                    `blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`
-                                )}
-                            /> */}
+                                    type='hidden'
+                                    name={`blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`}
+                                    value={item.parFornecedorBlocoItemID}
+                                    {...register(
+                                        `blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`
+                                    )}
+                                /> */}
 
                                 {/* Sequência do item */}
                                 <Input
@@ -122,7 +122,7 @@ const Blocos = ({
                                     value={blocks[index]?.itens[indexItem]?.item ?? null}
                                     required={true}
                                     disabled={item.hasPending == 1 ? true : false}
-                                    options={blocks[index].optionsBlock?.itens}
+                                    options={blocks[index]?.optionsBlock?.itens}
                                     register={register}
                                     setValue={setValue}
                                     control={control}
