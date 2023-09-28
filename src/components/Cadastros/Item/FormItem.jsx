@@ -17,7 +17,7 @@ import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 
-const FormItem = ({ id }) => {
+const FormItem = ({ id, newChange }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
@@ -37,16 +37,20 @@ const FormItem = ({ id }) => {
         register
     } = useForm()
 
+    // handleSave()
+
     //? Envia dados para a api
     const onSubmit = async data => {
         const values = {
             ...data,
             unidadeID: loggedUnity.unidadeID
         }
+
+        console.log('entrou no submit', values)
         try {
             if (type === 'new') {
-                await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
-                    router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                await api.post(`cadastros/item/new/insertData`, values).then(response => {
+                    // router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
                     setId(response.data)
                     toast.success(toastMessage.successNew)
                 })
@@ -84,7 +88,7 @@ const FormItem = ({ id }) => {
     //? Dados iniciais ao carregar página
     const getData = async () => {
         try {
-            const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
+            const route = type === 'new' ? 'cadastros/item/new/getData' : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
@@ -106,12 +110,16 @@ const FormItem = ({ id }) => {
         }
     }, [id])
 
+    useEffect(() => {
+        handleSubmit(onSubmit)()
+    }, [newChange])
+
     return (
         <>
             {!data && <Loading />}
             {data && (
                 <Card>
-                    <form onSubmit={handleSubmit(onSubmit)}>
+                    <form onSubmit={handleSubmit(onSubmit)} id='formItem'>
                         <FormHeader
                             btnCancel
                             btnNew

@@ -1,31 +1,25 @@
 import { useState, useEffect, useContext } from 'react'
-
 import { useForm } from 'react-hook-form'
-import { Box, Button, Card, CardContent, Grid, List, Typography } from '@mui/material'
+import { Button, Card, CardContent, Grid, List, Typography } from '@mui/material'
 import Router from 'next/router'
-import { backRoute } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
 import FormHeader from 'src/components/Defaults/FormHeader'
-import { ParametersContext } from 'src/context/ParametersContext'
-import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
 import toast from 'react-hot-toast'
 import { toastMessage } from 'src/configs/defaultConfigs'
 import Loading from 'src/components/Loading'
 import Icon from 'src/@core/components/icon'
-import DialogConfirmScore from 'src/components/Defaults/Dialogs/DialogConfirmScore'
 
 //* Custom components
-import Select from 'src/components/Form/Select'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import CheckLabel from 'src/components/Form/CheckLabel'
-import Remove from 'src/components/Form/Remove'
-import HelpText from 'src/components/Defaults/HelpText'
 import Blocos from './Blocos'
+import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
+import FormItem from 'src/components/Cadastros/Item/FormItem'
 
 const FormParametrosFornecedor = ({ id }) => {
-    const { user, loggedUnity } = useContext(AuthContext)
+    const { loggedUnity } = useContext(AuthContext)
     const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
     const [allOptions, setAllOptions] = useState(null)
@@ -37,6 +31,12 @@ const FormParametrosFornecedor = ({ id }) => {
     const [arrRemovedItems, setArrRemovedItems] = useState([])
     const [arrRemovedBlocks, setArrRemovedBlocks] = useState([])
     const [change, setChange] = useState(false)
+    const [openModalNew, setOpenModalNew] = useState(false) //? Abre modal para criar novo item
+    const [newChange, setNewChange] = useState(false)
+
+    const createNew = () => {
+        setOpenModalNew(true)
+    }
 
     const router = Router
     const type = 'edit'
@@ -235,6 +235,14 @@ const FormParametrosFornecedor = ({ id }) => {
         getData()
     }, [id, savingForm])
 
+    const handleSave = async data => {
+        console.log('🚀 ~ data:', data)
+        console.log('deu certoooooo')
+        setNewChange(!newChange)
+        getData()
+        setOpenModalNew(false)
+    }
+
     return (
         <>
             {!headers ? (
@@ -368,6 +376,7 @@ const FormParametrosFornecedor = ({ id }) => {
                             setOpenModalConfirmScore={setOpenModalConfirmScore}
                             itemScore={itemScore}
                             setItemScore
+                            createNew={createNew}
                             key={change}
                         />
                     )}
@@ -407,6 +416,17 @@ const FormParametrosFornecedor = ({ id }) => {
                     )}
                 </form>
             )}
+            {/* Modal para criação de novo item */}
+
+            <DialogNewCreate
+                title='Novo item'
+                size='md'
+                openModal={openModalNew}
+                setOpenModal={setOpenModalNew}
+                handleSave={handleSave}
+            >
+                <FormItem newChange={newChange} />
+            </DialogNewCreate>
         </>
     )
 }

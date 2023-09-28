@@ -17,8 +17,16 @@ const Select = ({
     setValue,
     errors,
     className,
+    createNew,
     handleRegistroEstabelecimento
 }) => {
+    // Adicione a opção "--novo--" no início do array de opções
+    let optionsWithNovo = [...options]
+
+    if (createNew) {
+        optionsWithNovo = [{ nome: '-- Novo --' }, ...options]
+    }
+
     return (
         <Grid item xs={xs} md={md} sx={{ my: 1 }} className={className}>
             <FormControl fullWidth>
@@ -33,7 +41,7 @@ const Select = ({
                             multiple={multiple}
                             limitTags={limitTags}
                             size='small'
-                            options={options}
+                            options={optionsWithNovo}
                             getOptionLabel={option => (option?.cnpj ? `${option.cnpj} - ${option.nome}` : option?.nome)}
                             value={
                                 multiple && field.value && field.value.length > 0
@@ -42,10 +50,15 @@ const Select = ({
                             }
                             disabled={disabled}
                             onChange={(e, newValue) => {
-                                setValue(name, newValue)
-                                type == 'registroestabelecimento'
-                                    ? handleRegistroEstabelecimento(newValue ? newValue.id : null)
-                                    : null
+                                if (newValue && newValue.nome === '-- Novo --') {
+                                    createNew()
+                                    setValue(name, multiple ? [] : { nome: '' })
+                                } else {
+                                    setValue(name, newValue)
+                                    type === 'registroestabelecimento'
+                                        ? handleRegistroEstabelecimento(newValue ? newValue.id : null)
+                                        : null
+                                }
                             }}
                             renderInput={params => (
                                 <TextField
