@@ -22,6 +22,7 @@ const DialogActs = ({
         register,
         handleSubmit,
         reset,
+        getValues,
         setValue,
         formState: { errors }
     } = useForm()
@@ -61,10 +62,12 @@ const DialogActs = ({
                             }}
                         >
                             {React.cloneElement(children, {
+                                getValues: getValues,
                                 control: control,
                                 register: register,
                                 setValue: setValue,
                                 errors: errors,
+                                reset: reset,
                                 onSubmit: onSubmit
                             })}
                         </DialogContentText>
