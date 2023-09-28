@@ -5,7 +5,17 @@ import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import { Box, Typography } from '@mui/material'
 
-const FormNewFornecedor = ({ fields, handleCnpj, validCnpj, control, errors, setValue, register }) => {
+const FormNewFornecedor = ({
+    fields,
+    setFields,
+    handleCnpj,
+    validCnpj,
+    control,
+    errors,
+    setValue,
+    register,
+    reset
+}) => {
     const { loggedUnity } = useContext(AuthContext)
     const [models, setModels] = useState([])
     const [products, setProducts] = useState([])
@@ -26,7 +36,18 @@ const FormNewFornecedor = ({ fields, handleCnpj, validCnpj, control, errors, set
         setGruposAnexo(result.data)
     }
 
+    const clearCnpj = () => {
+        setFields(null)
+        setValue('fields.cnpj', '')
+        setValue('fields.razaoSocial', '')
+        setValue('fields.email', '')
+        setValue('fields.modelo', null)
+        setValue('fields.gruposAnexo', [])
+        setValue('fields.produtos', [])
+    }
+
     useEffect(() => {
+        reset()
         getModels()
         getProducts()
         getGruposAnexo()
@@ -44,6 +65,7 @@ const FormNewFornecedor = ({ fields, handleCnpj, validCnpj, control, errors, set
                         name='fields.cnpj'
                         value={fields?.cnpj}
                         onChange={handleCnpj}
+                        clearField={clearCnpj}
                         mask='cnpj'
                         required
                         control={control}

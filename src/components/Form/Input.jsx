@@ -1,6 +1,7 @@
 import { Controller } from 'react-hook-form'
-import { FormControl, Grid, TextField } from '@mui/material'
+import { FormControl, Grid, IconButton, InputAdornment, TextField } from '@mui/material'
 import { cnpjMask, cellPhoneMask, cepMask, ufMask, cpfMask, rgMask } from 'src/configs/masks'
+import Icon from 'src/@core/components/icon'
 
 const Input = ({
     xs,
@@ -20,6 +21,7 @@ const Input = ({
     onChange,
     className,
     help,
+    clearField,
     ...props
 }) => {
     return (
@@ -38,7 +40,6 @@ const Input = ({
                             placeholder={title}
                             rows={rows}
                             type={type ?? 'text'}
-                            title='uhsauhsauuashuhsau'
                             size='small'
                             disabled={disabled}
                             aria-describedby='validation-schema-nome'
@@ -70,7 +71,6 @@ const Input = ({
                             }}
                             InputLabelProps={{
                                 shrink: true
-                                // Icone de ajuda
                             }}
                             inputProps={
                                 mask === 'cnpj'
@@ -101,6 +101,16 @@ const Input = ({
                                     ? { maxLength: 2 }
                                     : {}
                             }
+                            // Adicione o botão de limpar como InputAdornment
+                            InputProps={{
+                                endAdornment: clearField && (
+                                    <InputAdornment position='end'>
+                                        <IconButton onClick={clearField}>
+                                            <Icon icon='clarity:close-line' fontSize={20} />
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
                         />
                     )}
                 />

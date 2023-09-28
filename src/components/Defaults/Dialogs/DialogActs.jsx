@@ -65,6 +65,7 @@ const DialogActs = ({
                                 register: register,
                                 setValue: setValue,
                                 errors: errors,
+                                reset: reset,
                                 onSubmit: onSubmit
                             })}
                         </DialogContentText>
