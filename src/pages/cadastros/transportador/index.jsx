@@ -13,9 +13,6 @@ import { useRouter } from 'next/router'
 
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
-import { Card } from '@mui/material'
-
-// import axios from 'axios'
 
 const Transportador = () => {
     const [result, setResult] = useState(null)
@@ -23,7 +20,7 @@ const Transportador = () => {
     const { id } = useContext(RouteContext)
     const currentLink = router.pathname
     const { setTitle } = useContext(ParametersContext)
-    const { user, loggedUnity } = useContext(AuthContext)
+    const { loggedUnity } = useContext(AuthContext)
 
     const getList = async () => {
         await api.post(currentLink, { unidadeID: loggedUnity.unidadeID }).then(response => {

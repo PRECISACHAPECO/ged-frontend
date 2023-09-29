@@ -68,6 +68,7 @@ const FormHeader = ({
     }
 
     const currentUrl = type === 'new' || partialRoute ? backRoute(router.pathname) : router.pathname
+    console.log('🚀 ~ currentUrl:', currentUrl)
 
     const dataButtons = [
         {
