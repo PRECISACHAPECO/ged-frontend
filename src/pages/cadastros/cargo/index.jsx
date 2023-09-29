@@ -1,7 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
 import { api } from 'src/configs/api'
-import TableFilter from 'src/views/table/data-grid/TableFilter'
-import { CardContent } from '@mui/material'
 import { ParametersContext } from 'src/context/ParametersContext'
 
 import Loading from 'src/components/Loading'
@@ -11,7 +9,10 @@ import { useRouter } from 'next/router'
 
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
-import { Card } from '@mui/material'
+import FormCargo from 'src/components/Cadastros/Cargo/FormCargo'
+import { RouteContext } from 'src/context/RouteContext'
+import Table from 'src/components/Defaults/Table'
+import { AuthContext } from 'src/context/AuthContext'
 
 // import axios from 'axios'
 
@@ -19,24 +20,27 @@ const Cargo = () => {
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
+    const { id } = useContext(RouteContext)
+    const { loggedUnity } = useContext(AuthContext)
     const { setTitle } = useContext(ParametersContext)
 
-    useEffect(() => {
-        const getList = async () => {
-            await api.get(currentLink).then(response => {
-                setResult(response.data)
-                setTitle({
-                    title: 'Cargo',
-                    subtitle: {
-                        id: id,
-                        count: response.data.length,
-                        new: false
-                    }
-                })
+    const getList = async () => {
+        await api.get(`${currentLink}/${loggedUnity.unidadeID}`).then(response => {
+            setResult(response.data)
+            setTitle({
+                title: 'Cargo',
+                subtitle: {
+                    id: id,
+                    count: response.data.length,
+                    new: false
+                }
             })
-        }
+        })
+    }
+
+    useEffect(() => {
         getList()
-    }, [])
+    }, [id])
 
     const arrColumns = [
         {
@@ -63,22 +67,15 @@ const Cargo = () => {
 
     return (
         <>
-            {!result && <Loading />}
-            {result && (
-                <>
-                    <Card>
-                        <CardContent sx={{ pt: '0' }}>
-                            <TableFilter
-                                rows={result}
-                                columns={columns}
-                                buttonsHeader={{
-                                    btnNew: true,
-                                    btnPrint: true
-                                }}
-                            />
-                        </CardContent>
-                    </Card>
-                </>
+            {/* Exibe loading enquanto não existe result */}
+            {!result ? (
+                <Loading />
+            ) : //? Se tem id, exibe o formulário
+            id && id > 0 ? (
+                <FormCargo id={id} />
+            ) : (
+                //? Lista tabela de resultados da listagem
+                <Table result={result} columns={columns} />
             )}
         </>
     )
