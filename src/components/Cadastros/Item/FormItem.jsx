@@ -20,6 +20,7 @@ import ListOptions from './ListOptions'
 
 const FormItem = ({ id, setNewChange, newChange }) => {
     const [open, setOpen] = useState(false)
+    const [change, setChange] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
@@ -119,6 +120,22 @@ const FormItem = ({ id, setNewChange, newChange }) => {
         setData({ ...data, fields: { ...data.fields, opcoes: copyAnexos } })
     }
 
+    const refreshAlternatives = async value => {
+        try {
+            const response = await api.post(`cadastros/item/getAlternatives`, {
+                alternativa: value
+            })
+            if (response.data) {
+                console.log('🚀 ~ response.data:', response.data)
+                // setChange(!change)
+                setValue('fields.opcoes', response.data)
+                setData({ ...data, fields: { ...data.fields, opcoes: response.data } })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     useEffect(() => {
         getData()
@@ -191,6 +208,7 @@ const FormItem = ({ id, setNewChange, newChange }) => {
                                         title='Alternativa'
                                         name='fields.alternativa'
                                         value={data?.fields.alternativa}
+                                        onChange={refreshAlternatives}
                                         required
                                         options={data?.fields.alternativa.opcoes}
                                         register={register}
@@ -212,8 +230,9 @@ const FormItem = ({ id, setNewChange, newChange }) => {
                             </CardContent>
                         </form>
                     </Card>
-                    {getValues('fields.opcoes').map((item, index) => (
+                    {data?.fields?.opcoes.map((item, index) => (
                         <ListOptions
+                            key={change}
                             data={item}
                             index={index}
                             register={register}
