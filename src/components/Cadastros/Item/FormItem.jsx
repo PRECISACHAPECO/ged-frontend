@@ -16,6 +16,7 @@ import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
+import ListOptions from './ListOptions'
 
 const FormItem = ({ id, setNewChange, newChange }) => {
     const [open, setOpen] = useState(false)
@@ -30,6 +31,8 @@ const FormItem = ({ id, setNewChange, newChange }) => {
     const {
         trigger,
         handleSubmit,
+        watch,
+        getValues,
         setValue,
         reset,
         control,
@@ -47,6 +50,8 @@ const FormItem = ({ id, setNewChange, newChange }) => {
         }
 
         console.log('entrou no submit do ITEM', values)
+        // return
+
         try {
             if (type === 'new') {
                 await api.post(`cadastros/item/new/insertData`, values).then(response => {
@@ -93,12 +98,25 @@ const FormItem = ({ id, setNewChange, newChange }) => {
         try {
             const route = type === 'new' ? 'cadastros/item/new/getData' : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
+                console.log('🚀 ~ getData: ', response.data)
+
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
             })
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const addAnexo = index => {
+        console.log('🚀 ~ addanexo:', index)
+        const copyAnexos = [...getValues(`fields.opcoes[${index}].anexos`)]
+        copyAnexos.push({
+            nome: '',
+            obrigatorio: false
+        })
+        setValue(`fields.opcoes[${index}].anexos`, copyAnexos)
+        setData({ ...data, fields: { ...data.fields, opcoes: copyAnexos } })
     }
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
@@ -115,61 +133,98 @@ const FormItem = ({ id, setNewChange, newChange }) => {
 
     useEffect(() => {
         if (newChange) handleSubmit(onSubmit)()
-        setNewChange(false)
+        // setNewChange(false)
     }, [newChange])
 
     return (
         <>
             {!data && <Loading />}
             {data && (
-                <Card>
-                    <form onSubmit={handleSubmit(onSubmit)} id='formItem'>
-                        <FormHeader
-                            btnCancel
-                            btnNew
-                            btnSave
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
-                            type={type}
+                <>
+                    <Card>
+                        <form onSubmit={handleSubmit(onSubmit)} id='formItem'>
+                            <FormHeader
+                                btnCancel
+                                btnNew
+                                btnSave
+                                handleSubmit={() => handleSubmit(onSubmit)}
+                                btnDelete={type === 'edit' ? true : false}
+                                onclickDelete={() => setOpen(true)}
+                                type={type}
+                            />
+                            <CardContent>
+                                <Grid container spacing={5}>
+                                    <Select
+                                        xs={12}
+                                        md={11}
+                                        title='Formulários'
+                                        name='fields.formulario'
+                                        value={data?.fields.formulario}
+                                        required
+                                        options={data?.fields.formulario.opcoes}
+                                        register={register}
+                                        setValue={setValue}
+                                        control={control}
+                                        errors={errors?.fields?.formulario}
+                                    />
+                                    <Check
+                                        xs={1}
+                                        md={1}
+                                        title='Ativo'
+                                        name='fields.status'
+                                        value={data.fields.status}
+                                        typePage={type}
+                                        register={register}
+                                    />
+                                    <Input
+                                        xs={12}
+                                        md={12}
+                                        title='Nome'
+                                        name='fields.nome'
+                                        required
+                                        control={control}
+                                        errors={errors?.fields?.nome}
+                                    />
+                                    <Select
+                                        xs={12}
+                                        md={11}
+                                        title='Alternativa'
+                                        name='fields.alternativa'
+                                        value={data?.fields.alternativa}
+                                        required
+                                        options={data?.fields.alternativa.opcoes}
+                                        register={register}
+                                        setValue={setValue}
+                                        control={control}
+                                        errors={errors?.fields?.alternativa}
+                                    />
+                                    <Input
+                                        xs={12}
+                                        md={12}
+                                        multiline
+                                        rows={4}
+                                        title='Ajuda do item (mostrado em (?))'
+                                        name='fields.ajuda'
+                                        control={control}
+                                        errors={errors?.fields?.ajuda}
+                                    />
+                                </Grid>
+                            </CardContent>
+                        </form>
+                    </Card>
+                    {getValues('fields.opcoes').map((item, index) => (
+                        <ListOptions
+                            data={item}
+                            index={index}
+                            register={register}
+                            control={control}
+                            errors={errors}
+                            getValues={getValues}
+                            addAnexo={addAnexo}
+                            watch={watch}
                         />
-                        <CardContent>
-                            <Grid container spacing={5}>
-                                <Input
-                                    xs={11}
-                                    md={11}
-                                    title='Nome'
-                                    name='fields.nome'
-                                    required={true}
-                                    control={control}
-                                    errors={errors?.fields?.nome}
-                                />
-                                <Check
-                                    xs={1}
-                                    md={1}
-                                    title='Ativo'
-                                    name='fields.status'
-                                    value={data.fields.status}
-                                    typePage={type}
-                                    register={register}
-                                />
-                                <Select
-                                    xs={12}
-                                    md={12}
-                                    title='Formulários'
-                                    name='formulario.fields'
-                                    value={data?.formulario.fields}
-                                    required={true}
-                                    options={data.formulario.options}
-                                    register={register}
-                                    setValue={setValue}
-                                    control={control}
-                                    errors={errors?.formulario?.fields}
-                                />
-                            </Grid>
-                        </CardContent>
-                    </form>
-                </Card>
+                    ))}
+                </>
             )}
 
             <DialogForm
