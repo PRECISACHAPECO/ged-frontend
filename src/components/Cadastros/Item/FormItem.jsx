@@ -50,7 +50,7 @@ const FormItem = ({ id, setNewChange, newChange }) => {
             unidadeID: loggedUnity.unidadeID
         }
 
-        console.log('entrou no submit do ITEM', values)
+        console.log('onSubmit: ', values)
         // return
 
         try {
@@ -110,14 +110,20 @@ const FormItem = ({ id, setNewChange, newChange }) => {
     }
 
     const addAnexo = index => {
-        console.log('🚀 ~ addanexo:', index)
-        const copyAnexos = [...getValues(`fields.opcoes[${index}].anexos`)]
-        copyAnexos.push({
+        const copyAnexos = [...getValues(`fields.opcoes`)]
+        copyAnexos[index].anexos.push({
             nome: '',
             obrigatorio: false
         })
-        setValue(`fields.opcoes[${index}].anexos`, copyAnexos)
-        setData({ ...data, fields: { ...data.fields, opcoes: copyAnexos } })
+        const newData = {
+            ...data,
+            fields: {
+                ...data.fields,
+                opcoes: copyAnexos
+            }
+        }
+        setData(newData)
+        setValue(`fields.opcoes`, copyAnexos)
     }
 
     const refreshAlternatives = async value => {
@@ -127,7 +133,7 @@ const FormItem = ({ id, setNewChange, newChange }) => {
             })
             if (response.data) {
                 console.log('🚀 ~ response.data:', response.data)
-                // setChange(!change)
+                setChange(!change)
                 setValue('fields.opcoes', response.data)
                 setData({ ...data, fields: { ...data.fields, opcoes: response.data } })
             }
@@ -230,19 +236,17 @@ const FormItem = ({ id, setNewChange, newChange }) => {
                             </CardContent>
                         </form>
                     </Card>
-                    {data?.fields?.opcoes.map((item, index) => (
-                        <ListOptions
-                            key={change}
-                            data={item}
-                            index={index}
-                            register={register}
-                            control={control}
-                            errors={errors}
-                            getValues={getValues}
-                            addAnexo={addAnexo}
-                            watch={watch}
-                        />
-                    ))}
+
+                    <ListOptions
+                        key={change}
+                        data={data?.fields?.opcoes}
+                        register={register}
+                        control={control}
+                        errors={errors}
+                        getValues={getValues}
+                        addAnexo={addAnexo}
+                        watch={watch}
+                    />
                 </>
             )}
 

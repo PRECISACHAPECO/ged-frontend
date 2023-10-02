@@ -3,7 +3,6 @@ import Input from 'src/components/Form/Input'
 import CheckLabel from 'src/components/Form/CheckLabel'
 
 const ListOptionsAnexo = ({ data, index, indexAnexo, control, register, errors }) => {
-    console.log('renderiza... ', data)
     return (
         <>
             <Input
