@@ -49,18 +49,13 @@ const FormItem = ({ id, setNewChange, newChange }) => {
             ...data,
             unidadeID: loggedUnity.unidadeID
         }
-
         console.log('onSubmit: ', values)
-        // return
 
         try {
             if (type === 'new') {
                 await api.post(`cadastros/item/new/insertData`, values).then(response => {
-                    if (!newChange) {
-                        console.log('REDIRECIONA PRO NOVO CADASTRO')
-                        router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
-                        setId(response.data)
-                    }
+                    router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                    setId(response.data)
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
@@ -210,7 +205,7 @@ const FormItem = ({ id, setNewChange, newChange }) => {
                                     />
                                     <Select
                                         xs={12}
-                                        md={11}
+                                        md={12}
                                         title='Alternativa'
                                         name='fields.alternativa'
                                         value={data?.fields.alternativa}
