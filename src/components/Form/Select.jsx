@@ -16,6 +16,7 @@ const Select = ({
     multiple,
     setValue,
     errors,
+    onChange,
     className,
     createNew,
     handleRegistroEstabelecimento
@@ -54,6 +55,7 @@ const Select = ({
                                     createNew()
                                     setValue(name, multiple ? [] : { nome: '' })
                                 } else {
+                                    onChange && onChange(newValue)
                                     setValue(name, newValue)
                                     type === 'registroestabelecimento'
                                         ? handleRegistroEstabelecimento(newValue ? newValue.id : null)

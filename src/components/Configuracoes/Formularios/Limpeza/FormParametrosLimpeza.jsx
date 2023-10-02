@@ -108,45 +108,6 @@ const FormParametrosLimpeza = ({ id }) => {
         refreshOptions(newBlock[index], index, blocks, allOptions)
     }
 
-    // const addItem = index => {
-    //     const newBlock = [...blocks]
-
-    //     newBlock[index].itens.push({
-    //         ordem: newBlock[index].itens?.length + 1,
-    //         obs: 1,
-    //         status: 1,
-    //         obrigatorio: 1
-    //     })
-    //     setBlocks(newBlock)
-
-    //     setValue(`blocks.[${index}].itens.[${newBlock[index].itens.length - 1}].new`, true)
-
-    //     refreshOptions(newBlock[index], index, blocks, allOptions)
-    // }
-
-    // const removeItem = (item, indexBlock, indexItem) => {
-    //     if (blocks[indexBlock].itens.length === 1) {
-    //         toast.error('Você deve ter ao menos um item!')
-    //         return
-    //     }
-
-    //     // Inserir no array de itens removidos
-    //     let newRemovedItems = [...arrRemovedItems]
-    //     newRemovedItems.push(item)
-    //     setArrRemovedItems(newRemovedItems)
-
-    //     // Remove item do bloco
-    //     const updatedBlocks = [...blocks]
-    //     const newBlock = [...blocks[indexBlock].itens]
-    //     newBlock.splice(indexItem, 1)
-    //     updatedBlocks[indexBlock].itens = newBlock
-    //     setBlocks(updatedBlocks)
-
-    //     setValue(`blocks.[${indexBlock}].itens`, newBlock) //* Remove item do formulário
-
-    //     refreshOptions(blocks[indexBlock], indexBlock, blocks, allOptions)
-    // }
-
     const removeItem = (item, indexBlock, indexItem) => {
         if (blocks[indexBlock].itens.length === 1) {
             toast.error('Você deve ter ao menos um item!')
@@ -220,8 +181,7 @@ const FormParametrosLimpeza = ({ id }) => {
             categorias: [],
             atividades: [],
             optionsBlock: {
-                itens: [...allOptions.itens],
-                alternativas: [...allOptions.alternativas]
+                itens: [...allOptions.itens]
             },
             itens: [
                 {
@@ -230,8 +190,7 @@ const FormParametrosLimpeza = ({ id }) => {
                     ordem: '1',
                     nome: '',
                     status: 1,
-                    item: null,
-                    alternativa: null
+                    item: null
                 }
             ]
         })
@@ -251,8 +210,7 @@ const FormParametrosLimpeza = ({ id }) => {
                 setHeaders(response.data.header)
                 setBlocks(response.data.blocks)
                 setAllOptions({
-                    itens: response.data.options?.itens,
-                    alternativas: response.data.options?.alternativas
+                    itens: response.data.options?.itens
                 })
                 setOrientacoes(response.data.orientations)
 
@@ -315,7 +273,7 @@ const FormParametrosLimpeza = ({ id }) => {
                                         control={control}
                                         errors={errors?.model?.ciclo}
                                         help={{
-                                            text: 'opaopoaspoasp opaso',
+                                            text: '...',
                                             position: 'top',
                                             gapLeft: '10px'
                                         }}

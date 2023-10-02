@@ -63,17 +63,6 @@ const FormParametrosRecebimentoMp = ({ id }) => {
         formState: { errors }
     } = useForm()
 
-    // const initializeValues = values => {
-    //     values.blocks.map((block, indexBlock) => {
-    //         block.itens.map((item, indexItem) => {
-    //             if (item) {
-    //                 setValue(`blocks.[${indexBlock}].itens.[${indexItem}].item`, item.item)
-    //                 setValue(`blocks.[${indexBlock}].itens.[${indexItem}].alternativa`, item.alternativa)
-    //             }
-    //         })
-    //     })
-    // }
-
     const onSubmit = async values => {
         const data = {
             unidadeID: loggedUnity.unidadeID,

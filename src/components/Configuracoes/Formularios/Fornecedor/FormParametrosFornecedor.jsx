@@ -180,8 +180,7 @@ const FormParametrosFornecedor = ({ id }) => {
             categorias: [],
             atividades: [],
             optionsBlock: {
-                itens: [...allOptions.itens],
-                alternativas: [...allOptions.alternativas]
+                itens: [...allOptions.itens]
             },
             itens: [
                 {
@@ -190,8 +189,7 @@ const FormParametrosFornecedor = ({ id }) => {
                     ordem: '1',
                     nome: '',
                     status: 1,
-                    item: null,
-                    alternativa: null
+                    item: null
                 }
             ]
         })
@@ -211,8 +209,7 @@ const FormParametrosFornecedor = ({ id }) => {
                 setHeaders(response.data.header)
                 setBlocks(response.data.blocks)
                 setAllOptions({
-                    itens: response.data.options?.itens,
-                    alternativas: response.data.options?.alternativas
+                    itens: response.data.options?.itens
                 })
                 setOrientacoes(response.data.orientations)
 
@@ -236,10 +233,8 @@ const FormParametrosFornecedor = ({ id }) => {
     }, [id, savingForm])
 
     const handleSave = async data => {
-        console.log('🚀 ~ data:', data)
-        console.log('deu certoooooo')
-        setNewChange(!newChange)
-        getData()
+        setNewChange(true)
+        // getData()
         setOpenModalNew(false)
     }
 
@@ -336,7 +331,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     <CheckLabel
                                                         title=''
                                                         name={`header.[${index}].mostra`}
-                                                        value={header.mostra}
+                                                        value={header.nomeColuna == 'cnpj' ? true : header.mostra}
                                                         register={register}
                                                         disabled={header.nomeColuna == 'cnpj' ? true : false}
                                                     />
@@ -345,7 +340,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     <CheckLabel
                                                         title=''
                                                         name={`header.[${index}].obrigatorio`}
-                                                        value={header.obrigatorio}
+                                                        value={header.nomeColuna == 'cnpj' ? true : header.obrigatorio}
                                                         register={register}
                                                         disabled={header.nomeColuna == 'cnpj' ? true : false}
                                                     />
@@ -425,7 +420,7 @@ const FormParametrosFornecedor = ({ id }) => {
                 setOpenModal={setOpenModalNew}
                 handleSave={handleSave}
             >
-                <FormItem newChange={newChange} />
+                <FormItem setNewChange={setNewChange} newChange={newChange} />
             </DialogNewCreate>
         </>
     )

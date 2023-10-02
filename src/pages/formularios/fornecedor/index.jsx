@@ -8,6 +8,7 @@ import { AuthContext } from 'src/context/AuthContext'
 import DialogActs from 'src/components/Defaults/Dialogs/DialogActs'
 import toast from 'react-hot-toast'
 import Loading from 'src/components/Loading'
+import { validationEmail } from '../../../configs/validations'
 
 // ** Next
 import { useRouter } from 'next/router'
@@ -60,8 +61,6 @@ const Fornecedor = () => {
         console.log('🚀 ~ makeFornecedor : ', values)
 
         try {
-            // setOpenModal(false)
-            // handleClose()
             const response = await api.post(`/formularios/fornecedor/makeFornecedor`, {
                 usuarioID: user.usuarioID,
                 papelID: user.papelID,
@@ -70,12 +69,33 @@ const Fornecedor = () => {
             })
 
             if (response.status == 200) {
+                if (values.fields.email) sendMail(values.fields.email, values.fields.cnpj, values.fields.razaoSocial)
                 setResponseConclusion(response.data)
                 setId(response.data.fornecedorID)
                 setOpenModalConclusion(true)
             }
         } catch (err) {
             console.error(err)
+        }
+    }
+
+    // Envia email para um novo fornecedor / Novo fornecedor
+    const sendMail = (email, cnpj, nomeFornecedor) => {
+        if (email && validationEmail(email)) {
+            const data = {
+                unidadeID: loggedUnity.unidadeID,
+                cnpj,
+                nomeFornecedor,
+                destinatario: email
+            }
+
+            api.post(`${currentLink}/sendMail`, { data })
+                .then(response => {
+                    toast.success('E-mail enviado com sucesso')
+                })
+                .catch(error => {
+                    console.error('Erro ao enviar email', error)
+                })
         }
     }
 

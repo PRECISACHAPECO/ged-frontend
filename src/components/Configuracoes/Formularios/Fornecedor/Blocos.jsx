@@ -25,17 +25,6 @@ const Blocos = ({
     setItemScore,
     createNew
 }) => {
-    // const [openModal, setOpenModal] = useState(false)
-
-    // const createNew = () => {
-    //     console.log('helooossssssss')
-    //     setOpenModal(true)
-    // }
-
-    // const handleCreateNew = values => {
-    //     console.log('helooossssss submitt', values)
-    // }
-
     return (
         <>
             {getValues('blocks') &&
@@ -102,15 +91,6 @@ const Blocos = ({
                                         spacing={2}
                                         sx={{ my: 1 }}
                                     >
-                                        {/* <input
-                                type='hidden'
-                                name={`blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`}
-                                value={item.parFornecedorBlocoItemID}
-                                {...register(
-                                    `blocks.[${index}].itens.[${indexItem}].parFornecedorBlocoItemID`
-                                )}
-                            /> */}
-
                                         {/* Sequência do item */}
                                         <Input
                                             xs={12}
@@ -126,7 +106,7 @@ const Blocos = ({
                                         {/* Item */}
                                         <Select
                                             xs={12}
-                                            md={5}
+                                            md={7}
                                             createNew={createNew}
                                             title={
                                                 blocks[index]?.itens[indexItem]?.itemID
@@ -142,22 +122,6 @@ const Blocos = ({
                                             setValue={setValue}
                                             control={control}
                                             errors={errors?.blocks?.[index]?.itens?.[indexItem]?.item}
-                                        />
-
-                                        {/* Alternativa do item */}
-                                        <Select
-                                            xs={12}
-                                            md={2}
-                                            title='Alternativa'
-                                            name={`blocks.[${index}].itens.[${indexItem}].alternativa`}
-                                            value={blocks[index]?.itens[indexItem]?.alternativa ?? null}
-                                            required={true}
-                                            disabled={item.hasPending == 1 ? true : false}
-                                            options={allOptions.alternativas}
-                                            register={register}
-                                            setValue={setValue}
-                                            control={control}
-                                            errors={errors?.blocks?.[index]?.itens?.[indexItem]?.alternativa}
                                         />
 
                                         <Check

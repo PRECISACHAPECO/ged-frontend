@@ -16,9 +16,11 @@ import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
+import ListOptions from './ListOptions'
 
-const FormItem = ({ id, newChange }) => {
+const FormItem = ({ id, setNewChange, newChange }) => {
     const [open, setOpen] = useState(false)
+    const [change, setChange] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
@@ -30,6 +32,8 @@ const FormItem = ({ id, newChange }) => {
     const {
         trigger,
         handleSubmit,
+        watch,
+        getValues,
         setValue,
         reset,
         control,
@@ -45,12 +49,12 @@ const FormItem = ({ id, newChange }) => {
             ...data,
             unidadeID: loggedUnity.unidadeID
         }
+        console.log('onSubmit: ', values)
 
-        console.log('entrou no submit', values)
         try {
             if (type === 'new') {
                 await api.post(`cadastros/item/new/insertData`, values).then(response => {
-                    // router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                    router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
                     setId(response.data)
                     toast.success(toastMessage.successNew)
                 })
@@ -90,12 +94,69 @@ const FormItem = ({ id, newChange }) => {
         try {
             const route = type === 'new' ? 'cadastros/item/new/getData' : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
+                console.log('🚀 ~ getData: ', response.data)
+
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
             })
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const addAnexo = index => {
+        const copyAnexos = [...getValues(`fields.opcoes`)]
+        copyAnexos[index].anexos.push({
+            nome: '',
+            obrigatorio: false
+        })
+        const newData = {
+            ...data,
+            fields: {
+                ...data.fields,
+                opcoes: copyAnexos
+            }
+        }
+        setData(newData)
+        setValue(`fields.opcoes`, copyAnexos)
+    }
+
+    const refreshAlternatives = async value => {
+        try {
+            const response = await api.post(`cadastros/item/getAlternatives`, {
+                alternativa: value
+            })
+            if (response.data) {
+                console.log('🚀 ~ response.data:', response.data)
+                setChange(!change)
+                setValue('fields.opcoes', response.data)
+                setData({ ...data, fields: { ...data.fields, opcoes: response.data } })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleRemoveAnexo = (value, index, indexAnexo) => {
+        console.log('🚀 ~ data, index, indexAnexo:', value, index, indexAnexo)
+        let copyAnexos = [...getValues(`fields.opcoes`)]
+
+        // remover anexo do array
+        copyAnexos[index].anexos.splice(indexAnexo, 1)
+        console.log('🚀 ~ copyAnexos:', copyAnexos)
+
+        // remover anexo do banco
+        const newData = {
+            ...data,
+            fields: {
+                ...data.fields,
+                opcoes: copyAnexos
+            }
+        }
+        console.log('🚀 ~ newData:', newData)
+        setData(newData)
+        setValue(`fields.opcoes`, copyAnexos)
+        setChange(!change)
     }
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
@@ -111,61 +172,99 @@ const FormItem = ({ id, newChange }) => {
     }, [id])
 
     useEffect(() => {
-        handleSubmit(onSubmit)()
+        if (newChange) handleSubmit(onSubmit)()
     }, [newChange])
 
     return (
         <>
             {!data && <Loading />}
             {data && (
-                <Card>
-                    <form onSubmit={handleSubmit(onSubmit)} id='formItem'>
-                        <FormHeader
-                            btnCancel
-                            btnNew
-                            btnSave
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
-                            type={type}
-                        />
-                        <CardContent>
-                            <Grid container spacing={5}>
-                                <Input
-                                    xs={11}
-                                    md={11}
-                                    title='Nome'
-                                    name='fields.nome'
-                                    required={true}
-                                    control={control}
-                                    errors={errors?.fields?.nome}
-                                />
-                                <Check
-                                    xs={1}
-                                    md={1}
-                                    title='Ativo'
-                                    name='fields.status'
-                                    value={data.fields.status}
-                                    typePage={type}
-                                    register={register}
-                                />
-                                <Select
-                                    xs={12}
-                                    md={12}
-                                    title='Formulários'
-                                    name='formulario.fields'
-                                    value={data?.formulario.fields}
-                                    required={true}
-                                    options={data.formulario.options}
-                                    register={register}
-                                    setValue={setValue}
-                                    control={control}
-                                    errors={errors?.formulario?.fields}
-                                />
-                            </Grid>
-                        </CardContent>
-                    </form>
-                </Card>
+                <>
+                    <Card>
+                        <form onSubmit={handleSubmit(onSubmit)} id='formItem'>
+                            <FormHeader
+                                btnCancel
+                                btnNew
+                                btnSave
+                                handleSubmit={() => handleSubmit(onSubmit)}
+                                btnDelete={type === 'edit' ? true : false}
+                                onclickDelete={() => setOpen(true)}
+                                type={type}
+                            />
+                            <CardContent>
+                                <Grid container spacing={5}>
+                                    <Select
+                                        xs={12}
+                                        md={11}
+                                        title='Formulários'
+                                        name='fields.formulario'
+                                        value={data?.fields.formulario}
+                                        required
+                                        options={data?.fields?.formulario?.opcoes}
+                                        register={register}
+                                        setValue={setValue}
+                                        control={control}
+                                        errors={errors?.fields?.formulario}
+                                    />
+                                    <Check
+                                        xs={1}
+                                        md={1}
+                                        title='Ativo'
+                                        name='fields.status'
+                                        value={data.fields.status}
+                                        typePage={type}
+                                        register={register}
+                                    />
+                                    <Input
+                                        xs={12}
+                                        md={12}
+                                        title='Nome'
+                                        name='fields.nome'
+                                        required
+                                        control={control}
+                                        errors={errors?.fields?.nome}
+                                    />
+                                    <Select
+                                        xs={12}
+                                        md={12}
+                                        title='Alternativa'
+                                        name='fields.alternativa'
+                                        value={data?.fields.alternativa}
+                                        onChange={refreshAlternatives}
+                                        required
+                                        options={data?.fields?.alternativa?.opcoes}
+                                        register={register}
+                                        setValue={setValue}
+                                        control={control}
+                                        errors={errors?.fields?.alternativa}
+                                    />
+                                    <Input
+                                        xs={12}
+                                        md={12}
+                                        multiline
+                                        rows={4}
+                                        title='Ajuda do item (mostrado em (?))'
+                                        name='fields.ajuda'
+                                        control={control}
+                                        errors={errors?.fields?.ajuda}
+                                    />
+                                </Grid>
+                            </CardContent>
+                        </form>
+                    </Card>
+
+                    <ListOptions
+                        key={change}
+                        data={data?.fields?.opcoes}
+                        handleRemoveAnexo={handleRemoveAnexo}
+                        register={register}
+                        control={control}
+                        errors={errors}
+                        getValues={getValues}
+                        addAnexo={addAnexo}
+                        watch={watch}
+                    />
+                </>
             )}
 
             <DialogForm
