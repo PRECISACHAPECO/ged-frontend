@@ -227,4 +227,4 @@ const dateOptions = (type, date, numDays) => {
 
 
 
-export { configColumns, formType, backRoute, statusDefault, toastMessage, generateReport, dateConfig, }
+export { configColumns, formType, backRoute, statusDefault, toastMessage, generateReport, dateConfig, dateOptions }
