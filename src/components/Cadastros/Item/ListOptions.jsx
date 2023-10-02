@@ -5,7 +5,7 @@ import { useState } from 'react'
 import Icon from 'src/@core/components/icon'
 import { set } from 'nprogress'
 
-const ListOptions = ({ data, addAnexo, register, control, errors, getValues, watch }) => {
+const ListOptions = ({ data, addAnexo, register, control, errors, handleRemoveAnexo, getValues, watch }) => {
     const [change, setChange] = useState(false)
 
     const getInitialAnexos = () => {
@@ -79,6 +79,7 @@ const ListOptions = ({ data, addAnexo, register, control, errors, getValues, wat
                                         indexAnexo={indexAnexo}
                                         data={anexo}
                                         control={control}
+                                        handleRemoveAnexo={handleRemoveAnexo}
                                         register={register}
                                         errors={errors}
                                     />

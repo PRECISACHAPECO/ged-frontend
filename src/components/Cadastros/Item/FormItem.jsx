@@ -137,6 +137,28 @@ const FormItem = ({ id, setNewChange, newChange }) => {
         }
     }
 
+    const handleRemoveAnexo = (value, index, indexAnexo) => {
+        console.log('🚀 ~ data, index, indexAnexo:', value, index, indexAnexo)
+        let copyAnexos = [...getValues(`fields.opcoes`)]
+
+        // remover anexo do array
+        copyAnexos[index].anexos.splice(indexAnexo, 1)
+        console.log('🚀 ~ copyAnexos:', copyAnexos)
+
+        // remover anexo do banco
+        const newData = {
+            ...data,
+            fields: {
+                ...data.fields,
+                opcoes: copyAnexos
+            }
+        }
+        console.log('🚀 ~ newData:', newData)
+        setData(newData)
+        setValue(`fields.opcoes`, copyAnexos)
+        setChange(!change)
+    }
+
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     useEffect(() => {
         getData()
@@ -151,7 +173,6 @@ const FormItem = ({ id, setNewChange, newChange }) => {
 
     useEffect(() => {
         if (newChange) handleSubmit(onSubmit)()
-        // setNewChange(false)
     }, [newChange])
 
     return (
@@ -179,7 +200,7 @@ const FormItem = ({ id, setNewChange, newChange }) => {
                                         name='fields.formulario'
                                         value={data?.fields.formulario}
                                         required
-                                        options={data?.fields.formulario.opcoes}
+                                        options={data?.fields?.formulario?.opcoes}
                                         register={register}
                                         setValue={setValue}
                                         control={control}
@@ -211,7 +232,7 @@ const FormItem = ({ id, setNewChange, newChange }) => {
                                         value={data?.fields.alternativa}
                                         onChange={refreshAlternatives}
                                         required
-                                        options={data?.fields.alternativa.opcoes}
+                                        options={data?.fields?.alternativa?.opcoes}
                                         register={register}
                                         setValue={setValue}
                                         control={control}
@@ -235,6 +256,7 @@ const FormItem = ({ id, setNewChange, newChange }) => {
                     <ListOptions
                         key={change}
                         data={data?.fields?.opcoes}
+                        handleRemoveAnexo={handleRemoveAnexo}
                         register={register}
                         control={control}
                         errors={errors}

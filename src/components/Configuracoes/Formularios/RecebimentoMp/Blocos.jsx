@@ -104,7 +104,7 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
 
                                     <Select
                                         xs={12}
-                                        md={5}
+                                        md={7}
                                         title={
                                             blocks[index]?.itens[indexItem]?.itemID
                                                 ? `Item [${blocks[index].itens[indexItem].itemID}]`
@@ -119,21 +119,6 @@ const Blocos = ({ blocks, errors, control, register, getValues, removeItem, addI
                                         setValue={setValue}
                                         control={control}
                                         errors={errors?.blocks?.[index]?.itens?.[indexItem]?.item}
-                                    />
-
-                                    <Select
-                                        xs={12}
-                                        md={2}
-                                        title='Alternativa'
-                                        name={`blocks.[${index}].itens.[${indexItem}].alternativa`}
-                                        value={blocks[index]?.itens[indexItem]?.alternativa ?? null}
-                                        required={true}
-                                        disabled={item.hasPending == 1 ? true : false}
-                                        options={options.alternativas}
-                                        register={register}
-                                        setValue={setValue}
-                                        control={control}
-                                        errors={errors?.blocks?.[index]?.itens?.[indexItem]?.alternativa}
                                     />
 
                                     <Check
