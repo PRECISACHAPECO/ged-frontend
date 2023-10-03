@@ -10,6 +10,7 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                 <DateField
                     xs={12}
                     md={2}
+                    required
                     title='Data'
                     value={item.data}
                     name={`cargosFuncoes[${index}].data`}
@@ -19,6 +20,7 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                 <Input
                     xs={12}
                     md={4}
+                    required
                     title='Formação / Cargo'
                     name={`cargosFuncoes.[${index}].formacaoCargo`}
                     control={control}

@@ -14,6 +14,8 @@ import { AuthContext } from 'src/context/AuthContext'
 import 'dayjs/locale/pt-br'
 import CargoFuncao from './CargoFuncao'
 import Fields from './Fields'
+import Permissions from './Permissions'
+import PermissionMenu from './Permissions/PermissionMenu'
 
 const FormProfissional = ({ id }) => {
     const { setId } = useContext(RouteContext)
@@ -23,11 +25,9 @@ const FormProfissional = ({ id }) => {
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
     const [isUser, setIsUser] = useState(false)
     const { settings } = useContext(SettingsContext)
-    const mode = settings.mode
 
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
-    console.log('🚀 ~ type:', type)
     const staticUrl = router.pathname
 
     const {
@@ -35,6 +35,7 @@ const FormProfissional = ({ id }) => {
         handleSubmit,
         reset,
         trigger,
+        setError,
         setValue,
         getValues,
         watch,
@@ -43,11 +44,16 @@ const FormProfissional = ({ id }) => {
     } = useForm({})
 
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
-    const onSubmit = async values => {
-        console.log('🚀 ~ values:', values)
-        // Valores auxiliares
-        values['removedItems'] = removedItems
-        values['unidade'] = loggedUnity.unidadeID
+    const onSubmit = async data => {
+        const values = {
+            ...data,
+            fields: {
+                ...data.fields,
+                unidadeID: loggedUnity.unidadeID
+            },
+            removedItems
+        }
+
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
@@ -77,7 +83,6 @@ const FormProfissional = ({ id }) => {
 
         try {
             const response = await api.post(route)
-            console.log('🚀 ~ response data do profissional :', response.data)
             reset(response.data)
             setData(response.data)
         } catch (error) {
@@ -137,72 +142,75 @@ const FormProfissional = ({ id }) => {
     }, [id])
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <div className='space-y-4'>
-                <Card>
-                    <FormHeader
-                        btnCancel
-                        btnSave
-                        btnNew
-                        handleSubmit={() => handleSubmit(onSubmit)}
-                        btnDelete={type === 'edit' ? true : false}
-                        onclickDelete={() => setOpen(true)}
-                        type={type}
-                    />
-                    <CardContent>
-                        <Grid container spacing={5}>
-                            {/* Fields */}
-                            <Fields
-                                data={data}
-                                control={control}
-                                errors={errors}
-                                register={register}
-                                onClick={e => handleIsUser(e.target.checked)}
-                                isUser={isUser}
-                                watch={watch}
-                                getValues={getValues}
-                            />
-                        </Grid>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader title='Cargos / Funções' />
-                    <CardContent>
-                        <Grid container spacing={5}>
-                            {/* Cargo / Função do profissonal */}
-                            {data && (
-                                <CargoFuncao
-                                    getValues={getValues}
+        data && (
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className='space-y-4'>
+                    <Card>
+                        <FormHeader
+                            btnCancel
+                            btnSave
+                            btnNew
+                            handleSubmit={() => handleSubmit(onSubmit)}
+                            btnDelete={type === 'edit' ? true : false}
+                            onclickDelete={() => setOpen(true)}
+                            type={type}
+                        />
+                        <CardContent>
+                            <Grid container spacing={5}>
+                                {/* Fields */}
+                                <Fields
+                                    data={data}
                                     control={control}
                                     errors={errors}
-                                    removeItem={removeItem}
-                                    key={change}
+                                    register={register}
+                                    isUser={isUser}
+                                    watch={watch}
+                                    getValues={getValues}
+                                    setError={setError}
+                                    staticUrl={staticUrl}
+                                    setValue={setValue}
+                                    setData={setData}
                                 />
-                            )}
-                            <Button
-                                variant='outlined'
-                                color='primary'
-                                sx={{ mt: 4, ml: 4 }}
-                                startIcon={<Icon icon='material-symbols:add-circle-outline-rounded' />}
-                                onClick={() => {
-                                    addItem()
-                                }}
-                            >
-                                Inserir item
-                            </Button>
-                        </Grid>
-                    </CardContent>
-                </Card>
-                {isUser && (
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader title='Cargos / Funções' />
+                        <CardContent>
+                            <Grid container spacing={5}>
+                                {/* Cargo / Função do profissonal */}
+                                {data && (
+                                    <CargoFuncao
+                                        getValues={getValues}
+                                        control={control}
+                                        errors={errors}
+                                        removeItem={removeItem}
+                                        key={change}
+                                    />
+                                )}
+                                <Button
+                                    variant='outlined'
+                                    color='primary'
+                                    sx={{ mt: 4, ml: 4 }}
+                                    startIcon={<Icon icon='material-symbols:add-circle-outline-rounded' />}
+                                    onClick={() => {
+                                        addItem()
+                                    }}
+                                >
+                                    Inserir item
+                                </Button>
+                            </Grid>
+                        </CardContent>
+                    </Card>
                     <Card>
                         <CardHeader title='Permissões' />
                         <CardContent>
-                            <h1>Permissaapoooo</h1>
+                            <Permissions permission={data.permission} />
                         </CardContent>
                     </Card>
-                )}
-            </div>
-        </form>
+                </div>
+            </form>
+        )
     )
 }
 
