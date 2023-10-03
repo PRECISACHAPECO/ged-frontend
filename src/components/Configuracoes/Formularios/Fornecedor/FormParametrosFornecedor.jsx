@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form'
-import { Button, Card, CardContent, Grid, List, Typography } from '@mui/material'
+import { Button, Card, CardContent, Grid, List, Typography, Box } from '@mui/material'
 import Router from 'next/router'
 import { api } from 'src/configs/api'
 import FormHeader from 'src/components/Defaults/FormHeader'
@@ -17,6 +17,7 @@ import CheckLabel from 'src/components/Form/CheckLabel'
 import Blocos from './Blocos'
 import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
 import FormItem from 'src/components/Cadastros/Item/FormItem'
+import HelpText from 'src/components/Defaults/HelpText'
 
 const FormParametrosFornecedor = ({ id }) => {
     const { loggedUnity } = useContext(AuthContext)
@@ -278,11 +279,6 @@ const FormParametrosFornecedor = ({ id }) => {
                                         required={true}
                                         control={control}
                                         errors={errors?.model?.ciclo}
-                                        help={{
-                                            text: 'opaopoaspoasp opaso',
-                                            position: 'top',
-                                            gapLeft: '10px'
-                                        }}
                                     />
                                     <Check
                                         className='order-2 md:order-3'
@@ -325,7 +321,10 @@ const FormParametrosFornecedor = ({ id }) => {
                                         {headers.map((header, index) => (
                                             <>
                                                 <Grid item md={4} xs={6}>
-                                                    {header.nomeCampo}
+                                                    <Box display='flex' alignItems='center' sx={{ gap: 2 }}>
+                                                        <p>{header.nomeCampo}</p>
+                                                        {/* <HelpText text='opaaa' /> */}
+                                                    </Box>
                                                 </Grid>
                                                 <Grid item md={3} xs={3}>
                                                     <CheckLabel

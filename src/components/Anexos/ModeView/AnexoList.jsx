@@ -4,6 +4,7 @@ import IconCloudUpload from 'src/icon/IconUpload'
 import IconAttach from '../IconAttach'
 import Remove from 'src/components/Form/Remove'
 import Loading from 'src/components/Loading'
+import HelpText from 'src/components/Defaults/HelpText'
 
 const AnexoList = ({
     key,
@@ -18,8 +19,6 @@ const AnexoList = ({
     modeTheme,
     inputRef
 }) => {
-    console.log('🚀 ~ AnexoList item:', item)
-
     return (
         <Grid item xs={12} md={12}>
             <div
@@ -50,7 +49,7 @@ const AnexoList = ({
                             }}
                         >
                             <div
-                                className={`flex relative p-4 justify-start items-center gap-2 rounded-lg w-full mx-2 my-1 mb-2 border-2 border-dashed hover:border-[#4A8B57] transition-colors ${
+                                className={`flex relative p-2 justify-start items-center gap-2 rounded-lg w-full mx-2 my-1 mb-2 border-2 border-dashed hover:border-[#4A8B57] transition-colors ${
                                     modeTheme === 'dark' ? ' border-[#27272a]' : 'rgba(76, 78, 100, 0.12)'
                                 }`}
                             >
@@ -69,6 +68,7 @@ const AnexoList = ({
                                                         <p className='text-sm font-semibold opacity-80'>
                                                             {item.anexo.nome}
                                                         </p>
+                                                        {item.descricao && <HelpText text={item.descricao} />}
                                                         <p className='text-sm opacity-80'>
                                                             <span className='text-xs opacity-50'>{`(${(
                                                                 item.anexo.size /
@@ -87,26 +87,22 @@ const AnexoList = ({
                                                                 })}
                                                         </p>
                                                     </div>
-                                                    <p className='text-xs opacity-70'>{item.descricao}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     ) : (
                                         <div className='flex items-center gap-2'>
-                                            {/* Animação bounce lenta */}
-
                                             <IconCloudUpload
-                                                className={`w-20 h-20 ${
+                                                className={`w-8 h-8 ${
                                                     item.anexo && item.anexo.exist ? 'fill-[#666CFF]' : 'fill-current'
-                                                } 
-                                                animate-custom-bounce`}
+                                                }`}
                                             />
 
-                                            <div>
+                                            <div className='flex items-center gap-2'>
                                                 <h6 className='text-sm font-semibold opacity-80'>
                                                     Adicione um arquivo
                                                 </h6>
-                                                <p className='text-xs opacity-70'>{item.descricao}</p>
+                                                {item.descricao && <HelpText text={item.descricao} />}
                                             </div>
                                         </div>
                                     )}
