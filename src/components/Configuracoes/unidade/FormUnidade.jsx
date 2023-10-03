@@ -15,7 +15,8 @@ import {
     Tooltip,
     IconButton,
     FormControl,
-    Alert
+    Alert,
+    Box
 } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import { useForm } from 'react-hook-form'
@@ -31,6 +32,7 @@ import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import CheckLabel from 'src/components/Form/CheckLabel'
 import { validationCNPJ } from 'src/configs/validations'
+import HelpText from 'src/components/Defaults/HelpText'
 
 const FormUnidade = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -519,6 +521,7 @@ const FormUnidade = ({ id }) => {
                                                 name={`fields.obrigatorioProdutoFornecedor`}
                                                 value={data.fields.obrigatorioProdutoFornecedor}
                                                 register={register}
+                                                helpText='Com esta opção marcada, será obrigatório selecionar um ou mais produtos no formulário de qualificação do fornecedor.'
                                             />
                                         </Grid>
                                     </Grid>
