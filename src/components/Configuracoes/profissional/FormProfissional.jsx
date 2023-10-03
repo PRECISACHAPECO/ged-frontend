@@ -160,6 +160,7 @@ const FormProfissional = ({ id }) => {
                                 onClick={e => handleIsUser(e.target.checked)}
                                 isUser={isUser}
                                 watch={watch}
+                                getValues={getValues}
                             />
                         </Grid>
                     </CardContent>

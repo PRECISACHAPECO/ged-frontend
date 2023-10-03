@@ -9,11 +9,10 @@ import IconButton from '@mui/material/IconButton'
 import Icon from 'src/@core/components/icon'
 import Input from 'src/components/Form/Input'
 import CheckLabel from 'src/components/Form/CheckLabel'
-import { dateOptions } from 'src/configs/defaultConfigs'
+import { validationCPF } from 'src/configs/validations'
 import DateField from 'src/components/Form/DateField'
 
-const Fields = ({ control, errors, data, register, onClick, isUser, watch }) => {
-    console.log('🚀 ~ data:', data)
+const Fields = ({ control, errors, data, register, onClick, isUser, watch, getValues }) => {
     const [lenghtPassword, setLenghtPassword] = useState(null)
 
     const [values, setValues] = useState({
@@ -37,6 +36,10 @@ const Fields = ({ control, errors, data, register, onClick, isUser, watch }) => 
         event.preventDefault()
     }
 
+    const onChangeField = () => {
+        watch()
+    }
+
     return (
         data && (
             <>
@@ -50,6 +53,7 @@ const Fields = ({ control, errors, data, register, onClick, isUser, watch }) => 
                     required={isUser ?? false}
                     control={control}
                     errors={errors?.fields?.cpf}
+                    onChange={onChangeField}
                 />
                 <DateField
                     xs={12}
@@ -69,6 +73,7 @@ const Fields = ({ control, errors, data, register, onClick, isUser, watch }) => 
                     name='fields.email'
                     control={control}
                     errors={errors?.fields?.email}
+                    onChange={onChangeField}
                 />
                 <Input
                     xs={12}
@@ -83,9 +88,10 @@ const Fields = ({ control, errors, data, register, onClick, isUser, watch }) => 
                     md={3}
                     onClick={onClick}
                     title='Usuário do sistema'
-                    name='fields.usuarioID'
+                    name='isUsuario'
                     value={data.fields.usuarioID > 0 ? true : false}
                     register={register}
+                    disabled={getValues('fields').email && validationCPF(getValues('fields').cpf) ? false : true}
                 />
                 {isUser && (
                     <>
