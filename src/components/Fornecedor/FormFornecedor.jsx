@@ -10,7 +10,7 @@ import ReportRecebimentoMP from 'src/components/Reports/Formularios/RecebimentoM
 
 //* Custom components
 import Input from 'src/components/Form/Input'
-
+import AnexoModeView from 'src/components/Anexos/ModeView'
 import { Alert, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
 import { backRoute, toastMessage, formType, statusDefault, dateConfig } from 'src/configs/defaultConfigs'
@@ -28,14 +28,18 @@ import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 import FormNotification from './Dialogs/Notification/FormNotification'
 import ReportFornecedor from 'src/components/Reports/Formularios/Fornecedor'
 import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
+import FormFornecedorProdutos from './FormFornecedorProdutos'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
+    const [loadingFile, setLoadingFile] = useState(false) //? loading de carregamento do arquivo
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
     const [unidade, setUnidade] = useState(null)
+    const [produtos, setProdutos] = useState([])
+    const [grupoAnexo, setGrupoAnexo] = useState([])
     const [status, setStatus] = useState(null)
     const { createNewNotification } = useContext(NotificationContext)
     const [openModalStatus, setOpenModalStatus] = useState(false)
@@ -263,7 +267,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 console.log('getData: ', response.data)
 
                 setField(response.data.fields)
+                setProdutos(response.data.produtos)
                 setBlocos(response.data.blocos)
+                setGrupoAnexo(response.data.grupoAnexo)
                 setInfo(response.data.info)
                 setUnidade(response.data.unidade)
                 setLink(response.data.link)
@@ -468,6 +474,108 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
+    // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
+    const handleFileSelect = async (event, item) => {
+        setLoadingFile(true)
+        const selectedFile = event.target.files[0]
+
+        if (selectedFile) {
+            const formData = new FormData()
+            formData.append('file', selectedFile)
+            formData.append(`usuarioID`, user.usuarioID)
+            formData.append(`unidadeID`, loggedUnity.unidadeID)
+            formData.append(`file`, item.anexo.file)
+            formData.append(`titulo`, selectedFile.name)
+            formData.append(`grupoanexoitemID`, item.grupoanexoitemID)
+            //? Verifica se o arquivo é uma imagem (imagem redimensiona)
+            const isImage = selectedFile.type.includes('image')
+
+            await api
+                .post(`${staticUrl}/saveAnexo/${id}/${unidade.unidadeID}/${isImage}`, formData)
+                .then(response => {
+                    setLoadingFile(false)
+
+                    toast.success('Anexo adicionado com sucesso!')
+
+                    //? Atualiza grupoAnexo
+                    const updatedGrupoAnexo = grupoAnexo.map(grupo => {
+                        if (grupo.grupoAnexoID == item.grupoanexoID) {
+                            return {
+                                ...grupo,
+                                itens: grupo.itens.map(row => {
+                                    if (row.grupoanexoitemID == item.grupoanexoitemID) {
+                                        return {
+                                            ...item,
+                                            anexo: {
+                                                ...item.anexo,
+                                                exist: true,
+                                                nome: response.data.nome,
+                                                path: response.data.path,
+                                                tipo: response.data.tipo,
+                                                size: response.data.size,
+                                                time: response.data.time
+                                            }
+                                        }
+                                    }
+                                    return row
+                                })
+                            }
+                        }
+                        return grupo
+                    })
+                    setGrupoAnexo(updatedGrupoAnexo)
+                })
+                .catch(error => {
+                    setLoadingFile(false)
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
+                })
+        }
+    }
+
+    // Remove um anexo do array de anexos
+    const handleRemoveAnexo = async item => {
+        if (item) {
+            await api
+                .delete(
+                    `${staticUrl}/deleteAnexo/${item.grupoanexoitemID}/${id}/${loggedUnity.unidadeID}/${user.usuarioID}`
+                )
+                .then(response => {
+                    toast.success('Anexo removido com sucesso!')
+
+                    //? Atualiza grupoAnexo
+                    const updatedGrupoAnexo = grupoAnexo.map(grupo => {
+                        if (grupo.grupoAnexoID == item.grupoanexoID) {
+                            return {
+                                ...grupo,
+                                itens: grupo.itens.map(row => {
+                                    if (row.grupoanexoitemID == item.grupoanexoitemID) {
+                                        return {
+                                            ...item,
+                                            anexo: {
+                                                ...item.anexo,
+                                                exist: false,
+                                                nome: null,
+                                                path: null,
+                                                tipo: null,
+                                                size: null,
+                                                time: null
+                                            }
+                                        }
+                                    }
+                                    return row
+                                })
+                            }
+                        }
+                        return grupo
+                    })
+                    setGrupoAnexo(updatedGrupoAnexo)
+                })
+                .catch(error => {
+                    toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
+                })
+        }
+    }
+
     useEffect(() => {
         type == 'new' ? getNewData() : getData()
     }, [id, savingForm])
@@ -523,6 +631,16 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     </CardContent>
                 </Card>
 
+                {/* Produtos (se parâmetro habilitado na unidade) */}
+                {unidade && unidade?.obrigatorioProdutoFornecedor && (
+                    <Card sx={{ mt: 4 }}>
+                        <CardContent>
+                            {/* Listagem dos produtos selecionados pra esse fornecedor */}
+                            <FormFornecedorProdutos values={produtos} />
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Blocos */}
                 {blocos &&
                     blocos.map((bloco, index) => (
@@ -536,6 +654,23 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             setValue={setValue}
                             errors={errors}
                             disabled={!canEdit.status}
+                        />
+                    ))}
+
+                {/* Grupo de anexos */}
+                {grupoAnexo &&
+                    grupoAnexo.map((grupo, indexGrupo) => (
+                        <AnexoModeView
+                            key={indexGrupo}
+                            values={{
+                                grupo: grupo,
+                                loadingFile: loadingFile,
+                                indexGrupo: indexGrupo,
+                                handleFileSelect: handleFileSelect,
+                                handleRemove: handleRemoveAnexo,
+                                disabled: !canEdit.status,
+                                error: errors?.grupoAnexo?.[indexGrupo]?.itens
+                            }}
                         />
                     ))}
 

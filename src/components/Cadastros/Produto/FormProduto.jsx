@@ -177,6 +177,7 @@ const FormProduto = ({ id }) => {
                                     setValue={setValue}
                                     control={control}
                                     errors={errors?.unidadeMedida?.fields}
+                                    helpText='Selecione a unidade de medida'
                                 />
                                 <Check
                                     xs={1}

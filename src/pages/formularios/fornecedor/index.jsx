@@ -37,6 +37,7 @@ const Fornecedor = () => {
     }
 
     const getList = async () => {
+        console.log('🚀 ~ user.cnpj:', user.cnpj)
         await api
             .post(`${currentLink}/getList/`, {
                 unidadeID: loggedUnity.unidadeID,

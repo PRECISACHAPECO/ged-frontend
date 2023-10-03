@@ -490,6 +490,7 @@ const FormUnidade = ({ id }) => {
                                                 register={register}
                                                 control={control}
                                                 errors={errors?.fields?.tituloRelatorio}
+                                                helpText='Título que aparecerá no cabeçalho dos relatórios'
                                             />
 
                                             <Select
