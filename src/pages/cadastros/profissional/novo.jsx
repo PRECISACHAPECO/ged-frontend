@@ -1,6 +1,6 @@
 import { ParametersContext } from 'src/context/ParametersContext'
 import { useContext, useEffect } from 'react'
-import FormProfissional from 'src/components/Configuracoes/profissional/FormProfissional'
+import FormProfissional from 'src/components/Cadastros/profissional/FormProfissional'
 
 const ProfissinalNovo = () => {
     const { setTitle } = useContext(ParametersContext)

@@ -222,6 +222,7 @@ const FormUsuario = ({ id }) => {
             try {
                 const route = `${staticUrl}/getData/${id}?unidadeID=${loggedUnity.unidadeID}&papelID=${loggedUnity.papelID}&admin=${user.admin}`
                 await api.post(route).then(response => {
+                    console.log('🚀 ~ response:', response.data)
                     setData(response.data)
                     setPhotoProfile(response.data.fields.imagem)
                     reset(response.data) //* Insere os dados no formulário

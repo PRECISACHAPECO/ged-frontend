@@ -10,19 +10,21 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                 <DateField
                     xs={12}
                     md={2}
+                    required
                     title='Data'
                     value={item.data}
                     name={`cargosFuncoes[${index}].data`}
                     control={control}
-                    errors={errors?.cargosFuncoes?.[index].data}
+                    errors={errors?.cargosFuncoes?.[index]?.data}
                 />
                 <Input
                     xs={12}
                     md={4}
+                    required
                     title='Formação / Cargo'
                     name={`cargosFuncoes.[${index}].formacaoCargo`}
                     control={control}
-                    errors={errors?.cargosFuncoes?.[index].formacaoCargo}
+                    errors={errors?.cargosFuncoes?.[index]?.formacaoCargo}
                 />
                 <Input
                     xs={12}
@@ -30,7 +32,7 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     title='Conselho'
                     name={`cargosFuncoes.[${index}].conselho`}
                     control={control}
-                    errors={errors?.cargosFuncoes?.[index].conselho}
+                    errors={errors?.cargosFuncoes?.[index]?.conselho}
                 />
                 <DateField
                     xs={12}
@@ -39,7 +41,7 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     value={item.dataInativacao}
                     name={`cargosFuncoes[${index}].dataInativacao`}
                     control={control}
-                    errors={errors?.cargosFuncoes?.[index].dataInativacao}
+                    errors={errors?.cargosFuncoes?.[index]?.dataInativacao}
                 />
                 <Remove
                     xs={4}

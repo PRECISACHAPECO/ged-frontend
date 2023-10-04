@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
-import FormProfissional from 'src/components/Configuracoes/profissional/FormProfissional'
+import FormProfissional from 'src/components/Cadastros/profissional/FormProfissional'
 
 const Usuario = () => {
     const [result, setResult] = useState(null)
