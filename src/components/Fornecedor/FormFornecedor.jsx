@@ -484,9 +484,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append('file', selectedFile)
             formData.append(`usuarioID`, user.usuarioID)
             formData.append(`unidadeID`, loggedUnity.unidadeID)
-            formData.append(`file`, item.anexo.file)
+            // formData.append(`file`, item.anexo.file)
             formData.append(`titulo`, selectedFile.name)
-            formData.append(`grupoanexoitemID`, item.grupoanexoitemID)
+            console.log('🚀 ~ formData:', formData)
             //? Verifica se o arquivo é uma imagem (imagem redimensiona)
             const isImage = selectedFile.type.includes('image')
 
@@ -636,7 +636,11 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     <Card sx={{ mt: 4 }}>
                         <CardContent>
                             {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                            <FormFornecedorProdutos values={produtos} />
+                            <FormFornecedorProdutos
+                                values={produtos}
+                                handleFileSelect={handleFileSelect}
+                                loadingFile={loadingFile}
+                            />
                         </CardContent>
                     </Card>
                 )}

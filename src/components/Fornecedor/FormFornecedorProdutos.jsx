@@ -2,12 +2,22 @@ import { SettingsContext } from 'src/@core/context/settingsContext'
 import { Card, CardContent, Divider, Grid, Typography, Box } from '@mui/material'
 import AnexoModeView from 'src/components/Anexos/ModeView'
 import AnexoList from 'src/components/Anexos/ModeView/AnexoList'
-import { useContext } from 'react'
+import { useRef, useContext, useState, useEffect } from 'react'
 
-const FormFornecedorProdutos = ({ values }) => {
+const FormFornecedorProdutos = ({ values, handleFileSelect, loadingFile }) => {
     const { settings } = useContext(SettingsContext)
     const modeTheme = settings.mode
-    console.log('🚀 ~ values:', values)
+
+    const [selectedItem, setSelectedItem] = useState(null)
+    const fileInputRef = useRef(null)
+    const handleFileClick = item => {
+        fileInputRef.current.click()
+        setSelectedItem(item)
+    }
+    useEffect(() => {
+        fileInputRef.current.value = ''
+    }, [handleFileSelect])
+
     return (
         <div className='flex flex-col gap-2'>
             {values &&
@@ -30,15 +40,14 @@ const FormFornecedorProdutos = ({ values }) => {
                                     <AnexoList
                                         modeTheme={modeTheme}
                                         key={`${index}-${indexAnexo}`}
-                                        handleFileClick={null}
-                                        selectedItem={null}
-                                        // inputRef={fileInputRef}
-                                        //
+                                        handleFileClick={handleFileClick}
+                                        selectedItem={selectedItem}
+                                        inputRef={fileInputRef}
                                         item={anexo}
-                                        loadingFile={false}
+                                        loadingFile={loadingFile}
                                         grupo={value}
                                         indexGrupo={index}
-                                        handleFileSelect={null}
+                                        handleFileSelect={handleFileSelect}
                                         handleRemove={null}
                                         error={false}
                                         disabled={false}
