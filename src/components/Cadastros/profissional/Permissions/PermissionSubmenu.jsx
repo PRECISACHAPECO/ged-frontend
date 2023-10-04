@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@mui/material'
 import Check from 'src/components/Form/Check'
 
-const PermissionSubmenu = ({ submenu, indexUnit, indexMenuGroup, indexMenu, indexSubmenu, register, setValue }) => {
+const PermissionSubmenu = ({ submenu, indexMenuGroup, indexMenu, indexSubmenu, register, setValue }) => {
     return (
         <Grid
             container
@@ -19,54 +19,52 @@ const PermissionSubmenu = ({ submenu, indexUnit, indexMenuGroup, indexMenu, inde
             <input
                 type='hidden'
                 value={submenu.rota}
-                name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].rota`}
-                {...register(
-                    `units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].rota`
-                )}
+                name={`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].rota`}
+                {...register(`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].rota`)}
             />
 
             {/* Ler */}
             <Check
                 xs={2}
                 md={1}
-                name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].ler`}
+                name={`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].ler`}
                 value={submenu.ler}
                 register={register}
                 setValue={setValue}
-                edit={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`}
+                edit={`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`}
             />
 
             {/* Inserir */}
             <Check
                 xs={2}
                 md={1}
-                name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].inserir`}
+                name={`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].inserir`}
                 value={submenu.inserir}
                 register={register}
                 setValue={setValue}
-                edit={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`}
+                edit={`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`}
             />
 
             {/* Editar */}
             <Check
                 xs={2}
                 md={1}
-                name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].editar`}
+                name={`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].editar`}
                 value={submenu.editar}
                 register={register}
                 setValue={setValue}
-                edit={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`}
+                edit={`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`}
             />
 
             {/* Excluir */}
             <Check
                 xs={2}
                 md={1}
-                name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].excluir`}
+                name={`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].excluir`}
                 value={submenu.excluir}
                 register={register}
                 setValue={setValue}
-                edit={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`}
+                edit={`menu[${indexMenuGroup}].menu[${indexMenu}].submenu[${indexSubmenu}].edit`}
             />
         </Grid>
     )

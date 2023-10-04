@@ -20,17 +20,17 @@ const Fields = ({
     errors,
     data,
     register,
-    isUser,
     watch,
     getValues,
-    staticUrl,
     setValue,
-    setData
+    userNewVerifyCPF,
+    setUserNewVerifyCPF,
+    userExistVerifyCPF,
+    setUserExistVerifyCPF,
+    resetFields,
+    routeVeryfyCNP
 }) => {
-    console.log('🚀 ~ data:', data)
     const [lenghtPassword, setLenghtPassword] = useState(null)
-    const [userExist, setUserExist] = useState(false)
-    const [userNew, setUserNew] = useState(false)
 
     const [values, setValues] = useState({
         showPassword: false,
@@ -58,7 +58,8 @@ const Fields = ({
     const onChangeField = () => {
         const cpf = getValues('fields').cpf
 
-        if (cpf.length < 14) {
+        if (cpf && cpf.length < 14) {
+            setValue('isUsuario', false)
             resetFields()
         }
 
@@ -74,52 +75,33 @@ const Fields = ({
         watch()
     }
 
-    // Função que reseta o valor dos estado
-    const resetFields = () => {
-        setUserExist(false)
-        setUserNew(false)
-        setValues('isUsuario', false)
-        setData({
-            ...data,
-            fields: {
-                ...data.fields,
-                usuarioID: null
-            },
-            usuarioID: null
-        })
-        watch()
-    }
-
     // Vai até o back e verifica se o já existe um usuario ncom o cpf digitado
     const verifyCPF = async () => {
-        const data = {
-            cpf: getValues('fields').cpf
-        }
-        try {
-            const response = await api.post(`${staticUrl}/verifyCPF`, data)
-            setUserNew(true)
-        } catch (e) {
-            if (e.response.status == 409) {
-                setUserExist(true)
-            } else {
-                console.log(e)
+        resetFields()
+
+        const isUsuario = getValues('isUsuario')
+
+        if (!isUsuario) {
+            const data = {
+                cpf: getValues('fields').cpf
+            }
+            try {
+                const response = await api.post(routeVeryfyCNP, data)
+                setUserNewVerifyCPF(true)
+            } catch (e) {
+                if (e.response.status == 409) {
+                    setUserExistVerifyCPF(true)
+                } else {
+                    console.log(e)
+                }
             }
         }
     }
 
     // Ao clicar no checkLabel seta os estados como null (é usuario ou é novo usuario), após chama a função que verifica se o cpf já esta esta cadastrado no sistema
     const handleClickIsUser = () => {
-        resetFields()
         verifyCPF()
     }
-
-    // Ao clicar no label verifica o valor do Check, mostra ou não conteudo
-    useEffect(() => {
-        const isUsuario = getValues('isUsuario')
-        if (!isUsuario) {
-            setUserExist(false)
-        }
-    }, [handleClickIsUser])
 
     return (
         data && (
@@ -138,7 +120,7 @@ const Fields = ({
                     title='CPF'
                     mask='cpf'
                     name='fields.cpf'
-                    required={isUser ?? false}
+                    required={userExistVerifyCPF ?? false}
                     control={control}
                     errors={errors?.fields?.cpf}
                     onChange={onChangeField}
@@ -158,7 +140,7 @@ const Fields = ({
                     md={4}
                     title='Email'
                     type='email'
-                    required={isUser ?? false}
+                    required={userExistVerifyCPF ?? false}
                     name='fields.email'
                     control={control}
                     errors={errors?.fields?.email}
@@ -183,15 +165,16 @@ const Fields = ({
                     disabled={getValues('fields').email && validationCPF(getValues('fields').cpf) ? false : true}
                     helpText='Preencha o CPF(Deve ser um CPF válido) e email para habilitar essa função.'
                 />
-                {userExist && (
-                    <Alert severity='warning' sx={{ mt: 2 }}>
-                        <Typography variant='body2'>
-                            Esse profissional já possui acesso ao sistema. A senha não será alterada!
-                        </Typography>
-                    </Alert>
+                {userExistVerifyCPF && (
+                    <Grid item xs={12} md={6}>
+                        <Alert severity='warning' sx={{ mt: 2 }}>
+                            <Typography variant='body2'>
+                                Esse profissional já possui acesso ao sistema. A senha não será alterada!
+                            </Typography>
+                        </Alert>
+                    </Grid>
                 )}
-
-                {userNew && (
+                {userNewVerifyCPF && (
                     <>
                         <Grid item xs={12} sm={3}>
                             <TextField

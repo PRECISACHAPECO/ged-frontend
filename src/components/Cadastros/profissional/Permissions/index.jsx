@@ -1,30 +1,29 @@
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Grid, Typography } from '@mui/material'
-import { useEffect, useState, useContext } from 'react'
+import { useState, useContext } from 'react'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import Icon from 'src/@core/components/icon'
 
 import PermissionMenu from './PermissionMenu'
 
-const Permissions = ({
-    unit,
-    indexUnit,
-    expanded,
-    expandedItem,
-    handleChange,
-    handleChangeItem,
-    control,
-    register,
-    setValue,
-    permission
-}) => {
-    const [expandedAccordion, setExpandedAccordion] = useState(false)
+const Permissions = ({ register, setValue, menu, control }) => {
     const { settings } = useContext(SettingsContext)
+    const [expanded, setExpanded] = useState(false)
+    const [expandedItem, setExpandedItem] = useState(false)
+
+    // Abre os accordion
+    const handleChange = panel => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false)
+    }
+
+    const handleChangeItem = item => (event, isExpanded) => {
+        setExpandedItem(isExpanded ? item : false)
+    }
 
     const mode = settings.mode
     return (
         <Accordion
-            expanded={expandedAccordion}
-            onClick={() => setExpandedAccordion(!expandedAccordion)}
+            expanded={expanded === `panel`}
+            onChange={handleChange(`panel`)}
             sx={{
                 border: `${mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'}`,
                 boxShadow: 'none'
@@ -39,11 +38,11 @@ const Permissions = ({
                 <Typography>Permissões de Acesso</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                {permission &&
-                    permission.map((menuGroup, indexMenuGroup) => (
+                {menu &&
+                    menu.map((menuGroup, indexMenuGroup) => (
                         <>
                             {/* Divisor */}
-                            <Grid container spacing={5} sx={{ my: 2 }}>
+                            <Grid container spacing={4} sx={{ my: 2 }}>
                                 <Grid item xs={4} md={8}>
                                     <Typography variant='body2'>{menuGroup.nome}</Typography>
                                 </Grid>
@@ -68,12 +67,11 @@ const Permissions = ({
                                     </Typography>
                                 </Grid>
                             </Grid>
-                            {/* {menuGroup.menu &&
+                            {menuGroup.menu &&
                                 menuGroup.menu.map((menu, indexMenu) => (
                                     <PermissionMenu
                                         key={indexMenu}
                                         menu={menu}
-                                        indexUnit={indexUnit}
                                         indexMenuGroup={indexMenuGroup}
                                         expandedItem={expandedItem}
                                         handleChangeItem={handleChangeItem}
@@ -81,7 +79,7 @@ const Permissions = ({
                                         register={register}
                                         setValue={setValue}
                                     />
-                                ))} */}
+                                ))}
                         </>
                     ))}
             </AccordionDetails>

@@ -3,16 +3,7 @@ import Icon from 'src/@core/components/icon'
 import PermissionSubmenu from './PermissionSubmenu'
 import Check from 'src/components/Form/Check'
 
-const PermissionMenu = ({
-    menu,
-    indexUnit,
-    indexMenuGroup,
-    indexMenu,
-    expandedItem,
-    handleChangeItem,
-    register,
-    setValue
-}) => {
+const PermissionMenu = ({ menu, indexMenuGroup, indexMenu, expandedItem, handleChangeItem, register, setValue }) => {
     return menu.rota ? (
         <>
             {/* Menu com rota => seleciona permissões */}
@@ -26,52 +17,52 @@ const PermissionMenu = ({
                 <input
                     type='hidden'
                     value={menu.rota}
-                    name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].rota`}
-                    {...register(`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].rota`)}
+                    name={`menu[${indexMenuGroup}].menu[${indexMenu}].rota`}
+                    {...register(`menu[${indexMenuGroup}].menu[${indexMenu}].rota`)}
                 />
 
                 {/* Ler */}
                 <Check
                     xs={2}
                     md={1}
-                    name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].ler`}
+                    name={`menu[${indexMenuGroup}].menu[${indexMenu}].ler`}
                     value={menu.ler}
                     register={register}
                     setValue={setValue}
-                    edit={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].edit`}
+                    edit={`menu[${indexMenuGroup}].menu[${indexMenu}].edit`}
                 />
 
                 {/* Inserir */}
                 <Check
                     xs={2}
                     md={1}
-                    name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].inserir`}
+                    name={`menu[${indexMenuGroup}].menu[${indexMenu}].inserir`}
                     value={menu.inserir}
                     register={register}
                     setValue={setValue}
-                    edit={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].edit`}
+                    edit={`menu[${indexMenuGroup}].menu[${indexMenu}].edit`}
                 />
 
                 {/* Editar */}
                 <Check
                     xs={2}
                     md={1}
-                    name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].editar`}
+                    name={`menu[${indexMenuGroup}].menu[${indexMenu}].editar`}
                     value={menu.editar}
                     register={register}
                     setValue={setValue}
-                    edit={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].edit`}
+                    edit={`menu[${indexMenuGroup}].menu[${indexMenu}].edit`}
                 />
 
                 {/* Excluir */}
                 <Check
                     xs={2}
                     md={1}
-                    name={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].excluir`}
+                    name={`menu[${indexMenuGroup}].menu[${indexMenu}].excluir`}
                     value={menu.excluir}
                     register={register}
                     setValue={setValue}
-                    edit={`units[${indexUnit}].menu[${indexMenuGroup}].menu[${indexMenu}].edit`}
+                    edit={`menu[${indexMenuGroup}].menu[${indexMenu}].edit`}
                 />
             </Grid>
         </>
@@ -79,8 +70,8 @@ const PermissionMenu = ({
         <>
             {/* Menu sem rota => accordion pra abrir submenu */}
             <Accordion
-                expanded={expandedItem === `item-${indexUnit}-${indexMenuGroup}-${indexMenu}`}
-                onChange={handleChangeItem(`item-${indexUnit}-${indexMenuGroup}-${indexMenu}`)}
+                expanded={expandedItem === `item-${indexMenuGroup}-${indexMenu}`}
+                onChange={handleChangeItem(`item-${indexMenuGroup}-${indexMenu}`)}
                 sx={{
                     border: '1px solid #e0e0e0',
                     boxShadow: 'none'
@@ -103,7 +94,6 @@ const PermissionMenu = ({
                             <PermissionSubmenu
                                 key={indexSubmenu}
                                 submenu={submenu}
-                                indexUnit={indexUnit}
                                 indexMenuGroup={indexMenuGroup}
                                 indexMenu={indexMenu}
                                 indexSubmenu={indexSubmenu}

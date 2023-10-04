@@ -3,7 +3,6 @@ import { useEffect, useState, useContext } from 'react'
 import { RouteContext } from 'src/context/RouteContext'
 import { api } from 'src/configs/api'
 import Icon from 'src/@core/components/icon'
-import { SettingsContext } from 'src/@core/context/settingsContext'
 import { Card, CardContent, Grid, Button, CardHeader } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -11,11 +10,9 @@ import FormHeader from '../../Defaults/FormHeader'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { toastMessage } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
-import 'dayjs/locale/pt-br'
 import CargoFuncao from './CargoFuncao'
 import Fields from './Fields'
 import Permissions from './Permissions'
-import PermissionMenu from './Permissions/PermissionMenu'
 
 const FormProfissional = ({ id }) => {
     const { setId } = useContext(RouteContext)
@@ -23,18 +20,25 @@ const FormProfissional = ({ id }) => {
     const [data, setData] = useState(null)
     const [change, setChange] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
-    const [isUser, setIsUser] = useState(false)
-    const { settings } = useContext(SettingsContext)
+
+    // Estado que é prencchindo com o valor da função verifyCPF, que verifica se o cpf digitado já esta vinculado a um usuario existente
+    const [userExistVerifyCPF, setUserExistVerifyCPF] = useState(false)
+    const [userNewVerifyCPF, setUserNewVerifyCPF] = useState(false)
+    console.log('🚀 ~ userNewVerifyCPF:', userNewVerifyCPF)
+
+    console.log('🚀 ~ userExistVerifyCPF:', userExistVerifyCPF)
+    // Se usuarioID vindo no getData for maior que 0  adiciona true
+    const [userExistDefault, setUserExistDefault] = useState(false)
 
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
+    const routeVeryfyCNP = type == 'edit' ? `${staticUrl}/verifyCPF` : `${backRoute(staticUrl)}/verifyCPF`
 
     const {
         control,
         handleSubmit,
         reset,
-        trigger,
         setError,
         setValue,
         getValues,
@@ -42,6 +46,12 @@ const FormProfissional = ({ id }) => {
         register,
         formState: { errors }
     } = useForm({})
+
+    const resetFields = () => {
+        setUserNewVerifyCPF(false)
+        setUserExistVerifyCPF(!userExistVerifyCPF)
+        setUserExistDefault(false)
+    }
 
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async data => {
@@ -56,15 +66,16 @@ const FormProfissional = ({ id }) => {
 
         try {
             if (type === 'new') {
-                await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
-                    router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
-                    setId(response.data.id)
-                    toast.success(toastMessage.successNew)
-                })
+                const response = await api.post(`${backRoute(staticUrl)}/new/insertData`, values)
+                router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                setId(response.data)
+                toast.success(toastMessage.successNew)
             } else if (type === 'edit') {
                 const response = await api.post(`${staticUrl}/updateData/${id}`, values)
                 toast.success(toastMessage.successUpdate)
             }
+            resetFields()
+            getData()
         } catch (error) {
             if (error.response && error.response.status === 409) {
                 toast.error(toastMessage.errorRepeated)
@@ -84,6 +95,7 @@ const FormProfissional = ({ id }) => {
         try {
             const response = await api.post(route)
             reset(response.data)
+            console.log('🚀 ~ response.data:', response.data)
             setData(response.data)
         } catch (error) {
             console.log(error)
@@ -117,7 +129,6 @@ const FormProfissional = ({ id }) => {
             return
         }
 
-        console.log('🚀 ~ value:', value)
         //* Adiciona item removido ao array
         if (value.id) {
             setRemovedItems([...removedItems, value.id])
@@ -128,18 +139,17 @@ const FormProfissional = ({ id }) => {
         setChange(!change)
     }
 
-    const handleIsUser = value => {
-        setIsUser(value)
-    }
-
-    useEffect(() => {
-        trigger()
-    }, [isUser])
-
     // Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     useEffect(() => {
         getData()
     }, [id])
+
+    // Ao iniciar verifica se o profissional é usuario
+    useEffect(() => {
+        if (data && data.fields.usuarioID > 0) {
+            setUserExistDefault(true)
+        }
+    }, [data])
 
     return (
         data && (
@@ -163,13 +173,16 @@ const FormProfissional = ({ id }) => {
                                     control={control}
                                     errors={errors}
                                     register={register}
-                                    isUser={isUser}
                                     watch={watch}
                                     getValues={getValues}
                                     setError={setError}
-                                    staticUrl={staticUrl}
                                     setValue={setValue}
-                                    setData={setData}
+                                    userNewVerifyCPF={userNewVerifyCPF}
+                                    setUserNewVerifyCPF={setUserNewVerifyCPF}
+                                    userExistVerifyCPF={userExistVerifyCPF}
+                                    setUserExistVerifyCPF={setUserExistVerifyCPF}
+                                    resetFields={resetFields}
+                                    routeVeryfyCNP={routeVeryfyCNP}
                                 />
                             </Grid>
                         </CardContent>
@@ -202,12 +215,21 @@ const FormProfissional = ({ id }) => {
                             </Grid>
                         </CardContent>
                     </Card>
-                    <Card>
-                        <CardHeader title='Permissões' />
-                        <CardContent>
-                            <Permissions permission={data.permission} />
-                        </CardContent>
-                    </Card>
+
+                    {userExistDefault ||
+                        (userExistVerifyCPF && (
+                            <Card>
+                                <CardHeader title='Permissões' />
+                                <CardContent>
+                                    <Permissions
+                                        menu={data.menu}
+                                        control={control}
+                                        register={register}
+                                        setValue={setValue}
+                                    />
+                                </CardContent>
+                            </Card>
+                        ))}
                 </div>
             </form>
         )
