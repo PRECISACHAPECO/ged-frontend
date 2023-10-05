@@ -19,19 +19,20 @@ import CardStatsVertical from 'src/@core/components/card-statistics/card-stats-v
 import EcommerceSalesOverview from 'src/views/dashboards/ecommerce/EcommerceSalesOverview'
 import AnalyticsOverview from 'src/views/dashboards/analytics/AnalyticsOverview'
 import GraphLimpeza from 'src/components/Graphics/home/factory/GraphLimpeza'
+import LastForms from './LastForms'
 
-const Company = () => {
+const Supplier = () => {
     const { loggedUnity } = useContext(AuthContext)
-    const [dataFornecedor, setDataFornecedor] = useState(null)
-    const [dataRecebimentoNC, setDataRecebimentoNC] = useState(null)
-    const [limpeza, setLimpeza] = useState(null)
+    const [lastForms, seLastForms] = useState(null)
 
     const getData = async () => {
+        const data = {
+            cnpj: loggedUnity.cnpj
+        }
+
         try {
-            const response = await api.get(`dashboard/fabrica/getData/${loggedUnity.unidadeID}`)
-            setDataFornecedor(response.data.fornecedorPorStatus)
-            setDataRecebimentoNC(response.data.totalRecebimentoNC)
-            setLimpeza(response.data.limpeza)
+            const response = await api.post(`dashboard/fornecedor/getData`, data)
+            seLastForms(response.data.lastForms)
         } catch (err) {
             console.log(err)
         }
@@ -42,38 +43,35 @@ const Company = () => {
     }, [])
 
     return (
-        dataFornecedor && (
-            <ApexChartWrapper>
-                <Grid container spacing={6} className='match-height'>
-                    {/* Por estatus em blocos separadosç */}
-                    {dataFornecedor.map(row => (
-                        <Grid item xs={6} md={3}>
-                            <CardStatisticsVertical
-                                stats={row.stats}
-                                color={row.color}
-                                title={row.title ?? '0'}
-                                chipText='Last 4 Month'
-                                icon={<Icon icon='mdi:truck-fast-outline' />}
-                            />
-                        </Grid>
-                    ))}
+        <ApexChartWrapper>
+            <Grid container spacing={6} className='match-height'>
+                {/* Blocos com os principais formularios, ordenado por status */}
+                {lastForms &&
+                    lastForms.map((row, index) => {
+                        console.log('🚀 ~ row:', row)
+                        return (
+                            <Grid item xs={6} md={3} key={index}>
+                                <LastForms row={row} icon={<Icon icon='mdi:truck-fast-outline' />} />
+                            </Grid>
+                        )
+                    })}
 
-                    {/* Tudo em uma bloco */}
-                    {/* <Grid item xs={12} md={12}>
+                {/* Tudo em uma bloco */}
+                {/* <Grid item xs={12} md={12}>
                         <EcommerceSalesOverview title='Fornecedor' data={dataFornecedor} />
                     </Grid> */}
 
-                    {/* Recebimento MP e Não Conformidade */}
-                    {/* <Grid item xs={12} md={9}>
+                {/* Recebimento MP e Não Conformidade */}
+                {/* <Grid item xs={12} md={9}>
                         <CrmWeeklyOverview data={dataRecebimentoNC} />
                     </Grid> */}
 
-                    {/* Limpeza e Higienização */}
-                    {/* <Grid item xs={12} md={3}>
+                {/* Limpeza e Higienização */}
+                {/* <Grid item xs={12} md={3}>
                         <GraphLimpeza data={limpeza} />
                     </Grid> */}
 
-                    {/* <Grid item xs={12} md={12}>
+                {/* <Grid item xs={12} md={12}>
                         <CrmProjectTimeline />
                     </Grid>
 
@@ -89,10 +87,9 @@ const Company = () => {
                     <Grid item xs={12} md={6}>
                         <CrmWeeklyOverview />
                     </Grid> */}
-                </Grid>
-            </ApexChartWrapper>
-        )
+            </Grid>
+        </ApexChartWrapper>
     )
 }
 
-export default Company
+export default Supplier
