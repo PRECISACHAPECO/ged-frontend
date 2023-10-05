@@ -8,8 +8,8 @@ import CardContent from '@mui/material/CardContent'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { AuthContext } from 'src/context/AuthContext'
 import { useContext, useEffect } from 'react'
-import Factory from 'src/components/Graphics/Factory'
-import Company from 'src/components/Graphics/Company'
+import Factory from 'src/components/Graphics/home/factory'
+import Company from 'src/components/Graphics/home/company'
 
 const Home = () => {
     const { setTitle } = useContext(ParametersContext)
