@@ -13,6 +13,7 @@ const AnexoGrid = ({
     handleFileSelect,
     handleRemove,
     loadingFile,
+    folder,
     error,
     disabled,
     modeTheme,
@@ -114,7 +115,7 @@ const AnexoGrid = ({
                     type='file'
                     ref={inputRef}
                     style={{ display: 'none' }}
-                    onChange={e => handleFileSelect(e, selectedItem)}
+                    onChange={e => handleFileSelect(e, selectedItem, folder)}
                 />
             </div>
         </Grid>

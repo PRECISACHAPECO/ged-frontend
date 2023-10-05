@@ -13,6 +13,7 @@ const AnexoList = ({
     selectedItem,
     handleFileSelect,
     handleRemove,
+    folder,
     loadingFile,
     error,
     disabled,
@@ -117,7 +118,7 @@ const AnexoList = ({
                             md={1}
                             title={''}
                             // index={index}
-                            removeItem={() => handleRemove(item)}
+                            removeItem={() => handleRemove(item, folder)}
                             item={item}
                             pending={!item.anexo?.exist || disabled}
                             textSuccess='Remover este anexo'
@@ -129,7 +130,7 @@ const AnexoList = ({
                     type='file'
                     ref={inputRef}
                     style={{ display: 'none' }}
-                    onChange={e => handleFileSelect(e, selectedItem)}
+                    onChange={e => handleFileSelect(e, selectedItem, folder)}
                 />
             </div>
         </Grid>

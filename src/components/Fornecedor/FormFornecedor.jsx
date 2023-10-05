@@ -475,7 +475,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
-    const handleFileSelect = async (event, item) => {
+    const handleFileSelect = async (event, item, folder = null) => {
         setLoadingFile(true)
         const selectedFile = event.target.files[0]
 
@@ -484,18 +484,50 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append('file', selectedFile)
             formData.append(`usuarioID`, user.usuarioID)
             formData.append(`unidadeID`, loggedUnity.unidadeID)
-            formData.append(`file`, item.anexo.file)
             formData.append(`titulo`, selectedFile.name)
-            formData.append(`grupoanexoitemID`, item.grupoanexoitemID)
+            formData.append(`produtoAnexoID`, item.produtoAnexoID ?? null)
+            formData.append(`grupoAnexoItemID`, item.grupoanexoitemID ?? null)
+
             //? Verifica se o arquivo é uma imagem (imagem redimensiona)
             const isImage = selectedFile.type.includes('image')
 
             await api
-                .post(`${staticUrl}/saveAnexo/${id}/${unidade.unidadeID}/${isImage}`, formData)
+                .post(
+                    `${staticUrl}/saveAnexo/${id}/${folder}/${user.usuarioID}/${unidade.unidadeID}/${isImage}`,
+                    formData
+                )
                 .then(response => {
                     setLoadingFile(false)
 
                     toast.success('Anexo adicionado com sucesso!')
+
+                    //? Atualiza produtos
+                    const updatedProdutos = produtos.map(produto => {
+                        if (produto.produtoID == item.produtoID) {
+                            return {
+                                ...produto,
+                                anexos: produto.anexos.map(row => {
+                                    if (row.produtoAnexoID == item.produtoAnexoID) {
+                                        return {
+                                            ...item,
+                                            anexo: {
+                                                ...item.anexo,
+                                                exist: true,
+                                                nome: response.data.nome,
+                                                path: response.data.path,
+                                                tipo: response.data.tipo,
+                                                size: response.data.size,
+                                                time: response.data.time
+                                            }
+                                        }
+                                    }
+                                    return row
+                                })
+                            }
+                        }
+                        return produto
+                    })
+                    setProdutos(updatedProdutos)
 
                     //? Atualiza grupoAnexo
                     const updatedGrupoAnexo = grupoAnexo.map(grupo => {
@@ -533,11 +565,11 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     // Remove um anexo do array de anexos
-    const handleRemoveAnexo = async item => {
+    const handleRemoveAnexo = async (item, folder) => {
         if (item) {
             await api
                 .delete(
-                    `${staticUrl}/deleteAnexo/${item.grupoanexoitemID}/${id}/${loggedUnity.unidadeID}/${user.usuarioID}`
+                    `${staticUrl}/deleteAnexo/${item.grupoanexoitemID}/${id}/${unidade.unidadeID}/${user.usuarioID}/${folder}`
                 )
                 .then(response => {
                     toast.success('Anexo removido com sucesso!')
@@ -636,7 +668,13 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     <Card sx={{ mt: 4 }}>
                         <CardContent>
                             {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                            <FormFornecedorProdutos values={produtos} />
+                            <FormFornecedorProdutos
+                                key={loadingFile}
+                                values={produtos}
+                                handleFileSelect={handleFileSelect}
+                                handleRemove={handleRemoveAnexo}
+                                loadingFile={loadingFile}
+                            />
                         </CardContent>
                     </Card>
                 )}
@@ -668,6 +706,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 indexGrupo: indexGrupo,
                                 handleFileSelect: handleFileSelect,
                                 handleRemove: handleRemoveAnexo,
+                                folder: 'grupo-anexo',
                                 disabled: !canEdit.status,
                                 error: errors?.grupoAnexo?.[indexGrupo]?.itens
                             }}

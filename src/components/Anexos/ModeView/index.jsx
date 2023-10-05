@@ -66,6 +66,7 @@ const ModeView = ({ values }) => {
                                 indexGrupo={values.indexGrupo}
                                 handleFileSelect={values.handleFileSelect}
                                 handleRemove={values.handleRemove}
+                                folder={values.folder}
                                 error={values.error}
                                 disabled={values.disabled}
                             />
@@ -83,6 +84,7 @@ const ModeView = ({ values }) => {
                                 indexGrupo={values.indexGrupo}
                                 handleFileSelect={values.handleFileSelect}
                                 handleRemove={values.handleRemove}
+                                folder={values.folder}
                                 error={values.error}
                                 disabled={values.disabled}
                             />
