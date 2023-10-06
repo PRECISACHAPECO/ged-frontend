@@ -3,19 +3,22 @@ import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import Router from 'next/router'
-import CustomAvatar from 'src/@core/components/mui/avatar'
 import Icon from 'src/@core/components/icon'
 import { SettingsContext } from 'src/@core/context/settingsContext'
-import { useContext } from 'react'
 import CustomChip from 'src/@core/components/mui/chip'
+import { Avatar } from '@mui/material'
+import { RouteContext } from 'src/context/RouteContext'
+import { useContext } from 'react'
 
 const LastForms = ({ row }) => {
     const { settings } = useContext(SettingsContext)
+    const { setId } = useContext(RouteContext)
     const mode = settings.mode
     const router = Router
 
     const handleFilterStatus = () => {
-        router.push(`/formularios/fornecedor/?s=${row.status}`)
+        setId(row.fornecedorID)
+        router.push(`/formularios/fornecedor`)
     }
 
     return (
@@ -29,14 +32,13 @@ const LastForms = ({ row }) => {
                 <div className='space-y-4 p-1'>
                     <div className='flex  justify-between'>
                         <div className='flex gap-4'>
-                            <CustomAvatar
-                                skin='light-static'
+                            <Avatar
                                 variant='rounded'
                                 sx={{ width: 70, height: 70 }}
-                                className='p-1'
+                                className={`p-1 ${mode === 'dark' ? '!bg-[#e0e0e0]' : '!bg-[#f5f5f5]'}`}
                             >
                                 <img src={row.logo} alt='Imagem do logo da fábrica' />
-                            </CustomAvatar>
+                            </Avatar>
                             <div className='space-y-2'>
                                 <CustomChip
                                     size='small'
@@ -59,7 +61,9 @@ const LastForms = ({ row }) => {
                         </div>
                     </div>
                     <div className='w-full flex justify-between'>
-                        <Typography variant='h6 '>{row.fabrica}</Typography>
+                        <Typography variant='body1' className='!font-medium'>
+                            {row.fabrica}
+                        </Typography>
                     </div>
                 </div>
             </CardContent>
