@@ -18,7 +18,7 @@ import CrmSocialNetworkVisits from 'src/views/dashboards/crm/CrmSocialNetworkVis
 import CardStatsVertical from 'src/@core/components/card-statistics/card-stats-vertical'
 import EcommerceSalesOverview from 'src/views/dashboards/ecommerce/EcommerceSalesOverview'
 import AnalyticsOverview from 'src/views/dashboards/analytics/AnalyticsOverview'
-import GraphLimpeza from 'src/components/Graphics/home/GraphLimpeza'
+import GraphLimpeza from 'src/components/Graphics/home/factory/GraphLimpeza'
 
 const Factory = () => {
     const { loggedUnity } = useContext(AuthContext)

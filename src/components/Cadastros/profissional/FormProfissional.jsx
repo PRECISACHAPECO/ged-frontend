@@ -24,9 +24,6 @@ const FormProfissional = ({ id }) => {
     // Estado que é prencchindo com o valor da função verifyCPF, que verifica se o cpf digitado já esta vinculado a um usuario existente
     const [userExistVerifyCPF, setUserExistVerifyCPF] = useState(false)
     const [userNewVerifyCPF, setUserNewVerifyCPF] = useState(false)
-    console.log('🚀 ~ userNewVerifyCPF:', userNewVerifyCPF)
-
-    console.log('🚀 ~ userExistVerifyCPF:', userExistVerifyCPF)
     // Se usuarioID vindo no getData for maior que 0  adiciona true
     const [userExistDefault, setUserExistDefault] = useState(false)
 
@@ -49,7 +46,7 @@ const FormProfissional = ({ id }) => {
 
     const resetFields = () => {
         setUserNewVerifyCPF(false)
-        setUserExistVerifyCPF(!userExistVerifyCPF)
+        setUserExistVerifyCPF(false)
         setUserExistDefault(false)
     }
 
@@ -146,10 +143,15 @@ const FormProfissional = ({ id }) => {
 
     // Ao iniciar verifica se o profissional é usuario
     useEffect(() => {
+        console.log('entra akiii')
         if (data && data.fields.usuarioID > 0) {
+            console.log('entra akiii tmbm')
             setUserExistDefault(true)
         }
     }, [data])
+
+    console.log('user exist default', userExistDefault)
+    console.log('userExist nEW', userNewVerifyCPF)
 
     return (
         data && (
@@ -216,20 +218,21 @@ const FormProfissional = ({ id }) => {
                         </CardContent>
                     </Card>
 
-                    {userExistDefault ||
-                        (userExistVerifyCPF && (
-                            <Card>
-                                <CardHeader title='Permissões' />
-                                <CardContent>
-                                    <Permissions
-                                        menu={data.menu}
-                                        control={control}
-                                        register={register}
-                                        setValue={setValue}
-                                    />
-                                </CardContent>
-                            </Card>
-                        ))}
+                    {/* userExistVerifyCPF */}
+
+                    {(userExistDefault || userNewVerifyCPF) && (
+                        <Card>
+                            <CardHeader title='Permissões' />
+                            <CardContent>
+                                <Permissions
+                                    menu={data.menu}
+                                    control={control}
+                                    register={register}
+                                    setValue={setValue}
+                                />
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </form>
         )
