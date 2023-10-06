@@ -100,35 +100,47 @@ const backRoute = (route) => {
 }
 
 // Função pra gerar relatórios
-const generateReport = async props => {
-    const route = props.route
-    const params = props.params
-
-
-    try {
-        const response = await api.post(route, { data: params }, {
-            responseType: 'blob',
-        });
-        const fileUrl = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-        window.open(fileUrl);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-// const generateReport = (props) => {
+// const generateReport = async props => {
 //     const route = props.route
 //     const params = props.params
-//     api.post(route, { data: params }, { responseType: 'blob' })
-//         .then((response) => {
-//             const blob = new Blob([response.data], { type: 'application/pdf' });
-//             const url = URL.createObjectURL(blob);
-//             window.open(url);
-//         })
-//         .catch((error) => {
-//             console.log('Erro ao gerar o PDF:', error);
+
+
+//     try {
+//         const response = await api.post(route, { data: params }, {
+//             responseType: 'blob',
 //         });
+//         const fileUrl = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+//         window.open(fileUrl);
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
+
+// // Função para gerar relatórios
+// const generateReport = async (props) => {
+//     const route = props.route;
+//     const params = props.params;
+
+//     try {
+//         const response = await api.post(route, { data: params }, {
+//             responseType: 'blob',
+//         });
+
+//         // Crie um Blob com os dados da resposta
+//         const blob = new Blob([response.data], { type: 'application/pdf' });
+
+//         // Crie uma URL de objeto com um nome fixo
+//         const fileUrl = window.URL.createObjectURL(blob);
+
+//         // Abra o PDF em uma nova aba com o nome fixo
+//         window.open(fileUrl, 'relatorio-do-fornecedor');
+//     } catch (error) {
+//         console.error(error);
+//     }
 // };
+
+
+
 
 
 
@@ -227,4 +239,4 @@ const dateOptions = (type, date, numDays) => {
 
 
 
-export { configColumns, formType, backRoute, statusDefault, toastMessage, generateReport, dateConfig, dateOptions }
+export { configColumns, formType, backRoute, statusDefault, toastMessage, dateConfig, dateOptions }

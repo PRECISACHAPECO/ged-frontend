@@ -694,7 +694,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         btnSave={info?.status < 40 || type == 'new'}
                         btnSend={type == 'edit' && info?.status < 50 ? true : false}
                         btnPrint={type == 'edit' ? true : false}
-                        generateReport={generateReport}
                         actionsData={actionsData}
                         actions
                         handleSubmit={() => handleSubmit(onSubmit)}

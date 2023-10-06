@@ -1,18 +1,28 @@
-import { BlobProvider } from '@react-pdf/renderer'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { PDFDownloadLink, Document, Page, usePDF, BlobProvider } from '@react-pdf/renderer'
 
-const GenerateReport = ({ title, component }) => {
-    const matches = useMediaQuery('(min-width:640px)')
+const MyDoc = () => (
+    <Document>
+        <Page> My document data</Page>
+    </Document>
+)
 
-    return (
-        <BlobProvider document={component}>
-            {({ blob, url, loading, error }) => (
-                <a href={url} target='_blank' rel='noopener noreferrer'>
-                    {!matches ? '' : title ?? 'Imprimir'}
-                </a>
-            )}
-        </BlobProvider>
-    )
-}
+const GenerateReport = () => (
+    <div>
+        <PDFDownloadLink document={<MyDoc />} fileName='somename.pdf'>
+            {({ blob, url, loading, error }) => {
+                if (loading) {
+                    return 'Loading document...'
+                }
+
+                // Para abrir o PDF em uma nova guia, adicione o atributo `target="_blank"` ao link.
+                return (
+                    <a href={url} target='_blank'>
+                        Download now!
+                    </a>
+                )
+            }}
+        </PDFDownloadLink>
+    </div>
+)
 
 export default GenerateReport
