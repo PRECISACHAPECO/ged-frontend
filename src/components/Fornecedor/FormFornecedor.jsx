@@ -484,27 +484,19 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
         if (selectedFile && selectedFile.length > 0) {
             const formData = new FormData()
-
-            // varrer array e inserir em formData
             for (let i = 0; i < selectedFile.length; i++) {
-                formData.append('file', selectedFile[i])
-                formData.append(`titulo`, selectedFile[i].name)
+                formData.append('files[]', selectedFile[i])
             }
 
             formData.append(`usuarioID`, user.usuarioID)
             formData.append(`unidadeID`, loggedUnity.unidadeID)
             formData.append(`produtoAnexoID`, item.produtoAnexoID ?? null)
 
-            //? Verifica se o arquivo é uma imagem (imagem redimensiona)
-            const isImage = true //selectedFile.type.includes('image')
-
             await api
-                .post(
-                    `${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}/${isImage}`,
-                    formData
-                )
+                .post(`${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}`, formData)
                 .then(response => {
                     setLoadingFileProduct(false)
+                    console.log('response: ', response.data)
 
                     toast.success('Anexo adicionado com sucesso!')
 
@@ -513,19 +505,12 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         if (produto.produtoID == item.produtoID) {
                             return {
                                 ...produto,
-                                anexos: produto.anexos.map(row => {
+                                produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
                                     if (row.produtoAnexoID == item.produtoAnexoID) {
                                         return {
-                                            ...item,
-                                            anexo: {
-                                                ...item.anexo,
-                                                exist: true,
-                                                nome: response.data.nome,
-                                                path: response.data.path,
-                                                tipo: response.data.tipo,
-                                                size: response.data.size,
-                                                time: response.data.time
-                                            }
+                                            ...row,
+                                            // insere no array anexos os novos anexos vindos do array response.data
+                                            anexos: [...row.anexos, ...response.data]
                                         }
                                     }
                                     return row
@@ -534,6 +519,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         }
                         return produto
                     })
+                    console.log('🚀 ~ updatedProdutos:', updatedProdutos)
                     setProdutos(updatedProdutos)
                 })
                 .catch(error => {
