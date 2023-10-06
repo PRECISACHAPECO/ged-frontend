@@ -2,13 +2,15 @@ import { Card, CardContent, Grid, IconButton, Tooltip, Typography } from '@mui/m
 import Icon from 'src/@core/components/icon'
 import IconCloudUpload from 'src/icon/IconUpload'
 import IconAttach from '../IconAttach'
-import Loading from 'src/components/Loading'
+import LoadingFile from 'src/components/LoadingFile'
 import HelpText from 'src/components/Defaults/HelpText'
 
 const AnexoGrid = ({
     key,
     item,
     handleFileClick,
+    indexGrupo,
+    indexItem,
     selectedItem,
     handleFileSelect,
     handleRemove,
@@ -48,7 +50,7 @@ const AnexoGrid = ({
                         }`}
                     >
                         {selectedItem && selectedItem.grupoanexoitemID == item.grupoanexoitemID && (
-                            <Loading show={loadingFile} title='Enviando anexo...' />
+                            <LoadingFile show={loadingFile} title='Enviando anexo...' />
                         )}
                         <div className='flex items-center gap-3'>
                             {item.anexo && item.anexo.exist ? (

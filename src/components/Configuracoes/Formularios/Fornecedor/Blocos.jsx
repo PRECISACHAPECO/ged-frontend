@@ -106,7 +106,7 @@ const Blocos = ({
                                         {/* Item */}
                                         <Select
                                             xs={12}
-                                            md={7}
+                                            md={8}
                                             createNew={createNew}
                                             title={
                                                 blocks[index]?.itens[indexItem]?.itemID
@@ -134,7 +134,7 @@ const Blocos = ({
                                             register={register}
                                         />
 
-                                        <Check
+                                        {/* <Check
                                             xs={2}
                                             md={1}
                                             title='Obs'
@@ -142,7 +142,7 @@ const Blocos = ({
                                             name={`blocks.[${index}].itens.[${indexItem}].obs`}
                                             value={blocks[index]?.itens[indexItem]?.obs}
                                             register={register}
-                                        />
+                                        /> */}
 
                                         <Check
                                             xs={2}

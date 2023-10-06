@@ -3,12 +3,14 @@ import Icon from 'src/@core/components/icon'
 import IconCloudUpload from 'src/icon/IconUpload'
 import IconAttach from '../IconAttach'
 import Remove from 'src/components/Form/Remove'
-import Loading from 'src/components/Loading'
+import LoadingFile from 'src/components/LoadingFile'
 import HelpText from 'src/components/Defaults/HelpText'
 
 const AnexoList = ({
     key,
     item,
+    indexGrupo,
+    indexItem,
     handleFileClick,
     selectedItem,
     handleFileSelect,
@@ -20,6 +22,8 @@ const AnexoList = ({
     modeTheme,
     inputRef
 }) => {
+    console.log('🚀 >>>>> item:', item)
+
     return (
         <Grid item xs={12} md={12}>
             <div
@@ -54,8 +58,8 @@ const AnexoList = ({
                                     modeTheme === 'dark' ? ' border-[#27272a]' : 'rgba(76, 78, 100, 0.12)'
                                 }`}
                             >
-                                {selectedItem && selectedItem.grupoanexoitemID == item.grupoanexoitemID && (
-                                    <Loading show={loadingFile} title='Enviando anexo...' />
+                                {loadingFile && item.produtoAnexoID == selectedItem?.produtoAnexoID && (
+                                    <LoadingFile show title='Enviando anexo...' />
                                 )}
                                 <div className='flex items-center gap-3 container'>
                                     {item.anexo && item.anexo.exist ? (

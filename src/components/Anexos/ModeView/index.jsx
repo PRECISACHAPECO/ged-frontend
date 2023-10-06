@@ -2,6 +2,7 @@ import { useRef, useContext, useState, useEffect } from 'react'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import AnexoGrid from './AnexoGrid'
 import AnexoList from './AnexoList'
+import AnexoListMultiple from './AnexoListMultiple'
 import { Card, CardContent, Typography, Grid, ToggleButtonGroup, ToggleButton } from '@mui/material'
 import IconList from 'src/icon/IconList'
 import IconGrid from 'src/icon/IconGrid'
@@ -53,7 +54,7 @@ const ModeView = ({ values }) => {
                 <Grid container spacing={4}>
                     {values.grupo.itens.map((item, indexItem) =>
                         mode === 'list' ? (
-                            <AnexoList
+                            <AnexoListMultiple
                                 modeTheme={modeTheme}
                                 key={`${values.indexGrupo}-${indexItem}`}
                                 handleFileClick={handleFileClick}
@@ -64,6 +65,7 @@ const ModeView = ({ values }) => {
                                 loadingFile={values.loadingFile}
                                 grupo={values.grupo}
                                 indexGrupo={values.indexGrupo}
+                                indexItem={indexItem}
                                 handleFileSelect={values.handleFileSelect}
                                 handleRemove={values.handleRemove}
                                 folder={values.folder}
@@ -82,6 +84,7 @@ const ModeView = ({ values }) => {
                                 loadingFile={values.loadingFile}
                                 grupo={values.grupo}
                                 indexGrupo={values.indexGrupo}
+                                indexItem={indexItem}
                                 handleFileSelect={values.handleFileSelect}
                                 handleRemove={values.handleRemove}
                                 folder={values.folder}

@@ -21,6 +21,12 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
         }))
     }
 
+    const setItemResposta = value => {
+        console.log('🚀 ~ setItemResposta:', values)
+        // envia pro backend verificar as configurações dessa resposta (se possui anexos, se bloqueia formulário e se possui obs)
+        // se bloqueia formulário, envia o valor da resposta pro setValue do useForm
+    }
+
     //? Se for tipo Data, inicializa os campos já com as validações de data, bloqueando datas anteriores ou posteriores
     useEffect(() => {
         if (values.alternativa === 'Data') {
@@ -72,6 +78,7 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
                             idName={'alternativaID'}
                             value={values.resposta}
                             disabled={disabled}
+                            onChange={setItemResposta}
                             control={control}
                             register={register}
                             setValue={setValue}

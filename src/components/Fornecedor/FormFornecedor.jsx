@@ -33,7 +33,8 @@ import FormFornecedorProdutos from './FormFornecedorProdutos'
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
-    const [loadingFile, setLoadingFile] = useState(false) //? loading de carregamento do arquivo
+    const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
+    const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
@@ -475,8 +476,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
-    const handleFileSelect = async (event, item, folder = null) => {
-        setLoadingFile(true)
+    const handleFileSelectProduct = async (event, item) => {
+        setLoadingFileProduct(true)
         const selectedFile = event.target.files[0]
 
         if (selectedFile) {
@@ -486,18 +487,17 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append(`unidadeID`, loggedUnity.unidadeID)
             formData.append(`titulo`, selectedFile.name)
             formData.append(`produtoAnexoID`, item.produtoAnexoID ?? null)
-            formData.append(`grupoAnexoItemID`, item.grupoanexoitemID ?? null)
 
             //? Verifica se o arquivo é uma imagem (imagem redimensiona)
             const isImage = selectedFile.type.includes('image')
 
             await api
                 .post(
-                    `${staticUrl}/saveAnexo/${id}/${folder}/${user.usuarioID}/${unidade.unidadeID}/${isImage}`,
+                    `${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}/${isImage}`,
                     formData
                 )
                 .then(response => {
-                    setLoadingFile(false)
+                    setLoadingFileProduct(false)
 
                     toast.success('Anexo adicionado com sucesso!')
 
@@ -528,6 +528,38 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         return produto
                     })
                     setProdutos(updatedProdutos)
+                })
+                .catch(error => {
+                    setLoadingFileProduct(false)
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+                })
+        }
+    }
+
+    const handleFileSelectGroup = async (event, item) => {
+        setLoadingFileGroup(true)
+        const selectedFile = event.target.files[0]
+
+        if (selectedFile) {
+            const formData = new FormData()
+            formData.append('file', selectedFile)
+            formData.append(`usuarioID`, user.usuarioID)
+            formData.append(`unidadeID`, loggedUnity.unidadeID)
+            formData.append(`titulo`, selectedFile.name)
+            formData.append(`grupoAnexoItemID`, item.grupoanexoitemID ?? null)
+
+            //? Verifica se o arquivo é uma imagem (imagem redimensiona)
+            const isImage = selectedFile.type.includes('image')
+
+            await api
+                .post(
+                    `${staticUrl}/saveAnexo/${id}/grupo-anexo/${user.usuarioID}/${unidade.unidadeID}/${isImage}`,
+                    formData
+                )
+                .then(response => {
+                    setLoadingFileGroup(false)
+
+                    toast.success('Anexo adicionado com sucesso!')
 
                     //? Atualiza grupoAnexo
                     const updatedGrupoAnexo = grupoAnexo.map(grupo => {
@@ -558,8 +590,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     setGrupoAnexo(updatedGrupoAnexo)
                 })
                 .catch(error => {
-                    setLoadingFile(false)
-                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
+                    setLoadingFileGroup(false)
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
                 })
         }
     }
@@ -573,6 +605,34 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 )
                 .then(response => {
                     toast.success('Anexo removido com sucesso!')
+
+                    //? Atualiza produtos
+                    const updatedProdutos = produtos.map(produto => {
+                        if (produto.produtoID == item.produtoID) {
+                            return {
+                                ...produto,
+                                anexos: produto.anexos.map(row => {
+                                    if (row.produtoAnexoID == item.produtoAnexoID) {
+                                        return {
+                                            ...item,
+                                            anexo: {
+                                                ...item.anexo,
+                                                exist: false,
+                                                nome: null,
+                                                path: null,
+                                                tipo: null,
+                                                size: null,
+                                                time: null
+                                            }
+                                        }
+                                    }
+                                    return row
+                                })
+                            }
+                        }
+                        return produto
+                    })
+                    setProdutos(updatedProdutos)
 
                     //? Atualiza grupoAnexo
                     const updatedGrupoAnexo = grupoAnexo.map(grupo => {
@@ -664,16 +724,17 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 </Card>
 
                 {/* Produtos (se parâmetro habilitado na unidade) */}
-                {unidade && unidade?.obrigatorioProdutoFornecedor && (
+                {unidade && unidade?.obrigatorioProdutoFornecedor && produtos && produtos.length > 0 && (
                     <Card sx={{ mt: 4 }}>
                         <CardContent>
                             {/* Listagem dos produtos selecionados pra esse fornecedor */}
                             <FormFornecedorProdutos
-                                key={loadingFile}
+                                key={loadingFileProduct}
                                 values={produtos}
-                                handleFileSelect={handleFileSelect}
+                                handleFileSelect={handleFileSelectProduct}
                                 handleRemove={handleRemoveAnexo}
-                                loadingFile={loadingFile}
+                                loadingFile={loadingFileProduct}
+                                disabled={!canEdit.status}
                             />
                         </CardContent>
                     </Card>
@@ -702,9 +763,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             key={indexGrupo}
                             values={{
                                 grupo: grupo,
-                                loadingFile: loadingFile,
+                                loadingFile: loadingFileGroup,
                                 indexGrupo: indexGrupo,
-                                handleFileSelect: handleFileSelect,
+                                handleFileSelect: handleFileSelectGroup,
                                 handleRemove: handleRemoveAnexo,
                                 folder: 'grupo-anexo',
                                 disabled: !canEdit.status,
