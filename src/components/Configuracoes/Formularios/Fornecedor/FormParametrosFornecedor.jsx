@@ -289,6 +289,18 @@ const FormParametrosFornecedor = ({ id }) => {
                                         value={model.status}
                                         register={register}
                                     />
+
+                                    {/* <Input
+                                        xs={12}
+                                        md={12}
+                                        title='Objetivo'
+                                        name={null}
+                                        required={false}
+                                        value=''
+                                        multiline
+                                        rows={4}
+                                        control={control}
+                                    /> */}
                                 </Grid>
                             </CardContent>
                         </Card>

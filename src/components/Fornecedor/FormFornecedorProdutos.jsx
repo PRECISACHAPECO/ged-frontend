@@ -2,19 +2,24 @@ import { SettingsContext } from 'src/@core/context/settingsContext'
 import { Card, CardContent, Divider, Grid, Typography, Box } from '@mui/material'
 import AnexoModeView from 'src/components/Anexos/ModeView'
 import AnexoList from 'src/components/Anexos/ModeView/AnexoList'
+import AnexoListMultiple from 'src/components/Anexos/ModeView/AnexoListMultiple'
 import { useRef, useContext, useState, useEffect } from 'react'
 
-const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadingFile }) => {
+const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadingFile, disabled }) => {
     const { settings } = useContext(SettingsContext)
     const modeTheme = settings.mode
-
     const [selectedItem, setSelectedItem] = useState(null)
     const fileInputRef = useRef(null)
+
     const handleFileClick = item => {
+        console.log('🚀 >>>>> handleFileClick:', item)
         fileInputRef.current.click()
         setSelectedItem(item)
     }
+
     useEffect(() => {
+        console.log('no useEffect no useRef..')
+        if (!values) return
         fileInputRef.current.value = ''
     }, [handleFileSelect])
 
@@ -34,10 +39,10 @@ const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadin
                             </Grid>
                         </Grid>
                         {/* Anexos do produto */}
-                        {value.anexos && value.anexos.length > 0 && (
+                        {value.produtoAnexosDescricao && value.produtoAnexosDescricao.length > 0 && (
                             <Grid container spacing={4}>
-                                {value.anexos.map((anexo, indexAnexo) => (
-                                    <AnexoList
+                                {value.produtoAnexosDescricao.map((anexo, indexAnexo) => (
+                                    <AnexoListMultiple
                                         modeTheme={modeTheme}
                                         key={`${index}-${indexAnexo}`}
                                         handleFileClick={handleFileClick}
@@ -47,11 +52,12 @@ const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadin
                                         loadingFile={loadingFile}
                                         grupo={value}
                                         indexGrupo={index}
+                                        indexItem={indexAnexo}
                                         handleFileSelect={handleFileSelect}
                                         folder='produto'
                                         handleRemove={handleRemove}
                                         error={false}
-                                        disabled={false}
+                                        disabled={disabled}
                                     />
                                 ))}
                             </Grid>
