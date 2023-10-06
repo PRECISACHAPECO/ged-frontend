@@ -572,7 +572,7 @@ const FormFornecedor = ({ id }) => {
             formData.append(`unidadeID`, loggedUnity.unidadeID)
             formData.append(`file`, item.anexo.file)
             formData.append(`titulo`, selectedFile.name)
-            formData.append(`grupoanexoitemID`, item.grupoanexoitemID)
+            formData.append(`grupoAnexoItemID`, item.grupoAnexoItemID)
             //? Verifica se o arquivo é uma imagem (imagem redimensiona)
             const isImage = selectedFile.type.includes('image')
 
@@ -585,11 +585,11 @@ const FormFornecedor = ({ id }) => {
 
                     //? Atualiza grupoAnexo
                     const updatedGrupoAnexo = grupoAnexo.map(grupo => {
-                        if (grupo.grupoAnexoID == item.grupoanexoID) {
+                        if (grupo.grupoAnexoID == item.grupoAnexoID) {
                             return {
                                 ...grupo,
                                 itens: grupo.itens.map(row => {
-                                    if (row.grupoanexoitemID == item.grupoanexoitemID) {
+                                    if (row.grupoAnexoItemID == item.grupoAnexoItemID) {
                                         return {
                                             ...item,
                                             anexo: {
@@ -623,18 +623,18 @@ const FormFornecedor = ({ id }) => {
         if (item) {
             await api
                 .delete(
-                    `${staticUrl}/deleteAnexo/${item.grupoanexoitemID}/${id}/${loggedUnity.unidadeID}/${user.usuarioID}`
+                    `${staticUrl}/deleteAnexo/${item.grupoAnexoItemID}/${id}/${loggedUnity.unidadeID}/${user.usuarioID}`
                 )
                 .then(response => {
                     toast.success('Anexo removido com sucesso!')
 
                     //? Atualiza grupoAnexo
                     const updatedGrupoAnexo = grupoAnexo.map(grupo => {
-                        if (grupo.grupoAnexoID == item.grupoanexoID) {
+                        if (grupo.grupoAnexoID == item.grupoAnexoID) {
                             return {
                                 ...grupo,
                                 itens: grupo.itens.map(row => {
-                                    if (row.grupoanexoitemID == item.grupoanexoitemID) {
+                                    if (row.grupoAnexoItemID == item.grupoAnexoItemID) {
                                         return {
                                             ...item,
                                             anexo: {
