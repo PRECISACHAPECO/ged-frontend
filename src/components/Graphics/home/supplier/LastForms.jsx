@@ -35,9 +35,11 @@ const LastForms = ({ row }) => {
                             <Avatar
                                 variant='rounded'
                                 sx={{ width: 70, height: 70 }}
-                                className={`p-1 ${mode === 'dark' ? '!bg-[#e0e0e0]' : '!bg-[#f5f5f5]'}`}
+                                className={`${row.logo ? 'p-1' : 'p-0'}  ${
+                                    mode === 'dark' ? '!bg-[#e0e0e0]' : '!bg-[#f5f5f5]'
+                                }`}
                             >
-                                <img src={row.logo} alt='Imagem do logo da fábrica' />
+                                <img src={row.logo ?? '/imageDefault/factory.svg'} alt='Imagem da logo da fábrica' />
                             </Avatar>
                             <div className='space-y-2'>
                                 <CustomChip
