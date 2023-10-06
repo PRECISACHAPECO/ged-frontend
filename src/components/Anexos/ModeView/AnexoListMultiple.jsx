@@ -115,6 +115,7 @@ const AnexoList = ({
 
                 <input
                     type='file'
+                    multiple
                     ref={inputRef}
                     style={{ display: 'none' }}
                     onChange={e => handleFileSelect(e, selectedItem)}

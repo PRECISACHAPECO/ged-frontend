@@ -478,18 +478,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
     const handleFileSelectProduct = async (event, item) => {
         setLoadingFileProduct(true)
-        const selectedFile = event.target.files[0]
+        const selectedFile = event.target.files
 
-        if (selectedFile) {
+        console.log('🚀 ~ selectedFiles:', selectedFile)
+
+        if (selectedFile && selectedFile.length > 0) {
             const formData = new FormData()
-            formData.append('file', selectedFile)
+
+            // varrer array e inserir em formData
+            for (let i = 0; i < selectedFile.length; i++) {
+                formData.append('file', selectedFile[i])
+                formData.append(`titulo`, selectedFile[i].name)
+            }
+
             formData.append(`usuarioID`, user.usuarioID)
             formData.append(`unidadeID`, loggedUnity.unidadeID)
-            formData.append(`titulo`, selectedFile.name)
             formData.append(`produtoAnexoID`, item.produtoAnexoID ?? null)
 
             //? Verifica se o arquivo é uma imagem (imagem redimensiona)
-            const isImage = selectedFile.type.includes('image')
+            const isImage = true //selectedFile.type.includes('image')
 
             await api
                 .post(
