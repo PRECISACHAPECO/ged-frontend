@@ -638,6 +638,10 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
+    const handleFileSelectItem = async (event, item) => {
+        console.log('🚀 ~ handleFileSelectItem:', item)
+    }
+
     useEffect(() => {
         type == 'new' ? getNewData() : getData()
     }, [id, savingForm])
@@ -717,6 +721,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             key={index}
                             index={index}
                             blockKey={`parFornecedorModeloBlocoID`}
+                            setBlocos={setBlocos}
                             values={bloco}
                             control={control}
                             register={register}
