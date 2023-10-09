@@ -6,7 +6,6 @@ import { useForm, Controller } from 'react-hook-form'
 import Fields from 'src/components/Defaults/Formularios/Fields'
 import Block from 'src/components/Defaults/Formularios/Block'
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
-import ReportRecebimentoMP from 'src/components/Reports/Formularios/RecebimentoMP'
 
 //* Custom components
 import Input from 'src/components/Form/Input'
@@ -210,16 +209,11 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const objRelatorio = {
         id: 4,
         name: 'Formulário do fornecedor',
-        component: <ReportFornecedor params={{ id: id }} />,
-        route: '/relatorio/fornecedor/dadosFornecedor',
-        papelID: user.papelID,
-        modal: false,
         type: 'report',
-        icon: 'fluent:print-24-regular',
-        identification: null,
-        params: {
-            fornecedorID: id
-        }
+        papelID: user.papelID,
+        fornecedorID: id,
+        unidadeID: loggedUnity.unidadeID,
+        icon: 'fluent:print-24-regular'
     }
     // Monta array de ações baseado nas permissões
     const actionsData = []

@@ -1,16 +1,23 @@
 import { api } from 'src/configs/api'
 import { useEffect, useState } from 'react'
 
-const getData = params => {
+const getData = () => {
     const [data, setData] = useState([])
-    useEffect(() => {
-        const fetchData = async () => {
-            await api
-                .post('relatorio/fornecedor/dadosFornecedor', { data: params })
-                .then(response => setData(response.data))
+    const reportJSON = localStorage.getItem('report')
+    const report = JSON.parse(reportJSON)
+
+    const fetchData = async () => {
+        try {
+            const response = await api.post('relatorio/fornecedor/dadosFornecedor', { data: report })
+            console.log('🚀 ~ response:', response.data)
+            setData(response.data)
+        } catch (e) {
+            console.log(e)
         }
+    }
+    useEffect(() => {
         fetchData()
-    }, [params])
+    }, [])
     return data
 }
 

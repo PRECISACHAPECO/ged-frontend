@@ -2,7 +2,7 @@ import Fab from '@mui/material/Fab'
 import Icon from 'src/@core/components/icon'
 import { useState, useEffect } from 'react'
 
-const ButtonsReport = ({ savePdf }) => {
+const ButtonsFloating = ({ savePdf }) => {
     const [data, setData] = useState(null)
 
     const signature = () => {
@@ -76,4 +76,4 @@ const ButtonsReport = ({ savePdf }) => {
     )
 }
 
-export default ButtonsReport
+export default ButtonsFloating

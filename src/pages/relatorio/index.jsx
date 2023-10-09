@@ -1,35 +1,29 @@
-import { Document, PDFViewer, Page, Text } from '@react-pdf/renderer'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import PageReport from 'src/components/Defaults/Reports/PageReport'
+import LayoutReport from 'src/components/Reports/Layout'
+import ButtonsFloating from 'src/components/Reports/Layout/ButtonsFloating'
 
-const MyDocument = () => {
-    return (
-        <PDFViewer style={{ width: '100%', height: '100vh' }}>
-            <Document>
-                <Page>
-                    <Text>React-pdf</Text>
-                </Page>
-            </Document>
-        </PDFViewer>
-    )
-}
+// Componentes dos relatórios
+import Fornecedor from '../../components/Reports/Formularios/Fornecedor'
 
-const InvoicePrint = () => {
+const PageReport = () => {
     return (
         <BlankLayout>
-            <PageReport>
-                <MyDocument />
-            </PageReport>
+            <>
+                <ButtonsFloating />
+                <LayoutReport>
+                    <Fornecedor />
+                </LayoutReport>
+            </>
         </BlankLayout>
     )
 }
 
-InvoicePrint.getLayout = page => <BlankLayout>{page}</BlankLayout>
+PageReport.getLayout = page => <BlankLayout>{page}</BlankLayout>
 
-InvoicePrint.setConfig = () => {
+PageReport.setConfig = () => {
     return {
         mode: 'light'
     }
 }
 
-export default InvoicePrint
+export default PageReport
