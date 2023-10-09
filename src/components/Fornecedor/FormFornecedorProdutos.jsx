@@ -17,8 +17,9 @@ const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadin
     }
 
     useEffect(() => {
-        if (!values) return
-        fileInputRef.current.value = ''
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''
+        }
     }, [handleFileSelect])
 
     return (
