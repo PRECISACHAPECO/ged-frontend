@@ -278,6 +278,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                         value={model.ciclo}
                                         required={true}
                                         control={control}
+                                        helpText='Ciclo de vencimento deste formulário.'
                                         errors={errors?.model?.ciclo}
                                     />
                                     <Check
@@ -301,6 +302,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                         multiline
                                         rows={4}
                                         control={control}
+                                        helpText='Texto que será exibido no cabeçalho do formulário. Adicione aqui instruções e orientações para auxiliar o preenchimento pelo fornecedor.'
                                     />
                                 </Grid>
                             </CardContent>

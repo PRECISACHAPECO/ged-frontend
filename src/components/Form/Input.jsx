@@ -122,7 +122,7 @@ const Input = ({
                     />
                 </FormControl>
                 {helpText && (
-                    <div className='absolute right-4 top-[12px] '>
+                    <div className={`absolute right-${type == 'number' ? '8' : '4'} top-[12px]`}>
                         <HelpText text={helpText} position={helpTextPosition ?? 'top'} />
                     </div>
                 )}

@@ -74,8 +74,9 @@ const DynamicMenu = () => {
                                 title: subitem?.nome,
                                 path: subitem?.rota,
                                 icon: subitem?.icone,
-                                badgeContent: subitem?.novo == 1 ? 'novo' : null,
-                                badgeColor: subitem?.novo == 1 ? 'error' : null
+                                badgeContent: subitem?.novo == 1 ? 'novo' : item?.emDesenvolvimento == 1 ? 'dev' : null,
+                                badgeColor:
+                                    subitem?.novo == 1 ? 'error' : item?.emDesenvolvimento == 1 ? 'primary' : null
                             })
                         }
                     }
@@ -86,8 +87,8 @@ const DynamicMenu = () => {
                     title: item?.nome,
                     path: item?.rota,
                     icon: item?.icone,
-                    badgeContent: item?.novo == 1 ? 'novo' : null,
-                    badgeColor: item?.novo == 1 ? 'error' : null,
+                    badgeContent: item?.novo == 1 ? 'novo' : item?.emDesenvolvimento == 1 ? 'dev' : null,
+                    badgeColor: item?.novo == 1 ? 'error' : item?.emDesenvolvimento == 1 ? 'primary' : null,
                     children: submenu.length > 0 ? submenu : null
                 })
             }
