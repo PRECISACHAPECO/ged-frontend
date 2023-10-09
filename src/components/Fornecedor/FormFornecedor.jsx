@@ -163,6 +163,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
+<<<<<<< HEAD
     const actionsData = [
         {
             id: 1,
@@ -229,8 +230,71 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             fornecedorID: id,
             unidadeID: loggedUnity.unidadeID,
             icon: 'fluent:print-24-regular'
+=======
+    const objNovoFormulario = {
+        id: 1,
+        name: 'Gerar novo formulário',
+        description: 'Gerar um novo formulário de preenchimento para este fornecedor.',
+        component: <NewFornecedor cnpj={unidade?.fornecedor?.cnpj} />,
+        route: null,
+        type: null,
+        modal: true,
+        action: makeFornecedor,
+        size: 'lg',
+        icon: 'fluent:form-new-20-regular',
+        identification: null
+    }
+    const objGerarNotificacao = {
+        id: 2,
+        name: 'Gerar notificação',
+        description: 'Gerar uma nova notificação para o fornecedor, podendo ser um e-mail e/ou alerta do sistema.',
+        component: (
+            <FormNotification
+                data={{
+                    email: field.find(row => row.nomeColuna == 'email')?.email
+                }}
+            />
+        ),
+        route: null,
+        type: null,
+        modal: true,
+        action: sendNotification,
+        icon: 'cil:bell',
+        identification: null
+    }
+    const objCopiarLink = {
+        id: 3,
+        name: 'Copiar link do formulário',
+        description: 'Copiar o link deste formulário.',
+        component: <NewFornecedor />,
+        route: null,
+        type: null,
+        action: copyLinkForm,
+        modal: false,
+        icon: 'solar:copy-outline',
+        identification: null
+    }
+    const objRelatorio = {
+        id: 4,
+        name: 'Formulário do fornecedor',
+        component: <ReportFornecedor params={{ id: id }} />,
+        route: '/relatorio/fornecedor/dadosFornecedor',
+        papelID: user.papelID,
+        modal: false,
+        type: 'report',
+        icon: 'fluent:print-24-regular',
+        identification: null,
+        params: {
+            fornecedorID: id
+>>>>>>> 30e25362fe08fc6d4b2dcd998a4549c68953b1c3
         }
-    ]
+    }
+    // Monta array de ações baseado nas permissões
+    const actionsData = []
+    if (user.papelID == 1) actionsData.push(objNovoFormulario)
+    actionsData.push(objGerarNotificacao)
+    actionsData.push(objCopiarLink)
+    actionsData.push(objRelatorio)
 
     const verifyFormPending = async () => {
         try {
@@ -552,7 +616,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 .then(response => {
                     setLoadingFileGroup(false)
 
-                    toast.success('Anexo adicionado com sucesso!!!!!')
+                    toast.success('Anexo adicionado com sucesso!')
 
                     //? Atualiza grupoAnexo
                     const updatedGrupoAnexo = grupoAnexo.map(grupo => {
@@ -603,7 +667,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 .then(response => {
                     setLoadingFileItem(false)
 
-                    toast.success('Anexo adicionado com sucesso!!!!!')
+                    toast.success('Anexo adicionado com sucesso!')
 
                     //? Atualiza item
                     const updatedItem = blocos.map(bloco => {
@@ -801,15 +865,18 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 <Card>
                     <FormHeader
                         btnCancel
-                        btnSave={info?.status < 40 || type == 'new'}
-                        btnSend={type == 'edit' && info?.status < 50 ? true : false}
+                        btnSave={user.papelID == 2 && info.status < 40}
+                        btnSend={
+                            (user.papelID == 1 && type == 'edit' && info.status >= 40) ||
+                            (user.papelID == 2 && info.status < 40)
+                        }
                         btnPrint={type == 'edit' ? true : false}
                         actionsData={actionsData}
                         actions
                         handleSubmit={() => handleSubmit(onSubmit)}
                         handleSend={handleSendForm}
                         iconConclusion={'mdi:check-bold'}
-                        titleConclusion={'Concluir Fornecedor'}
+                        titleConclusion={'Concluir Formulário'}
                         title='Fornecedor'
                         btnStatus={type == 'edit' ? true : false}
                         handleBtnStatus={() => setOpenModalStatus(true)}

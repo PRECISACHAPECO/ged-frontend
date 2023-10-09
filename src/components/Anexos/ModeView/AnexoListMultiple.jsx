@@ -44,7 +44,7 @@ const AnexoList = ({
                     className={`rounded-lg border-2 p-3 cursor-pointer border-dashed hover:border-[#4A8B57] transition-colors ${
                         modeTheme === 'dark' ? ' border-[#27272a]' : 'rgba(76, 78, 100, 0.12)'
                     }`}
-                    onClick={() => handleFileClick(item)}
+                    onClick={() => (!disabled ? handleFileClick(item) : null)}
                 >
                     <div className='flex flex-col gap-2'>
                         <div className='flex items-center gap-2'>
@@ -106,7 +106,11 @@ const AnexoList = ({
                                         item={anexo}
                                         pending={!anexo?.exist || disabled}
                                         textSuccess='Remover este anexo'
-                                        textError='Este anexo não pode mais ser removido pois o formulário já foi concluído!'
+                                        textError={
+                                            disabled
+                                                ? 'Você não ter permissões para remover este anexo'
+                                                : 'Este anexo não pode mais ser removido pois o formulário já foi concluído!'
+                                        }
                                     />
                                 </div>
                             </div>

@@ -290,17 +290,18 @@ const FormParametrosFornecedor = ({ id }) => {
                                         register={register}
                                     />
 
-                                    {/* <Input
+                                    <Input
                                         xs={12}
                                         md={12}
-                                        title='Objetivo'
-                                        name={null}
+                                        className='order-4'
+                                        title='Cabeçalho'
+                                        name={`model.cabecalho`}
                                         required={false}
-                                        value=''
+                                        value={model.cabecalho}
                                         multiline
                                         rows={4}
                                         control={control}
-                                    /> */}
+                                    />
                                 </Grid>
                             </CardContent>
                         </Card>
@@ -342,18 +343,42 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     <CheckLabel
                                                         title=''
                                                         name={`header.[${index}].mostra`}
-                                                        value={header.nomeColuna == 'cnpj' ? true : header.mostra}
+                                                        value={
+                                                            header.nomeColuna == 'cnpj' ||
+                                                            header.nomeColuna == 'razaoSocial' ||
+                                                            header.nomeColuna == 'dataAvaliacao'
+                                                                ? true
+                                                                : header.mostra
+                                                        }
                                                         register={register}
-                                                        disabled={header.nomeColuna == 'cnpj' ? true : false}
+                                                        disabled={
+                                                            header.nomeColuna == 'cnpj' ||
+                                                            header.nomeColuna == 'razaoSocial' ||
+                                                            header.nomeColuna == 'dataAvaliacao'
+                                                                ? true
+                                                                : false
+                                                        }
                                                     />
                                                 </Grid>
                                                 <Grid item md={3} xs={3}>
                                                     <CheckLabel
                                                         title=''
                                                         name={`header.[${index}].obrigatorio`}
-                                                        value={header.nomeColuna == 'cnpj' ? true : header.obrigatorio}
+                                                        value={
+                                                            header.nomeColuna == 'cnpj' ||
+                                                            header.nomeColuna == 'razaoSocial' ||
+                                                            header.nomeColuna == 'dataAvaliacao'
+                                                                ? true
+                                                                : header.obrigatorio
+                                                        }
                                                         register={register}
-                                                        disabled={header.nomeColuna == 'cnpj' ? true : false}
+                                                        disabled={
+                                                            header.nomeColuna == 'cnpj' ||
+                                                            header.nomeColuna == 'razaoSocial' ||
+                                                            header.nomeColuna == 'dataAvaliacao'
+                                                                ? true
+                                                                : false
+                                                        }
                                                     />
                                                 </Grid>
                                             </>
