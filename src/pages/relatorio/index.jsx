@@ -1,25 +1,24 @@
 import { Document, PDFViewer, Page, Text } from '@react-pdf/renderer'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import PageReport from 'src/components/Defaults/Reports/PageReport'
+import ButtonsReport from 'src/components/Defaults/Reports/ButtonsReport'
+import LayoutReport from 'src/components/Defaults/Reports/LayoutReport'
 
 const MyDocument = () => {
-    return (
-        <PDFViewer style={{ width: '100%', height: '100vh' }}>
-            <Document>
-                <Page>
-                    <Text>React-pdf</Text>
-                </Page>
-            </Document>
-        </PDFViewer>
-    )
+    const reportJSON = localStorage.getItem('report')
+    const report = JSON.parse(reportJSON)
+    console.log('🚀 ~ report:', report)
+    return <Text>React-pdf</Text>
 }
 
 const InvoicePrint = () => {
     return (
         <BlankLayout>
-            <PageReport>
-                <MyDocument />
-            </PageReport>
+            <>
+                <ButtonsReport />
+                <LayoutReport>
+                    <MyDocument />
+                </LayoutReport>
+            </>
         </BlankLayout>
     )
 }

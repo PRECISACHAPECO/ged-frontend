@@ -207,19 +207,29 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             icon: 'solar:copy-outline',
             identification: null
         },
+        // {
+        //     id: 4,
+        //     name: 'Formulário do fornecedor',
+        //     component: <ReportFornecedor params={{ id: id }} />,
+        //     route: '/relatorio/fornecedor/dadosFornecedor',
+        //     papelID: user.papelID,
+        //     modal: false,
+        //     type: 'report',
+        //     icon: 'fluent:print-24-regular',
+        //     identification: null,
+        //     params: {
+        //         fornecedorID: id
+        //     }
+        // }
         {
             id: 4,
             name: 'Formulário do fornecedor',
-            component: <ReportFornecedor params={{ id: id }} />,
-            route: '/relatorio/fornecedor/dadosFornecedor',
-            papelID: user.papelID,
-            modal: false,
             type: 'report',
-            icon: 'fluent:print-24-regular',
+            modal: false,
+            papelID: user.papelID,
             identification: null,
-            params: {
-                fornecedorID: id
-            }
+            fornecedorID: id,
+            icon: 'fluent:print-24-regular'
         }
     ]
 

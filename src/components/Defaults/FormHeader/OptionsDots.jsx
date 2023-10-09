@@ -2,11 +2,17 @@ import { Button, IconButton, Menu, MenuItem } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import LayoutReport from 'src/components/Reports/Layout'
 import DialogActs from '../Dialogs/DialogActs'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { ParametersContext } from 'src/context/ParametersContext'
 
 const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) => {
     const [openModal, setOpenModal] = useState(false)
     const [item, setItem] = useState(null)
+
+    // Ao clicar em um item e ele for do tipo report
+    const handleClickReport = item => {
+        localStorage.setItem('report', JSON.stringify(item))
+    }
 
     return (
         <div className='relative'>
@@ -47,40 +53,45 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                {actionsData?.map(item => (
-                    <MenuItem
-                        key={item.id}
-                        onClick={() => {
-                            handleClose()
-                        }}
-                        style={{ textAlign: 'left', display: 'flex', alignItems: 'center', gap: '4px' }}
-                    >
-                        {item.identification ? (
-                            <span style={{ padding: '0 7px' }}>
-                                <span>{item.identification}</span> -
-                            </span>
-                        ) : (
-                            <Icon icon={item.icon} />
-                        )}
+                {actionsData?.map(item => {
+                    return (
+                        <MenuItem
+                            key={item.id}
+                            onClick={() => {
+                                handleClose()
+                                handleClickReport(item)
+                            }}
+                            style={{ textAlign: 'left', display: 'flex', alignItems: 'center', gap: '4px' }}
+                        >
+                            {item.identification ? (
+                                <span style={{ padding: '0 7px' }}>
+                                    <span>{item.identification}</span> -
+                                </span>
+                            ) : (
+                                <Icon icon={item.icon} />
+                            )}
 
-                        {item.type == 'report' ? (
-                            <LayoutReport title={item.name} content={item.component} />
-                        ) : (
-                            <p
-                                onClick={
-                                    item.modal
-                                        ? () => {
-                                              setOpenModal(true)
-                                              setItem(item)
-                                          }
-                                        : item.action
-                                }
-                            >
-                                {item.name}
-                            </p>
-                        )}
-                    </MenuItem>
-                ))}
+                            {item.type == 'report' ? (
+                                <a href='/relatorio' target='_blank' rel='noopener noreferrer'>
+                                    {item.name}
+                                </a>
+                            ) : (
+                                <p
+                                    onClick={
+                                        item.modal
+                                            ? () => {
+                                                  setOpenModal(true)
+                                                  setItem(item)
+                                              }
+                                            : item.action
+                                    }
+                                >
+                                    {item.name}
+                                </p>
+                            )}
+                        </MenuItem>
+                    )
+                })}
             </Menu>
 
             {/* Modal */}
