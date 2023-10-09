@@ -49,7 +49,7 @@ const AnexoGrid = ({
                             modeTheme === 'dark' ? ' border-[#27272a]' : 'rgba(76, 78, 100, 0.12)'
                         }`}
                     >
-                        {selectedItem && selectedItem.grupoanexoitemID == item.grupoanexoitemID && (
+                        {selectedItem && selectedItem.grupoAnexoItemID == item.grupoAnexoItemID && (
                             <LoadingFile show={loadingFile} title='Enviando anexo...' />
                         )}
                         <div className='flex items-center gap-3'>

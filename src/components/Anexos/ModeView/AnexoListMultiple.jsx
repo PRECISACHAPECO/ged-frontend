@@ -102,7 +102,7 @@ const AnexoList = ({
                                         color='secondary'
                                         title={''}
                                         index={index}
-                                        removeItem={() => handleRemove(anexo, folder)}
+                                        removeItem={() => handleRemove(anexo)}
                                         item={anexo}
                                         pending={!anexo?.exist || disabled}
                                         textSuccess='Remover este anexo'
@@ -115,6 +115,7 @@ const AnexoList = ({
 
                 <input
                     type='file'
+                    multiple
                     ref={inputRef}
                     style={{ display: 'none' }}
                     onChange={e => handleFileSelect(e, selectedItem)}

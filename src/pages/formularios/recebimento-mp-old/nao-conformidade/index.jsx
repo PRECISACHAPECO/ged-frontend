@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { api } from 'src/configs/api'
 import Table from 'src/components/Defaults/Table'
-import FormNaoConformidade from 'src/components/RecebimentoMp/NaoConformidade/FormNaoConformidade'
+// import FormNaoConformidade from 'src/components/RecebimentoMp/NaoConformidade/FormNaoConformidade'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
@@ -145,7 +145,7 @@ const NaoConformidade = () => {
                 <Loading />
             ) : //? Se tem id, exibe o formulário
             id && id > 0 ? (
-                <FormNaoConformidade id={id} />
+                <p>em desenvolvimento..</p>
             ) : (
                 //? Lista tabela de resultados da listagem
                 <Table result={result} columns={columns} />
