@@ -99,51 +99,6 @@ const backRoute = (route) => {
     return arrRoute.join('/')
 }
 
-// Função pra gerar relatórios
-// const generateReport = async props => {
-//     const route = props.route
-//     const params = props.params
-
-
-//     try {
-//         const response = await api.post(route, { data: params }, {
-//             responseType: 'blob',
-//         });
-//         const fileUrl = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-//         window.open(fileUrl);
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
-
-// // Função para gerar relatórios
-// const generateReport = async (props) => {
-//     const route = props.route;
-//     const params = props.params;
-
-//     try {
-//         const response = await api.post(route, { data: params }, {
-//             responseType: 'blob',
-//         });
-
-//         // Crie um Blob com os dados da resposta
-//         const blob = new Blob([response.data], { type: 'application/pdf' });
-
-//         // Crie uma URL de objeto com um nome fixo
-//         const fileUrl = window.URL.createObjectURL(blob);
-
-//         // Abra o PDF em uma nova aba com o nome fixo
-//         window.open(fileUrl, 'relatorio-do-fornecedor');
-//     } catch (error) {
-//         console.error(error);
-//     }
-// };
-
-
-
-
-
-
 function dateConfig(type, date, numDays) {
     let inputDate = new Date(date);
     if (inputDate) {

@@ -66,20 +66,18 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                         {item.type == 'report' ? (
                             <LayoutReport title={item.name} content={item.component} />
                         ) : (
-                            <>
-                                <p
-                                    onClick={
-                                        item.modal
-                                            ? () => {
-                                                  setOpenModal(true)
-                                                  setItem(item)
-                                              }
-                                            : item.action
-                                    }
-                                >
-                                    {item.name}
-                                </p>
-                            </>
+                            <p
+                                onClick={
+                                    item.modal
+                                        ? () => {
+                                              setOpenModal(true)
+                                              setItem(item)
+                                          }
+                                        : item.action
+                                }
+                            >
+                                {item.name}
+                            </p>
                         )}
                     </MenuItem>
                 ))}
