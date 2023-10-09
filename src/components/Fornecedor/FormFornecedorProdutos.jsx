@@ -12,13 +12,11 @@ const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadin
     const fileInputRef = useRef(null)
 
     const handleFileClick = item => {
-        console.log('🚀 >>>>> handleFileClick:', item)
         fileInputRef.current.click()
         setSelectedItem(item)
     }
 
     useEffect(() => {
-        console.log('no useEffect no useRef..')
         if (!values) return
         fileInputRef.current.value = ''
     }, [handleFileSelect])
@@ -50,7 +48,7 @@ const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadin
                                         inputRef={fileInputRef}
                                         item={anexo}
                                         loadingFile={loadingFile}
-                                        grupo={value}
+                                        // grupo={value}
                                         indexGrupo={index}
                                         indexItem={indexAnexo}
                                         handleFileSelect={handleFileSelect}

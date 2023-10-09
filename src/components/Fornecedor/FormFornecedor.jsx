@@ -35,6 +35,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [isLoading, setLoading] = useState(false)
     const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
     const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
+    const [loadingFileItem, setLoadingFileItem] = useState(false) //? loading de carregamento do arquivo
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
@@ -582,6 +583,99 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
+    const handleFileSelectItem = async (event, item) => {
+        setLoadingFileItem(true)
+        const selectedFile = event.target.files
+
+        if (selectedFile && selectedFile.length > 0) {
+            const formData = new FormData()
+            for (let i = 0; i < selectedFile.length; i++) {
+                formData.append('files[]', selectedFile[i])
+            }
+            formData.append(`usuarioID`, user.usuarioID)
+            formData.append(`unidadeID`, loggedUnity.unidadeID)
+            formData.append(`parFornecedorModeloBlocoID`, item.parFornecedorModeloBlocoID ?? null)
+            formData.append(`itemOpcaoAnexoID`, item.itemOpcaoAnexoID ?? null)
+
+            // console.log('🚀 ~ handleFileSelectItem ~ item:', item)
+            // return
+
+            await api
+                .post(`${staticUrl}/saveAnexo/${id}/item/${user.usuarioID}/${unidade.unidadeID}`, formData)
+                .then(response => {
+                    setLoadingFileItem(false)
+
+                    toast.success('Anexo adicionado com sucesso!!!!!')
+
+                    //? Atualiza item
+                    const updatedItem = blocos.map(bloco => {
+                        if (bloco.parFornecedorModeloBlocoID == item.parFornecedorModeloBlocoID) {
+                            return {
+                                ...bloco,
+                                itens: bloco.itens.map(row => {
+                                    return {
+                                        ...row,
+                                        respostaConfig: {
+                                            ...row.respostaConfig,
+                                            anexosSolicitados: row.respostaConfig.anexosSolicitados.map(anexo => {
+                                                if (anexo.itemOpcaoAnexoID == item.itemOpcaoAnexoID) {
+                                                    return {
+                                                        ...anexo,
+                                                        anexos: [...anexo.anexos, ...response.data]
+                                                    }
+                                                }
+                                                return anexo
+                                            })
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                        return bloco
+                    })
+                    setBlocos(updatedItem)
+                })
+                .catch(error => {
+                    setLoadingFileItem(false)
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+                })
+        }
+    }
+
+    //? Função que atualiza os anexos solicitados no item, quando altera a resposta
+    const setItemResposta = async value => {
+        // envia pro backend verificar as configurações dessa resposta (se possui anexos, se bloqueia formulário e se possui obs)
+        try {
+            const response = await api.post('/cadastros/item/getItemConfigs', {
+                itemID: value.itemID,
+                alternativaItemID: value.alternativa.id
+            })
+
+            const updatedBlocos = blocos.map(bloco => {
+                return {
+                    ...bloco,
+                    itens: bloco.itens.map(item => {
+                        return {
+                            ...item,
+                            respostaConfig: {
+                                ...item.respostaConfig,
+                                anexosSolicitados: response.data.anexos.map(anexo => {
+                                    return {
+                                        ...anexo,
+                                        anexos: []
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            })
+            setBlocos(updatedBlocos)
+        } catch (error) {
+            console.log('error', error)
+        }
+    }
+
     // Remove um anexo do array de anexos
     const handleRemoveAnexoProduct = async item => {
         console.log('🚀 ~ item:', item)
@@ -648,8 +742,42 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
-    const handleFileSelectItem = async (event, item) => {
-        console.log('🚀 ~ handleFileSelectItem:', item)
+    // Remove um anexo do array de anexos
+    const handleRemoveAnexoItem = async item => {
+        if (item) {
+            await api
+                .delete(`${staticUrl}/deleteAnexo/${id}/${item.anexoID}/${unidade.unidadeID}/${user.usuarioID}/item`)
+                .then(response => {
+                    toast.success('Anexo removido com sucesso!')
+
+                    //? Atualiza item
+                    const removedAnexoID = response.data
+                    const updatedItem = blocos.map(bloco => {
+                        return {
+                            ...bloco,
+                            itens: bloco.itens.map(row => {
+                                return {
+                                    ...row,
+                                    respostaConfig: {
+                                        ...row.respostaConfig,
+                                        anexosSolicitados: row.respostaConfig.anexosSolicitados.map(anexo => {
+                                            return {
+                                                ...anexo,
+                                                anexos: anexo.anexos.filter(anexo => anexo.anexoID != removedAnexoID)
+                                            }
+                                            return anexo
+                                        })
+                                    }
+                                }
+                            })
+                        }
+                    })
+                    setBlocos(updatedItem)
+                })
+                .catch(error => {
+                    toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
+                })
+        }
     }
 
     useEffect(() => {
@@ -730,6 +858,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             key={index}
                             index={index}
                             blockKey={`parFornecedorModeloBlocoID`}
+                            handleFileSelect={handleFileSelectItem}
+                            setItemResposta={setItemResposta}
+                            handleRemoveAnexoItem={handleRemoveAnexoItem}
                             setBlocos={setBlocos}
                             values={bloco}
                             control={control}

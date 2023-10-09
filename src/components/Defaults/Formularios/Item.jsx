@@ -10,9 +10,25 @@ import Select from 'src/components/Form/Select'
 import DateField from 'src/components/Form/DateField'
 import { api } from 'src/configs/api'
 
-const Item = ({ blockIndex, index, setBlocos, values, register, control, errors, setValue, disabled }) => {
+const Item = ({
+    blockIndex,
+    index,
+    setBlocos,
+    handleFileSelect,
+    setItemResposta,
+    handleRemoveAnexoItem,
+    values,
+    register,
+    control,
+    errors,
+    setValue,
+    disabled
+}) => {
+    console.log('🚀 ~ item ~ values:', values)
     const { settings } = useContext(SettingsContext)
     const modeTheme = settings.mode
+    const [selectedItem, setSelectedItem] = useState(null)
+    const fileInputRef = useRef(null)
 
     const [dateStatus, setDateStatus] = useState({})
     const [responseConfig, setResponseConfig] = useState(null)
@@ -28,30 +44,30 @@ const Item = ({ blockIndex, index, setBlocos, values, register, control, errors,
         }))
     }
 
-    const setItemResposta = async value => {
-        console.log('🚀 ~ setItemResposta:', values)
-        // envia pro backend verificar as configurações dessa resposta (se possui anexos, se bloqueia formulário e se possui obs)
-        try {
-            const response = await api.post('/cadastros/item/getItemConfigs', {
-                itemID: values.itemID,
-                alternativaID: values.alternativaID,
-                alternativaItemID: value.id
-            })
-            setResponseConfig(response.data)
-            console.log('response: ', response.data)
-
-            const copyValues = [...values]
-        } catch (error) {
-            console.log('error', error)
-        }
-    }
-
     //? Se for tipo Data, inicializa os campos já com as validações de data, bloqueando datas anteriores ou posteriores
     useEffect(() => {
         if (values.alternativa === 'Data') {
             setDateFormat('dataPassado', null, values.resposta, 365)
         }
     }, [])
+
+    //? Anexos
+    const handleFileClick = item => {
+        console.log('🚀 >>>>> handleFileClick:', item)
+
+        item['parFornecedorModeloBlocoID'] = values.parFornecedorModeloBlocoID ?? 0
+
+        fileInputRef.current.click()
+        setSelectedItem(item)
+    }
+
+    useEffect(() => {
+        console.log('no useEffect no useRef..')
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''
+        }
+    }, [handleFileSelect])
 
     return (
         <Grid
@@ -99,7 +115,12 @@ const Item = ({ blockIndex, index, setBlocos, values, register, control, errors,
                             idName={'alternativaID'}
                             value={values.resposta}
                             disabled={disabled}
-                            onChange={setItemResposta}
+                            onChange={e =>
+                                setItemResposta({
+                                    itemID: values.itemID,
+                                    alternativa: e
+                                })
+                            }
                             control={control}
                             register={register}
                             setValue={setValue}
@@ -177,25 +198,31 @@ const Item = ({ blockIndex, index, setBlocos, values, register, control, errors,
             )}
 
             {/* Configs da resposta (se houver) */}
-            {responseConfig &&
-                responseConfig.anexo == 1 &&
-                responseConfig.anexos.length > 0 &&
-                responseConfig.anexos.map((anexo, indexAnexo) => (
+            {values &&
+                values.respostaConfig &&
+                values.respostaConfig.anexo == 1 &&
+                values.respostaConfig.anexosSolicitados.length > 0 &&
+                values.respostaConfig.anexosSolicitados.map((anexo, indexAnexo) => (
                     <Grid item xs={12} md={12}>
                         <AnexoListMultiple
                             modeTheme={modeTheme}
                             key={anexo}
-                            handleFileClick={null}
-                            selectedItem={null}
-                            inputRef={null}
+                            handleFileClick={() =>
+                                handleFileClick({
+                                    ...anexo,
+                                    itemOpcaoAnexoID: anexo.itemOpcaoAnexoID
+                                })
+                            }
+                            selectedItem={selectedItem}
+                            inputRef={fileInputRef}
                             item={anexo}
                             loadingFile={null}
-                            grupo={anexo}
-                            indexGrupo={0}
-                            indexItem={0}
-                            handleFileSelect={null}
+                            // grupo={anexo}
+                            indexGrupo={blockIndex}
+                            indexItem={indexAnexo}
+                            handleFileSelect={handleFileSelect}
                             folder='item'
-                            handleRemove={null}
+                            handleRemove={handleRemoveAnexoItem}
                             error={false}
                             disabled={false}
                         />
