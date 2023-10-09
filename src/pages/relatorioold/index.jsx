@@ -1,5 +1,4 @@
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import Fornecedor from './formularios/fornecedor'
 import PageReport from 'src/components/Defaults/Reports/PageReport'
 import Fornecedor from '../../components/Reports/Formularios/Fornecedor'
 

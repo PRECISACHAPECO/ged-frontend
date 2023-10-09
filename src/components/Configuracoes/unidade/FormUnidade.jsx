@@ -399,7 +399,7 @@ const FormUnidade = ({ id }) => {
                     </Card>
 
                     {/* Parâmetros da unidade */}
-                    {type == 'edit' && (
+                    {type == 'edit' && user.papelID == 1 && (
                         <Card sx={{ mt: 4 }}>
                             <CardHeader title='Parâmetros' />
                             <CardContent>

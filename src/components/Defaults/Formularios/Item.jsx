@@ -224,7 +224,7 @@ const Item = ({
                             folder='item'
                             handleRemove={handleRemoveAnexoItem}
                             error={false}
-                            disabled={false}
+                            disabled={disabled}
                         />
                     </Grid>
                 ))}

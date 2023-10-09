@@ -133,6 +133,7 @@ const FormHeader = ({
                         btnCancel={btnCancel}
                         btnDelete={btnDelete}
                         btnStatus={btnStatus}
+                        status={status}
                         handleBtnStatus={handleBtnStatus}
                         onclickDelete={onclickDelete}
                         setId={setId}

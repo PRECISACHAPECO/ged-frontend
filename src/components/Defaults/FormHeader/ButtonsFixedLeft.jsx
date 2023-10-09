@@ -1,5 +1,6 @@
-import { Button } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import Icon from 'src/@core/components/icon'
+import CustomChip from 'src/@core/components/mui/chip'
 
 const ButtonsFixedLeft = ({
     routes,
@@ -8,6 +9,7 @@ const ButtonsFixedLeft = ({
     btnDelete,
     btnStatus,
     handleBtnStatus,
+    status,
     setId,
     router,
     onclickDelete
@@ -57,7 +59,7 @@ const ButtonsFixedLeft = ({
                 </Button>
             )}
 
-            {status && matches && (
+            {status && (
                 <Box display='flex' alignItems='center' justifyContent='flex-end'>
                     <CustomChip
                         size='small'
