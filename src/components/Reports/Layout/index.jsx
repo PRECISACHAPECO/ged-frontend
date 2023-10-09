@@ -1,73 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import { Document, Page, Text, View, Image, PDFViewer } from '@react-pdf/renderer'
-import GenerateReport from 'src/components/Reports'
-import { styles } from './Style'
-import getHeader from './getHeader'
+import React from 'react'
+import Header from './Header'
+import { Document, PDFViewer, Page, View } from '@react-pdf/renderer'
+import Footer from './Footer'
 
-const Layout = ({ title, unidadeID, content }) => {
-    const data = getHeader(unidadeID)
-
+const LayoutReport = ({ children }) => {
     return (
-        <>
-            <GenerateReport
-                title={title}
-                component={
-                    <Document>
-                        <Page size='A4' style={styles.page}>
-                            {/* Header */}
-                            <View style={styles.header}>
-                                {/* Vazio... */}
-                                <View style={{ width: '100%' }}>
-                                    <Text></Text>
-                                </View>
-                                {/* Descrição */}
-                                <View style={{ width: '100%', textAlign: 'center' }}>
-                                    <Text style={styles.title}>
-                                        {data?.unidade?.tituloRelatorio ?? 'Cabeçalho não definido'}
-                                    </Text>
-                                </View>
-                                {/* Imagem */}
-                                <View style={{ width: '100%' }}>
-                                    {data?.unidade?.url ? (
-                                        <Image
-                                            src={data?.unidade?.url}
-                                            style={{
-                                                aspectRatio: 1,
-                                                objectFit: 'contain',
-                                                height: '100%',
-                                                marginLeft: 'auto' // Alinha a imagem à direita
-                                            }}
-                                        />
-                                    ) : (
-                                        ''
-                                    )}
-                                </View>
-                            </View>
-
-                            {/* Content */}
-                            <View style={styles.content}>{content}</View>
-
-                            {/* Footer */}
-                            <View style={styles.footer} fixed>
-                                <Text>
-                                    Gerado em{' '}
-                                    {new Date().toLocaleString('pt-BR', {
-                                        day: '2-digit',
-                                        month: '2-digit',
-                                        year: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    })}
-                                </Text>
-
-                                <Text render={({ pageNumber, totalPages }) => `${pageNumber}/${totalPages}`} />
-                            </View>
-                        </Page>
-                    </Document>
-                }
-            />
-        </>
+        <PDFViewer style={{ width: '100%', height: '100vh' }}>
+            <Document>
+                <Page
+                    size='A4'
+                    style={{
+                        paddingHorizontal: 25
+                    }}
+                >
+                    <Header />
+                    {children}
+                    <Footer />
+                </Page>
+            </Document>
+        </PDFViewer>
     )
 }
 
-export default Layout
+export default LayoutReport
