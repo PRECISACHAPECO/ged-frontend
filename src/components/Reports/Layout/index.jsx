@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Document, Page, Text, View, Image } from '@react-pdf/renderer'
+import { Document, Page, Text, View, Image, PDFViewer } from '@react-pdf/renderer'
 import GenerateReport from 'src/components/Reports'
 import { styles } from './Style'
 import getHeader from './getHeader'

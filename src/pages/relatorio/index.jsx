@@ -1,25 +1,30 @@
+import { Document, PDFViewer, Page, Text } from '@react-pdf/renderer'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import Fornecedor from './formularios/fornecedor'
 import PageReport from 'src/components/Defaults/Reports/PageReport'
 
-const InvoicePrint = () => {
-    const reportParameters = JSON.parse(localStorage.getItem('reportParameters'))
-
-    if (reportParameters) {
-        switch (reportParameters.component) {
-            case 'Fornecedor':
-                return <Fornecedor data={reportParameters} />
-            default:
-                return <div>Conteudo não encontrado</div>
-        }
-    }
+const MyDocument = () => {
+    return (
+        <PDFViewer style={{ width: '100%', height: '100vh' }}>
+            <Document>
+                <Page>
+                    <Text>React-pdf</Text>
+                </Page>
+            </Document>
+        </PDFViewer>
+    )
 }
 
-InvoicePrint.getLayout = page => (
-    <BlankLayout>
-        <PageReport>{page}</PageReport>
-    </BlankLayout>
-)
+const InvoicePrint = () => {
+    return (
+        <BlankLayout>
+            <PageReport>
+                <MyDocument />
+            </PageReport>
+        </BlankLayout>
+    )
+}
+
+InvoicePrint.getLayout = page => <BlankLayout>{page}</BlankLayout>
 
 InvoicePrint.setConfig = () => {
     return {
