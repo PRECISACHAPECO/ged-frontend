@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from 'react'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { api } from 'src/configs/api'
-import { Card, CardContent, Grid } from '@mui/material'
+import { Card, CardContent, Divider, Grid } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Loading from 'src/components/Loading'
@@ -253,6 +253,7 @@ const FormItem = ({ id, setNewChange, newChange, outsideID, handleConfirmNew }) 
                                         control={control}
                                         errors={errors?.fields?.ajuda}
                                     />
+                                    <Divider />
                                 </Grid>
                             </CardContent>
                         </form>
