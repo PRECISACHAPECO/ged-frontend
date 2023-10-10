@@ -184,7 +184,7 @@ const UserDropdown = props => {
                             <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
                                 <Box sx={styles}
                                     onClick={() => {
-                                        handleDropdownClose(user.papelID === 1 ? `/configuracoes/usuario` : `/meus-dados`)
+                                        handleDropdownClose(user.papelID === 1 ? `/cadastros/profissional` : `/meus-dados`)
                                         setId(user.papelID === 1 ? user.usuarioID : null)
                                     }}>
 
