@@ -25,16 +25,6 @@ const DialogNewCreate = ({ title, description, setOpenModal, openModal, handleSa
                         })}
                     </DialogContentText>
                 </DialogContent>
-
-                <DialogActions className='dialog-actions-dense'>
-                    <Button variant='outlined' color='primary' onClick={() => setOpenModal(false)}>
-                        Fechar
-                    </Button>
-
-                    <Button type='button' variant='contained' color='primary' onClick={handleSave}>
-                        Salvar
-                    </Button>
-                </DialogActions>
             </Dialog>
         </>
     )

@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Loading from 'src/components/Loading'
 import DialogForm from 'src/components/Defaults/Dialogs/Dialog'
-import { formType } from 'src/configs/defaultConfigs'
 import FormHeader from '../../Defaults/FormHeader'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { toastMessage } from 'src/configs/defaultConfigs'
@@ -18,7 +17,7 @@ import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 import ListOptions from './ListOptions'
 
-const FormItem = ({ id, setNewChange, newChange }) => {
+const FormItem = ({ id, setNewChange, newChange, outsideID, handleConfirmNew }) => {
     const [open, setOpen] = useState(false)
     const [change, setChange] = useState(false)
     const [data, setData] = useState(null)
@@ -54,13 +53,19 @@ const FormItem = ({ id, setNewChange, newChange }) => {
         try {
             if (type === 'new') {
                 await api.post(`cadastros/item/new/insertData`, values).then(response => {
-                    router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
-                    setId(response.data)
+                    if (outsideID) {
+                        setId(outsideID)
+                        handleConfirmNew(response.data)
+                    } else {
+                        router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                        setId(response.data)
+                    }
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
                 await api.post(`${staticUrl}/updateData/${id}`, values)
                 toast.success(toastMessage.successUpdate)
+                getData()
             }
             setSavingForm(!savingForm)
         } catch (error) {
