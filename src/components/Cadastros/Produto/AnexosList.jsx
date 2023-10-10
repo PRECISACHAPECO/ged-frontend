@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import Remove from 'src/components/Form/Remove'
+import { Divider } from '@mui/material'
 
 const AnexosList = ({ getValues, removeAnexo, control, register, errors, type }) => {
     return (
@@ -55,6 +56,8 @@ const AnexosList = ({ getValues, removeAnexo, control, register, errors, type })
                     control={control}
                     errors={errors?.anexos?.[index]?.descricao}
                 />
+
+                {index < getValues('anexos').length - 1 && <Divider />}
             </Fragment>
         ))
     )
