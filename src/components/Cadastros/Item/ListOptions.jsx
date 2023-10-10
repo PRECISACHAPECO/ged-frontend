@@ -19,6 +19,7 @@ const ListOptions = ({ data, addAnexo, register, control, errors, handleRemoveAn
     const [hasAnexo, setHasAnexo] = useState(getInitialAnexos())
 
     const handleChangeAnexo = i => {
+        console.log('🚀 ~ dddddddddddddddddddddddddyhyuyudddddddi:', i)
         const copyHasAnexo = [...hasAnexo]
         copyHasAnexo[i] = !copyHasAnexo[i]
         setHasAnexo(copyHasAnexo)
@@ -41,7 +42,7 @@ const ListOptions = ({ data, addAnexo, register, control, errors, handleRemoveAn
                                 <CheckLabel
                                     title='Solicita anexo'
                                     name={`fields.opcoes[${index}].anexo`}
-                                    onChange={() => handleChangeAnexo(index)}
+                                    onClick={() => handleChangeAnexo(index)}
                                     value={item.anexo}
                                     register={register}
                                 />

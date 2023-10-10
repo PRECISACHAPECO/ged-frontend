@@ -1,8 +1,13 @@
 import Fab from '@mui/material/Fab'
 import Icon from 'src/@core/components/icon'
 import { useState, useEffect } from 'react'
+import LayoutReport from 'src/components/Reports/Layout'
 
-const ButtonsFloating = ({ savePdf }) => {
+// Componentes dos relatórios
+import Fornecedor from '../../Reports/Formularios/Fornecedor'
+import { PDFDownloadLink } from '@react-pdf/renderer'
+
+const ButtonsFloating = () => {
     const [data, setData] = useState(null)
 
     const signature = () => {
@@ -15,6 +20,22 @@ const ButtonsFloating = ({ savePdf }) => {
 
     const closePage = () => {
         window.close()
+    }
+
+    const savePdf = () => {
+        console.log('entrou akiii')
+        return (
+            <PDFDownloadLink
+                document={
+                    // <LayoutReport>
+                    <Fornecedor />
+                    // </LayoutReport>
+                }
+                fileName='somename.pdf'
+            >
+                {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
+            </PDFDownloadLink>
+        )
     }
 
     const dataButtons = [

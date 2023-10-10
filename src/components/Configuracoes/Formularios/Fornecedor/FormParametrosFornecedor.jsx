@@ -18,6 +18,7 @@ import Blocos from './Blocos'
 import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
 import FormItem from 'src/components/Cadastros/Item/FormItem'
 import HelpText from 'src/components/Defaults/HelpText'
+import { IndeterminateCheckBoxOutlined } from '@mui/icons-material'
 
 const FormParametrosFornecedor = ({ id }) => {
     const { loggedUnity } = useContext(AuthContext)
@@ -35,8 +36,21 @@ const FormParametrosFornecedor = ({ id }) => {
     const [openModalNew, setOpenModalNew] = useState(false) //? Abre modal para criar novo item
     const [newChange, setNewChange] = useState(false)
 
-    const createNew = () => {
+    const [indexNewItem, setIndexNewItem] = useState(null)
+
+    const createNew = index => {
+        console.log('🚀 ~ index:', index)
         setOpenModalNew(true)
+        setIndexNewItem(index)
+    }
+
+    const handleConfirmNew = id => {
+        setOpenModalNew(false)
+        getData()
+        setTimeout(() => {
+            addItem(indexNewItem)
+            console.log('🚀 ~ indexNewItem depois do settimerout:', indexNewItem)
+        }, 1000)
     }
 
     const router = Router
@@ -71,6 +85,9 @@ const FormParametrosFornecedor = ({ id }) => {
             await api.put(`${staticUrl}/updateData`, data).then(response => {
                 toast.success(toastMessage.successUpdate)
                 setSavingForm(!savingForm)
+                if (openModalNew) {
+                    setOutsideLink(true)
+                }
             })
         } catch (error) {
             console.log(error)
@@ -160,15 +177,15 @@ const FormParametrosFornecedor = ({ id }) => {
     }
 
     //  Ao clicar no icone de pontuação, abre o modal de confirmação de pontuação e envia para o back o item selecionado
-    const openScoreModal = item => {
-        setItemScore(null)
-        api.post(`/formularios/fornecedor/getItemScore`, { data: item }).then(response => {
-            setItemScore(response.data)
-        })
-        if (setItemScore) {
-            setOpenModalConfirmScore(true)
-        }
-    }
+    // const openScoreModal = item => {
+    //     setItemScore(null)
+    //     api.post(`/formularios/fornecedor/getItemScore`, { data: item }).then(response => {
+    //         setItemScore(response.data)
+    //     })
+    //     if (setItemScore) {
+    //         setOpenModalConfirmScore(true)
+    //     }
+    // }
 
     const addBlock = () => {
         const newBlock = [...getValues('blocks')]
@@ -213,7 +230,6 @@ const FormParametrosFornecedor = ({ id }) => {
                     itens: response.data.options?.itens
                 })
                 setOrientacoes(response.data.orientations)
-
                 //* Insere os dados no formulário
                 reset(response.data)
 
@@ -458,7 +474,12 @@ const FormParametrosFornecedor = ({ id }) => {
                 setOpenModal={setOpenModalNew}
                 handleSave={handleSave}
             >
-                <FormItem setNewChange={setNewChange} newChange={newChange} />
+                <FormItem
+                    setNewChange={setNewChange}
+                    newChange={newChange}
+                    outsideID={id}
+                    handleConfirmNew={handleConfirmNew}
+                />
             </DialogNewCreate>
         </>
     )
