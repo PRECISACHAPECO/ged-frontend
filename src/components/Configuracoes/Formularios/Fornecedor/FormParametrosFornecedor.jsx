@@ -393,7 +393,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                                     title=''
                                                     name={`header.[${index}].mostra`}
                                                     register={register}
-                                                    value={header.nomeColuna}
+                                                    value={header.mostra}
                                                     //     value={
                                                     //         header.nomeColuna == 'cnpj' ||
                                                     //         header.nomeColuna == 'razaoSocial' ||
