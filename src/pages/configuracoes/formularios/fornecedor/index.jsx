@@ -68,7 +68,7 @@ const ListParametrosFornecedor = () => {
                 <FormParametrosFornecedor id={id} />
             ) : (
                 //? Lista tabela de resultados da listagem
-                <Table result={result} columns={columns} btnBack />
+                <Table result={result} columns={columns} btnBack btnNew />
             )}
         </>
     )

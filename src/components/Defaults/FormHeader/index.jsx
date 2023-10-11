@@ -20,6 +20,8 @@ const FormHeader = ({
     btnStatus,
     handleSubmit,
     btnNew,
+    btnClose,
+    handleModalClose,
     disabledSubmit,
     handleSend,
     iconConclusion,
@@ -67,8 +69,12 @@ const FormHeader = ({
         setId(null)
     }
 
-    const currentUrl = type === 'new' || partialRoute ? backRoute(router.pathname) : router.pathname
-    console.log('🚀 ~ currentUrl:', currentUrl)
+    const currentUrl =
+        type === 'new' && partialRoute
+            ? backRoute(backRoute(router.pathname))
+            : type === 'new' || partialRoute
+            ? backRoute(router.pathname)
+            : router.pathname
 
     const dataButtons = [
         {
@@ -133,6 +139,8 @@ const FormHeader = ({
                         btnCancel={btnCancel}
                         btnDelete={btnDelete}
                         btnStatus={btnStatus}
+                        btnClose={btnClose}
+                        handleModalClose={handleModalClose}
                         status={status}
                         handleBtnStatus={handleBtnStatus}
                         onclickDelete={onclickDelete}

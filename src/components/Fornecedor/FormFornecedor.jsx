@@ -47,6 +47,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [field, setField] = useState([])
     const [link, setLink] = useState(null)
     const [blocos, setBlocos] = useState([])
+    const [movimentacao, setMovimentacao] = useState(null)
     const [info, setInfo] = useState('')
     const [openModal, setOpenModal] = useState(false)
     const [openModalNewFornecedor, setOpenModalNewFornecedor] = useState(false)
@@ -273,6 +274,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 setInfo(response.data.info)
                 setUnidade(response.data.unidade)
                 setLink(response.data.link)
+                setMovimentacao(response.data.ultimaMovimentacao)
 
                 //* Insere os dados no formulário
                 reset(response.data)
@@ -782,8 +784,21 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 {/* Mensagem */}
                 {!canEdit.status && (
-                    <Alert severity={canEdit.messageType} sx={{ mb: 2 }}>
+                    <Alert severity='warning' sx={{ mb: 2 }}>
                         {canEdit.message}
+                    </Alert>
+                )}
+
+                {/* Última movimentação do formulário */}
+                {movimentacao && (
+                    <Alert severity='info' sx={{ mb: 2 }}>
+                        {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
+                        {movimentacao.observacao && (
+                            <p>
+                                <br />
+                                Mensagem: "{movimentacao.observacao}"
+                            </p>
+                        )}
                     </Alert>
                 )}
 

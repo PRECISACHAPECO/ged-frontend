@@ -53,21 +53,26 @@ const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, handleSave, hasListCha
                         )}
                     </div>
                     <div className=''>
-                        {btnNew && routes.find(route => route.rota === router.pathname && route.inserir) && (
-                            <Link href={!openModal ? `${router.pathname}/novo` : ''}>
-                                <Button
-                                    type='button'
-                                    variant='outlined'
-                                    color='primary'
-                                    size='medium'
-                                    onClick={openModal ? openModal : null}
-                                    sx={{ display: 'flex', gap: 2 }}
-                                >
-                                    <Icon icon='ic:outline-plus' />
-                                    <span className='hidden sm:block'>Novo</span>
-                                </Button>
-                            </Link>
-                        )}
+                        {btnNew &&
+                            routes.find(
+                                route =>
+                                    (route.rota === router.pathname || route.rota === backRoute(router.pathname)) &&
+                                    route.inserir
+                            ) && (
+                                <Link href={!openModal ? `${router.pathname}/novo` : ''}>
+                                    <Button
+                                        type='button'
+                                        variant='outlined'
+                                        color='primary'
+                                        size='medium'
+                                        onClick={openModal ? openModal : null}
+                                        sx={{ display: 'flex', gap: 2 }}
+                                    >
+                                        <Icon icon='ic:outline-plus' />
+                                        <span className='hidden sm:block'>Novo</span>
+                                    </Button>
+                                </Link>
+                            )}
                     </div>
                     <div>
                         {btnSave && (

@@ -17,7 +17,8 @@ import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 import ListOptions from './ListOptions'
 
-const FormItem = ({ id, setNewChange, newChange, outsideID, handleConfirmNew }) => {
+const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, outsideID, handleConfirmNew }) => {
+    console.log('🚀 ~ FormItem:', id)
     const [open, setOpen] = useState(false)
     const [change, setChange] = useState(false)
     const [data, setData] = useState(null)
@@ -63,7 +64,7 @@ const FormItem = ({ id, setNewChange, newChange, outsideID, handleConfirmNew }) 
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
-                await api.post(`${staticUrl}/updateData/${id}`, values)
+                await api.post(`/cadastros/item/updateData/${id}`, values)
                 toast.success(toastMessage.successUpdate)
                 getData()
             }
@@ -97,7 +98,7 @@ const FormItem = ({ id, setNewChange, newChange, outsideID, handleConfirmNew }) 
     //? Dados iniciais ao carregar página
     const getData = async () => {
         try {
-            const route = type === 'new' ? 'cadastros/item/new/getData' : `${staticUrl}/getData/${id}`
+            const route = type === 'new' ? 'cadastros/item/new/getData' : `cadastros/item/getData/${id}`
             await api.post(route).then(response => {
                 console.log('🚀 ~ getData: ', response.data)
 
@@ -191,6 +192,8 @@ const FormItem = ({ id, setNewChange, newChange, outsideID, handleConfirmNew }) 
                                 btnCancel
                                 btnNew
                                 btnSave
+                                btnClose={btnClose}
+                                handleModalClose={handleModalClose}
                                 handleSubmit={() => handleSubmit(onSubmit)}
                                 btnDelete={type === 'edit' ? true : false}
                                 onclickDelete={() => setOpen(true)}
@@ -203,7 +206,7 @@ const FormItem = ({ id, setNewChange, newChange, outsideID, handleConfirmNew }) 
                                         md={11}
                                         title='Formulários'
                                         name='fields.formulario'
-                                        value={data?.fields.formulario}
+                                        value={data?.fields?.formulario}
                                         required
                                         options={data?.fields?.formulario?.opcoes}
                                         register={register}
@@ -216,7 +219,7 @@ const FormItem = ({ id, setNewChange, newChange, outsideID, handleConfirmNew }) 
                                         md={1}
                                         title='Ativo'
                                         name='fields.status'
-                                        value={data.fields.status}
+                                        value={data?.fields?.status}
                                         typePage={type}
                                         register={register}
                                     />
@@ -234,7 +237,7 @@ const FormItem = ({ id, setNewChange, newChange, outsideID, handleConfirmNew }) 
                                         md={12}
                                         title='Alternativa'
                                         name='fields.alternativa'
-                                        value={data?.fields.alternativa}
+                                        value={data?.fields?.alternativa}
                                         onChange={refreshAlternatives}
                                         required
                                         options={data?.fields?.alternativa?.opcoes}

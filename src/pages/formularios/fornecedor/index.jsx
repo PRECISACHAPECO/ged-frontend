@@ -209,7 +209,12 @@ const Fornecedor = () => {
                 <FormFornecedor id={id} makeFornecedor={makeFornecedor} />
             ) : (
                 //? Lista tabela de resultados da listagem
-                <Table result={result} columns={columns} openModal={user.papelID == 1 ? openModal : null} />
+                <Table
+                    result={result}
+                    columns={columns}
+                    openModal={user.papelID == 1 ? openModal : null}
+                    btnNew={user.papelID == 1 ? true : false}
+                />
             )}
 
             {/* Modal pra habilitar um novo fornecedor */}

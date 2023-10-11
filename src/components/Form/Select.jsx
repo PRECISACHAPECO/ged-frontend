@@ -25,7 +25,7 @@ const Select = ({
     helpTextPosition
 }) => {
     // Adicione a opção "--novo--" no início do array de opções
-    let optionsWithNovo = [...options]
+    let optionsWithNovo = options ? [...options] : []
 
     if (createNew) {
         optionsWithNovo = [{ nome: '-- Novo --' }, ...options]
