@@ -392,21 +392,22 @@ const FormParametrosFornecedor = ({ id }) => {
                                                 <CheckLabel
                                                     title=''
                                                     name={`header.[${index}].mostra`}
-                                                    value={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : header.mostra
-                                                    }
                                                     register={register}
-                                                    disabled={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : false
-                                                    }
+                                                    value={header.nomeColuna}
+                                                    //     value={
+                                                    //         header.nomeColuna == 'cnpj' ||
+                                                    //         header.nomeColuna == 'razaoSocial' ||
+                                                    //         header.nomeColuna == 'dataAvaliacao'
+                                                    //             ? true
+                                                    //             : header.mostra
+                                                    //     }
+                                                    //     readonly={
+                                                    //         header.nomeColuna == 'cnpj' ||
+                                                    //         header.nomeColuna == 'razaoSocial' ||
+                                                    //         header.nomeColuna == 'dataAvaliacao'
+                                                    //             ? true
+                                                    //             : false
+                                                    //     }
                                                 />
                                             </Grid>
                                             <Grid item md={3} xs={3}>
