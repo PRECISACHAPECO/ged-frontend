@@ -385,29 +385,27 @@ const FormParametrosFornecedor = ({ id }) => {
                                             <Grid item md={4} xs={6}>
                                                 <Box display='flex' alignItems='center' sx={{ gap: 2 }}>
                                                     <p>{header.nomeCampo}</p>
-                                                    {/* <HelpText text='opaaa' /> */}
                                                 </Box>
                                             </Grid>
                                             <Grid item md={3} xs={3}>
                                                 <CheckLabel
                                                     title=''
                                                     name={`header.[${index}].mostra`}
+                                                    value={
+                                                        header.nomeColuna == 'cnpj' ||
+                                                        header.nomeColuna == 'razaoSocial' ||
+                                                        header.nomeColuna == 'dataAvaliacao'
+                                                            ? true
+                                                            : header.mostra
+                                                    }
                                                     register={register}
-                                                    value={header.mostra}
-                                                    //     value={
-                                                    //         header.nomeColuna == 'cnpj' ||
-                                                    //         header.nomeColuna == 'razaoSocial' ||
-                                                    //         header.nomeColuna == 'dataAvaliacao'
-                                                    //             ? true
-                                                    //             : header.mostra
-                                                    //     }
-                                                    //     readonly={
-                                                    //         header.nomeColuna == 'cnpj' ||
-                                                    //         header.nomeColuna == 'razaoSocial' ||
-                                                    //         header.nomeColuna == 'dataAvaliacao'
-                                                    //             ? true
-                                                    //             : false
-                                                    //     }
+                                                    disabled={
+                                                        header.nomeColuna == 'cnpj' ||
+                                                        header.nomeColuna == 'razaoSocial' ||
+                                                        header.nomeColuna == 'dataAvaliacao'
+                                                            ? true
+                                                            : false
+                                                    }
                                                 />
                                             </Grid>
                                             <Grid item md={3} xs={3}>
