@@ -92,6 +92,17 @@ const FormNewFornecedor = ({
                 <Input
                     xs={12}
                     md={12}
+                    title='Nome Fantasia'
+                    name='fields.nomeFantasia'
+                    value={fields?.nomeFantasia}
+                    disabled={!validCnpj}
+                    required
+                    control={control}
+                    errors={errors?.fields?.nomeFantasia}
+                />
+                <Input
+                    xs={12}
+                    md={12}
                     type='email'
                     title='E-mail'
                     name='fields.email'

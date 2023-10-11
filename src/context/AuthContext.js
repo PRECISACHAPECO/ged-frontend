@@ -170,6 +170,7 @@ const AuthProvider = ({ children }) => {
                 ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
                 : null
             const returnUrl = router.query.returnUr
+            console.log("🚀 ~ returnUrl: OQQ EESS IOSSSOO", returnUrl)
             setUser({ ...response.data.userData })
 
             setRouteBackend('/login-fornecedor')
@@ -185,8 +186,9 @@ const AuthProvider = ({ children }) => {
             const previousRoute = router.asPath
             const redirectURL = previousRoute.includes('/registro/') ? '/meus-dados' : '/formularios/fornecedor/';
             router.replace(redirectURL)
-
-
+            if (params.getFornecedorID) {
+                setId(params.getFornecedorID)
+            }
         }).catch(err => {
             if (err?.response?.status === 400) {
                 toast.error('CNPJ ou senha inválidos!')

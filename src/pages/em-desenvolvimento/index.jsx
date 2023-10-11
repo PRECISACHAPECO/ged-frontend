@@ -1,6 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useContext } from 'react'
+import { ParametersContext } from 'src/context/ParametersContext'
 
 const EmDesenvolvimento = () => {
+    const { setTitle } = useContext(ParametersContext)
+
+    useEffect(() => {
+        setTitle({
+            title: 'Em desenvolvimento',
+            subtitle: {}
+        })
+    }, [])
+
     return (
         <div className='flex flex-col items-center justify-center h-screen'>
             <div className='bg-black-200 p-8 rounded-lg '>
