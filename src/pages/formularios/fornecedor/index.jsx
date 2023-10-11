@@ -69,36 +69,39 @@ const Fornecedor = () => {
                 values: values.fields
             })
 
+            console.log('🚀 ~ response 2000 NDO EMAIL:', response)
             if (response.status == 200) {
-                if (values.fields.email) sendMail(values.fields.email, values.fields.cnpj, values.fields.razaoSocial)
+                toast.success('E-mail enviado com sucesso')
+                // if (values.fields.email) sendMail(values.fields.email, values.fields.cnpj, values.fields.razaoSocial)
                 setResponseConclusion(response.data)
                 setId(response.data.fornecedorID)
                 setOpenModalConclusion(true)
             }
         } catch (err) {
             console.error(err)
+            console.error('Erro ao enviar email', err)
         }
     }
 
     // Envia email para um novo fornecedor / Novo fornecedor
-    const sendMail = (email, cnpj, nomeFornecedor) => {
-        if (email && validationEmail(email)) {
-            const data = {
-                unidadeID: loggedUnity.unidadeID,
-                cnpj,
-                nomeFornecedor,
-                destinatario: email
-            }
+    // const sendMail = (email, cnpj, nomeFornecedor) => {
+    //     if (email && validationEmail(email)) {
+    //         const data = {
+    //             unidadeID: loggedUnity.unidadeID,
+    //             cnpj,
+    //             nomeFornecedor,
+    //             destinatario: email
+    //         }
 
-            api.post(`${currentLink}/sendMail`, { data })
-                .then(response => {
-                    toast.success('E-mail enviado com sucesso')
-                })
-                .catch(error => {
-                    console.error('Erro ao enviar email', error)
-                })
-        }
-    }
+    //         api.post(`${currentLink}/sendMail`, { data })
+    //             .then(response => {
+    //                 toast.success('E-mail enviado com sucesso')
+    //             })
+    //             .catch(error => {
+    //                 console.error('Erro ao enviar email', error)
+    //             })
+    //     }
+    // }
 
     const copyLink = () => {
         const link = responseConclusion?.link
