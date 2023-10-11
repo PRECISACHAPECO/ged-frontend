@@ -63,23 +63,23 @@ const Fornecedor = () => {
     }
 
     // Envia email para um novo fornecedor / Novo fornecedor
-    const sendMail = (email, cnpj, nomeFornecedor) => {
-        if (email && validationEmail(email)) {
-            const data = {
-                unidadeID: loggedUnity.unidadeID,
-                cnpj,
-                nomeFornecedor,
-                destinatario: email
-            }
-            api.post(`${currentLink}/sendMail`, { data })
-                .then(response => {
-                    toast.success('E-mail enviado com sucesso')
-                })
-                .catch(error => {
-                    console.error('Erro ao enviar email', error)
-                })
-        }
-    }
+    // const sendMail = (email, cnpj, nomeFornecedor) => {
+    //     if (email && validationEmail(email)) {
+    //         const data = {
+    //             unidadeID: loggedUnity.unidadeID,
+    //             cnpj,
+    //             nomeFornecedor,
+    //             destinatario: email
+    //         }
+    //         api.post(`${currentLink}/sendMail`, { data })
+    //             .then(response => {
+    //                 toast.success('E-mail enviado com sucesso')
+    //             })
+    //             .catch(error => {
+    //                 console.error('Erro ao enviar email', error)
+    //             })
+    //     }
+    // }
 
     //* Controles da listagem
     const getList = async () => {

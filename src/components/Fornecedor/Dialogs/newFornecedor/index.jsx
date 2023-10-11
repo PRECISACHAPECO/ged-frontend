@@ -67,6 +67,7 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
             //? Seta informações do formulário
             setValue('fields.cnpj', cnpj)
             setValue('fields.razaoSocial', resultAPI.data['RAZAO SOCIAL'])
+            setValue('fields.nomeFantasia', resultAPI.data['NOME FANTASIA'])
             setValue('fields.nome', resultAPI.data['NOME FANTASIA'])
             setValue('fields.email', resultAPI.data['EMAIL'])
             setValue('fields.modelo', responseLastForm.data.modelo.id > 0 ? responseLastForm.data.modelo : null)
@@ -149,7 +150,7 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
                                         <strong>Razão Social:</strong> {fields?.razaoSocial}
                                     </Typography>
                                     <Typography variant='caption'>
-                                        <strong>Nome Fantasia:</strong> {fields?.razaoSocial}
+                                        <strong>Nome Fantasia:</strong> {fields?.nomeFantasia}
                                     </Typography>
                                     <Typography variant='caption'>
                                         <strong>CNPJ:</strong> {fields?.cnpj}
