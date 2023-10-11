@@ -19,7 +19,7 @@ import {
     Box
 } from '@mui/material'
 import Icon from 'src/@core/components/icon'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import Loading from 'src/components/Loading'
 import toast from 'react-hot-toast'
 import DialogForm from 'src/components/Defaults/Dialogs/Dialog'
@@ -33,6 +33,7 @@ import Select from 'src/components/Form/Select'
 import CheckLabel from 'src/components/Form/CheckLabel'
 import { validationCNPJ } from 'src/configs/validations'
 import HelpText from 'src/components/Defaults/HelpText'
+import NewPassword from './NewPassword'
 
 const FormUnidade = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -42,6 +43,7 @@ const FormUnidade = ({ id }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState()
     const [fileSelect, setFileSelect] = useState()
+    const [showNewPassword, setShowNewPassword] = useState(false)
     const [saving, setSaving] = useState(false)
     const [fileCurrent, setFileCurrent] = useState()
     const [photoProfile, setPhotoProfile] = useState(null)
@@ -57,9 +59,11 @@ const FormUnidade = ({ id }) => {
         trigger,
         handleSubmit,
         setValue,
+        getValues,
         setError,
         reset,
         control,
+        watch,
         formState: { errors },
         register
     } = useForm()
@@ -87,6 +91,7 @@ const FormUnidade = ({ id }) => {
 
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async datas => {
+        console.log('🚀 ~ datas:', datas)
         // Verifica se o CNPJ é válido se ele for envalido retorna erro e retorna
         const cnpjValidation = validationCNPJ(datas.fields.cnpj)
         if (!cnpjValidation) {
@@ -98,8 +103,12 @@ const FormUnidade = ({ id }) => {
         }
 
         const data = {
-            ...datas.fields,
-            dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD')
+            ...datas,
+            usuarioID: loggedUnity.usuarioID,
+            fields: {
+                dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD'),
+                ...datas.fields
+            }
         }
 
         delete data.cabecalhoRelatorioTitle
@@ -115,6 +124,7 @@ const FormUnidade = ({ id }) => {
             } else if (type === 'edit') {
                 await api.post(`${staticUrl}/updateData/${id}`, data)
                 toast.success(toastMessage.successUpdate)
+                setShowNewPassword(false)
                 getData()
             }
         } catch (error) {
@@ -456,7 +466,7 @@ const FormUnidade = ({ id }) => {
                                             />
                                             <Input
                                                 xs={12}
-                                                md={4}
+                                                md={8}
                                                 title='Cidade'
                                                 name='fields.cidade'
                                                 required={false}
@@ -475,6 +485,16 @@ const FormUnidade = ({ id }) => {
                                                 control={control}
                                                 errors={errors?.fields?.uf}
                                             />
+                                            {/* Editar a senha | Trocar senha */}
+                                            {type == 'edit' && user.papelID == 2 && (
+                                                <NewPassword
+                                                    register={register}
+                                                    errors={errors}
+                                                    showNewPassword={showNewPassword}
+                                                    setShowNewPassword={setShowNewPassword}
+                                                    watch={watch}
+                                                />
+                                            )}
                                         </Grid>
                                     </Grid>
                                 </Grid>

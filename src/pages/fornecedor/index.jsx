@@ -394,7 +394,7 @@ const FornecedorPage = ({ units }) => {
                                 ) : (
                                     ''
                                 )}
-                                <Box
+                                {/* <Box
                                     sx={{
                                         display: 'flex',
                                         alignItems: 'center',
@@ -413,7 +413,7 @@ const FornecedorPage = ({ units }) => {
                                     >
                                         Registre-se
                                     </Typography>
-                                </Box>
+                                </Box> */}
                                 <Box
                                     sx={{
                                         display: 'flex',
