@@ -195,25 +195,28 @@ const UserDropdown = props => {
 
 
                             {/* troca de unidade quando mobile */}
-                            <div className='block md:hidden'>
-                                <MenuItem sx={{ p: 0 }} >
-                                    <Box sx={styles}
-                                        onClick={() => {
-                                            setOpenModal(true)
-                                        }}
-                                    >
-                                        <Icon icon='mdi:account-outline' />
-                                        Trocar unidade
-                                    </Box>
-                                </MenuItem>
+                            {user.papelID === 2 && (
                                 <div className='block md:hidden'>
-                                    <MenuItem sx={{ p: 0, pl: 2 }} >
-                                        <div className="flex items-center" >
-                                            <ModeToggler settings={settings} saveSettings={saveSettings} text={true} />
-                                        </div>
+
+                                    <MenuItem sx={{ p: 0 }} >
+                                        <Box sx={styles}
+                                            onClick={() => {
+                                                setOpenModal(true)
+                                            }}
+                                        >
+                                            <Icon icon='mdi:account-outline' />
+                                            Trocar unidade
+                                        </Box>
                                     </MenuItem>
+                                    <div className='block md:hidden'>
+                                        <MenuItem sx={{ p: 0, pl: 2 }} >
+                                            <div className="flex items-center" >
+                                                <ModeToggler settings={settings} saveSettings={saveSettings} text={true} />
+                                            </div>
+                                        </MenuItem>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                             {/* Modal que abre ao clicar em Trocar unidade */}
                             <DialogSelectUnit
                                 openModal={openModal}
