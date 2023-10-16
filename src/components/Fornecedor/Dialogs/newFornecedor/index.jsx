@@ -5,7 +5,6 @@ import { AuthContext } from 'src/context/AuthContext'
 import { validationCNPJ } from '../../../../configs/validations'
 import { api } from 'src/configs/api'
 import FormNewFornecedor from './FormNewFornecedor'
-import toast from 'react-hot-toast'
 import { cnpjMask } from 'src/configs/masks'
 
 const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getValues }) => {
@@ -15,7 +14,6 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
     const [validationCnpj, setValidationCnpj] = useState(null)
 
     const handleCnpj = cnpj => {
-        console.log('🚀 ~ handleCnpj:', cnpj)
         if (cnpj.length == 18) {
             if (validationCNPJ(cnpj)) {
                 setValidationCnpj(true)
@@ -48,28 +46,39 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
             }
 
             //? Chama função pra obter dados da API e preencher as informações do fornecedor
-            const resultAPI = await getFornecedorAPIData(cnpj)
+            let resultAPI = ''
+            if (lastForm.new) {
+                resultAPI = await getFornecedorAPIData(cnpj)
+            }
 
             //? Seta informações do fornecedor
             setFields({
                 ...fields,
-                cnpj: cnpjMask(resultAPI.data['CNPJ']),
-                status: resultAPI.data['STATUS'],
-                dataAbertura: resultAPI.data['DATA ABERTURA'],
-                telefone: resultAPI.data['DDD'] + ' ' + resultAPI.data['TELEFONE'],
-                razaoSocial: resultAPI.data['RAZAO SOCIAL'],
-                nomeFantasia: resultAPI.data['NOME FANTASIA'],
-                email: resultAPI.data['EMAIL'],
-                cidade: resultAPI.data['MUNICIPIO'] + '/' + resultAPI.data['UF'],
+                cnpj: lastForm.new ? cnpjMask(resultAPI.data['CNPJ']) : cnpj,
+                status: lastForm.new ? resultAPI.data['STATUS'] : '',
+                dataAbertura: lastForm.new ? resultAPI.data['DATA ABERTURA'] : '',
+                telefone: lastForm.new ? resultAPI.data['DDD'] + ' ' + resultAPI.data['TELEFONE'] : '',
+                razaoSocial: lastForm.new ? resultAPI.data['RAZAO SOCIAL'] : responseLastForm.data.fields.razaoSocial,
+                nomeFantasia: lastForm.new
+                    ? resultAPI.data['NOME FANTASIA']
+                    : responseLastForm.data.fields.nomeFantasia,
+                email: lastForm.new ? resultAPI.data['EMAIL'] : responseLastForm.data.fields.email,
+                cidade: lastForm.new ? resultAPI.data['MUNICIPIO'] + '/' + resultAPI.data['UF'] : '',
                 preenchimento: lastForm
             })
 
             //? Seta informações do formulário
             setValue('fields.cnpj', cnpj)
-            setValue('fields.razaoSocial', resultAPI.data['RAZAO SOCIAL'])
-            setValue('fields.nomeFantasia', resultAPI.data['NOME FANTASIA'])
-            setValue('fields.nome', resultAPI.data['NOME FANTASIA'])
-            setValue('fields.email', resultAPI.data['EMAIL'])
+            setValue(
+                'fields.razaoSocial',
+                lastForm.new ? resultAPI.data['RAZAO SOCIAL'] : responseLastForm.data.fields.razaoSocial
+            )
+            setValue(
+                'fields.nomeFantasia',
+                lastForm.new ? resultAPI.data['NOME FANTASIA'] : responseLastForm.data.fields.nomeFantasia
+            )
+            setValue('fields.nome', lastForm.new ? resultAPI.data['NOME FANTASIA'] : '')
+            setValue('fields.email', lastForm.new ? resultAPI.data['EMAIL'] : responseLastForm.data.fields.email)
             setValue('fields.modelo', responseLastForm.data.modelo.id > 0 ? responseLastForm.data.modelo : null)
             setValue('fields.gruposAnexo', responseLastForm.data.gruposAnexo)
             setValue('fields.produtos', responseLastForm.data.produtos)

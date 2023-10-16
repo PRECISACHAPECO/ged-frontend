@@ -69,7 +69,6 @@ const Fornecedor = () => {
                 values: values.fields
             })
 
-            console.log('🚀 ~ response 2000 NDO EMAIL:', response)
             if (response.status == 200) {
                 toast.success('E-mail enviado com sucesso')
                 // if (values.fields.email) sendMail(values.fields.email, values.fields.cnpj, values.fields.razaoSocial)
