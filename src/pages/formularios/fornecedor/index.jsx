@@ -115,6 +115,11 @@ const Fornecedor = () => {
         getList()
     }, [id])
 
+    // verifica se tem f na rota, se estiver ja direciona para o formulario do id correspondente
+    useEffect(() => {
+        if (router.query.f) setId(router.query.f)
+    }, [router.query])
+
     const arrColumns =
         user.papelID == 1
             ? [
