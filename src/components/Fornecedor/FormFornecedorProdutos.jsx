@@ -5,7 +5,7 @@ import AnexoList from 'src/components/Anexos/ModeView/AnexoList'
 import AnexoListMultiple from 'src/components/Anexos/ModeView/AnexoListMultiple'
 import { useRef, useContext, useState, useEffect } from 'react'
 
-const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadingFile, disabled }) => {
+const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadingFile, disabled, errors }) => {
     const { settings } = useContext(SettingsContext)
     const modeTheme = settings.mode
     const [selectedItem, setSelectedItem] = useState(null)
@@ -49,13 +49,12 @@ const FormFornecedorProdutos = ({ values, handleFileSelect, handleRemove, loadin
                                         inputRef={fileInputRef}
                                         item={anexo}
                                         loadingFile={loadingFile}
-                                        // grupo={value}
-                                        indexGrupo={index}
+                                        indexBlock={index}
                                         indexItem={indexAnexo}
                                         handleFileSelect={handleFileSelect}
                                         folder='produto'
                                         handleRemove={handleRemove}
-                                        error={false}
+                                        error={errors}
                                         disabled={disabled}
                                     />
                                 ))}

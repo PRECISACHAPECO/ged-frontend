@@ -76,6 +76,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         formState: { errors }
     } = useForm()
 
+    console.log('formFornecedor errors: ', errors)
+
     //* Reabre o formulário pro fornecedor alterar novamente se ainda nao estiver vinculado com recebimento
     const changeFormStatus = async (status, observacao) => {
         const data = {
@@ -313,10 +315,29 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             }
         })
 
+        //? Produtos
+        if (produtos && produtos.length > 0) {
+            produtos.forEach((produto, indexProduto) => {
+                produto.produtoAnexosDescricao.forEach((anexo, indexAnexo) => {
+                    if (anexo.obrigatorio === 1 && anexo.anexos.length == 0) {
+                        setError(`produtos[${indexProduto}].produtoAnexosDescricao[${indexAnexo}].anexos`, {
+                            type: 'manual',
+                            message: 'Campo obrigatório'
+                        })
+                        arrErrors.push(`Anexo: ${produto?.nome} / ${anexo?.nome}`)
+                        hasErrors = true
+                    }
+                })
+            })
+        }
+
         //? Blocos
         blocos.forEach((block, indexBlock) => {
             block.itens.forEach((item, indexItem) => {
+                console.log('🚀 ~ checkErrors -> item: ', item)
+
                 const fieldValue = getValues(`blocos[${indexBlock}].itens[${indexItem}].resposta`)
+                //? Valida resposta do item
                 if (item?.obrigatorio === 1 && !fieldValue) {
                     setError(`blocos[${indexBlock}].itens[${indexItem}].resposta`, {
                         type: 'manual',
@@ -325,8 +346,46 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     arrErrors.push(item?.nome)
                     hasErrors = true
                 }
+
+                //? Valida anexos do item
+                if (
+                    item.respostaConfig &&
+                    item.respostaConfig.anexo == 1 &&
+                    item.respostaConfig.anexosSolicitados.length > 0
+                ) {
+                    item.respostaConfig.anexosSolicitados.forEach((anexo, indexAnexo) => {
+                        if (anexo.obrigatorio == 1 && anexo.anexos.length == 0) {
+                            setError(
+                                `blocos[${indexBlock}].itens[${indexItem}].respostaConfig.anexosSolicitados[${indexAnexo}].anexos`,
+                                {
+                                    type: 'manual',
+                                    message: 'Campo obrigatário'
+                                }
+                            )
+                            arrErrors.push(`Anexo: ${item?.nome} / ${anexo?.nome}`)
+                            hasErrors = true
+                        }
+                    })
+                }
             })
         })
+
+        //? Grupos de anexo
+        if (grupoAnexo && grupoAnexo.length > 0) {
+            grupoAnexo.forEach((grupo, indexGrupo) => {
+                grupo.itens.forEach((item, indexItem) => {
+                    if (item.obrigatorio === 1 && item.anexos.length == 0) {
+                        console.log('gera erro grupo')
+                        setError(`grupoAnexo[${indexGrupo}].itens[${indexItem}].anexos`, {
+                            type: 'manual',
+                            message: 'Campo obrigatário'
+                        })
+                        arrErrors.push(`Anexo: ${grupo?.nome} / ${item?.nome}`)
+                        hasErrors = true
+                    }
+                })
+            })
+        }
 
         setListErrors({
             status: hasErrors,
@@ -638,25 +697,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 alternativaItemID: value.alternativa.id
             })
 
+            // Limpar o array de anexos solicitados do item selecionado do bloco
             const updatedBlocos = blocos.map(bloco => {
                 return {
                     ...bloco,
-                    itens: bloco.itens.map(item => {
-                        return {
-                            ...item,
-                            respostaConfig: {
-                                ...item.respostaConfig,
-                                anexosSolicitados: response.data.anexos.map(anexo => {
-                                    return {
-                                        ...anexo,
-                                        anexos: []
-                                    }
-                                })
+                    itens: bloco.itens.map(row => {
+                        if (row.itemID == value.itemID) {
+                            console.log('setItemResposta IGUAL: ', row)
+                            return {
+                                ...row,
+                                respostaConfig: {
+                                    ...response.data
+                                }
                             }
                         }
+                        return row
                     })
                 }
             })
+
             setBlocos(updatedBlocos)
         } catch (error) {
             console.log('error', error)
@@ -849,6 +908,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 handleRemove={handleRemoveAnexoProduct}
                                 loadingFile={loadingFileProduct}
                                 disabled={!canEdit.status}
+                                errors={errors?.produtos}
                             />
                         </CardContent>
                     </Card>
@@ -869,7 +929,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             control={control}
                             register={register}
                             setValue={setValue}
-                            errors={errors}
+                            errors={errors?.blocos}
                             disabled={!canEdit.status}
                         />
                     ))}
@@ -887,7 +947,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 handleRemove: handleRemoveAnexoGroup,
                                 folder: 'grupo-anexo',
                                 disabled: !canEdit.status,
-                                error: errors?.grupoAnexo?.[indexGrupo]?.itens
+                                error: errors
+                                // error: errors?.grupoAnexo?.[indexGrupo]?.itens
                             }}
                         />
                     ))}

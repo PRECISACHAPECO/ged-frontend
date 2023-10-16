@@ -117,6 +117,7 @@ const Item = ({
                             disabled={disabled}
                             onChange={e =>
                                 setItemResposta({
+                                    parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
                                     itemID: values.itemID,
                                     alternativa: e
                                 })
@@ -217,13 +218,13 @@ const Item = ({
                             inputRef={fileInputRef}
                             item={anexo}
                             loadingFile={null}
-                            // grupo={anexo}
-                            indexGrupo={blockIndex}
-                            indexItem={indexAnexo}
+                            indexBlock={blockIndex}
+                            indexItem={index}
+                            indexAnexo={indexAnexo}
                             handleFileSelect={handleFileSelect}
                             folder='item'
                             handleRemove={handleRemoveAnexoItem}
-                            error={false}
+                            error={errors}
                             disabled={disabled}
                         />
                     </Grid>

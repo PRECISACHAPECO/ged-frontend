@@ -64,7 +64,7 @@ const ModeView = ({ values }) => {
                                 item={item}
                                 loadingFile={values.loadingFile}
                                 grupo={values.grupo}
-                                indexGrupo={values.indexGrupo}
+                                indexBlock={values.indexGrupo}
                                 indexItem={indexItem}
                                 handleFileSelect={values.handleFileSelect}
                                 handleRemove={values.handleRemove}
