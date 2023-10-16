@@ -72,7 +72,7 @@ const AuthProvider = ({ children }) => {
         verifyGetRedirect()
     }, [idGET])
 
-    // ** Hooks
+    // // ** Hooks
     useEffect(() => {
         const initAuth = async () => {
             setCurrentRoute(router.pathname)
@@ -311,14 +311,22 @@ const AuthProvider = ({ children }) => {
     }, []);
 
     //! se rota atual for igual a /fornecedor, limpar o localstorage e dar reload na pagina, faça o reaload apenas uma vez
+    // useEffect(() => {
+    //     const hasReloaded = localStorage.getItem('hasReloaded');
+    //     if (!hasReloaded && (router.pathname === '/fornecedor' || router.pathname === '/registro')) {
+    //         localStorage.clear();
+    //         localStorage.setItem('hasReloaded', true);
+    //         window.location.reload();
+    //     }
+    // }, []);
+
     useEffect(() => {
-        const hasReloaded = localStorage.getItem('hasReloaded');
-        if (!hasReloaded && (router.pathname === '/fornecedor' || router.pathname === '/registro')) {
-            localStorage.clear();
-            localStorage.setItem('hasReloaded', true);
-            window.location.reload();
+        const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+        if (router.query.f && !storedToken) {
+            const rota = `/fornecedor?f=${router.query.f}`
+            router.push(rota)
         }
-    }, []);
+    }, [router.query])
 
 
     const values = {
