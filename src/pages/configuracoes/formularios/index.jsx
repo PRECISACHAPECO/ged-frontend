@@ -3,8 +3,6 @@ import { api } from 'src/configs/api'
 import Table from 'src/components/Defaults/Table'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
-import FormParametrosFornecedor from 'src/components/Configuracoes/Formularios/Fornecedor/FormParametrosFornecedor'
-import FormParametrosRecebimentoMp from 'src/components/Configuracoes/Formularios/RecebimentoMp/FormParametrosRecebimentoMp'
 import Loading from 'src/components/Loading'
 
 // ** Next
@@ -18,7 +16,7 @@ const ListParametrosFormularios = () => {
     const router = useRouter()
     const currentLink = router.pathname
     const { setTitle } = useContext(ParametersContext)
-    const { id } = useContext(RouteContext)
+    const { id, setId } = useContext(RouteContext)
 
     useEffect(() => {
         const getList = async () => {
@@ -52,6 +50,10 @@ const ListParametrosFormularios = () => {
 
     const columns = configColumns(currentLink, arrColumns)
 
+    const handleRoute = route => {
+        router.push(`${currentLink}/${route}`)
+    }
+
     return (
         <>
             {/* Exibe loading enquanto não existe result */}
@@ -60,12 +62,14 @@ const ListParametrosFormularios = () => {
             ) : //? Se tem id, exibe o formulário
             id && id > 0 ? (
                 id == 1 ? (
-                    <FormParametrosFornecedor id={id} />
+                    handleRoute('fornecedor')
                 ) : id == 2 ? (
-                    <FormParametrosRecebimentoMp id={id} />
-                ) : (
+                    handleRoute('recebimento-mp')
+                ) : id == 3 ? (
                     <h3>Em desenvolvimento...</h3>
-                )
+                ) : id == 4 ? (
+                    handleRoute('limpeza')
+                ) : null
             ) : (
                 //? Lista tabela de resultados da listagem
                 <Table result={result} columns={columns} />

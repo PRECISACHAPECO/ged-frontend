@@ -20,6 +20,7 @@ const CheckLabelConditional = ({ xs, md, title, name, value, valueChecked, regis
                 <FormControlLabel
                     control={
                         <Checkbox
+                            size='small'
                             name={name}
                             {...register(name)}
                             checked={checked || value == valueChecked}

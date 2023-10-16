@@ -1,30 +1,29 @@
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import Fornecedor from './formularios/fornecedor'
-import PageReport from 'src/components/Defaults/Reports/PageReport'
+import LayoutReport from 'src/components/Reports/Layout'
+import ButtonsFloating from 'src/components/Reports/Layout/ButtonsFloating'
 
-const InvoicePrint = () => {
-    const reportParameters = JSON.parse(localStorage.getItem('reportParameters'))
+// Componentes dos relatórios
+import Fornecedor from '../../components/Reports/Formularios/Fornecedor'
 
-    if (reportParameters) {
-        switch (reportParameters.component) {
-            case 'Fornecedor':
-                return <Fornecedor data={reportParameters} />
-            default:
-                return <div>Conteudo não encontrado</div>
-        }
-    }
+const PageReport = () => {
+    return (
+        <BlankLayout>
+            <>
+                <ButtonsFloating />
+                <LayoutReport>
+                    <Fornecedor />
+                </LayoutReport>
+            </>
+        </BlankLayout>
+    )
 }
 
-InvoicePrint.getLayout = page => (
-    <BlankLayout>
-        <PageReport>{page}</PageReport>
-    </BlankLayout>
-)
+PageReport.getLayout = page => <BlankLayout>{page}</BlankLayout>
 
-InvoicePrint.setConfig = () => {
+PageReport.setConfig = () => {
     return {
         mode: 'light'
     }
 }
 
-export default InvoicePrint
+export default PageReport

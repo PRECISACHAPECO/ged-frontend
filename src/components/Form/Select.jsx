@@ -1,5 +1,6 @@
 import { Grid, FormControl, Autocomplete, TextField } from '@mui/material'
 import { Controller } from 'react-hook-form'
+import HelpText from '../Defaults/HelpText'
 
 const Select = ({
     xs,
@@ -16,49 +17,76 @@ const Select = ({
     multiple,
     setValue,
     errors,
+    onChange,
     className,
-    handleRegistroEstabelecimento
+    createNew,
+    handleRegistroEstabelecimento,
+    helpText,
+    helpTextPosition
 }) => {
+    // Adicione a opção "--novo--" no início do array de opções
+    let optionsWithNovo = options ? [...options] : []
+
+    if (createNew) {
+        optionsWithNovo = [{ nome: '-- Novo --' }, ...options]
+    }
+
     return (
         <Grid item xs={xs} md={md} sx={{ my: 1 }} className={className}>
-            <FormControl fullWidth>
-                <Controller
-                    name={name}
-                    control={control}
-                    defaultValue={value}
-                    rules={{ required }}
-                    render={({ field }) => (
-                        <Autocomplete
-                            {...field}
-                            multiple={multiple}
-                            limitTags={limitTags}
-                            options={options}
-                            getOptionLabel={option => option.nome}
-                            value={
-                                multiple
-                                    ? field.value.map(item => options.find(option => option.nome === item.nome))
-                                    : field.value ?? { nome: '' }
-                            }
-                            disabled={disabled}
-                            onChange={(e, newValue) => {
-                                setValue(name, newValue)
-                                type == 'registroestabelecimento'
-                                    ? handleRegistroEstabelecimento(newValue ? newValue.id : null)
-                                    : null
-                            }}
-                            renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    label={title}
-                                    placeholder={title}
-                                    error={errors ? true : false}
-                                />
-                            )}
-                            noOptionsText='Sem opções'
-                        />
-                    )}
-                />
-            </FormControl>
+            <div className='relative'>
+                <FormControl fullWidth>
+                    <Controller
+                        name={name}
+                        control={control}
+                        defaultValue={value}
+                        rules={{ required }}
+                        render={({ field }) => (
+                            <Autocomplete
+                                {...field}
+                                multiple={multiple}
+                                limitTags={limitTags}
+                                size='small'
+                                options={optionsWithNovo}
+                                getOptionLabel={option =>
+                                    option?.cnpj ? `${option.cnpj} - ${option.nome}` : option?.nome
+                                }
+                                value={
+                                    multiple && field.value && field.value.length > 0
+                                        ? field.value.map(item => options.find(option => option.nome === item.nome))
+                                        : field.value ?? { nome: '' }
+                                }
+                                disabled={disabled}
+                                onChange={(e, newValue) => {
+                                    if (newValue && newValue.nome === '-- Novo --') {
+                                        createNew()
+                                        setValue(name, multiple ? [] : { nome: '' })
+                                    } else {
+                                        onChange && onChange(newValue)
+                                        setValue(name, newValue)
+                                        type === 'registroestabelecimento'
+                                            ? handleRegistroEstabelecimento(newValue ? newValue.id : null)
+                                            : null
+                                    }
+                                }}
+                                renderInput={params => (
+                                    <TextField
+                                        {...params}
+                                        label={title}
+                                        placeholder={title}
+                                        error={errors ? true : false}
+                                    />
+                                )}
+                                noOptionsText='Sem opções'
+                            />
+                        )}
+                    />
+                </FormControl>
+                {helpText && (
+                    <div className='absolute right-[60px] top-[12px] '>
+                        <HelpText text={helpText} position={helpTextPosition ?? 'top'} />
+                    </div>
+                )}
+            </div>
         </Grid>
     )
 }

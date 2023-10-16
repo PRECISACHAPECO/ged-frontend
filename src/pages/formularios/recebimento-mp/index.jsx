@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { api } from 'src/configs/api'
 import Table from 'src/components/Defaults/Table'
-import FormRecebimentoMp from 'src/components/RecebimentoMp/FormRecebimentoMp'
+import FormRecebimentoMP from 'src/components/RecebimentoMP/FormRecebimentoMP'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
 
-const RecebimentoMp = () => {
+const RecebimentoMP = () => {
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState(null)
     const router = useRouter()
@@ -26,7 +26,7 @@ const RecebimentoMp = () => {
         await api.get(`${currentLink}/getList/${loggedUnity.unidadeID}`).then(response => {
             setResult(response.data)
             setTitle({
-                title: 'Recebimento de Matéria Prima',
+                title: 'Recebimento de MP',
                 subtitle: {
                     id: id,
                     count: response.data.length,
@@ -52,18 +52,13 @@ const RecebimentoMp = () => {
             size: 0.1
         },
         {
-            headerName: 'Fornecedor',
-            field: 'fornecedor',
+            headerName: 'Profissional',
+            field: 'profissional',
             size: 0.2
         },
         {
-            headerName: 'CNPJ Fornecedor',
-            field: 'cnpj',
-            size: 0.3
-        },
-        {
-            headerName: 'Total de Produtos',
-            field: 'totalProdutos',
+            headerName: 'Modelo',
+            field: 'modelo',
             size: 0.2
         },
         {
@@ -79,10 +74,10 @@ const RecebimentoMp = () => {
         <>
             {/* Exibe loading enquanto não existe result */}
             {!result ? (
-                <Loading />
+                <Loading show />
             ) : //? Se tem id, exibe o formulário
             id && id > 0 ? (
-                <FormRecebimentoMp id={id} />
+                <FormRecebimentoMP id={id} />
             ) : (
                 //? Lista tabela de resultados da listagem
                 <Table result={result} columns={columns} />
@@ -91,4 +86,4 @@ const RecebimentoMp = () => {
     )
 }
 
-export default RecebimentoMp
+export default RecebimentoMP

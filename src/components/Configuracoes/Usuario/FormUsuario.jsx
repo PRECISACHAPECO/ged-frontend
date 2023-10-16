@@ -82,7 +82,7 @@ const FormUsuario = ({ id }) => {
         data.units &&
         data.units.map((unit, index) => {
             setValue(`units[${index}].papel`, unit.papel)
-            setValue(`units[${index}].profissao`, unit.profissao)
+            // setValue(`units[${index}].profissao`, unit.profissao)
             setValue(`units[${index}].cargo`, unit.cargos)
         })
 
@@ -151,7 +151,7 @@ const FormUsuario = ({ id }) => {
         newUnity.push({
             unidade: null,
             papel: null,
-            profissao: null,
+            // profissao: null,
             cargos: [],
             status: true
         })
@@ -179,6 +179,13 @@ const FormUsuario = ({ id }) => {
         if (selectedFile) {
             const formData = new FormData()
             formData.append('file', selectedFile)
+
+            //? Verifica se o arquivo é uma imagem
+            const isImage = selectedFile.type.includes('image')
+            if (!isImage) {
+                toast.error('O arquivo selecionado não é uma imagem!')
+                return
+            }
 
             await api
                 .post(`${staticUrl}/photo-profile/${id}/${loggedUnity.unidadeID}`, formData)
@@ -215,6 +222,7 @@ const FormUsuario = ({ id }) => {
             try {
                 const route = `${staticUrl}/getData/${id}?unidadeID=${loggedUnity.unidadeID}&papelID=${loggedUnity.papelID}&admin=${user.admin}`
                 await api.post(route).then(response => {
+                    console.log('🚀 ~ response:', response.data)
                     setData(response.data)
                     setPhotoProfile(response.data.fields.imagem)
                     reset(response.data) //* Insere os dados no formulário
@@ -694,7 +702,7 @@ const FormUsuario = ({ id }) => {
                                                     </Grid>
 
                                                     {/* Profissão */}
-                                                    <Grid item xs={12} md={3}>
+                                                    {/* <Grid item xs={12} md={3}>
                                                         <Autocomplete
                                                             options={data.profissaoOptions}
                                                             getOptionLabel={option => option.nome || ''}
@@ -726,7 +734,7 @@ const FormUsuario = ({ id }) => {
                                                                 />
                                                             )}
                                                         />
-                                                    </Grid>
+                                                    </Grid> */}
 
                                                     {/* Cargo(s) */}
                                                     <Grid item xs={12} md={unit.unidadeID ? 6 : 3}>

@@ -1,5 +1,6 @@
 // ** React Imports
 import { useState } from 'react'
+import Head from 'next/head'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -43,9 +44,12 @@ const AclGuard = props => {
 
   // Render Not Authorized component if the current user has limited access
   return (
-    <BlankLayout>
-      <NotAuthorized />
-    </BlankLayout>
+    <>
+      <BlankLayout>
+        <NotAuthorized />
+      </BlankLayout>
+    </>
+
   )
 }
 

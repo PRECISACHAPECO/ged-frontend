@@ -5,17 +5,18 @@ import FormFornecedor from 'src/components/Fornecedor/FormFornecedor'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
-import DialogNewFornecedor from 'src/components/Defaults/Dialogs/DialogNewFornecedor'
-import { validationEmail } from '../../../configs/validations'
-import { toast } from 'react-hot-toast'
-
+import DialogActs from 'src/components/Defaults/Dialogs/DialogActs'
+import toast from 'react-hot-toast'
 import Loading from 'src/components/Loading'
+import { validationEmail } from '../../../configs/validations'
 
 // ** Next
 import { useRouter } from 'next/router'
 
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
+import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
+import FormFornecedorConclusion from 'src/components/Fornecedor/Dialogs/NewFornecedor/FormFornecedorConclusion'
 
 const Fornecedor = () => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -23,67 +24,22 @@ const Fornecedor = () => {
     const router = useRouter()
     const currentLink = router.pathname
     const { setTitle } = useContext(ParametersContext)
+    const { id, setId } = useContext(RouteContext)
+
+    //? Controles novo fornecedor
     const [open, setOpen] = useState(false)
-    const [loadingSave, setLoadingSave] = useState(false) //? Dependencia do useEffect pra atualizar listagem ao salvar
-    const { id } = useContext(RouteContext)
+    const [openModalConclusion, setOpenModalConclusion] = useState(false)
+    const [responseConclusion, setResponseConclusion] = useState(null)
 
     //* Controles modal pra inserir fornecedor
     const openModal = () => {
         setOpen(true)
     }
 
-    const makeFornecedor = async (cnpj, nomeFornecedor, gruposAnexo, email) => {
-        try {
-            setLoadingSave(true)
-            await api
-                .post(`${currentLink}/makeFornecedor`, {
-                    usuarioID: user.usuarioID,
-                    unidadeID: loggedUnity.unidadeID,
-                    papelID: user.papelID,
-                    cnpj: cnpj,
-                    email: email,
-                    nomeFornecedor: nomeFornecedor,
-                    gruposAnexo: gruposAnexo
-                })
-                .then(response => {
-                    if (response.status === 200) {
-                        toast.success('Fornecedor habilitado com sucesso')
-                        if (email) {
-                            sendMail(email, cnpj, nomeFornecedor)
-                        }
-                    } else {
-                        toast.error('Erro ao tornar fornecedor')
-                    }
-                    setLoadingSave(false)
-                })
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    // Envia email para um novo fornecedor / Novo fornecedor
-    const sendMail = (email, cnpj, nomeFornecedor) => {
-        if (email && validationEmail(email)) {
-            const data = {
-                unidadeID: loggedUnity.unidadeID,
-                cnpj,
-                nomeFornecedor,
-                destinatario: email
-            }
-            api.post(`${currentLink}/sendMail`, { data })
-                .then(response => {
-                    toast.success('E-mail enviado com sucesso')
-                })
-                .catch(error => {
-                    console.error('Erro ao enviar email', error)
-                })
-        }
-    }
-
-    //* Controles da listagem
     const getList = async () => {
+        console.log('🚀 ~ user.cnpj:', user.cnpj)
         await api
-            .post(`${currentLink}/getList`, {
+            .post(`${currentLink}/getList/`, {
                 unidadeID: loggedUnity.unidadeID,
                 papelID: user.papelID,
                 cnpj: user.cnpj ? user.cnpj : null
@@ -101,9 +57,66 @@ const Fornecedor = () => {
             })
     }
 
+    //? handleSubmit do modal de gerar um novo fornecedor
+    const makeFornecedor = async values => {
+        console.log('🚀 ~ makeFornecedor : ', values)
+
+        try {
+            const response = await api.post(`/formularios/fornecedor/makeFornecedor`, {
+                usuarioID: user.usuarioID,
+                papelID: user.papelID,
+                unidadeID: loggedUnity.unidadeID,
+                values: values.fields
+            })
+            if (response.status == 200) {
+                toast.success('E-mail enviado com sucesso')
+                // if (values.fields.email) sendMail(values.fields.email, values.fields.cnpj, values.fields.razaoSocial)
+                setResponseConclusion(response.data)
+                setId(response.data.fornecedorID)
+                setOpenModalConclusion(true)
+            }
+        } catch (err) {
+            console.error(err)
+            console.error('Erro ao enviar email', err)
+        }
+    }
+
+    // Envia email para um novo fornecedor / Novo fornecedor
+    // const sendMail = (email, cnpj, nomeFornecedor) => {
+    //     if (email && validationEmail(email)) {
+    //         const data = {
+    //             unidadeID: loggedUnity.unidadeID,
+    //             cnpj,
+    //             nomeFornecedor,
+    //             destinatario: email
+    //         }
+
+    //         api.post(`${currentLink}/sendMail`, { data })
+    //             .then(response => {
+    //                 toast.success('E-mail enviado com sucesso')
+    //             })
+    //             .catch(error => {
+    //                 console.error('Erro ao enviar email', error)
+    //             })
+    //     }
+    // }
+
+    const copyLink = () => {
+        const link = responseConclusion?.link
+        if (link) {
+            navigator.clipboard.writeText(link)
+            toast.success('Link copiado com sucesso!')
+        }
+    }
+
     useEffect(() => {
         getList()
-    }, [id, loadingSave])
+    }, [id])
+
+    // verifica se tem f na rota, se estiver ja direciona para o formulario do id correspondente
+    useEffect(() => {
+        if (router.query.f) setId(router.query.f)
+    }, [router.query])
 
     const arrColumns =
         user.papelID == 1
@@ -140,7 +153,10 @@ const Fornecedor = () => {
                   },
                   {
                       headerName: 'Status',
-                      field: 'status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
                       size: 1
                   }
               ]
@@ -178,7 +194,10 @@ const Fornecedor = () => {
                   },
                   {
                       headerName: 'Status',
-                      field: 'status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
                       size: 1
                   }
               ]
@@ -190,50 +209,44 @@ const Fornecedor = () => {
         <>
             {/* Exibe loading enquanto não existe result */}
             {!result ? (
-                <Loading />
+                <Loading show />
             ) : //? Se tem id, exibe o formulário
             id && id > 0 ? (
-                <FormFornecedor id={id} />
+                <FormFornecedor id={id} makeFornecedor={makeFornecedor} />
             ) : (
                 //? Lista tabela de resultados da listagem
                 <Table
                     result={result}
                     columns={columns}
-                    btnNew={user.papelID == 1 ? true : false}
                     openModal={user.papelID == 1 ? openModal : null}
+                    btnNew={user.papelID == 1 ? true : false}
                 />
             )}
-            <DialogNewFornecedor
+
+            {/* Modal pra habilitar um novo fornecedor */}
+            <DialogActs
+                title='Habilitar Fornecedor'
+                description='Habilitar novo preenchimento de formulário pro fornecedor'
+                handleConclusion={makeFornecedor}
+                setOpenModal={setOpen}
                 openModal={open}
-                handleClose={() => setOpen(false)}
-                makeFornecedor={makeFornecedor}
-                loadingSave={loadingSave}
-            />
+                size='lg'
+            >
+                <NewFornecedor />
+            </DialogActs>
+
+            {/* Modal que exibe mensagem de novo fornecedor habilitado */}
+            <DialogActs
+                title='Formulário enviado ao fornecedor'
+                description='Um novo formulário de qualificação de fornecedor foi enviado'
+                handleCopyLink={copyLink}
+                setOpenModal={setOpenModalConclusion}
+                openModal={openModalConclusion}
+            >
+                <FormFornecedorConclusion values={responseConclusion} />
+            </DialogActs>
         </>
     )
-
-    // return (
-    //     <>
-    //         {!result && <Loading />}
-    //         {result && (
-    //             <>
-    //                 <Card>
-    //                     <CardContent sx={{ pt: '0' }}>
-    //                         <TableFilter
-    //                             rows={result}
-    //                             columns={columns}
-    //                             buttonsHeader={{
-    //                                 btnNew: user.papelID == 1 ? true : false,
-    //                                 btnPrint: true,
-    //                                 openModal: user.papelID == 1 ? openModal : null
-    //                             }}
-    //                         />
-    //                     </CardContent>
-    //                 </Card>
-    //             </>
-    //         )}
-    //     </>
-    // )
 }
 
 export default Fornecedor

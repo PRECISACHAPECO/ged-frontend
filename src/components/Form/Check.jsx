@@ -8,6 +8,7 @@ const Check = ({ xs, md, title, index, name, typePage, value, edit, register, se
                 <FormControlLabel
                     control={
                         <Checkbox
+                            size='small'
                             sx={{ ml: 4 }}
                             {...register(name)}
                             defaultChecked={value == true || value == 1 || typePage == 'new'}

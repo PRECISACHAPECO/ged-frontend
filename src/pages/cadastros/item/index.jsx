@@ -11,16 +11,18 @@ import { useRouter } from 'next/router'
 
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
+import { AuthContext } from 'src/context/AuthContext'
 
 const Item = () => {
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
     const { setTitle } = useContext(ParametersContext)
+    const { loggedUnity } = useContext(AuthContext)
     const { id } = useContext(RouteContext)
 
     const getList = async () => {
-        await api.get(currentLink).then(response => {
+        await api.get(`${currentLink}/${loggedUnity.unidadeID}`).then(response => {
             setResult(response.data)
             setTitle({
                 title: 'Item',
@@ -55,8 +57,11 @@ const Item = () => {
         },
 
         {
-            title: 'Status',
-            field: 'status',
+            headerName: 'Status',
+            field: {
+                name: 'status',
+                cor: 'cor'
+            },
             size: 0.1
         }
     ]
@@ -77,11 +82,6 @@ const Item = () => {
             )}
         </>
     )
-}
-
-Item.acl = {
-    action: 'read',
-    subject: 'acl-page'
 }
 
 export default Item

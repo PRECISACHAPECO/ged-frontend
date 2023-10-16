@@ -1,134 +1,142 @@
-// ** MUI Imports
-import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import Button from '@mui/material/Button'
+import React, { useEffect, useState } from 'react';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Icon from 'src/@core/components/icon';
+import CustomAvatar from 'src/@core/components/mui/avatar';
 import { useTheme } from '@mui/material/styles'
-import CardHeader from '@mui/material/CardHeader'
-import Typography from '@mui/material/Typography'
-import CardContent from '@mui/material/CardContent'
+import ReactApexcharts from 'src/@core/components/react-apexcharts';
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba';
 
-// ** Custom Components Imports
-import OptionsMenu from 'src/@core/components/option-menu'
-import ReactApexcharts from 'src/@core/components/react-apexcharts'
+const CrmWeeklyOverview = ({ data }) => {
+    const theme = useTheme();
+    const [last13MonthsData, setLast13MonthsData] = useState([]);
 
-// ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+    useEffect(() => {
+        setLast13MonthsData(data);
+    }, []);
 
-const series = [
-  {
-    name: 'Sales',
-    type: 'column',
-    data: [83, 68, 56, 65, 65, 50, 39]
-  },
-  {
-    type: 'line',
-    name: 'Sales',
-    data: [63, 38, 31, 45, 46, 27, 18]
-  }
-]
+    const options = {
+        chart: {
+            offsetY: -9,
+            offsetX: -16,
+            parentHeightOffset: 0,
+            toolbar: { show: false },
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 8,
+                columnWidth: '35%',
+                endingShape: 'rounded',
+                startingShape: 'rounded',
+                colors: {
+                    ranges: [
+                        {
+                            to: 50,
+                            from: 40,
+                            color: hexToRGBA(theme.palette.primary.main, 1),
+                        },
 
-const CrmWeeklyOverview = () => {
-  // ** Hook
-  const theme = useTheme()
+                    ],
+                },
+            },
+        },
+        markers: {
+            size: 3.5,
+            strokeWidth: 2,
+            fillOpacity: 1,
+            strokeOpacity: 1,
+            colors: [theme.palette.background.paper, theme.palette.error.main],
+            strokeColors: hexToRGBA(theme.palette.primary.main, 1),
+        },
+        stroke: {
+            width: [0, 2],
+            colors: [theme.palette.customColors.trackBg, theme.palette.error.main],
+        },
+        legend: { show: false },
+        dataLabels: { enabled: false },
+        colors: [hexToRGBA(theme.palette.customColors.trackBg, 1)],
+        grid: {
+            strokeDashArray: 7,
+            borderColor: theme.palette.divider,
+        },
+        states: {
+            hover: {
+                filter: { type: 'none' },
+            },
+            active: {
+                filter: { type: 'none' },
+            },
+        },
+        xaxis: {
+            categories: last13MonthsData?.map((item) => item.month), // Substitua 'month' pelo campo real em seus dados
+            tickPlacement: 'on',
+            labels: { show: true },
+            axisTicks: { show: false },
+            axisBorder: { show: false },
+        },
+        yaxis: {
+            min: 0,
+            // max: 20,
+            show: true,
+            tickAmount: 4,
+            labels: {
+                formatter: (value) => (value > 999 ? `${(value / 1000).toFixed(0)}` : value),
+                style: {
+                    fontSize: '0.75rem',
+                    colors: theme.palette.text.disabled,
+                },
+            },
+        },
+    };
 
-  const options = {
-    chart: {
-      offsetY: -9,
-      offsetX: -16,
-      parentHeightOffset: 0,
-      toolbar: { show: false }
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 8,
-        columnWidth: '35%',
-        endingShape: 'rounded',
-        startingShape: 'rounded',
-        colors: {
-          ranges: [
-            {
-              to: 50,
-              from: 40,
-              color: hexToRGBA(theme.palette.primary.main, 1)
-            }
-          ]
-        }
-      }
-    },
-    markers: {
-      size: 3.5,
-      strokeWidth: 2,
-      fillOpacity: 1,
-      strokeOpacity: 1,
-      colors: [theme.palette.background.paper],
-      strokeColors: hexToRGBA(theme.palette.primary.main, 1)
-    },
-    stroke: {
-      width: [0, 2],
-      colors: [theme.palette.customColors.trackBg, theme.palette.primary.main]
-    },
-    legend: { show: false },
-    dataLabels: { enabled: false },
-    colors: [hexToRGBA(theme.palette.customColors.trackBg, 1)],
-    grid: {
-      strokeDashArray: 7,
-      borderColor: theme.palette.divider
-    },
-    states: {
-      hover: {
-        filter: { type: 'none' }
-      },
-      active: {
-        filter: { type: 'none' }
-      }
-    },
-    xaxis: {
-      categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-      tickPlacement: 'on',
-      labels: { show: false },
-      axisTicks: { show: false },
-      axisBorder: { show: false }
-    },
-    yaxis: {
-      min: 0,
-      max: 90,
-      show: true,
-      tickAmount: 3,
-      labels: {
-        formatter: value => `${value > 999 ? `${(value / 1000).toFixed(0)}` : value}k`,
-        style: {
-          fontSize: '0.75rem',
-          colors: theme.palette.text.disabled
-        }
-      }
-    }
-  }
+    const updatedSeries = [
+        {
+            name: 'MP',
+            type: 'column',
+            data: last13MonthsData?.map((item) => item.mp),
+            // data: last13MonthsData.map((item) => ({
+            //     x: item.month,
+            //     y: item.mp,
+            //     fillColor: {
+            //         colors: [
+            //             {
+            //                 opacity: 1,
+            //             },
+            //             {
+            //                 opacity: 0.5,
+            //             },
+            //         ],
+            //     },
 
-  return (
-    <Card>
-      <CardHeader
-        title='Weekly Overview'
-        action={
-          <OptionsMenu
-            options={['Refresh', 'Update', 'Share']}
-            iconButtonProps={{ size: 'small', className: 'card-more-options' }}
-          />
-        }
-      />
-      <CardContent sx={{ '& .apexcharts-xcrosshairs.apexcharts-active': { opacity: 0 } }}>
-        <ReactApexcharts type='line' height={208} series={series} options={options} />
-        <Box sx={{ mb: 4, display: 'flex', alignItems: 'center' }}>
-          <Typography sx={{ mr: 4 }} variant='h5'>
-            62%
-          </Typography>
-          <Typography variant='body2'>Your sales performance is 35% 😎 better compared to last month</Typography>
-        </Box>
-        <Button fullWidth variant='contained'>
-          Details
-        </Button>
-      </CardContent>
-    </Card>
-  )
-}
 
-export default CrmWeeklyOverview
+
+            // })),
+
+        },
+        {
+            name: 'Não Conformidade',
+            type: 'line',
+            data: last13MonthsData?.map((item) => item.nc),
+            color: theme.palette.error.main,
+        },
+    ];
+
+    return (
+        <Card>
+            <CardContent sx={{ '& .apexcharts-xcrosshairs.apexcharts-active': { opacity: 0 } }}>
+                <div className='flex items-center gap-4'>
+                    <CustomAvatar skin='light' variant='rounded' color='primary'>
+                        <Icon icon='icon-park-outline:receive' className='text-base text-[#35553B]' />
+                    </CustomAvatar>
+                    <Typography sx={{ mr: 4 }} variant='body1'>
+                        Recebimento MP e Não Conformidade
+                    </Typography>
+                </div>
+                <ReactApexcharts type='line' height={208} series={updatedSeries} options={options} />
+            </CardContent>
+        </Card>
+    );
+};
+
+export default CrmWeeklyOverview;

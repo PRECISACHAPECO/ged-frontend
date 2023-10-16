@@ -46,17 +46,15 @@ const configColumns = (currentLink, arrColumns) => {
                     {arrColumns &&
                         arrColumns.map((c, j) => {
                             if (c.field === currentColumns) {
-                                // Encotrou a coluna
-                                if (c.field == 'status') {
-                                    const status = statusDefault[params.row.status]
+                                if (c.field.name == 'status') {
 
                                     return (
                                         <CustomChip
                                             key={j}
                                             size='small'
                                             skin='light'
-                                            color={status.color}
-                                            label={status.title}
+                                            color={params?.row.cor}
+                                            label={params?.row.status}
                                             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
                                         />
                                     )
@@ -100,39 +98,6 @@ const backRoute = (route) => {
 
     return arrRoute.join('/')
 }
-
-// Função pra gerar relatórios
-const generateReport = async props => {
-    const route = props.route
-    const params = props.params
-
-
-    try {
-        const response = await api.post(route, { data: params }, {
-            responseType: 'blob',
-        });
-        const fileUrl = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-        window.open(fileUrl);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-// const generateReport = (props) => {
-//     const route = props.route
-//     const params = props.params
-//     api.post(route, { data: params }, { responseType: 'blob' })
-//         .then((response) => {
-//             const blob = new Blob([response.data], { type: 'application/pdf' });
-//             const url = URL.createObjectURL(blob);
-//             window.open(url);
-//         })
-//         .catch((error) => {
-//             console.log('Erro ao gerar o PDF:', error);
-//         });
-// };
-
-
 
 function dateConfig(type, date, numDays) {
     let inputDate = new Date(date);
@@ -229,4 +194,4 @@ const dateOptions = (type, date, numDays) => {
 
 
 
-export { configColumns, formType, backRoute, statusDefault, toastMessage, generateReport, dateConfig, }
+export { configColumns, formType, backRoute, statusDefault, toastMessage, dateConfig, dateOptions }

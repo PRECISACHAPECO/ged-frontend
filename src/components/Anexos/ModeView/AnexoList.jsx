@@ -3,27 +3,32 @@ import Icon from 'src/@core/components/icon'
 import IconCloudUpload from 'src/icon/IconUpload'
 import IconAttach from '../IconAttach'
 import Remove from 'src/components/Form/Remove'
-import Loading from 'src/components/Loading'
+import LoadingFile from 'src/components/LoadingFile'
+import HelpText from 'src/components/Defaults/HelpText'
 
 const AnexoList = ({
+    key,
     item,
+    indexGrupo,
+    indexItem,
     handleFileClick,
     selectedItem,
     handleFileSelect,
     handleRemove,
+    folder,
     loadingFile,
     error,
     disabled,
     modeTheme,
     inputRef
 }) => {
-    console.log('🚀 ~ AnexoList item:', item)
+    console.log('🚀 >>>>> item:', item)
 
     return (
         <Grid item xs={12} md={12}>
             <div
                 className={`${
-                    error?.[indexItem]
+                    error && error?.[key]
                         ? 'border border-red-500'
                         : modeTheme === 'dark'
                         ? 'bg-[#202023]'
@@ -49,12 +54,12 @@ const AnexoList = ({
                             }}
                         >
                             <div
-                                className={`flex relative p-4 justify-start items-center gap-2 rounded-lg w-full mx-2 my-1 mb-2 border-2 border-dashed hover:border-[#4A8B57] transition-colors ${
+                                className={`flex relative p-2 justify-start items-center gap-2 rounded-lg w-full mx-2 my-1 mb-2 border-2 border-dashed hover:border-[#4A8B57] transition-colors ${
                                     modeTheme === 'dark' ? ' border-[#27272a]' : 'rgba(76, 78, 100, 0.12)'
                                 }`}
                             >
-                                {selectedItem && selectedItem.grupoanexoitemID == item.grupoanexoitemID && (
-                                    <Loading show={loadingFile} title='Enviando anexo...' />
+                                {loadingFile && item.produtoAnexoID == selectedItem?.produtoAnexoID && (
+                                    <LoadingFile show title='Enviando anexo...' />
                                 )}
                                 <div className='flex items-center gap-3 container'>
                                     {item.anexo && item.anexo.exist ? (
@@ -68,6 +73,7 @@ const AnexoList = ({
                                                         <p className='text-sm font-semibold opacity-80'>
                                                             {item.anexo.nome}
                                                         </p>
+                                                        {item.descricao && <HelpText text={item.descricao} />}
                                                         <p className='text-sm opacity-80'>
                                                             <span className='text-xs opacity-50'>{`(${(
                                                                 item.anexo.size /
@@ -86,26 +92,22 @@ const AnexoList = ({
                                                                 })}
                                                         </p>
                                                     </div>
-                                                    <p className='text-xs opacity-70'>{item.descricao}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     ) : (
                                         <div className='flex items-center gap-2'>
-                                            {/* Animação bounce lenta */}
-
                                             <IconCloudUpload
-                                                className={`w-20 h-20 ${
+                                                className={`w-8 h-8 ${
                                                     item.anexo && item.anexo.exist ? 'fill-[#666CFF]' : 'fill-current'
-                                                } 
-                                                animate-custom-bounce`}
+                                                }`}
                                             />
 
-                                            <div>
+                                            <div className='flex items-center gap-2'>
                                                 <h6 className='text-sm font-semibold opacity-80'>
                                                     Adicione um arquivo
                                                 </h6>
-                                                <p className='text-xs opacity-70'>{item.descricao}</p>
+                                                {item.descricao && <HelpText text={item.descricao} />}
                                             </div>
                                         </div>
                                     )}
@@ -120,7 +122,7 @@ const AnexoList = ({
                             md={1}
                             title={''}
                             // index={index}
-                            removeItem={() => handleRemove(item)}
+                            removeItem={() => handleRemove(item, folder)}
                             item={item}
                             pending={!item.anexo?.exist || disabled}
                             textSuccess='Remover este anexo'
@@ -132,7 +134,7 @@ const AnexoList = ({
                     type='file'
                     ref={inputRef}
                     style={{ display: 'none' }}
-                    onChange={e => handleFileSelect(e, selectedItem)}
+                    onChange={e => handleFileSelect(e, selectedItem, folder)}
                 />
             </div>
         </Grid>

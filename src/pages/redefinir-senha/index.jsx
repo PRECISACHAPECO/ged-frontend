@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -17,6 +17,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
 import MuiCard from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
+import { NotificationContext } from 'src/context/NotificationContext'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -47,6 +48,7 @@ const ResetPassword = () => {
     })
     const router = Router
     const type = router.query.type
+    const { createNewNotification } = useContext(NotificationContext)
 
     // ** Hook
     const theme = useTheme()
@@ -90,10 +92,21 @@ const ResetPassword = () => {
             senha: value.newPassword,
             usuarioID
         }
+        const dataNotification = {
+            titulo: 'Redefinição de senha',
+            descricao: `Sua senha senha foi redefinida com sucesso.`,
+            url: null,
+            urlID: null,
+            tipoNotificacaoID: 2,
+            usuarioGeradorID: null,
+            usuarioID: data.usuarioID,
+            papelID: 1
+        }
         api.post(`/esqueceuSenha/newPassword`, { data }).then(response => {
             if (response.status === 200) {
                 toast.success('Senha redefinida com sucesso!')
                 router.push(type === 'login' ? '/login' : '/fornecedor')
+                createNewNotification(dataNotification)
             } else {
                 toast.error('Erro ao redefinir senha!')
             }

@@ -22,7 +22,6 @@ const Atividade = () => {
     useEffect(() => {
         const getList = async () => {
             await api.get(currentLink).then(response => {
-                console.log('🚀 ~ response.data:', response.data)
                 setResult(response.data)
                 setTitle({
                     title: 'Atividade',
@@ -49,8 +48,11 @@ const Atividade = () => {
             size: 0.8
         },
         {
-            title: 'Status',
-            field: 'status',
+            headerName: 'Status',
+            field: {
+                name: 'status',
+                cor: 'cor'
+            },
             size: 0.1
         }
     ]

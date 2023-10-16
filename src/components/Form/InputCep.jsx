@@ -38,6 +38,7 @@ const InputCep = ({
                             placeholder={title}
                             rows={rows}
                             type={type ?? 'text'}
+                            size='small'
                             disabled={disabled}
                             aria-describedby='validation-schema-nome'
                             error={errors}

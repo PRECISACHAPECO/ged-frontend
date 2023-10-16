@@ -7,6 +7,7 @@ import Icon from 'src/@core/components/icon'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
+import { NotificationContext } from 'src/context/NotificationContext'
 import { useContext, useState } from 'react'
 
 import { toast } from 'react-hot-toast'
@@ -22,39 +23,14 @@ import UserDropdown from 'src/@core/layouts/components/shared-components/UserDro
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
 import { Button, Snackbar, Typography } from '@mui/material'
 import DialogSelectUnit from 'src/components/Defaults/Dialogs/DialogSelectUnit'
-
-const notifications = [
-    {
-        meta: 'Today',
-        new: true,
-        avatarAlt: 'Flora',
-        title: 'Congratulation Flora! 🎉',
-        avatarImg: '/images/avatars/4.png',
-        subtitle: 'Won the monthly best seller badge'
-    },
-    {
-        meta: 'Today',
-        new: true,
-        avatarAlt: 'Flora',
-        title: 'Congratulation Flora! 🎉',
-        avatarImg: '/images/avatars/4.png',
-        subtitle: 'Won the monthly best seller badge'
-    },
-    {
-        meta: 'Today',
-        new: false,
-        avatarAlt: 'Flora',
-        title: 'Congratulation Flora! 🎉',
-        avatarImg: '/images/avatars/4.png',
-        subtitle: 'Won the monthly best seller badge'
-    },
-]
+import BreadcrumbsBasic from 'src/components/BreadcrumbsBasic'
 
 const AppBarContent = props => {
     // ** Props
     const { hidden, settings, saveSettings, toggleNavVisibility } = props
     const { title } = useContext(ParametersContext)
     const { id, setId } = useContext(RouteContext)
+    const { notifications } = useContext(NotificationContext)
 
     const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
 
@@ -98,6 +74,8 @@ const AppBarContent = props => {
                     <Typography variant='caption'>
                         {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
                     </Typography>
+                    {/* todo migalhas de pão */}
+                    {/* <BreadcrumbsBasic /> */}
                 </Box>
 
                 <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
@@ -134,6 +112,7 @@ const AppBarContent = props => {
 
                 </Box>
             </Box >
+
 
             <DialogSelectUnit
                 openModal={openModal}

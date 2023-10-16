@@ -1,14 +1,37 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { SettingsContext } from 'src/@core/context/settingsContext'
 import { Autocomplete, Card, CardContent, FormControl, Grid, TextField, Typography } from '@mui/material'
 import { dateConfig } from 'src/configs/defaultConfigs'
 
 //* Custom inputs
+import AnexoListMultiple from 'src/components/Anexos/ModeView/AnexoListMultiple'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import DateField from 'src/components/Form/DateField'
+import { api } from 'src/configs/api'
 
-const Item = ({ blockIndex, index, values, register, control, errors, setValue, disabled }) => {
+const Item = ({
+    blockIndex,
+    index,
+    setBlocos,
+    handleFileSelect,
+    setItemResposta,
+    handleRemoveAnexoItem,
+    values,
+    register,
+    control,
+    errors,
+    setValue,
+    disabled
+}) => {
+    console.log('🚀 ~ item ~ values:', values)
+    const { settings } = useContext(SettingsContext)
+    const modeTheme = settings.mode
+    const [selectedItem, setSelectedItem] = useState(null)
+    const fileInputRef = useRef(null)
+
     const [dateStatus, setDateStatus] = useState({})
+    const [responseConfig, setResponseConfig] = useState(null)
 
     const setDateFormat = (type, name, value, numDays) => {
         console.log('🚀 ~ type, name, value, numDays:', type, name, value, numDays)
@@ -27,6 +50,24 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
             setDateFormat('dataPassado', null, values.resposta, 365)
         }
     }, [])
+
+    //? Anexos
+    const handleFileClick = item => {
+        console.log('🚀 >>>>> handleFileClick:', item)
+
+        item['parFornecedorModeloBlocoID'] = values.parFornecedorModeloBlocoID ?? 0
+
+        fileInputRef.current.click()
+        setSelectedItem(item)
+    }
+
+    useEffect(() => {
+        console.log('no useEffect no useRef..')
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''
+        }
+    }, [handleFileSelect])
 
     return (
         <Grid
@@ -49,7 +90,9 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
 
             {/* Descrição do item */}
             <Grid item xs={12} md={6}>
-                {values.ordem + ' - ' + values.nome}
+                <Typography variant='subtitle1' sx={{ fontWeight: 700 }}>
+                    {values.ordem + ' - ' + values.nome}
+                </Typography>
             </Grid>
 
             {/* Alternativas de respostas */}
@@ -72,6 +115,13 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
                             idName={'alternativaID'}
                             value={values.resposta}
                             disabled={disabled}
+                            onChange={e =>
+                                setItemResposta({
+                                    parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
+                                    itemID: values.itemID,
+                                    alternativa: e
+                                })
+                            }
                             control={control}
                             register={register}
                             setValue={setValue}
@@ -147,6 +197,38 @@ const Item = ({ blockIndex, index, values, register, control, errors, setValue, 
                     </FormControl>
                 </Grid>
             )}
+
+            {/* Configs da resposta (se houver) */}
+            {values &&
+                values.respostaConfig &&
+                values.respostaConfig.anexo == 1 &&
+                values.respostaConfig.anexosSolicitados.length > 0 &&
+                values.respostaConfig.anexosSolicitados.map((anexo, indexAnexo) => (
+                    <Grid item xs={12} md={12}>
+                        <AnexoListMultiple
+                            modeTheme={modeTheme}
+                            key={anexo}
+                            handleFileClick={() =>
+                                handleFileClick({
+                                    ...anexo,
+                                    itemOpcaoAnexoID: anexo.itemOpcaoAnexoID
+                                })
+                            }
+                            selectedItem={selectedItem}
+                            inputRef={fileInputRef}
+                            item={anexo}
+                            loadingFile={null}
+                            indexBlock={blockIndex}
+                            indexItem={index}
+                            indexAnexo={indexAnexo}
+                            handleFileSelect={handleFileSelect}
+                            folder='item'
+                            handleRemove={handleRemoveAnexoItem}
+                            error={errors}
+                            disabled={disabled}
+                        />
+                    </Grid>
+                ))}
         </Grid>
     )
 }

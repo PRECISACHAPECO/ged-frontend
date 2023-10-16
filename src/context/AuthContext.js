@@ -1,5 +1,5 @@
 // ** React Imports
-import { createContext, use, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { api } from 'src/configs/api'
 
 // ** Next Import
@@ -12,6 +12,8 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { toast } from 'react-hot-toast'
 import { backRoute } from 'src/configs/defaultConfigs'
+import { NotificationContext } from './NotificationContext'
+import { RouteContext } from 'src/context/RouteContext'
 
 // ** Defaults
 const defaultProvider = {
@@ -27,6 +29,7 @@ const defaultProvider = {
 const AuthContext = createContext(defaultProvider)
 
 const AuthProvider = ({ children }) => {
+    const { setId } = useContext(RouteContext)
     // ** States
     const [user, setUser] = useState(defaultProvider.user)
     const [loading, setLoading] = useState(defaultProvider.loading)
@@ -51,7 +54,25 @@ const AuthProvider = ({ children }) => {
     const router = useRouter();
     const staticUrl = backRoute(router.pathname) // Url sem ID
 
-    // ** Hooks
+    const data = {
+        unidadeID: loggedUnity?.unidadeID ?? user?.unidadeID,
+        usuarioID: user?.usuarioID
+    };
+
+    const idGET = router.query.id
+
+    const verifyGetRedirect = () => {
+        if (idGET && idGET > 0) {
+            router.push(router.pathname)
+            setId(idGET)
+        }
+    }
+
+    useEffect(() => {
+        verifyGetRedirect()
+    }, [idGET])
+
+    // // ** Hooks
     useEffect(() => {
         const initAuth = async () => {
             setCurrentRoute(router.pathname)
@@ -84,12 +105,12 @@ const AuthProvider = ({ children }) => {
                 localStorage.removeItem('loggedUnity')
                 localStorage.removeItem('routes')
                 localStorage.removeItem('menu')
+                localStorage.removeItem('unreadNotifications')
                 setUser(null)
                 setLoading(false)
                 if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
                     router.replace('/login')
                 }
-
             } else {
                 setLoading(false)
             }
@@ -100,6 +121,7 @@ const AuthProvider = ({ children }) => {
 
     //* Login da fabrica (CPF)
     const handleLogin = (params, errorCallback) => {
+        window.localStorage.removeItem('unreadNotifications')
         api.post('/login', params).then(async response => {
             setUnitsUser(response.data.unidades)
             localStorage.setItem('userUnits', JSON.stringify(response.data.unidades))
@@ -148,6 +170,7 @@ const AuthProvider = ({ children }) => {
                 ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
                 : null
             const returnUrl = router.query.returnUr
+            console.log("🚀 ~ returnUrl: OQQ EESS IOSSSOO", returnUrl)
             setUser({ ...response.data.userData })
 
             setRouteBackend('/login-fornecedor')
@@ -163,8 +186,9 @@ const AuthProvider = ({ children }) => {
             const previousRoute = router.asPath
             const redirectURL = previousRoute.includes('/registro/') ? '/meus-dados' : '/formularios/fornecedor/';
             router.replace(redirectURL)
-
-
+            if (params.getFornecedorID) {
+                setId(params.getFornecedorID)
+            }
         }).catch(err => {
             if (err?.response?.status === 400) {
                 toast.error('CNPJ ou senha inválidos!')
@@ -180,6 +204,7 @@ const AuthProvider = ({ children }) => {
         window.localStorage.removeItem('loggedUnity')
         window.localStorage.removeItem('routes')
         window.localStorage.removeItem('menu')
+        window.localStorage.removeItem('unreadNotifications')
         window.localStorage.removeItem(authConfig.storageTokenKeyName)
         router.push(user?.papelID === 2 ? '/fornecedor' : '/login') //? /login ou /login-fornecedor
     }
@@ -286,14 +311,22 @@ const AuthProvider = ({ children }) => {
     }, []);
 
     //! se rota atual for igual a /fornecedor, limpar o localstorage e dar reload na pagina, faça o reaload apenas uma vez
+    // useEffect(() => {
+    //     const hasReloaded = localStorage.getItem('hasReloaded');
+    //     if (!hasReloaded && (router.pathname === '/fornecedor' || router.pathname === '/registro')) {
+    //         localStorage.clear();
+    //         localStorage.setItem('hasReloaded', true);
+    //         window.location.reload();
+    //     }
+    // }, []);
+
     useEffect(() => {
-        const hasReloaded = localStorage.getItem('hasReloaded');
-        if (!hasReloaded && (router.pathname === '/fornecedor' || router.pathname === '/registro')) {
-            localStorage.clear();
-            localStorage.setItem('hasReloaded', true);
-            window.location.reload();
+        const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+        if (router.query.f && !storedToken) {
+            const rota = `/fornecedor?f=${router.query.f}`
+            router.push(rota)
         }
-    }, []);
+    }, [router.query])
 
 
     const values = {

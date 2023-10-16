@@ -83,7 +83,7 @@ const Fields = ({
                         {field && field.tipo === 'int' && field.tabela && (
                             <Select
                                 xs={12}
-                                md={3}
+                                md={4}
                                 title={field.nomeCampo}
                                 name={`fields[${index}].${field.tabela}`}
                                 type={field.tabela}
@@ -103,7 +103,7 @@ const Fields = ({
                         {field && field.tipo == 'date' && (
                             <DateField
                                 xs={12}
-                                md={3}
+                                md={4}
                                 title='Data da avaliação'
                                 disabled={disabled || disabledField(field.nomeColuna)}
                                 value={field?.[field.nomeColuna]}
@@ -125,7 +125,7 @@ const Fields = ({
                             (field.nomeColuna != 'numeroRegistro' || watchRegistroEstabelecimento > 1) && (
                                 <Input
                                     xs={12}
-                                    md={3}
+                                    md={4}
                                     title={field.nomeCampo}
                                     name={`fields[${index}].${field.nomeColuna}`}
                                     value={field?.[field.nomeColuna]}

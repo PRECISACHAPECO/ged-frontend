@@ -2,6 +2,7 @@ import { SettingsContext } from 'src/@core/context/settingsContext'
 const { settings } = useContext(SettingsContext)
 const mode = settings.mode
 // Chamada: sx = { getZebradoStyle(indexItem) }
+// Pegar tema atual do sistema
 
 const getZebradoStyle = (index, mode) => ({
     backgroundColor:

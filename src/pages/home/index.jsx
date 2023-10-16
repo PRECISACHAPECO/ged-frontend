@@ -8,8 +8,8 @@ import CardContent from '@mui/material/CardContent'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { AuthContext } from 'src/context/AuthContext'
 import { useContext, useEffect } from 'react'
-import Factory from 'src/components/Graphics/Factory'
-import Company from 'src/components/Graphics/Company'
+import Factory from 'src/components/Graphics/home/factory'
+import Supplier from 'src/components/Graphics/home/supplier'
 
 const Home = () => {
     const { setTitle } = useContext(ParametersContext)
@@ -27,13 +27,13 @@ const Home = () => {
     return user.papelID === 1 ? (
         <Grid container spacing={6}>
             <Grid item xs={12}>
-                <Company />
+                <Factory />
             </Grid>
         </Grid>
     ) : user.papelID === 2 ? (
         <Grid container spacing={6}>
             <Grid item xs={12}>
-                <Factory />
+                <Supplier />
             </Grid>
         </Grid>
     ) : null

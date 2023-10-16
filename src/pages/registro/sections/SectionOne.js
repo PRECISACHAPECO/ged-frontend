@@ -20,6 +20,7 @@ import Input from 'src/components/Form/Input'
 const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
     const router = Router
     const [lenghtPassword, setLenghtPassword] = useState(null)
+    const [unidadeID, setUnidadeID] = useState(null)
     const [cnpjData, setCnpjData] = useState()
     const [fromLink, setFromLink] = useState(false)
     const [validationCnpj, setValidationCnpj] = useState(null)
@@ -102,7 +103,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
             }
             await api.post(`/login-fornecedor/setAcessLink`, { data })
                 .then((response, err) => {
-                    console.log("response", response)
+                    setUnidadeID(response.data[0].unidadeID)
                     if (response.data && response.data[0] && response.data[0].cnpj) {
                         handleGetCnpj(response.data[0].cnpj)
                         setValue('cnpj', data.response?.data[0].cnpj)
@@ -118,6 +119,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
     const onSubmit = value => {
         setDataGlobal({
             ...dataGlobal,
+            unidadeID: unidadeID,
             sectionOne: {
                 ...dataGlobal?.sectionOne,
                 nomeFantasia: value.nomeFantasia,
@@ -220,6 +222,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                                 <InputLabel htmlFor='input-password' color={errors.senha ? 'error' : ''}>Senha</InputLabel>
                                                 <OutlinedInput
                                                     label='Senha'
+                                                    size='small'
                                                     id='input-password'
                                                     inputRef={inputRef}
                                                     type={values.showPassword ? 'text' : 'password'}
@@ -245,6 +248,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                                 <OutlinedInput
                                                     label='Confirme a senha'
                                                     name='confirmaSenha'
+                                                    size='small'
                                                     {...register('confirmaSenha')}
                                                     id='input-confirm-password'
                                                     type={values.showConfirmPassword ? 'text' : 'password'} // altere o tipo para 'password'
@@ -350,6 +354,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                             Senha
                                         </InputLabel>
                                         <OutlinedInput
+                                            size='small'
                                             label="Senha"
                                             id="input-password"
                                             type={values.showPassword ? 'text' : 'password'}
@@ -381,6 +386,7 @@ const SectionOne = ({ handleNext, setDataGlobal, dataGlobal }) => {
                                         <OutlinedInput
                                             label="Confirme a senha"
                                             name="confirmaSenha"
+                                            size='small'
                                             {...register('confirmaSenha', {
                                                 required: 'Campo obrigatório',
                                                 validate: (value) => value === watch('senha') || 'As senhas não coincidem',

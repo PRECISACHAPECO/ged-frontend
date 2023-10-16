@@ -1,7 +1,7 @@
 import { Grid, Typography, Box, FormControlLabel, Checkbox, Tooltip, IconButton } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 
-const Remove = ({ xs, md, title, removeItem, item, pending, index, textSuccess, textError }) => {
+const Remove = ({ xs, md, icon, color, title, removeItem, item, pending, index, textSuccess, textError }) => {
     //* Mensagens tooltip
     textSuccess = textSuccess || 'Remover este item'
     textError = textError || 'Este item não pode ser removido pois possui cadastros vinculados a ele'
@@ -12,7 +12,8 @@ const Remove = ({ xs, md, title, removeItem, item, pending, index, textSuccess, 
                 <Typography variant='caption'>{title}</Typography>
                 <Tooltip title={pending == 1 ? textError : textSuccess}>
                     <IconButton
-                        color='error'
+                        color={color ?? 'error'}
+                        size='small'
                         onClick={() => {
                             pending != 1 ? removeItem(item, index) : null
                         }}
@@ -21,7 +22,7 @@ const Remove = ({ xs, md, title, removeItem, item, pending, index, textSuccess, 
                             cursor: pending == 1 ? 'default' : 'pointer'
                         }}
                     >
-                        <Icon icon='tabler:trash-filled' />
+                        <Icon icon={icon ?? 'tabler:trash-filled'} />
                     </IconButton>
                 </Tooltip>
             </Box>

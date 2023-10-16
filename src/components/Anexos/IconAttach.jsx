@@ -13,36 +13,36 @@ const IconAttach = ({ data }) => {
     return data &&
         //? PDF
         data.tipo == 'application/pdf' ? (
-        <IconPdf className='text-6xl fill-red-500' />
+        <IconPdf className='h-8 w-8 text-6xl fill-red-500' />
     ) : //? Imagem (cover)
     data.tipo == 'image/jpeg' || data.tipo == 'image/png' ? (
         <div
-            className='h-16 w-16 rounded-lg relative '
+            className='h-8 w-8 rounded-lg relative '
             style={{ backgroundImage: `url(${data.path})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         ></div>
     ) : //? Word
     data.tipo == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? (
-        <IconWord className='text-6xl fill-blue-500' />
+        <IconWord className='h-8 w-8 text-6xl fill-blue-500' />
     ) : //? Excel
     data.tipo == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ? (
-        <IconExcel className='text-6xl fill-green-500' />
+        <IconExcel className='h-8 w-8 text-6xl fill-green-500' />
     ) : //? Zip/Rar
     data.tipo == 'application/x-zip-compressed' ||
       data.tipo == 'application/zip-compressed' ||
       data.tipo == 'application/rar-compressed' ||
       data.tipo == 'application/x-rar-compressed' ? (
-        <IconZip className='text-6xl fill-yellow-500' />
+        <IconZip className='h-8 w-8 text-6xl fill-yellow-500' />
     ) : //? PowerPoint
     data.tipo == 'application/vnd.ms-powerpoint' ||
       data.tipo == 'application/vnd.openxmlformats-officedocument.presentationml.slideshow' ||
       data.tipo == 'application/vnd.openxmlformats-officedocument.presentationml.presentation' ? (
-        <IconPowerPoint className='text-6xl fill-[#D55736]' />
+        <IconPowerPoint className='h-8 w-8 text-6xl fill-[#D55736]' />
     ) : //? Txt
     data.tipo == 'text/plain' ? (
-        <IconText className='text-6xl fill-sky-600' />
+        <IconText className='h-8 w-8 text-6xl fill-sky-600' />
     ) : (
         //? Desconhecido
-        <IconUnknown className='text-6xl fill-gray-500' />
+        <IconUnknown className='h-8 w-8 text-6xl fill-gray-500' />
     )
 }
 

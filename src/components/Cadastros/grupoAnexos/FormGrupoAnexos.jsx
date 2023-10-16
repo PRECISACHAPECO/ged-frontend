@@ -1,5 +1,5 @@
 import Router from 'next/router'
-import { useEffect, useState, useRef, useContext } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
@@ -9,7 +9,6 @@ import Icon from 'src/@core/components/icon'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import DialogForm from 'src/components/Defaults/Dialogs/Dialog'
-import { formType } from 'src/configs/defaultConfigs'
 import Loading from 'src/components/Loading'
 import FormHeader from '../../Defaults/FormHeader'
 import { backRoute } from 'src/configs/defaultConfigs'
@@ -19,26 +18,28 @@ import { toastMessage } from 'src/configs/defaultConfigs'
 import Select from 'src/components/Form/Select'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
-import Remove from 'src/components/Form/Remove'
+import GrupoAnexoList from './GrupoAnexoList.jsx'
 
 const FormGrupoAnexos = ({ id }) => {
     const { setId } = useContext(RouteContext)
     const router = Router
     const [data, setData] = useState(null)
+    console.log('🚀 ~ data:', data)
     const [openDelete, setOpenDelete] = useState(false) //? Dialog de confirmação de exclusão
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
-    // const inputRef = useRef(null)
     const { loggedUnity } = useContext(AuthContext)
     const [savingForm, setSavingForm] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
+    const [change, setChange] = useState(false)
 
     const {
         trigger,
         handleSubmit,
         setValue,
         reset,
+        getValues,
         control,
         formState: { errors },
         register
@@ -47,7 +48,6 @@ const FormGrupoAnexos = ({ id }) => {
     const getData = async () => {
         try {
             const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
-            console.log('🚀 ~ route:', route)
             await api.post(route, { unidadeID: loggedUnity.unidadeID }).then(response => {
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
@@ -58,14 +58,16 @@ const FormGrupoAnexos = ({ id }) => {
     }
 
     const addItem = () => {
-        const newValue = { ...data }
-        newValue.items.push({
+        const newValue = {
             nome: '',
             descricao: '',
             status: true,
             obrigatorio: true
-        })
-        setData(newValue)
+        }
+
+        const updatedData = [...getValues('items'), newValue]
+        setValue('items', updatedData)
+        setChange(!change)
     }
 
     const removeItem = (value, index) => {
@@ -79,11 +81,9 @@ const FormGrupoAnexos = ({ id }) => {
             setRemovedItems([...removedItems, value.id])
         }
 
-        const newValue = [...data.items]
-        newValue.splice(index, 1)
-        setData({ ...data, items: newValue })
-
+        const newValue = getValues('items').filter((_, i) => i !== index)
         setValue(`items`, newValue) //* Remove item do formulário
+        setChange(!change)
     }
 
     const onSubmit = async values => {
@@ -151,6 +151,7 @@ const FormGrupoAnexos = ({ id }) => {
                         <FormHeader
                             btnCancel
                             btnSave
+                            btnNew
                             btnDelete={type === 'edit' ? true : false}
                             onclickDelete={() => setOpenDelete(true)}
                             type={type}
@@ -214,63 +215,15 @@ const FormGrupoAnexos = ({ id }) => {
                         <CardContent>
                             <Typography sx={{ mb: 5 }}>Itens</Typography>
                             <Grid container spacing={3}>
-                                {data?.items?.map((item, index) => (
-                                    <>
-                                        <Input
-                                            xs={12}
-                                            md={3}
-                                            title='Nome'
-                                            name={`items[${index}].nome`}
-                                            required={true}
-                                            control={control}
-                                            errors={errors?.items?.[index]?.nome}
-                                        />
-
-                                        <Input
-                                            xs={12}
-                                            md={6}
-                                            title='Descrição'
-                                            name={`items[${index}].descricao`}
-                                            required={false}
-                                            control={control}
-                                            errors={errors?.items?.[index]?.descricao}
-                                        />
-
-                                        <Check
-                                            xs={4}
-                                            md={1}
-                                            title='Ativo'
-                                            index={index}
-                                            name={`items[${index}].status`}
-                                            value={item.status}
-                                            typePage={type}
-                                            register={register}
-                                        />
-
-                                        <Check
-                                            xs={4}
-                                            md={1}
-                                            title='Obrigatório'
-                                            index={index}
-                                            name={`items[${index}].obrigatorio`}
-                                            value={item.obrigatorio}
-                                            typePage={type}
-                                            register={register}
-                                        />
-
-                                        <Remove
-                                            xs={4}
-                                            md={1}
-                                            title='Remover'
-                                            index={index}
-                                            removeItem={removeItem}
-                                            item={item}
-                                            pending={item.hasPending}
-                                            textSuccess='Remover este item'
-                                            textError='Este item não pode mais ser removido pois possui anexo vinculado a ele'
-                                        />
-                                    </>
-                                ))}
+                                <GrupoAnexoList
+                                    key={change}
+                                    getValues={getValues}
+                                    removeItem={removeItem}
+                                    control={control}
+                                    register={register}
+                                    errors={errors}
+                                    type={type}
+                                />
                             </Grid>
                             <Button
                                 variant='outlined'

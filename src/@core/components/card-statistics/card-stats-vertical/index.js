@@ -1,52 +1,49 @@
-// ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-
-// ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
+import Router from 'next/router'
 import CustomAvatar from 'src/@core/components/mui/avatar'
-
-// ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import { SettingsContext } from 'src/@core/context/settingsContext'
+import { useContext } from 'react'
 
 const CardStatsVertical = props => {
-  // ** Props
-  const { title, color, icon, stats, chipText, trendNumber, trend = 'positive' } = props
+    const { settings } = useContext(SettingsContext)
+    const mode = settings.mode
+    const { title, color, icon, stats = 'positive' } = props
+    const router = Router
 
-  return (
-    <Card>
-      <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ mb: 6, width: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <CustomAvatar skin='light' variant='rounded' color={color}>
-            {icon}
-          </CustomAvatar>
-          <Box
-            sx={{ display: 'flex', alignItems: 'center', color: trend === 'positive' ? 'success.main' : 'error.main' }}
-          >
-            <Typography variant='subtitle2' sx={{ color: trend === 'positive' ? 'success.main' : 'error.main' }}>
-              {trendNumber}
-            </Typography>
-            <Icon icon={trend === 'positive' ? 'mdi:chevron-up' : 'mdi:chevron-down'} fontSize='1.25rem' />
-          </Box>
-        </Box>
-        <Typography variant='h6' sx={{ mb: 1 }}>
-          {stats}
-        </Typography>
-        <Typography variant='body2' sx={{ mb: 5 }}>
-          {title}
-        </Typography>
-        <CustomChip
-          skin='light'
-          size='small'
-          label={chipText}
-          color='secondary'
-          sx={{ height: 20, fontWeight: 500, fontSize: '0.75rem', alignSelf: 'flex-start', color: 'text.secondary' }}
-        />
-      </CardContent>
-    </Card>
-  )
+    const handleFilterStatus = () => {
+        router.push(`/formularios/fornecedor/?s=${props.title}`)
+    }
+
+    return (
+        <Card onClick={handleFilterStatus} className={`cursor-pointer ${mode == 'dark' ? 'hover:bg-[#232327]' : 'hover:bg-[#EEEEF1]'}  shadow-xl transition-all`}>
+            <CardContent>
+                <div className=' space-y-4'>
+                    <div className='flex items-center justify-between'>
+                        <div className='flex items-center gap-4'>
+
+                            <CustomAvatar skin='light' variant='rounded' color={color}>
+                                {icon}
+                            </CustomAvatar>
+                            <Typography variant='body1'>{title}</Typography>
+                        </div>
+                        <div>
+                            <Icon icon='uil:external-link-alt' className='text-base text-[#35553B]' />
+                        </div>
+                    </div>
+                    <div className={`w-full flex justify-center`}>
+                        <Typography variant='h2' sx={{ fontWeight: 600 }}>
+                            {stats}
+                        </Typography>
+
+                    </div>
+                </div>
+            </CardContent>
+        </Card >
+    )
 }
 
 export default CardStatsVertical
