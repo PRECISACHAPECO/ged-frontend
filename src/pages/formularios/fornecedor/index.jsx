@@ -68,7 +68,6 @@ const Fornecedor = () => {
                 unidadeID: loggedUnity.unidadeID,
                 values: values.fields
             })
-
             if (response.status == 200) {
                 toast.success('E-mail enviado com sucesso')
                 // if (values.fields.email) sendMail(values.fields.email, values.fields.cnpj, values.fields.razaoSocial)
