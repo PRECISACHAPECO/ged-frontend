@@ -203,10 +203,9 @@ const FormUnidade = ({ id }) => {
     const handleFileSelect = async event => {
         const selectedFile = event.target.files[0]
         if (selectedFile) {
-            console.log('troca fotooo')
-
             const formData = new FormData()
-            formData.append('file', selectedFile)
+            formData.append('files[]', selectedFile)
+            formData.append(`usuarioID`, user.usuarioID)
 
             //? Verifica se o arquivo é uma imagem
             const isImage = selectedFile.type.includes('image')
@@ -216,7 +215,7 @@ const FormUnidade = ({ id }) => {
             }
 
             await api
-                .post(`${staticUrl}/updateData/report/${id}`, formData)
+                .post(`${staticUrl}/updateData/report/${id}/${user.usuarioID}`, formData)
                 .then(response => {
                     setPhotoProfile(response.data)
                     toast.success('Foto atualizada com sucesso!')

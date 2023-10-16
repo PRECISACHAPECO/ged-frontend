@@ -1,9 +1,10 @@
 import Router from 'next/router'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 import { RouteContext } from 'src/context/RouteContext'
+import { SettingsContext } from 'src/@core/context/settingsContext'
 import { api } from 'src/configs/api'
 import Icon from 'src/@core/components/icon'
-import { Card, CardContent, Grid, Button, CardHeader } from '@mui/material'
+import { Card, CardContent, Grid, Button, CardHeader, Tooltip, IconButton, FormControl, Avatar } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import FormHeader from '../../Defaults/FormHeader'
@@ -15,11 +16,15 @@ import Fields from './Fields'
 import Permissions from './Permissions'
 
 const FormProfissional = ({ id }) => {
+    const fileInputRef = useRef(null)
     const { setId } = useContext(RouteContext)
     const { user, loggedUnity } = useContext(AuthContext)
     const [data, setData] = useState(null)
     const [change, setChange] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
+    const [photoProfile, setPhotoProfile] = useState(null)
+    const { settings } = useContext(SettingsContext)
+    const mode = settings.mode
 
     // Estado que é prencchindo com o valor da função verifyCPF, que verifica se o cpf digitado já esta vinculado a um usuario existente
     const [userExistVerifyCPF, setUserExistVerifyCPF] = useState(false)
@@ -94,6 +99,7 @@ const FormProfissional = ({ id }) => {
             const response = await api.post(route)
             reset(response.data)
             console.log('🚀 ~ response.data:', response.data)
+            setPhotoProfile(response.data.imagem)
             setData(response.data)
         } catch (error) {
             console.log(error)
@@ -137,6 +143,47 @@ const FormProfissional = ({ id }) => {
         setChange(!change)
     }
 
+    const handleFileSelect = async event => {
+        const selectedFile = event.target.files[0]
+        if (selectedFile) {
+            const formData = new FormData()
+            formData.append('files[]', selectedFile)
+            formData.append(`usuarioID`, user.usuarioID)
+
+            //? Verifica se o arquivo é uma imagem
+            const isImage = selectedFile.type.includes('image')
+            if (!isImage) {
+                toast.error('O arquivo selecionado não é uma imagem!')
+                return
+            }
+
+            await api
+                .post(`${staticUrl}/photo-profile/${id}/${loggedUnity.unidadeID}/${user.usuarioID}`, formData)
+                .then(response => {
+                    setPhotoProfile(response.data)
+                    toast.success('Foto atualizada com sucesso!')
+                })
+                .catch(error => {
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
+                })
+        }
+    }
+
+    const handleDeleteImage = async () => {
+        try {
+            await api.delete(`${staticUrl}/photo-profile/${id}/${loggedUnity.unidadeID}`)
+            setPhotoProfile(null)
+            toast.success('Foto removida com sucesso!')
+        } catch (error) {
+            console.log(error)
+            toast.error('Erro ao remover foto, tente novamente!')
+        }
+    }
+
+    const handleFileClick = () => {
+        fileInputRef.current.click()
+    }
+
     // Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     useEffect(() => {
         getData()
@@ -170,23 +217,99 @@ const FormProfissional = ({ id }) => {
                         />
                         <CardContent>
                             <Grid container spacing={5}>
+                                {/* Imagem */}
+                                <Grid item xs={12} md={2}>
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        md={12}
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            height: '140px',
+                                            position: 'relative',
+                                            border: `${mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'}`,
+                                            borderRadius: '8px'
+                                        }}
+                                    >
+                                        {photoProfile && (
+                                            <Tooltip title='Apagar foto do perfil' placement='top'>
+                                                <IconButton
+                                                    size='small'
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: '8px',
+                                                        right: '8px',
+                                                        zIndex: '20',
+                                                        color: 'white',
+                                                        opacity: '0.8',
+                                                        backgroundColor: '#FF4D49',
+                                                        '&:hover': {
+                                                            backgroundColor: '#FF4D49',
+                                                            opacity: '1'
+                                                        }
+                                                    }}
+                                                    onClick={handleDeleteImage}
+                                                >
+                                                    <Icon icon='material-symbols:delete-outline' />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
+
+                                        <Tooltip title={photoProfile ? 'Alterar foto' : 'Inserir foto'} placement='top'>
+                                            <FormControl
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: '100%',
+                                                    width: '100%'
+                                                }}
+                                            >
+                                                <input
+                                                    type='file'
+                                                    ref={fileInputRef}
+                                                    style={{ display: 'none' }}
+                                                    onChange={handleFileSelect}
+                                                />
+                                                <Avatar
+                                                    variant='rounded'
+                                                    alt='Imagem do cabeçalho do relatório'
+                                                    sx={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                    onClick={handleFileClick}
+                                                    src={photoProfile ?? 'https://gedagro.com.br/images/report.png'}
+                                                />
+                                            </FormControl>
+                                        </Tooltip>
+                                    </Grid>
+                                </Grid>
+
                                 {/* Fields */}
-                                <Fields
-                                    data={data}
-                                    control={control}
-                                    errors={errors}
-                                    register={register}
-                                    watch={watch}
-                                    getValues={getValues}
-                                    setError={setError}
-                                    setValue={setValue}
-                                    userNewVerifyCPF={userNewVerifyCPF}
-                                    setUserNewVerifyCPF={setUserNewVerifyCPF}
-                                    userExistVerifyCPF={userExistVerifyCPF}
-                                    setUserExistVerifyCPF={setUserExistVerifyCPF}
-                                    resetFields={resetFields}
-                                    routeVeryfyCNP={routeVeryfyCNP}
-                                />
+                                <Grid item xs={12} md={10}>
+                                    <Grid container spacing={5}>
+                                        <Fields
+                                            data={data}
+                                            control={control}
+                                            errors={errors}
+                                            register={register}
+                                            watch={watch}
+                                            getValues={getValues}
+                                            setError={setError}
+                                            setValue={setValue}
+                                            userNewVerifyCPF={userNewVerifyCPF}
+                                            setUserNewVerifyCPF={setUserNewVerifyCPF}
+                                            userExistVerifyCPF={userExistVerifyCPF}
+                                            setUserExistVerifyCPF={setUserExistVerifyCPF}
+                                            resetFields={resetFields}
+                                            routeVeryfyCNP={routeVeryfyCNP}
+                                        />
+                                    </Grid>
+                                </Grid>
                             </Grid>
                         </CardContent>
                     </Card>
