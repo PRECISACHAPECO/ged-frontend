@@ -22,7 +22,6 @@ const ButtonsFixedLeft = ({
                 <Button
                     onClick={() => {
                         setId(null)
-                        router.push(currentUrl)
                     }}
                     type='button'
                     variant='outlined'
