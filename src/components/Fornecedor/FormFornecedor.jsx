@@ -284,9 +284,13 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 setCanEdit({
                     status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
                     message:
-                        user.papelID == 2
+                        user.papelID == 2 && response.data.info.status >= 40
                             ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
-                            : 'Somente o fornecedor pode alterar as informações deste formulário!',
+                            : user.papelID == 1 && response.data.info.status < 40
+                            ? 'Somente o fornecedor pode alterar as informações deste formulário!'
+                            : user.papelID == 1 && response.data.info.status == 40
+                            ? 'Este formulário está aguardando aprovação'
+                            : null,
                     messageType: user.papelID == 2 ? 'warning' : 'info'
                 })
 
@@ -839,7 +843,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             <Loading show={isLoading} />
             <form onSubmit={handleSubmit(onSubmit)}>
                 {/* Mensagem */}
-                {!canEdit.status && (
+                {canEdit.message && (
                     <Alert severity='warning' sx={{ mb: 2 }}>
                         {canEdit.message}
                     </Alert>
@@ -948,7 +952,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 folder: 'grupo-anexo',
                                 disabled: !canEdit.status,
                                 error: errors
-                                // error: errors?.grupoAnexo?.[indexGrupo]?.itens
                             }}
                         />
                     ))}

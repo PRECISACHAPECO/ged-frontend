@@ -24,7 +24,8 @@ const Item = ({
     setValue,
     disabled
 }) => {
-    console.log('🚀 ~ item ~ values:', values)
+    console.log('🚀 ~ item ~ errors:', errors?.[blockIndex]?.itens?.[index])
+
     const { settings } = useContext(SettingsContext)
     const modeTheme = settings.mode
     const [selectedItem, setSelectedItem] = useState(null)
@@ -125,7 +126,7 @@ const Item = ({
                             control={control}
                             register={register}
                             setValue={setValue}
-                            errors={errors?.blocos?.[blockIndex]?.itens[index]?.resposta}
+                            errors={errors?.[blockIndex]?.itens[index]?.resposta}
                         />
                     )}
 
@@ -139,7 +140,7 @@ const Item = ({
                             value={values.resposta}
                             type={null}
                             name={`blocos[${blockIndex}].itens[${index}].resposta`}
-                            errors={errors?.blocos?.[blockIndex]?.itens[index]?.resposta}
+                            errors={errors?.[blockIndex]?.itens[index]?.resposta}
                             control={control}
                             setDateFormat={setDateFormat}
                             typeValidation='dataPassado'
@@ -158,7 +159,7 @@ const Item = ({
                             multiline
                             disabled={disabled}
                             control={control}
-                            errors={errors?.blocos?.[blockIndex]?.itens[index]?.resposta}
+                            errors={errors?.[blockIndex]?.itens[index]?.resposta}
                         />
                     )}
                 </FormControl>

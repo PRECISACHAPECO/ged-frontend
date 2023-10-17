@@ -49,7 +49,6 @@ const FormParametrosFornecedor = ({ id }) => {
 
     const viewItem = item => {
         if (item && item.id > 0) {
-            console.log('🚀 ~ item:', item)
             setIdInfoItem(item.id)
             setOpenModalSelectedItem(true)
         }
@@ -60,7 +59,6 @@ const FormParametrosFornecedor = ({ id }) => {
         getData()
         setTimeout(() => {
             addItem(indexNewItem)
-            console.log('🚀 ~ indexNewItem depois do settimerout:', indexNewItem)
         }, 1000)
     }
 
@@ -200,17 +198,6 @@ const FormParametrosFornecedor = ({ id }) => {
 
         toast.success('Bloco pré-removido. Salve para concluir!')
     }
-
-    //  Ao clicar no icone de pontuação, abre o modal de confirmação de pontuação e envia para o back o item selecionado
-    // const openScoreModal = item => {
-    //     setItemScore(null)
-    //     api.post(`/formularios/fornecedor/getItemScore`, { data: item }).then(response => {
-    //         setItemScore(response.data)
-    //     })
-    //     if (setItemScore) {
-    //         setOpenModalConfirmScore(true)
-    //     }
-    // }
 
     const addBlock = () => {
         const newBlock = [...getValues('blocks')]
@@ -364,71 +351,97 @@ const FormParametrosFornecedor = ({ id }) => {
                             <List component='nav' aria-label='main mailbox'>
                                 <Grid container spacing={2}>
                                     {/* Cabeçalho */}
-                                    <Grid item md={4} xs={4}>
+                                    <Grid item md={6}>
                                         <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                             Nome do Campo
                                         </Typography>
                                     </Grid>
-                                    <Grid item md={3} xs={4}>
+                                    <Grid item md={2}>
                                         <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
-                                            Mostra no Formulário
+                                            Mostra
                                         </Typography>
                                     </Grid>
-                                    <Grid item md={3} xs={4}>
+                                    <Grid item md={2}>
                                         <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                             Obrigatório
                                         </Typography>
                                     </Grid>
+                                    <Grid item md={2}>
+                                        <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
+                                            Ordem
+                                        </Typography>
+                                    </Grid>
 
-                                    {headers.map((header, index) => (
+                                    {getValues(`header`).map((header, index) => (
                                         <>
-                                            <Grid item md={4} xs={6}>
+                                            <Grid item md={6}>
                                                 <Box display='flex' alignItems='center' sx={{ gap: 2 }}>
                                                     <p>{header.nomeCampo}</p>
                                                 </Box>
                                             </Grid>
-                                            <Grid item md={3} xs={3}>
-                                                <CheckLabel
-                                                    title=''
-                                                    name={`header.[${index}].mostra`}
-                                                    value={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : header.mostra
-                                                    }
-                                                    register={register}
-                                                    disabled={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : false
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item md={3} xs={3}>
-                                                <CheckLabel
-                                                    title=''
-                                                    name={`header.[${index}].obrigatorio`}
-                                                    value={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : header.obrigatorio
-                                                    }
-                                                    register={register}
-                                                    disabled={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : false
-                                                    }
-                                                />
-                                            </Grid>
+
+                                            <CheckLabel
+                                                xs='12'
+                                                md='2'
+                                                title=''
+                                                name={`header.[${index}].mostra`}
+                                                value={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? true
+                                                        : header.mostra
+                                                }
+                                                register={register}
+                                                helpText={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? 'Campo obrigatório'
+                                                        : null
+                                                }
+                                            />
+
+                                            <CheckLabel
+                                                xs='12'
+                                                md='2'
+                                                title=''
+                                                name={`header.[${index}].obrigatorio`}
+                                                value={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? true
+                                                        : header.obrigatorio
+                                                }
+                                                register={register}
+                                                helpText={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? 'Campo obrigatório'
+                                                        : null
+                                                }
+                                            />
+
+                                            <Input
+                                                xs='12'
+                                                md='2'
+                                                title=''
+                                                name={`header.[${index}].ordem`}
+                                                value={header.ordem}
+                                                register={register}
+                                                control={control}
+                                                type='number'
+                                            />
                                         </>
                                     ))}
                                 </Grid>
