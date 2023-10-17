@@ -22,22 +22,6 @@ const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, handleSave, hasListCha
                 {/* Div Direira */}
                 <div className='flex items-center gap-4 '>
                     <div>
-                        {btnBack && (
-                            <Button
-                                onClick={() => {
-                                    router.push(backRoute(router.pathname))
-                                    setId(null)
-                                }}
-                                type='button'
-                                variant='outlined'
-                                color='primary'
-                                size='medium'
-                            >
-                                <Icon icon='material-symbols:arrow-back-rounded' />
-                            </Button>
-                        )}
-                    </div>
-                    <div>
                         {btnPrint && (
                             <Button
                                 onClick={() => window.print()}

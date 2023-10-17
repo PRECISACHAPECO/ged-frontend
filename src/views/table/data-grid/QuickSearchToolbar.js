@@ -5,11 +5,20 @@ import IconButton from '@mui/material/IconButton'
 import { GridToolbarFilterButton } from '@mui/x-data-grid'
 import ListHeader from 'src/components/Defaults/ListHeader'
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { AuthContext } from 'src/context/AuthContext'
+import { useContext } from 'react'
+import { RouteContext } from 'src/context/RouteContext'
+import Router from 'next/router'
+
+import { Button } from '@mui/material'
+import { backRoute } from 'src/configs/defaultConfigs'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 const QuickSearchToolbar = (props) => {
+    const router = Router
+    const { setId } = useContext(RouteContext)
 
     const matches = useMediaQuery('(min-width:640px)');
 
@@ -19,12 +28,30 @@ const QuickSearchToolbar = (props) => {
                 display: 'flex',
                 flexDirection: 'row',
                 gap: 2,
-                alignItems: 'baseline',
+                alignItems: 'center',
+                mb: 2,
                 justifyContent: 'space-between',
                 p: theme => theme.spacing(8, 0, 0, 0),
             }}
         >
             <Box sx={{ display: 'flex', gap: '8px', textAlig: "end" }}>
+                {
+                    props.buttonsHeader.btnBack && (
+                        <Button
+                            onClick={() => {
+                                router.push(backRoute(router.pathname))
+                                setId(null)
+                            }}
+                            type='button'
+                            variant='outlined'
+                            color='primary'
+                            size='small'
+                        >
+                            <Icon icon='material-symbols:arrow-back-rounded' />
+                        </Button>
+                    )
+                }
+
                 <TextField
                     size='medium'
                     value={props.value}
@@ -53,8 +80,8 @@ const QuickSearchToolbar = (props) => {
                         }
                     }}
                 />
-                <div className='hidden sm:block'>
-                    <GridToolbarFilterButton />
+                <div className='hidden sm:block '>
+                    <GridToolbarFilterButton className="!h-full" />
                 </div>
             </Box>
 

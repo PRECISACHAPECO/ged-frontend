@@ -322,11 +322,12 @@ const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
-        if (router.query.f && !storedToken) {
+        const GET = router.query.f
+        if (GET && !storedToken) {
             const rota = `/fornecedor?f=${router.query.f}`
-            router.push(rota)
+            router.replace(rota)
         }
-    }, [router.query])
+    }, [router.query.f])
 
 
     const values = {
