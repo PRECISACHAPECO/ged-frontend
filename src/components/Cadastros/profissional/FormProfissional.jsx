@@ -75,6 +75,7 @@ const FormProfissional = ({ id }) => {
                 toast.success(toastMessage.successNew)
             } else if (type === 'edit') {
                 const response = await api.post(`${staticUrl}/updateData/${id}`, values)
+                console.log('rora update,'`${staticUrl}/updateData/${id}`)
                 toast.success(toastMessage.successUpdate)
             }
             resetFields()
@@ -191,15 +192,10 @@ const FormProfissional = ({ id }) => {
 
     // Ao iniciar verifica se o profissional é usuario
     useEffect(() => {
-        console.log('entra akiii')
         if (data && data.fields.usuarioID > 0) {
-            console.log('entra akiii tmbm')
             setUserExistDefault(true)
         }
     }, [data])
-
-    console.log('user exist default', userExistDefault)
-    console.log('userExist nEW', userNewVerifyCPF)
 
     return (
         data && (
@@ -307,6 +303,7 @@ const FormProfissional = ({ id }) => {
                                             setUserExistVerifyCPF={setUserExistVerifyCPF}
                                             resetFields={resetFields}
                                             routeVeryfyCNP={routeVeryfyCNP}
+                                            userExistDefault={userExistDefault}
                                         />
                                     </Grid>
                                 </Grid>

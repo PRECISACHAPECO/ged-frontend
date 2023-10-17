@@ -10,6 +10,8 @@ import { validationCPF } from 'src/configs/validations'
 import Alert from '@mui/material/Alert'
 import DateField from 'src/components/Form/DateField'
 import { api } from 'src/configs/api'
+import { Button } from '@mui/material'
+import DialogNewPasswordProfessional from 'src/components/Defaults/Dialogs/DialogNewPasswordProfessional'
 
 const Fields = ({
     control,
@@ -25,9 +27,11 @@ const Fields = ({
     userExistVerifyCPF,
     setUserExistVerifyCPF,
     resetFields,
-    routeVeryfyCNP
+    routeVeryfyCNP,
+    userExistDefault
 }) => {
     const [lenghtPassword, setLenghtPassword] = useState(null)
+    const [openModalNewPassword, setOpenModalNewPassword] = useState(false)
 
     const [values, setValues] = useState({
         showPassword: false,
@@ -145,7 +149,7 @@ const Fields = ({
                 />
                 <Input
                     xs={12}
-                    md={3}
+                    md={userNewVerifyCPF ? 3 : 4}
                     title='Matricula'
                     name='fields.matricula'
                     control={control}
@@ -153,7 +157,7 @@ const Fields = ({
                 />
                 <CheckLabel
                     xs={12}
-                    md={3}
+                    md={4}
                     onClick={handleClickIsUser}
                     title='Usuário do sistema'
                     name='isUsuario'
@@ -163,7 +167,7 @@ const Fields = ({
                     helpText='Preencha o CPF(Deve ser um CPF válido) e email para habilitar essa função.'
                 />
                 {userExistVerifyCPF && (
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12}>
                         <Alert severity='warning' sx={{ mt: 2 }}>
                             <Typography variant='body2'>
                                 Esse profissional já possui acesso ao sistema. A senha não será alterada!
@@ -249,6 +253,25 @@ const Fields = ({
                         </Grid>
                     </>
                 )}
+                {/* Alterar senha profissional */}
+                {(userExistDefault || userNewVerifyCPF) && (
+                    <Button
+                        variant='outlined'
+                        color='primary'
+                        size='small'
+                        sx={{ mt: 4, ml: 4 }}
+                        startIcon={<Icon icon='mdi:password' />}
+                        onClick={() => setOpenModalNewPassword(true)}
+                    >
+                        Trocar senha
+                    </Button>
+                )}
+                {/* Modal trocar senha */}
+                <DialogNewPasswordProfessional
+                    openModal={openModalNewPassword}
+                    handleClose={() => setOpenModalNewPassword(false)}
+                    setOpenModalNewPassword={setOpenModalNewPassword}
+                />
             </>
         )
     )
