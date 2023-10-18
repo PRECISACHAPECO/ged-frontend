@@ -70,11 +70,11 @@ const Item = ({
             index={index}
             container
             spacing={2}
-            sx={{
-                mb: 0,
-                display: 'flex',
-                alignItems: 'center'
-            }}
+            // sx={{
+            //     mb: 0,
+            //     display: 'flex',
+            //     alignItems: 'center'
+            // }}
         >
             {/* Hidden do itemID */}
             <input
@@ -93,62 +93,65 @@ const Item = ({
 
             {/* Alternativas de respostas */}
             <Grid item xs={12} md={6}>
-                {/* Tipo de alternativa  */}
-                <input
-                    type='hidden'
-                    name={`blocos[${blockIndex}].itens[${index}].tipoAlternativa`}
-                    defaultValue={values.alternativa}
-                    {...register(`blocos[${blockIndex}].itens[${index}].tipoAlternativa`)}
-                />
+                <Grid container spacing={2}>
+                    {/* Tipo de alternativa  */}
+                    <input
+                        type='hidden'
+                        name={`blocos[${blockIndex}].itens[${index}].tipoAlternativa`}
+                        defaultValue={values.alternativa}
+                        {...register(`blocos[${blockIndex}].itens[${index}].tipoAlternativa`)}
+                    />
 
-                <FormControl fullWidth>
-                    <Box display='flex' alignItems='center' sx={{ gap: 4 }}>
-                        {/* +1 opção pra selecionar (Radio) */}
-                        {values && values.alternativas && values.alternativas.length > 1 && (
-                            <RadioLabel
-                                defaultValue={values?.resposta?.id}
-                                values={values.alternativas}
-                                name={`blocos[${blockIndex}].itens[${index}].resposta`}
-                                handleChange={e => {
-                                    // inserir em setValue o objeto inteiro da resposta
-                                    setValue(
-                                        `blocos[${blockIndex}].itens[${index}].resposta`,
-                                        values.alternativas.find(item => item.id == e.target.value)
-                                    )
-                                    setItemResposta({
-                                        parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
-                                        itemID: values.itemID,
-                                        alternativa: values.alternativas.find(item => item.id == e.target.value)
-                                    })
-                                }}
-                            />
-                            // <Select
-                            //     title='Selecione uma resposta'
-                            //     options={values.alternativas}
-                            //     name={`blocos[${blockIndex}].itens[${index}].resposta`}
-                            //     idName={'alternativaID'}
-                            //     value={values.resposta}
-                            //     disabled={disabled}
-                            //     onChange={e =>
-                            //         setItemResposta({
-                            //             parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
-                            //             itemID: values.itemID,
-                            //             alternativa: e
-                            //         })
-                            //     }
-                            //     control={control}
-                            //     register={register}
-                            //     setValue={setValue}
-                            //     errors={errors?.[blockIndex]?.itens[index]?.resposta}
-                            // />
-                        )}
-                    </Box>
+                    {/* +1 opção pra selecionar (Radio) */}
+                    {values && values.alternativas && values.alternativas.length > 1 && (
+                        <RadioLabel
+                            xs={12}
+                            md={6}
+                            defaultValue={values?.resposta?.id}
+                            values={values.alternativas}
+                            name={`blocos[${blockIndex}].itens[${index}].resposta`}
+                            disabled={disabled}
+                            handleChange={e => {
+                                // inserir em setValue o objeto inteiro da resposta
+                                setValue(
+                                    `blocos[${blockIndex}].itens[${index}].resposta`,
+                                    values.alternativas.find(item => item.id == e.target.value)
+                                )
+                                setItemResposta({
+                                    parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
+                                    itemID: values.itemID,
+                                    alternativa: values.alternativas.find(item => item.id == e.target.value)
+                                })
+                            }}
+                            errors={errors?.[blockIndex]?.itens[index]?.resposta}
+                        />
+
+                        // <Select
+                        //     title='Selecione uma resposta'
+                        //     options={values.alternativas}
+                        //     name={`blocos[${blockIndex}].itens[${index}].resposta`}
+                        //     idName={'alternativaID'}
+                        //     value={values.resposta}
+                        //     disabled={disabled}
+                        //     onChange={e =>
+                        //         setItemResposta({
+                        //             parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
+                        //             itemID: values.itemID,
+                        //             alternativa: e
+                        //         })
+                        //     }
+                        //     control={control}
+                        //     register={register}
+                        //     setValue={setValue}
+                        //     errors={errors?.[blockIndex]?.itens[index]?.resposta}
+                        // />
+                    )}
 
                     {/* Data */}
                     {values.alternativas.length == 0 && values.alternativa == 'Data' && (
                         <DateField
                             xs={12}
-                            md={12}
+                            md={6}
                             title='Data da avaliação'
                             disabled={disabled}
                             value={values.resposta}
@@ -167,6 +170,8 @@ const Item = ({
                     {/* Dissertativa */}
                     {values.alternativas.length == 0 && values.alternativa == 'Dissertativa' && (
                         <Input
+                            xs={12}
+                            md={6}
                             title='Descreva a resposta'
                             name={`blocos[${blockIndex}].itens[${index}].resposta`}
                             value={values.resposta}
@@ -176,32 +181,12 @@ const Item = ({
                             errors={errors?.[blockIndex]?.itens[index]?.resposta}
                         />
                     )}
-                </FormControl>
-            </Grid>
 
-            {/* Texto longo (linha inteira) */}
-            {values.alternativas.length == 0 && values.alternativa == 'Dissertativa longa' && (
-                <Grid item xs={12} md={12} sx={{ pt: 0 }}>
-                    <FormControl fullWidth>
+                    {/* Obs */}
+                    {values && values.respostaConfig.observacao == 1 && (
                         <Input
-                            title='Descreva a resposta'
-                            name={`blocos[${blockIndex}].itens[${index}].resposta`}
-                            rows={6}
-                            value={values.resposta}
-                            multiline
-                            disabled={disabled}
-                            control={control}
-                            errors={errors?.blocos?.[blockIndex]?.itens[index]?.resposta}
-                        />
-                    </FormControl>
-                </Grid>
-            )}
-
-            {/* Obs */}
-            {values && values.obs == 1 && (
-                <Grid item xs={12} md={values.alternativa == 'Dissertativa longa' ? 12 : 3}>
-                    <FormControl fullWidth>
-                        <Input
+                            xs={12}
+                            md={6}
                             title='Observação'
                             name={`blocos[${blockIndex}].itens[${index}].observacao`}
                             value={values?.observacao}
@@ -209,8 +194,26 @@ const Item = ({
                             disabled={disabled}
                             control={control}
                         />
-                    </FormControl>
+                    )}
                 </Grid>
+            </Grid>
+
+            {/* Texto longo (linha inteira) */}
+            {values.alternativas.length == 0 && values.alternativa == 'Dissertativa longa' && (
+                <FormControl fullWidth>
+                    <Input
+                        xs={12}
+                        md={12}
+                        title='Descreva a resposta'
+                        name={`blocos[${blockIndex}].itens[${index}].resposta`}
+                        rows={6}
+                        value={values.resposta}
+                        multiline
+                        disabled={disabled}
+                        control={control}
+                        errors={errors?.blocos?.[blockIndex]?.itens[index]?.resposta}
+                    />
+                </FormControl>
             )}
 
             {/* Configs da resposta (se houver) */}

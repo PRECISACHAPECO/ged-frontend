@@ -503,8 +503,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     const onSubmit = async (values, param = false) => {
-        console.log('🚀 ~ onSubmit: ', values.blocos[0].itens[0])
-        // return
+        console.log('🚀 ~ onSubmit: ', values)
 
         if (param.conclusion === true) {
             values['status'] = user && user.papelID == 1 ? param.status : 40 //? Seta o status somente se for fábrica
@@ -524,8 +523,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             if (type == 'edit') {
                 setSavingForm(true)
                 await api.post(`${staticUrl}/updateData/${id}`, data).then(response => {
-                    console.log('onSubmit -> retornou -> ', response.data)
-
                     toast.success(toastMessage.successUpdate)
                     setSavingForm(false)
                     let idNãoConformidade = null
@@ -573,8 +570,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 .post(`${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}`, formData)
                 .then(response => {
                     setLoadingFileProduct(false)
-                    console.log('response: ', response.data)
-
                     toast.success('Anexo adicionado com sucesso!')
 
                     //? Atualiza produtos

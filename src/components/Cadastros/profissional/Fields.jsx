@@ -10,7 +10,7 @@ import { validationCPF } from 'src/configs/validations'
 import Alert from '@mui/material/Alert'
 import DateField from 'src/components/Form/DateField'
 import { api } from 'src/configs/api'
-import { Button } from '@mui/material'
+import { Button, FormControl } from '@mui/material'
 import DialogNewPasswordProfessional from 'src/components/Defaults/Dialogs/DialogNewPasswordProfessional'
 
 const Fields = ({
@@ -164,7 +164,7 @@ const Fields = ({
                     value={data.fields.usuarioID > 0 ? true : false}
                     register={register}
                     disabled={getValues('fields').email && validationCPF(getValues('fields').cpf) ? false : true}
-                    helpText='Preencha o CPF(Deve ser um CPF válido) e email para habilitar essa função.'
+                    helpText='Preencha com um CPF e email válidos para habilitar esta função'
                 />
                 {userExistVerifyCPF && (
                     <Grid item xs={12}>
@@ -255,16 +255,19 @@ const Fields = ({
                 )}
                 {/* Alterar senha profissional */}
                 {(userExistDefault || userNewVerifyCPF) && (
-                    <Button
-                        variant='outlined'
-                        color='primary'
-                        size='small'
-                        sx={{ mt: 4, ml: 4 }}
-                        startIcon={<Icon icon='mdi:password' />}
-                        onClick={() => setOpenModalNewPassword(true)}
-                    >
-                        Trocar senha
-                    </Button>
+                    <Grid item xs={12} sm={4}>
+                        <FormControl fullWidth>
+                            <Button
+                                variant='outlined'
+                                color='primary'
+                                size='medium'
+                                startIcon={<Icon icon='uil:padlock' />}
+                                onClick={() => setOpenModalNewPassword(true)}
+                            >
+                                Alterar senha
+                            </Button>
+                        </FormControl>
+                    </Grid>
                 )}
                 {/* Modal trocar senha */}
                 <DialogNewPasswordProfessional
