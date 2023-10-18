@@ -20,6 +20,23 @@ const TableFilter = ({ rows, columns, buttonsHeader }) => {
     // ** States
     setData(rows)
 
+    // Função para converter a data do formato 'dd/mm/YYYY' para 'YYYY-MM-DD'
+    function formatDateForComparison(date) {
+        const parts = date.split('/')
+        return `${parts[2]}-${parts[1]}-${parts[0]}`
+    }
+
+    //? Varre array columns, verificando se existe type date, se sim, formata data com formatDateForComparison
+    columns.map((column) => {
+        if (column.type === 'date') {
+            column.sortComparator = (v1, v2) => {
+                const date1 = formatDateForComparison(v1)
+                const date2 = formatDateForComparison(v2)
+                return date1.localeCompare(date2)
+            }
+        }
+    })
+
     return (
         <DataGrid
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}

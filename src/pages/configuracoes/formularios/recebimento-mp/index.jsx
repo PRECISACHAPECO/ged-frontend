@@ -38,10 +38,6 @@ const ListParametrosRecebimentoMP = () => {
         getList()
     }, [id])
 
-    useEffect(() => {
-        setId(null)
-    }, [])
-
     const arrColumns = [
         {
             title: 'ID',

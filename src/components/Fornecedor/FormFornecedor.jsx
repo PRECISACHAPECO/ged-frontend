@@ -27,7 +27,7 @@ import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 import FormFornecedorProdutos from './FormFornecedorProdutos'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
-    const { user, loggedUnity } = useContext(AuthContext)
+    const { menu, user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
     const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
     const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
@@ -163,6 +163,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         toast.success('Link copiado com sucesso!')
     }
 
+    const canConfigForm = () => {
+        let canConfig = false
+        menu.map(divisor => {
+            divisor.menu.map(menu_ => {
+                if (menu_.submenu && menu_.submenu.length > 0) {
+                    menu_.submenu.map(submenu => {
+                        if (submenu.rota == '/configuracoes/formularios') canConfig = true
+                    })
+                }
+            })
+        })
+        return canConfig
+    }
+
+    const goToFormConfig = () => {
+        setId(unidade.parFornecedorModeloID) //? ID do modelo do formulário
+        router.push(`/configuracoes/formularios/fornecedor/`)
+    }
+
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
     const objNovoFormulario = {
         id: 1,
@@ -216,12 +235,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         unidadeID: loggedUnity.unidadeID,
         icon: 'fluent:print-24-regular'
     }
+    const objFormConfig = {
+        id: 5,
+        name: 'Configurações do formulário',
+        description: 'Alterar as configurações do modelo de formulário.',
+        // component: <NewFornecedor />,
+        route: null,
+        type: null,
+        action: goToFormConfig,
+        modal: false,
+        icon: 'bi:gear',
+        identification: null
+    }
     // Monta array de ações baseado nas permissões
     const actionsData = []
     if (user.papelID == 1) actionsData.push(objNovoFormulario)
     actionsData.push(objGerarNotificacao)
     actionsData.push(objCopiarLink)
     actionsData.push(objRelatorio)
+    if (user.papelID == 1 && canConfigForm()) actionsData.push(objFormConfig)
 
     const verifyFormPending = async () => {
         try {

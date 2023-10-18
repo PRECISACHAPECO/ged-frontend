@@ -52,6 +52,7 @@ const ListParametrosFormularios = () => {
 
     const handleRoute = route => {
         router.push(`${currentLink}/${route}`)
+        setId(null)
     }
 
     return (
