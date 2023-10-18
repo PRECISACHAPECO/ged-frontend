@@ -33,7 +33,12 @@ const NewPassword = ({ register, errors, setShowNewPassword, showNewPassword, wa
         <>
             <Grid item xs={6} md={4}>
                 <FormControl fullWidth>
-                    <Button variant='outlined' size='large' onClick={() => setShowNewPassword(!showNewPassword)}>
+                    <Button
+                        variant='outlined'
+                        size='large'
+                        startIcon={<Icon icon='uil:padlock' />}
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                    >
                         Alterar senha
                     </Button>
                 </FormControl>
@@ -43,7 +48,7 @@ const NewPassword = ({ register, errors, setShowNewPassword, showNewPassword, wa
                     <Grid item xs={6} sm={4}>
                         <TextField
                             fullWidth
-                            label='Senha'
+                            label='Nova senha'
                             id='input-password'
                             variant='outlined'
                             size='small'
@@ -77,7 +82,7 @@ const NewPassword = ({ register, errors, setShowNewPassword, showNewPassword, wa
                     <Grid item xs={6} sm={4}>
                         <TextField
                             fullWidth
-                            label='Confirme a senha'
+                            label='Confirmar nova senha'
                             id='input-confirm-password'
                             variant='outlined'
                             size='small'

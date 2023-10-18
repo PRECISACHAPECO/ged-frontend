@@ -64,12 +64,12 @@ const DialogNewPasswordProfessional = ({ handleClose, openModal, setOpenModalNew
                 <DialogTitle id='form-dialog-title'>Alterar senha</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{ mb: 3 }}>
-                        Após a troca da senha um email sera enviado com mais detalhes......
+                        Preencha os campos abaixo para definir sua nova senha
                     </DialogContentText>
                     <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
                         <TextField
                             fullWidth
-                            label='Senha'
+                            label='Nova senha'
                             id='input-password'
                             variant='outlined'
                             size='small'
@@ -102,7 +102,7 @@ const DialogNewPasswordProfessional = ({ handleClose, openModal, setOpenModalNew
 
                         <TextField
                             fullWidth
-                            label='Confirme a senha'
+                            label='Confirmar nova senha'
                             id='input-confirm-password'
                             variant='outlined'
                             size='small'

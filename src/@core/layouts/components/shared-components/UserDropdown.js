@@ -205,7 +205,7 @@ const UserDropdown = props => {
                                             setOpenModalNewPassword(true)
                                         }}
                                     >
-                                        <Icon icon='mdi:password' />
+                                        <Icon icon='uil:padlock' />
                                         Alterar senha
                                     </Box>
                                 </MenuItem>
@@ -254,10 +254,16 @@ const UserDropdown = props => {
                             />
                             <MenuItem
                                 onClick={handleLogout}
-                                sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}
+                                sx={{ p: 0 }}
                             >
-                                <Icon icon='mdi:logout-variant' />
-                                Sair
+                                <Box sx={styles}
+                                    onClick={() => {
+                                        setOpenModalNewPassword(true)
+                                    }}
+                                >
+                                    <Icon icon='mdi:logout-variant' />
+                                    Sair
+                                </Box>
                             </MenuItem>
 
                         </Menu>
