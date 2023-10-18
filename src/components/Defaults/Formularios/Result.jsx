@@ -51,6 +51,7 @@ const Result = ({ title, name, value, papelID, register, setValue, setResult, op
                                                 name={name}
                                                 control={<Radio color={option.color} />}
                                                 label={option.label}
+                                                disabled={option.disabled}
                                             />
                                         ))}
                                 </RadioGroup>

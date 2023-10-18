@@ -35,6 +35,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
+    const [canApprove, setCanApprove] = useState(true) //? Se true, pode aprovar o formulário
     const [unidade, setUnidade] = useState(null)
     const [produtos, setProdutos] = useState([])
     const [grupoAnexo, setGrupoAnexo] = useState([])
@@ -262,6 +263,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
     const getData = () => {
         setLoading(true)
+        console.log('🚀 ~ getData: ', staticUrl, type, loggedUnity.unidadeID, id)
         if (id) {
             api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID }).then(response => {
                 console.log('getData: ', response.data)
@@ -274,6 +276,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 setUnidade(response.data.unidade)
                 setLink(response.data.link)
                 setMovimentacao(response.data.ultimaMovimentacao)
+                verifyIfCanAproveForm(response.data.blocos) //? Verifica se há alguma resposta que bloqueie o formulário, se sim, o mesmo não pode ser aprovado
 
                 //* Insere os dados no formulário
                 reset(response.data)
@@ -434,6 +437,18 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         setValidateForm(true)
     }
 
+    const verifyIfCanAproveForm = blocos => {
+        let tempCanApprove = true
+        blocos.forEach(block => {
+            block.itens.forEach(item => {
+                if (item.respostaConfig && item.respostaConfig.bloqueiaFormulario == 1) {
+                    tempCanApprove = false
+                }
+            })
+        })
+        setCanApprove(tempCanApprove)
+    }
+
     const conclusionForm = async values => {
         values['conclusion'] = true
         await handleSubmit(onSubmit)(values)
@@ -488,6 +503,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     const onSubmit = async (values, param = false) => {
+        console.log('🚀 ~ onSubmit: ', values.blocos[0].itens[0])
+        // return
+
         if (param.conclusion === true) {
             values['status'] = user && user.papelID == 1 ? param.status : 40 //? Seta o status somente se for fábrica
             values['obsConclusao'] = param.obsConclusao
@@ -501,13 +519,13 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-        console.log('🚀 ~ onSubmit: ', data)
-        // return
 
         try {
             if (type == 'edit') {
                 setSavingForm(true)
                 await api.post(`${staticUrl}/updateData/${id}`, data).then(response => {
+                    console.log('onSubmit -> retornou -> ', response.data)
+
                     toast.success(toastMessage.successUpdate)
                     setSavingForm(false)
                     let idNãoConformidade = null
@@ -694,6 +712,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
     //? Função que atualiza os anexos solicitados no item, quando altera a resposta
     const setItemResposta = async value => {
+        console.log('🚀 ~ setItemResposta ~ value:', value)
         // envia pro backend verificar as configurações dessa resposta (se possui anexos, se bloqueia formulário e se possui obs)
         try {
             const response = await api.post('/cadastros/item/getItemConfigs', {
@@ -1020,6 +1039,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     btnConfirmColor='primary'
                     conclusionForm={conclusionForm}
                     listErrors={listErrors}
+                    canApprove={canApprove}
                 />
             </form>
         </>

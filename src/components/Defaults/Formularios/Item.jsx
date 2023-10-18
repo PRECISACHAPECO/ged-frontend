@@ -1,11 +1,12 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { SettingsContext } from 'src/@core/context/settingsContext'
-import { Autocomplete, Card, CardContent, FormControl, Grid, TextField, Typography } from '@mui/material'
+import { Autocomplete, Box, Card, CardContent, FormControl, Grid, TextField, Typography } from '@mui/material'
 import { dateConfig } from 'src/configs/defaultConfigs'
 
 //* Custom inputs
 import AnexoListMultiple from 'src/components/Anexos/ModeView/AnexoListMultiple'
 import Input from 'src/components/Form/Input'
+import RadioLabel from 'src/components/Form/RadioLabel'
 import Select from 'src/components/Form/Select'
 import DateField from 'src/components/Form/DateField'
 import { api } from 'src/configs/api'
@@ -24,8 +25,7 @@ const Item = ({
     setValue,
     disabled
 }) => {
-    console.log('🚀 ~ item ~ errors:', errors?.[blockIndex]?.itens?.[index])
-
+    console.log('🚀 ~ Item values:', values)
     const { settings } = useContext(SettingsContext)
     const modeTheme = settings.mode
     const [selectedItem, setSelectedItem] = useState(null)
@@ -54,17 +54,12 @@ const Item = ({
 
     //? Anexos
     const handleFileClick = item => {
-        console.log('🚀 >>>>> handleFileClick:', item)
-
         item['parFornecedorModeloBlocoID'] = values.parFornecedorModeloBlocoID ?? 0
-
         fileInputRef.current.click()
         setSelectedItem(item)
     }
 
     useEffect(() => {
-        console.log('no useEffect no useRef..')
-
         if (fileInputRef.current) {
             fileInputRef.current.value = ''
         }
@@ -74,9 +69,9 @@ const Item = ({
         <Grid
             index={index}
             container
-            spacing={4}
+            spacing={2}
             sx={{
-                mb: 4,
+                mb: 0,
                 display: 'flex',
                 alignItems: 'center'
             }}
@@ -97,7 +92,7 @@ const Item = ({
             </Grid>
 
             {/* Alternativas de respostas */}
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={6}>
                 {/* Tipo de alternativa  */}
                 <input
                     type='hidden'
@@ -107,28 +102,47 @@ const Item = ({
                 />
 
                 <FormControl fullWidth>
-                    {/* +1 opção pra selecionar (Select) */}
-                    {values && values.alternativas && values.alternativas.length > 1 && (
-                        <Select
-                            title='Selecione uma resposta'
-                            options={values.alternativas}
-                            name={`blocos[${blockIndex}].itens[${index}].resposta`}
-                            idName={'alternativaID'}
-                            value={values.resposta}
-                            disabled={disabled}
-                            onChange={e =>
-                                setItemResposta({
-                                    parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
-                                    itemID: values.itemID,
-                                    alternativa: e
-                                })
-                            }
-                            control={control}
-                            register={register}
-                            setValue={setValue}
-                            errors={errors?.[blockIndex]?.itens[index]?.resposta}
-                        />
-                    )}
+                    <Box display='flex' alignItems='center' sx={{ gap: 4 }}>
+                        {/* +1 opção pra selecionar (Radio) */}
+                        {values && values.alternativas && values.alternativas.length > 1 && (
+                            <RadioLabel
+                                defaultValue={values?.resposta?.id}
+                                values={values.alternativas}
+                                name={`blocos[${blockIndex}].itens[${index}].resposta`}
+                                handleChange={e => {
+                                    // inserir em setValue o objeto inteiro da resposta
+                                    setValue(
+                                        `blocos[${blockIndex}].itens[${index}].resposta`,
+                                        values.alternativas.find(item => item.id == e.target.value)
+                                    )
+                                    setItemResposta({
+                                        parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
+                                        itemID: values.itemID,
+                                        alternativa: values.alternativas.find(item => item.id == e.target.value)
+                                    })
+                                }}
+                            />
+                            // <Select
+                            //     title='Selecione uma resposta'
+                            //     options={values.alternativas}
+                            //     name={`blocos[${blockIndex}].itens[${index}].resposta`}
+                            //     idName={'alternativaID'}
+                            //     value={values.resposta}
+                            //     disabled={disabled}
+                            //     onChange={e =>
+                            //         setItemResposta({
+                            //             parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
+                            //             itemID: values.itemID,
+                            //             alternativa: e
+                            //         })
+                            //     }
+                            //     control={control}
+                            //     register={register}
+                            //     setValue={setValue}
+                            //     errors={errors?.[blockIndex]?.itens[index]?.resposta}
+                            // />
+                        )}
+                    </Box>
 
                     {/* Data */}
                     {values.alternativas.length == 0 && values.alternativa == 'Data' && (
