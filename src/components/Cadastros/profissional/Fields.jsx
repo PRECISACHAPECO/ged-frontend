@@ -10,11 +10,7 @@ import { validationCPF } from 'src/configs/validations'
 import Alert from '@mui/material/Alert'
 import DateField from 'src/components/Form/DateField'
 import { api } from 'src/configs/api'
-<<<<<<< HEAD
-import { Button, TextField } from '@mui/material'
-=======
-import { Button, FormControl } from '@mui/material'
->>>>>>> 85631d827b04f23647d71b96004458e59debe523
+import { Button, TextField, FormControl } from '@mui/material'
 import DialogNewPasswordProfessional from 'src/components/Defaults/Dialogs/DialogNewPasswordProfessional'
 
 const Fields = ({
