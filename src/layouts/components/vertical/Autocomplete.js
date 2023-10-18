@@ -167,6 +167,7 @@ const AutocompleteComponent = ({ hidden, settings }) => {
     const handleOptionClick = obj => {
         setSearchValue('')
         setOpenDialog(false)
+        setId(null)
         if (obj.url) {
             router.push(obj.url)
         }
@@ -288,7 +289,6 @@ const AutocompleteComponent = ({ hidden, settings }) => {
                                                     <InputAdornment
                                                         position='end'
                                                         onClick={() => {
-                                                            setId(null)
                                                             setOpenDialog(false)
                                                         }
                                                         }
