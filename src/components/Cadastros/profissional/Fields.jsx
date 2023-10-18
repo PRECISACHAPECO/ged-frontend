@@ -10,7 +10,7 @@ import { validationCPF } from 'src/configs/validations'
 import Alert from '@mui/material/Alert'
 import DateField from 'src/components/Form/DateField'
 import { api } from 'src/configs/api'
-import { Button } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import DialogNewPasswordProfessional from 'src/components/Defaults/Dialogs/DialogNewPasswordProfessional'
 
 const Fields = ({

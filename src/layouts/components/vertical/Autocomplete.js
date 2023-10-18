@@ -30,6 +30,8 @@ import DefaultSuggestions from './PendenciaAutoComplete/DefaultSuggestions'
 
 //! FilterDataNew
 import FilterDataNewContent from './filterDataNew'
+import { useContext } from 'react'
+import { RouteContext } from 'src/context/RouteContext'
 const filterDataNew = FilterDataNewContent
 
 const categoryTitle = {
@@ -124,6 +126,7 @@ const AutocompleteComponent = ({ hidden, settings }) => {
     const [searchValue, setSearchValue] = useState('')
     const [openDialog, setOpenDialog] = useState(false)
     const [options, setOptions] = useState([])
+    const { setId } = useContext(RouteContext)
 
 
 
@@ -284,7 +287,11 @@ const AutocompleteComponent = ({ hidden, settings }) => {
                                                 endAdornment: (
                                                     <InputAdornment
                                                         position='end'
-                                                        onClick={() => setOpenDialog(false)}
+                                                        onClick={() => {
+                                                            setId(null)
+                                                            setOpenDialog(false)
+                                                        }
+                                                        }
                                                         sx={{ display: 'flex', cursor: 'pointer', alignItems: 'center' }}
                                                     >
                                                         {!hidden ? <Typography sx={{ mr: 2.5, color: 'text.disabled' }}>[esc]</Typography> : null}
