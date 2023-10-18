@@ -75,7 +75,6 @@ const FormProfissional = ({ id }) => {
                 toast.success(toastMessage.successNew)
             } else if (type === 'edit') {
                 const response = await api.post(`${staticUrl}/updateData/${id}`, values)
-                console.log('rora update,'`${staticUrl}/updateData/${id}`)
                 toast.success(toastMessage.successUpdate)
             }
             resetFields()

@@ -27,6 +27,7 @@ import { toast } from 'react-hot-toast'
 import ModeToggler from './ModeToggler'
 import NotificationDropdown from './NotificationDropdown'
 import { NotificationContext } from 'src/context/NotificationContext'
+import DialogNewPasswordProfessional from 'src/components/Defaults/Dialogs/DialogNewPasswordProfessional'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -49,6 +50,7 @@ const UserDropdown = props => {
     const [unity, setSelectedUnit] = useState(null);
     const { notifications } = useContext(NotificationContext)
     const handleCloseModalSelectUnits = () => setOpenModal(false);
+    const [openModalNewPassword, setOpenModalNewPassword] = useState(false)
 
 
     // Troca de unidade
@@ -82,11 +84,12 @@ const UserDropdown = props => {
         setAnchorEl(event.currentTarget)
     }
 
-    const handleDropdownClose = url => {
+    const handleDropdownClose = (url) => {
         if (url) {
             router.push(url)
         }
         setAnchorEl(null)
+        console.log("passou akii")
     }
 
     const styles = {
@@ -192,10 +195,34 @@ const UserDropdown = props => {
                                     Meus Dados
                                 </Box>
                             </MenuItem>
+                            {/* Alterar senha */}
+
+                            <div className=''>
+
+                                <MenuItem sx={{ p: 0 }} >
+                                    <Box sx={styles}
+                                        onClick={() => {
+                                            setOpenModalNewPassword(true)
+                                        }}
+                                    >
+                                        <Icon icon='mdi:password' />
+                                        Alterar senha
+                                    </Box>
+                                </MenuItem>
+                            </div>
+
+
+                            {/* Modal trocar senha */}
+                            <DialogNewPasswordProfessional
+                                openModal={openModalNewPassword}
+                                handleClose={() => setOpenModalNewPassword(false)}
+                                setOpenModalNewPassword={setOpenModalNewPassword}
+                                handleDropdownClose={handleDropdownClose}
+                            />
 
 
                             {/* troca de unidade quando mobile */}
-                            {user.papelID === 2 && (
+                            {user.papelID === 1 && (
                                 <div className='block md:hidden'>
 
                                     <MenuItem sx={{ p: 0 }} >
@@ -208,15 +235,15 @@ const UserDropdown = props => {
                                             Trocar unidade
                                         </Box>
                                     </MenuItem>
-                                    <div className='block md:hidden'>
-                                        <MenuItem sx={{ p: 0, pl: 2 }} >
-                                            <div className="flex items-center" >
-                                                <ModeToggler settings={settings} saveSettings={saveSettings} text={true} />
-                                            </div>
-                                        </MenuItem>
-                                    </div>
                                 </div>
                             )}
+                            <div className='block md:hidden'>
+                                <MenuItem sx={{ p: 0, pl: 2 }} >
+                                    <div className="flex items-center" >
+                                        <ModeToggler settings={settings} saveSettings={saveSettings} text={true} />
+                                    </div>
+                                </MenuItem>
+                            </div>
                             {/* Modal que abre ao clicar em Trocar unidade */}
                             <DialogSelectUnit
                                 openModal={openModal}

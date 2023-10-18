@@ -8,9 +8,9 @@ import { api } from 'src/configs/api'
 import { toast } from 'react-hot-toast'
 import { AuthContext } from 'src/context/AuthContext'
 
-const DialogNewPasswordProfessional = ({ handleClose, openModal, setOpenModalNewPassword }) => {
+const DialogNewPasswordProfessional = ({ handleClose, openModal, setOpenModalNewPassword, handleDropdownClose }) => {
     const [lenghtPassword, setLenghtPassword] = useState(null)
-    const { user } = useContext(AuthContext)
+    const { user, loggedUnity } = useContext(AuthContext)
 
     const [values, setValues] = useState({
         showPassword: false,
@@ -37,15 +37,22 @@ const DialogNewPasswordProfessional = ({ handleClose, openModal, setOpenModalNew
     const {
         handleSubmit,
         watch,
+        reset,
         formState: { errors },
         register
     } = useForm({})
 
     const onSubmit = async data => {
         try {
-            const response = await api.put(`cadastros/profissional/updatePassword/${user.usuarioID}`, data)
-            toast.success('Dados atualizados com sucesso!')
+            const response = await api.put(`cadastros/profissional/updatePassword/${user.usuarioID}`, {
+                ...data,
+                papelID: user.papelID,
+                unidadeID: loggedUnity.unidadeID
+            })
+            toast.success('Senha atualizada com sucesso!')
+            reset()
             setOpenModalNewPassword(false)
+            handleDropdownClose()
         } catch (e) {
             console.log(e)
         }
