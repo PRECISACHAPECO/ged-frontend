@@ -1,10 +1,10 @@
 {
-    "name": "https://www.gedagro.com.br/",
+    "name": "GEDagro",
     "short_name": "GEDagro",
     "theme_color": "rgba(0, 0, 0, 0.9)",
-    "background_color": "rgb(5, 9, 59)",
+    "background_color": "rgb(74, 139, 87)",
     "display": "standalone",
-    "description": "Software para as boas práticas de fabricação",
+    "description": "Software para as boas práticas de fabricação (BPF)",
     "scope": "/",
     "start_url": "/",
     "icons": [
