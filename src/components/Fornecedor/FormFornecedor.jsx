@@ -1,4 +1,4 @@
-// import * as React from 'react'
+import * as React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -63,6 +63,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
+    console.log('🚀 ~ staticUrl:', staticUrl)
 
     const {
         reset,
@@ -295,43 +296,49 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
     const getData = () => {
         setLoading(true)
-        console.log('🚀 ~ getData: ', staticUrl, type, loggedUnity.unidadeID, id)
-        if (id) {
-            api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID }).then(response => {
-                console.log('getData: ', response.data)
+        try {
+            api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID })
+                .then(response => {
+                    setLoading(false)
 
-                setField(response.data.fields)
-                setProdutos(response.data.produtos)
-                setBlocos(response.data.blocos)
-                setGrupoAnexo(response.data.grupoAnexo)
-                setInfo(response.data.info)
-                setUnidade(response.data.unidade)
-                setLink(response.data.link)
-                setMovimentacao(response.data.ultimaMovimentacao)
-                verifyIfCanAproveForm(response.data.blocos) //? Verifica se há alguma resposta que bloqueie o formulário, se sim, o mesmo não pode ser aprovado
+                    setField(response.data.fields)
+                    setProdutos(response.data.produtos)
+                    setBlocos(response.data.blocos)
+                    setGrupoAnexo(response.data.grupoAnexo)
+                    setInfo(response.data.info)
+                    setUnidade(response.data.unidade)
+                    setLink(response.data.link)
+                    setMovimentacao(response.data.ultimaMovimentacao)
+                    verifyIfCanAproveForm(response.data.blocos) //? Verifica se há alguma resposta que bloqueie o formulário, se sim, o mesmo não pode ser aprovado
 
-                //* Insere os dados no formulário
-                reset(response.data)
+                    //* Insere os dados no formulário
+                    reset(response.data)
 
-                let objStatus = statusDefault[response?.data?.info?.status]
-                setStatus(objStatus)
+                    let objStatus = statusDefault[response?.data?.info?.status]
+                    setStatus(objStatus)
 
-                setCanEdit({
-                    status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
-                    message:
-                        user.papelID == 2 && response.data.info.status >= 40
-                            ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
-                            : user.papelID == 1 && response.data.info.status < 40
-                            ? 'Somente o fornecedor pode alterar as informações deste formulário!'
-                            : user.papelID == 1 && response.data.info.status == 40
-                            ? 'Este formulário está aguardando aprovação'
-                            : null,
-                    messageType: user.papelID == 2 ? 'warning' : 'info'
+                    setCanEdit({
+                        status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
+                        message:
+                            user.papelID == 2 && response.data.info.status >= 40
+                                ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
+                                : user.papelID == 1 && response.data.info.status < 40
+                                ? 'Somente o fornecedor pode alterar as informações deste formulário!'
+                                : user.papelID == 1 && response.data.info.status == 40
+                                ? 'Este formulário está aguardando aprovação'
+                                : null,
+                        messageType: user.papelID == 2 ? 'warning' : 'info'
+                    })
+
+                    verifyFormPending()
                 })
-
-                verifyFormPending()
-                setLoading(false)
-            })
+                .catch(error => {
+                    console.log('🚀 ~ error:', error)
+                    setLoading(false)
+                })
+        } catch (error) {
+            console.log('🚀 ~ error:', error)
+            setLoading(false)
         }
     }
 
@@ -393,7 +400,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     item.respostaConfig.anexosSolicitados.length > 0
                 ) {
                     item.respostaConfig.anexosSolicitados.forEach((anexo, indexAnexo) => {
-                        if (anexo.obrigatorio == 1 && anexo.anexos.length == 0) {
+                        if (anexo.obrigatorio == 1 && anexo.anexos && anexo.anexos.length == 0) {
                             setError(
                                 `blocos[${indexBlock}].itens[${indexItem}].respostaConfig.anexosSolicitados[${indexAnexo}].anexos`,
                                 {
@@ -602,27 +609,32 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 .post(`${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}`, formData)
                 .then(response => {
                     setLoadingFileProduct(false)
-                    toast.success('Anexo adicionado com sucesso!')
 
-                    //? Atualiza produtos
-                    const updatedProdutos = produtos.map(produto => {
-                        if (produto.produtoID == item.produtoID) {
-                            return {
-                                ...produto,
-                                produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
-                                    if (row.produtoAnexoID == item.produtoAnexoID) {
-                                        return {
-                                            ...row,
-                                            anexos: [...row.anexos, ...response.data]
-                                        }
-                                    }
-                                    return row
-                                })
-                            }
-                        }
-                        return produto
-                    })
-                    setProdutos(updatedProdutos)
+                    //* Submete formulário pra atualizar configurações dos produtos
+                    const values = getValues()
+                    onSubmit(values)
+
+                    // toast.success('Anexo adicionado com sucesso!')
+
+                    // //? Atualiza produtos
+                    // const updatedProdutos = produtos.map(produto => {
+                    //     if (produto.produtoID == item.produtoID) {
+                    //         return {
+                    //             ...produto,
+                    //             produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
+                    //                 if (row.produtoAnexoID == item.produtoAnexoID) {
+                    //                     return {
+                    //                         ...row,
+                    //                         anexos: [...row.anexos, ...response.data]
+                    //                     }
+                    //                 }
+                    //                 return row
+                    //             })
+                    //         }
+                    //     }
+                    //     return produto
+                    // })
+                    // setProdutos(updatedProdutos)
                 })
                 .catch(error => {
                     setLoadingFileProduct(false)
@@ -649,27 +661,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 .then(response => {
                     setLoadingFileGroup(false)
 
-                    toast.success('Anexo adicionado com sucesso!')
-
-                    //? Atualiza grupoAnexo
-                    const updatedGrupoAnexo = grupoAnexo.map(grupo => {
-                        if (grupo.grupoAnexoID == item.grupoAnexoID) {
-                            return {
-                                ...grupo,
-                                itens: grupo.itens.map(row => {
-                                    if (row.grupoAnexoItemID == item.grupoAnexoItemID) {
-                                        return {
-                                            ...row,
-                                            anexos: [...row.anexos, ...response.data]
-                                        }
-                                    }
-                                    return row
-                                })
-                            }
-                        }
-                        return grupo
-                    })
-                    setGrupoAnexo(updatedGrupoAnexo)
+                    //* Submete formulário pra atualizar configurações dos grupos
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     setLoadingFileGroup(false)
@@ -692,47 +686,18 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append(`parFornecedorModeloBlocoID`, item.parFornecedorModeloBlocoID ?? null)
             formData.append(`itemOpcaoAnexoID`, item.itemOpcaoAnexoID ?? null)
 
-            // console.log('🚀 ~ handleFileSelectItem ~ item:', item)
-            // return
-
             await api
                 .post(`${staticUrl}/saveAnexo/${id}/item/${user.usuarioID}/${unidade.unidadeID}`, formData)
                 .then(response => {
                     setLoadingFileItem(false)
 
-                    toast.success('Anexo adicionado com sucesso!')
-
-                    //? Atualiza item
-                    const updatedItem = blocos.map(bloco => {
-                        if (bloco.parFornecedorModeloBlocoID == item.parFornecedorModeloBlocoID) {
-                            return {
-                                ...bloco,
-                                itens: bloco.itens.map(row => {
-                                    return {
-                                        ...row,
-                                        respostaConfig: {
-                                            ...row.respostaConfig,
-                                            anexosSolicitados: row.respostaConfig.anexosSolicitados.map(anexo => {
-                                                if (anexo.itemOpcaoAnexoID == item.itemOpcaoAnexoID) {
-                                                    return {
-                                                        ...anexo,
-                                                        anexos: [...anexo.anexos, ...response.data]
-                                                    }
-                                                }
-                                                return anexo
-                                            })
-                                        }
-                                    }
-                                })
-                            }
-                        }
-                        return bloco
-                    })
-                    setBlocos(updatedItem)
+                    //* Submete formulário pra atualizar configurações dos itens
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     setLoadingFileItem(false)
-                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!!!!')
                 })
         }
     }
@@ -765,6 +730,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     })
                 }
             })
+            console.log('🚀 ~ updatedBlocos:', updatedBlocos)
 
             setBlocos(updatedBlocos)
         } catch (error) {
@@ -774,30 +740,12 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
     // Remove um anexo do array de anexos
     const handleRemoveAnexoProduct = async item => {
-        console.log('🚀 ~ item:', item)
         if (item) {
             await api
                 .delete(`${staticUrl}/deleteAnexo/${id}/${item.anexoID}/${unidade.unidadeID}/${user.usuarioID}/produto`)
                 .then(response => {
-                    toast.success('Anexo removido com sucesso!')
-
-                    //? Atualiza produtos
-                    const removedAnexoID = response.data
-                    const updatedProdutos = produtos.map(produto => {
-                        return {
-                            ...produto,
-                            produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
-                                return {
-                                    ...row,
-                                    anexos: row.anexos.filter(anexo => anexo.anexoID != removedAnexoID)
-                                }
-
-                                return row
-                            })
-                        }
-                        return produto
-                    })
-                    setProdutos(updatedProdutos)
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
@@ -813,24 +761,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     `${staticUrl}/deleteAnexo/${id}/${item.anexoID}/${unidade.unidadeID}/${user.usuarioID}/grupo-anexo`
                 )
                 .then(response => {
-                    toast.success('Anexo removido com sucesso!')
-
-                    //? Atualiza grupo de anexo
-                    const removedAnexoID = response.data
-                    const updatedGrupoAnexo = grupoAnexo.map(grupo => {
-                        return {
-                            ...grupo,
-                            itens: grupo.itens.map(row => {
-                                return {
-                                    ...row,
-                                    anexos: row.anexos.filter(anexo => anexo.anexoID != removedAnexoID)
-                                }
-                                return row
-                            })
-                        }
-                        return grupo
-                    })
-                    setGrupoAnexo(updatedGrupoAnexo)
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
@@ -844,31 +776,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             await api
                 .delete(`${staticUrl}/deleteAnexo/${id}/${item.anexoID}/${unidade.unidadeID}/${user.usuarioID}/item`)
                 .then(response => {
-                    toast.success('Anexo removido com sucesso!')
-
-                    //? Atualiza item
-                    const removedAnexoID = response.data
-                    const updatedItem = blocos.map(bloco => {
-                        return {
-                            ...bloco,
-                            itens: bloco.itens.map(row => {
-                                return {
-                                    ...row,
-                                    respostaConfig: {
-                                        ...row.respostaConfig,
-                                        anexosSolicitados: row.respostaConfig.anexosSolicitados.map(anexo => {
-                                            return {
-                                                ...anexo,
-                                                anexos: anexo.anexos.filter(anexo => anexo.anexoID != removedAnexoID)
-                                            }
-                                            return anexo
-                                        })
-                                    }
-                                }
-                            })
-                        }
-                    })
-                    setBlocos(updatedItem)
+                    //* Submete formulário pra atualizar configurações dos itens
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
