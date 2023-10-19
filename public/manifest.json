@@ -1,0 +1,22 @@
+{
+  "name": "https://www.gedagro.com.br/",
+  "short_name": "GEDagro",
+  "theme_color": "rgba(0, 0, 0, 0.9)",
+  "background_color": "rgb(5, 9, 59)",
+  "display": "standalone",
+  "description": "Software para as boas práticas de fabricação",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
