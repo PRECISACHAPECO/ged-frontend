@@ -99,20 +99,21 @@ const App = props => {
     return (
         <CacheProvider value={emotionCache}>
             <Head>
-                {/* <title className='print-no-title'>{`${themeConfig.templateName}`}</title> */}
+                {/* Next PWA */}
                 <link rel='apple-touch-icon' sizes='180x180' href='/icons/apple-touch-icon.png' />
                 <link rel='icon' type='image/png' sizes='32x32' href='/icons/favicon-32x32.png' />
                 <link rel='icon' type='image/png' sizes='16x16' href='/icons/favicon-16x16.png' />
                 <link rel='mask-icon' href='/icons/favicon.ico' color='#5bbad5' />
                 <link rel='manifest' href='/manifest.json' />
+                <meta name='msapplication-TileColor' content='rgb(5, 9, 59)' />
+                <meta name='theme-color' content='rgba(0, 0, 0, 0.9)' />
+
                 <meta
                     name='description'
-                    content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
+                    content={`${themeConfig.templateName} – Software para as Boas Práticas de Fabricação (BPF)`}
                 />
                 <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
                 <meta name='viewport' content='initial-scale=1, width=device-width' />
-                <meta name='msapplication-TileColor' content='rgb(5, 9, 59)' />
-                <meta name='theme-color' content='rgba(0, 0, 0, 0.9)' />
             </Head>
             <RouteProvider>
                 <ParametersProvider>
