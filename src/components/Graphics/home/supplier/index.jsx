@@ -50,7 +50,7 @@ const Supplier = () => {
                     lastForms.map((row, index) => {
                         console.log('🚀 ~ row:', row)
                         return (
-                            <Grid item xs={6} md={3} key={index}>
+                            <Grid item xs={12} md={3} key={index}>
                                 <LastForms row={row} icon={<Icon icon='mdi:truck-fast-outline' />} />
                             </Grid>
                         )

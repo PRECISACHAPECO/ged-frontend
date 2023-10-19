@@ -105,7 +105,7 @@ const App = props => {
                 <link rel='icon' type='image/png' sizes='16x16' href='/icons/favicon-16x16.png' />
                 <link rel='mask-icon' href='/icons/favicon.ico' color='#5bbad5' />
                 <link rel='manifest' href='/manifest.json' />
-                <meta name='msapplication-TileColor' content='rgb(5, 9, 59)' />
+                <meta name='msapplication-TileColor' content='rgb(74, 139, 87)' />
                 <meta name='theme-color' content='rgba(0, 0, 0, 0.9)' />
 
                 <meta
