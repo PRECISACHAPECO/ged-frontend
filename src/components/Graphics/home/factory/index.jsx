@@ -58,8 +58,6 @@ const Factory = () => {
                         </Grid>
                     ))}
 
-                    <h1>Teste cache </h1>
-
                     {/* Tudo em uma bloco */}
                     {/* <Grid item xs={12} md={12}>
                         <EcommerceSalesOverview title='Fornecedor' data={dataFornecedor} />
