@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button, Card, CardContent, Grid, List, Typography, Box } from '@mui/material'
 import { RouteContext } from 'src/context/RouteContext'
@@ -21,9 +21,20 @@ import FormItem from 'src/components/Cadastros/Item/FormItem'
 import HelpText from 'src/components/Defaults/HelpText'
 import { IndeterminateCheckBoxOutlined } from '@mui/icons-material'
 
-const FormParametrosFornecedor = ({ id }) => {
-    const { setId } = useContext(RouteContext)
+import JoditEditor from 'jodit-react'
 
+const FormParametrosFornecedor = ({ id }) => {
+    //* Editor de texto
+    const editor = useRef(null)
+    // const config = useMemo(
+    //     {
+    //         readonly: false, // all options from https://xdsoft.net/jodit/docs/,
+    //         placeholder: 'Start typings...'
+    //     },
+    //     []
+    // )
+
+    const { setId } = useContext(RouteContext)
     const { loggedUnity } = useContext(AuthContext)
     const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
@@ -76,6 +87,8 @@ const FormParametrosFornecedor = ({ id }) => {
         watch,
         formState: { errors }
     } = useForm()
+
+    const [textCabecalho, setTextCabecalho] = useState('')
 
     const onSubmit = async values => {
         const data = {
@@ -249,6 +262,9 @@ const FormParametrosFornecedor = ({ id }) => {
                         itens: response.data.options?.itens
                     })
                     setOrientacoes(response.data.orientations)
+
+                    setTextCabecalho(response.data.model.cabecalho)
+
                     //* Insere os dados no formulário
                     reset(response.data)
 
@@ -325,7 +341,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                     register={register}
                                 />
 
-                                <Input
+                                {/* <Input
                                     xs={12}
                                     md={12}
                                     className='order-4'
@@ -337,7 +353,29 @@ const FormParametrosFornecedor = ({ id }) => {
                                     rows={4}
                                     control={control}
                                     helpText='Texto que será exibido no cabeçalho do formulário. Adicione aqui instruções e orientações para auxiliar o preenchimento pelo fornecedor.'
-                                />
+                                /> */}
+
+                                <Grid item xs={12}>
+                                    <JoditEditor
+                                        ref={editor}
+                                        value={textCabecalho}
+                                        // name={`model.cabecalho`}
+                                        // register={register}
+                                        config={{
+                                            height: 300,
+                                            readonly: false // all options from https://xdsoft.net/jodit/doc/
+                                        }}
+                                        tabIndex={1} // tabIndex of textarea
+                                        onChange={newContent => {
+                                            console.log('🚀 ~ newContent:', newContent)
+                                            setTextCabecalho(newContent)
+                                        }}
+                                        onBlur={newContent => {
+                                            console.log('🚀 ~ newContent:', newContent)
+                                            setTextCabecalho(newContent)
+                                        }}
+                                    />
+                                </Grid>
                             </Grid>
                         </CardContent>
                     </Card>
