@@ -5,9 +5,9 @@ const path = require('path')
 const withPWA = require('next-pwa')({
     dest: 'public',
     register: true,
-    disable: true,
+    disable: process.env.NODE_ENV === 'development',
     skipWaiting: true,
-    runtimeCaching: require('next-pwa/cache'), // 
+    runtimeCaching: require('next-pwa/cache'), // Importe o runtimeCaching
     buildExcludes: [/middleware-manifest.json$/],
 })
 
@@ -27,10 +27,14 @@ module.exports = withPWA(
             esmExternals: false
         },
         webpack(config) {
+            // Sua configuração de alias e outras customizações webpack aqui
             config.resolve.alias = {
                 ...config.resolve.alias,
                 apexcharts: path.resolve(__dirname, './node_modules/apexcharts-clevision')
             }
+
+            // Aqui você pode adicionar outras personalizações webpack, se necessário
+
             return config
         },
     })
