@@ -5,7 +5,8 @@ const path = require('path')
 const withPWA = require('next-pwa')({
     dest: 'public',
     register: true,
-    disable: process.env.NODE_ENV === 'development',
+    // disable: process.env.NODE_ENV === 'development',
+    disable: true,
     skipWaiting: true,
     runtimeCaching: require('next-pwa/cache'), // Importe o runtimeCaching
     buildExcludes: [/middleware-manifest.json$/],
