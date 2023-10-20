@@ -124,6 +124,7 @@ const Item = ({
                                 })
                             }}
                             errors={errors?.[blockIndex]?.itens[index]?.resposta}
+                            blockForm={values.respostaConfig.bloqueiaFormulario == 1 ? true : false}
                         />
 
                         // <Select

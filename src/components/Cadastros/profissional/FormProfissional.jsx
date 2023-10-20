@@ -213,79 +213,86 @@ const FormProfissional = ({ id }) => {
                         <CardContent>
                             <Grid container spacing={5}>
                                 {/* Imagem */}
-                                <Grid item xs={12} md={2}>
-                                    <Grid
-                                        item
-                                        xs={12}
-                                        md={12}
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            height: '140px',
-                                            position: 'relative',
-                                            border: `${mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'}`,
-                                            borderRadius: '8px'
-                                        }}
-                                    >
-                                        {photoProfile && (
-                                            <Tooltip title='Apagar foto do perfil' placement='top'>
-                                                <IconButton
-                                                    size='small'
-                                                    sx={{
-                                                        position: 'absolute',
-                                                        top: '8px',
-                                                        right: '8px',
-                                                        zIndex: '20',
-                                                        color: 'white',
-                                                        opacity: '0.8',
-                                                        backgroundColor: '#FF4D49',
-                                                        '&:hover': {
+                                {type == 'edit' && (
+                                    <Grid item xs={12} md={2}>
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            md={12}
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                height: '140px',
+                                                position: 'relative',
+                                                border: `${
+                                                    mode === 'dark' ? '1px solid #65656E' : '1px solid #C5C6CD'
+                                                }`,
+                                                borderRadius: '8px'
+                                            }}
+                                        >
+                                            {photoProfile && (
+                                                <Tooltip title='Apagar foto do perfil' placement='top'>
+                                                    <IconButton
+                                                        size='small'
+                                                        sx={{
+                                                            position: 'absolute',
+                                                            top: '8px',
+                                                            right: '8px',
+                                                            zIndex: '20',
+                                                            color: 'white',
+                                                            opacity: '0.8',
                                                             backgroundColor: '#FF4D49',
-                                                            opacity: '1'
-                                                        }
-                                                    }}
-                                                    onClick={handleDeleteImage}
-                                                >
-                                                    <Icon icon='material-symbols:delete-outline' />
-                                                </IconButton>
-                                            </Tooltip>
-                                        )}
+                                                            '&:hover': {
+                                                                backgroundColor: '#FF4D49',
+                                                                opacity: '1'
+                                                            }
+                                                        }}
+                                                        onClick={handleDeleteImage}
+                                                    >
+                                                        <Icon icon='material-symbols:delete-outline' />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )}
 
-                                        <Tooltip title={photoProfile ? 'Alterar foto' : 'Inserir foto'} placement='top'>
-                                            <FormControl
-                                                sx={{
-                                                    display: 'flex',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    height: '100%',
-                                                    width: '100%'
-                                                }}
+                                            <Tooltip
+                                                title={photoProfile ? 'Alterar foto' : 'Inserir foto'}
+                                                placement='top'
                                             >
-                                                <input
-                                                    type='file'
-                                                    ref={fileInputRef}
-                                                    style={{ display: 'none' }}
-                                                    onChange={handleFileSelect}
-                                                />
-                                                <Avatar
-                                                    variant='rounded'
-                                                    alt='Imagem do cabeçalho do relatório'
+                                                <FormControl
                                                     sx={{
-                                                        width: '100%',
+                                                        display: 'flex',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
                                                         height: '100%',
-                                                        cursor: 'pointer'
+                                                        width: '100%'
                                                     }}
-                                                    onClick={handleFileClick}
-                                                    src={photoProfile ?? 'https://gedagro.com.br/images/report.png'}
-                                                />
-                                            </FormControl>
-                                        </Tooltip>
+                                                >
+                                                    <input
+                                                        type='file'
+                                                        ref={fileInputRef}
+                                                        style={{ display: 'none' }}
+                                                        onChange={handleFileSelect}
+                                                    />
+                                                    <Avatar
+                                                        variant='rounded'
+                                                        alt='Imagem do cabeçalho do relatório'
+                                                        sx={{
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            cursor: 'pointer'
+                                                        }}
+                                                        onClick={handleFileClick}
+                                                        src={photoProfile ?? 'https://gedagro.com.br/images/report.png'}
+                                                    />
+                                                </FormControl>
+                                            </Tooltip>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
+                                )}
 
                                 {/* Fields */}
-                                <Grid item xs={12} md={10}>
+                                <Grid item xs={12} md={type == 'edit' ? 10 : 12}>
                                     <Grid container spacing={5}>
                                         <Fields
                                             data={data}

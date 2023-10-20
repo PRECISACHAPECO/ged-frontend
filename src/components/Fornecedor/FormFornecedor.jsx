@@ -10,7 +10,7 @@ import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
 //* Custom components
 import Input from 'src/components/Form/Input'
 import AnexoModeView from 'src/components/Anexos/ModeView'
-import { Alert, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
+import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
 import { backRoute, toastMessage, statusDefault } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
@@ -299,6 +299,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         try {
             api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID })
                 .then(response => {
+                    console.log('getData: ', response.data)
                     setLoading(false)
 
                     setField(response.data.fields)
@@ -798,186 +799,195 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         <>
             <Loading show={isLoading} />
             <form onSubmit={handleSubmit(onSubmit)}>
-                {/* Mensagem */}
-                {canEdit.message && (
-                    <Alert severity='warning' sx={{ mb: 2 }}>
-                        {canEdit.message}
-                    </Alert>
-                )}
+                <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
+                    {/* Mensagem */}
+                    {canEdit.message && <Alert severity='warning'>{canEdit.message}</Alert>}
 
-                {/* Última movimentação do formulário */}
-                {movimentacao && (
-                    <Alert severity='info' sx={{ mb: 2 }}>
-                        {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
-                        {movimentacao.observacao && (
-                            <p>
-                                <br />
-                                Mensagem: "{movimentacao.observacao}"
-                            </p>
-                        )}
-                    </Alert>
-                )}
+                    {/* Última movimentação do formulário */}
+                    {movimentacao && (
+                        <Alert severity='info'>
+                            {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
+                            {movimentacao.observacao && (
+                                <p>
+                                    <br />
+                                    Mensagem: "{movimentacao.observacao}"
+                                </p>
+                            )}
+                        </Alert>
+                    )}
 
-                {/* Card Header */}
-                <Card>
-                    <FormHeader
-                        btnCancel
-                        btnSave={user.papelID == 2 && info.status < 40}
-                        btnSend={
-                            (user.papelID == 1 && type == 'edit' && info.status >= 40) ||
-                            (user.papelID == 2 && info.status < 40)
-                        }
-                        btnPrint={type == 'edit' ? true : false}
-                        actionsData={actionsData}
-                        actions
-                        handleSubmit={() => handleSubmit(onSubmit)}
-                        handleSend={handleSendForm}
-                        iconConclusion={'mdi:check-bold'}
-                        titleConclusion={'Concluir Formulário'}
-                        title='Fornecedor'
-                        btnStatus={type == 'edit' ? true : false}
-                        handleBtnStatus={() => setOpenModalStatus(true)}
-                        type={type}
-                        status={status}
-                    />
+                    {/* Cabeçalho do modelo */}
+                    {info && info.cabecalhoModelo != '' && (
+                        <Card>
+                            <CardContent>
+                                <Typography variant='subtitle1' sx={{ mb: 2 }}>
+                                    {info.cabecalhoModelo}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    )}
 
-                    {/* Header */}
-                    <CardContent>
-                        <Fields
-                            register={register}
-                            errors={errors}
-                            setValue={setValue}
-                            control={control}
-                            fields={field}
-                            values={field}
-                            getAddressByCep={getAddressByCep}
-                            disabled={!canEdit.status}
+                    {/* Card Header */}
+                    <Card>
+                        <FormHeader
+                            btnCancel
+                            btnSave={user.papelID == 2 && info.status < 40}
+                            btnSend={
+                                (user.papelID == 1 && type == 'edit' && info.status >= 40) ||
+                                (user.papelID == 2 && info.status < 40)
+                            }
+                            btnPrint={type == 'edit' ? true : false}
+                            actionsData={actionsData}
+                            actions
+                            handleSubmit={() => handleSubmit(onSubmit)}
+                            handleSend={handleSendForm}
+                            iconConclusion={'mdi:check-bold'}
+                            titleConclusion={'Concluir Formulário'}
+                            title='Fornecedor'
+                            btnStatus={type == 'edit' ? true : false}
+                            handleBtnStatus={() => setOpenModalStatus(true)}
+                            type={type}
+                            status={status}
                         />
-                    </CardContent>
-                </Card>
 
-                {/* Produtos (se parâmetro habilitado na unidade) */}
-                {unidade && unidade?.obrigatorioProdutoFornecedor && produtos && produtos.length > 0 && (
-                    <Card sx={{ mt: 4 }}>
+                        {/* Header */}
                         <CardContent>
-                            {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                            <FormFornecedorProdutos
-                                key={loadingFileProduct}
-                                values={produtos}
-                                handleFileSelect={handleFileSelectProduct}
-                                handleRemove={handleRemoveAnexoProduct}
-                                loadingFile={loadingFileProduct}
+                            <Fields
+                                register={register}
+                                errors={errors}
+                                setValue={setValue}
+                                control={control}
+                                fields={field}
+                                values={field}
+                                getAddressByCep={getAddressByCep}
                                 disabled={!canEdit.status}
-                                errors={errors?.produtos}
                             />
                         </CardContent>
                     </Card>
-                )}
 
-                {/* Blocos */}
-                {blocos &&
-                    blocos.map((bloco, index) => (
-                        <Block
-                            key={index}
-                            index={index}
-                            blockKey={`parFornecedorModeloBlocoID`}
-                            handleFileSelect={handleFileSelectItem}
-                            setItemResposta={setItemResposta}
-                            handleRemoveAnexoItem={handleRemoveAnexoItem}
-                            setBlocos={setBlocos}
-                            values={bloco}
-                            control={control}
-                            register={register}
-                            setValue={setValue}
-                            errors={errors?.blocos}
-                            disabled={!canEdit.status}
-                        />
-                    ))}
-
-                {/* Grupo de anexos */}
-                {grupoAnexo &&
-                    grupoAnexo.map((grupo, indexGrupo) => (
-                        <AnexoModeView
-                            key={indexGrupo}
-                            values={{
-                                grupo: grupo,
-                                loadingFile: loadingFileGroup,
-                                indexGrupo: indexGrupo,
-                                handleFileSelect: handleFileSelectGroup,
-                                handleRemove: handleRemoveAnexoGroup,
-                                folder: 'grupo-anexo',
-                                disabled: !canEdit.status,
-                                error: errors
-                            }}
-                        />
-                    ))}
-
-                {/* Observação do formulário */}
-                {info && (
-                    <>
-                        <Card sx={{ mt: 4 }}>
+                    {/* Produtos (se parâmetro habilitado na unidade) */}
+                    {unidade && unidade?.obrigatorioProdutoFornecedor && produtos && produtos.length > 0 && (
+                        <Card>
                             <CardContent>
-                                <Grid container spacing={4}>
-                                    <Grid item xs={12} md={12}>
-                                        <FormControl fullWidth>
-                                            <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 2 }}>
-                                                Observações (campo de uso exclusivo da validadora)
-                                            </Typography>
-                                            <Input
-                                                title='Observação (opcional)'
-                                                name='info.obs'
-                                                multiline
-                                                rows={4}
-                                                value={info.obs}
-                                                disabled={!canEdit.status}
-                                                control={control}
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
+                                {/* Listagem dos produtos selecionados pra esse fornecedor */}
+                                <FormFornecedorProdutos
+                                    key={loadingFileProduct}
+                                    values={produtos}
+                                    handleFileSelect={handleFileSelectProduct}
+                                    handleRemove={handleRemoveAnexoProduct}
+                                    loadingFile={loadingFileProduct}
+                                    disabled={!canEdit.status}
+                                    errors={errors?.produtos}
+                                />
                             </CardContent>
                         </Card>
-                    </>
-                )}
+                    )}
 
-                {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}
-                {openModalStatus && (
-                    <DialogFormStatus
-                        title='Histórico do Formulário'
-                        text={`Listagem do histórico das movimentações do formulário ${id} do Fornecedor.`}
-                        id={id}
-                        parFormularioID={1} // Fornecedor
-                        formStatus={info.status}
-                        hasFormPending={hasFormPending}
-                        canChangeStatus={user.papelID == 1 && !hasFormPending && info.status > 30}
-                        openModal={openModalStatus}
-                        handleClose={() => setOpenModalStatus(false)}
+                    {/* Blocos */}
+                    {blocos &&
+                        blocos.map((bloco, index) => (
+                            <Block
+                                key={index}
+                                index={index}
+                                blockKey={`parFornecedorModeloBlocoID`}
+                                handleFileSelect={handleFileSelectItem}
+                                setItemResposta={setItemResposta}
+                                handleRemoveAnexoItem={handleRemoveAnexoItem}
+                                setBlocos={setBlocos}
+                                values={bloco}
+                                control={control}
+                                register={register}
+                                setValue={setValue}
+                                errors={errors?.blocos}
+                                disabled={!canEdit.status}
+                            />
+                        ))}
+
+                    {/* Grupo de anexos */}
+                    {grupoAnexo &&
+                        grupoAnexo.map((grupo, indexGrupo) => (
+                            <AnexoModeView
+                                key={indexGrupo}
+                                values={{
+                                    grupo: grupo,
+                                    loadingFile: loadingFileGroup,
+                                    indexGrupo: indexGrupo,
+                                    handleFileSelect: handleFileSelectGroup,
+                                    handleRemove: handleRemoveAnexoGroup,
+                                    folder: 'grupo-anexo',
+                                    disabled: !canEdit.status,
+                                    error: errors
+                                }}
+                            />
+                        ))}
+
+                    {/* Observação do formulário */}
+                    {info && (
+                        <>
+                            <Card>
+                                <CardContent>
+                                    <Grid container spacing={4}>
+                                        <Grid item xs={12} md={12}>
+                                            <FormControl fullWidth>
+                                                <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 2 }}>
+                                                    Observações (campo de uso exclusivo da validadora)
+                                                </Typography>
+                                                <Input
+                                                    title='Observação (opcional)'
+                                                    name='info.obs'
+                                                    multiline
+                                                    rows={4}
+                                                    value={info.obs}
+                                                    disabled={!canEdit.status}
+                                                    control={control}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </>
+                    )}
+
+                    {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}
+                    {openModalStatus && (
+                        <DialogFormStatus
+                            title='Histórico do Formulário'
+                            text={`Listagem do histórico das movimentações do formulário ${id} do Fornecedor.`}
+                            id={id}
+                            parFormularioID={1} // Fornecedor
+                            formStatus={info.status}
+                            hasFormPending={hasFormPending}
+                            canChangeStatus={user.papelID == 1 && !hasFormPending && info.status > 30}
+                            openModal={openModalStatus}
+                            handleClose={() => setOpenModalStatus(false)}
+                            btnCancel
+                            btnConfirm
+                            handleSubmit={changeFormStatus}
+                        />
+                    )}
+
+                    {/* Dialog de confirmação de envio */}
+                    <DialogFormConclusion
+                        openModal={openModal}
+                        handleClose={() => {
+                            setOpenModal(false), setValidateForm(false)
+                        }}
+                        title='Concluir Formulário'
+                        text={`Deseja realmente concluir este formulário?`}
+                        info={info}
+                        canChange={!hasFormPending}
+                        register={register}
+                        setValue={setValue}
+                        getValues={getValues}
                         btnCancel
                         btnConfirm
-                        handleSubmit={changeFormStatus}
+                        btnConfirmColor='primary'
+                        conclusionForm={conclusionForm}
+                        listErrors={listErrors}
+                        canApprove={canApprove}
                     />
-                )}
-
-                {/* Dialog de confirmação de envio */}
-                <DialogFormConclusion
-                    openModal={openModal}
-                    handleClose={() => {
-                        setOpenModal(false), setValidateForm(false)
-                    }}
-                    title='Concluir Formulário'
-                    text={`Deseja realmente concluir este formulário?`}
-                    info={info}
-                    canChange={!hasFormPending}
-                    register={register}
-                    setValue={setValue}
-                    getValues={getValues}
-                    btnCancel
-                    btnConfirm
-                    btnConfirmColor='primary'
-                    conclusionForm={conclusionForm}
-                    listErrors={listErrors}
-                    canApprove={canApprove}
-                />
+                </Box>
             </form>
         </>
     )
