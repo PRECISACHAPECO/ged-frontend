@@ -25,6 +25,8 @@ import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 import FormNotification from './Dialogs/Notification/FormNotification'
 import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 import FormFornecedorProdutos from './FormFornecedorProdutos'
+import DateField from 'src/components/Form/DateField'
+import HeaderFields from './Header'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -42,6 +44,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [status, setStatus] = useState(null)
     const { createNewNotification } = useContext(NotificationContext)
     const [openModalStatus, setOpenModalStatus] = useState(false)
+    const [fieldsHeader, setFieldsHeader] = useState([])
     const [field, setField] = useState([])
     const [link, setLink] = useState(null)
     const [blocos, setBlocos] = useState([])
@@ -267,32 +270,32 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
-    const getNewData = () => {
-        try {
-            setLoading(true)
-            api.post(`${backRoute(staticUrl)}/new/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
-                console.log('getNewData: ', response.data)
+    // const getNewData = () => {
+    //     try {
+    //         setLoading(true)
+    //         api.post(`${backRoute(staticUrl)}/new/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
+    //             console.log('getNewData: ', response.data)
 
-                setField(response.data.fields)
-                setBlocos(response.data.blocos)
-                setInfo(response.data.info)
+    //             setField(response.data.fields)
+    //             setBlocos(response.data.blocos)
+    //             setInfo(response.data.info)
 
-                //* Insere os dados no formulário
-                reset(response.data)
+    //             //* Insere os dados no formulário
+    //             reset(response.data)
 
-                setCanEdit({
-                    status: true,
-                    message:
-                        'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
-                    messageType: 'info'
-                })
+    //             setCanEdit({
+    //                 status: true,
+    //                 message:
+    //                     'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
+    //                 messageType: 'info'
+    //             })
 
-                setLoading(false)
-            })
-        } catch (error) {
-            console.log('🚀 ~ error:', error)
-        }
-    }
+    //             setLoading(false)
+    //         })
+    //     } catch (error) {
+    //         console.log('🚀 ~ error:', error)
+    //     }
+    // }
 
     const getData = () => {
         setLoading(true)
@@ -302,6 +305,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     console.log('getData: ', response.data)
                     setLoading(false)
 
+                    setFieldsHeader(response.data.fieldsHeader)
                     setField(response.data.fields)
                     setProdutos(response.data.produtos)
                     setBlocos(response.data.blocos)
@@ -543,8 +547,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     const onSubmit = async (values, param = false) => {
-        console.log('🚀 ~ onSubmit: ', values)
-
         if (param.conclusion === true) {
             values['status'] = user && user.papelID == 1 ? param.status : 40 //? Seta o status somente se for fábrica
             values['obsConclusao'] = param.obsConclusao
@@ -558,6 +560,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
+        console.log('🚀 ~ onSubmit: ', data)
+        // return
 
         try {
             if (type == 'edit') {
@@ -788,7 +792,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     useEffect(() => {
-        type == 'new' ? getNewData() : getData()
+        type == 'edit' ? getData() : null
     }, [id, savingForm])
 
     useEffect(() => {
@@ -852,16 +856,19 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
                         {/* Header */}
                         <CardContent>
-                            <Fields
-                                register={register}
-                                errors={errors}
-                                setValue={setValue}
-                                control={control}
-                                fields={field}
-                                values={field}
-                                getAddressByCep={getAddressByCep}
-                                disabled={!canEdit.status}
-                            />
+                            {unidade && (
+                                <HeaderFields
+                                    modeloID={unidade.parFornecedorModeloID}
+                                    values={fieldsHeader}
+                                    fields={field}
+                                    disabled={!canEdit.status}
+                                    register={register}
+                                    errors={errors}
+                                    setValue={setValue}
+                                    control={control}
+                                    getAddressByCep={getAddressByCep}
+                                />
+                            )}
                         </CardContent>
                     </Card>
 

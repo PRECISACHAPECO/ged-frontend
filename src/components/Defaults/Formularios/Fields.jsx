@@ -75,76 +75,74 @@ const Fields = ({
     }, [])
 
     return (
-        <Grid container spacing={4}>
-            {fields &&
-                fields.map((field, index) => (
-                    <>
-                        {/* Autocomplete (int) */}
-                        {field && field.tipo === 'int' && field.tabela && (
-                            <Select
-                                xs={12}
-                                md={4}
-                                title={field.nomeCampo}
-                                name={`fields[${index}].${field.tabela}`}
-                                type={field.tabela}
-                                options={field.options}
-                                value={field?.[field.tabela]}
-                                mask={field.tabela}
-                                disabled={disabled || disabledField(field.nomeColuna)}
-                                register={register}
-                                setValue={setValue}
-                                control={control}
-                                errors={errors?.fields?.[index]?.[field.tabela]}
-                                handleRegistroEstabelecimento={setWatchRegistroEstabelecimento}
-                            />
-                        )}
+        // <Grid container spacing={4}>
+        fields &&
+        fields.map((field, index) => (
+            <>
+                {/* Autocomplete (int) */}
+                {field && field.tipo === 'int' && field.tabela && (
+                    <Select
+                        xs={12}
+                        md={4}
+                        title={field.nomeCampo}
+                        name={`fields[${index}].${field.tabela}`}
+                        type={field.tabela}
+                        options={field.options}
+                        value={field?.[field.tabela]}
+                        mask={field.tabela}
+                        disabled={disabled || disabledField(field.nomeColuna)}
+                        register={register}
+                        setValue={setValue}
+                        control={control}
+                        errors={errors?.fields?.[index]?.[field.tabela]}
+                        handleRegistroEstabelecimento={setWatchRegistroEstabelecimento}
+                    />
+                )}
 
-                        {/* Date */}
-                        {field && field.tipo == 'date' && (
-                            <DateField
-                                xs={12}
-                                md={4}
-                                title='Data da avaliação'
-                                disabled={disabled || disabledField(field.nomeColuna)}
-                                value={field?.[field.nomeColuna]}
-                                type={field.nomeColuna}
-                                name={`fields[${index}].${field.nomeColuna}`}
-                                errors={errors?.fields?.[index]?.[field.nomeColuna]}
-                                control={control}
-                                setDateFormat={setDateFormat}
-                                typeValidation='dataPassado'
-                                daysValidation={365}
-                                dateStatus={dateStatus}
-                                register={register}
-                            />
-                        )}
+                {/* Date */}
+                {field && field.tipo == 'date' && (
+                    <DateField
+                        xs={12}
+                        md={4}
+                        title='Data da avaliação'
+                        disabled={disabled || disabledField(field.nomeColuna)}
+                        value={field?.[field.nomeColuna]}
+                        type={field.nomeColuna}
+                        name={`fields[${index}].${field.nomeColuna}`}
+                        errors={errors?.fields?.[index]?.[field.nomeColuna]}
+                        control={control}
+                        setDateFormat={setDateFormat}
+                        typeValidation='dataPassado'
+                        daysValidation={365}
+                        dateStatus={dateStatus}
+                        register={register}
+                    />
+                )}
 
-                        {/* Textfield */}
-                        {field &&
-                            field.tipo == 'string' &&
-                            (field.nomeColuna != 'numeroRegistro' || watchRegistroEstabelecimento > 1) && (
-                                <Input
-                                    xs={12}
-                                    md={4}
-                                    title={field.nomeCampo}
-                                    name={`fields[${index}].${field.nomeColuna}`}
-                                    value={field?.[field.nomeColuna]}
-                                    type={field.nomeColuna}
-                                    getAddressByCep={getAddressByCep}
-                                    mask={getMaskForField(field.nomeColuna)}
-                                    disabled={
-                                        disabled || disabledField(field.nomeColuna) || field.nomeColuna == 'cnpj'
-                                            ? true
-                                            : false
-                                    }
-                                    control={control}
-                                    // errors field[index] nomeColuna
-                                    errors={errors?.fields?.[index]?.[field.nomeColuna]}
-                                />
-                            )}
-                    </>
-                ))}
-        </Grid>
+                {/* Textfield */}
+                {field &&
+                    field.tipo == 'string' &&
+                    (field.nomeColuna != 'numeroRegistro' || watchRegistroEstabelecimento > 1) && (
+                        <Input
+                            xs={12}
+                            md={4}
+                            title={field.nomeCampo}
+                            name={`fields[${index}].${field.nomeColuna}`}
+                            value={field?.[field.nomeColuna]}
+                            type={field.nomeColuna}
+                            getAddressByCep={getAddressByCep}
+                            mask={getMaskForField(field.nomeColuna)}
+                            disabled={
+                                disabled || disabledField(field.nomeColuna) || field.nomeColuna == 'cnpj' ? true : false
+                            }
+                            control={control}
+                            // errors field[index] nomeColuna
+                            errors={errors?.fields?.[index]?.[field.nomeColuna]}
+                        />
+                    )}
+            </>
+        ))
+        // </Grid>
     )
 }
 

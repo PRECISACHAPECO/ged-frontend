@@ -33,7 +33,7 @@ const DateField = ({
                     control={control}
                     render={({ field }) => (
                         <TextField
-                            type='date'
+                            type={type ?? 'date'}
                             size='small'
                             label={title}
                             disabled={disabled ? true : false}
