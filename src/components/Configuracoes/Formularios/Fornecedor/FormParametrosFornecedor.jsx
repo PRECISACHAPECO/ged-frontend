@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef, useMemo } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button, Card, CardContent, Grid, List, Typography, Box } from '@mui/material'
 import { RouteContext } from 'src/context/RouteContext'
@@ -12,6 +12,7 @@ import Loading from 'src/components/Loading'
 import Icon from 'src/@core/components/icon'
 
 //* Custom components
+import Select from 'src/components/Form/Select'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import CheckLabel from 'src/components/Form/CheckLabel'
@@ -19,13 +20,13 @@ import Blocos from './Blocos'
 import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
 import FormItem from 'src/components/Cadastros/Item/FormItem'
 import HelpText from 'src/components/Defaults/HelpText'
-import { IndeterminateCheckBoxOutlined } from '@mui/icons-material'
+// import { IndeterminateCheckBoxOutlined } from '@mui/icons-material'
 
-import JoditEditor from 'jodit-react'
+// import JoditEditor from 'jodit-react'
 
 const FormParametrosFornecedor = ({ id }) => {
     //* Editor de texto
-    const editor = useRef(null)
+    // const editor = useRef(null)
     // const config = useMemo(
     //     {
     //         readonly: false, // all options from https://xdsoft.net/jodit/docs/,
@@ -39,6 +40,7 @@ const FormParametrosFornecedor = ({ id }) => {
     const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
     const [allOptions, setAllOptions] = useState(null)
+    const [profissionais, setProfissionais] = useState(null)
     const [blocks, setBlocks] = useState()
     const [orientacoes, setOrientacoes] = useState()
     const [openModalConfirmScore, setOpenModalConfirmScore] = useState(false)
@@ -88,7 +90,7 @@ const FormParametrosFornecedor = ({ id }) => {
         formState: { errors }
     } = useForm()
 
-    const [textCabecalho, setTextCabecalho] = useState('')
+    // const [textCabecalho, setTextCabecalho] = useState('')
 
     const onSubmit = async values => {
         const data = {
@@ -182,6 +184,8 @@ const FormParametrosFornecedor = ({ id }) => {
         setChange(!change)
     }
 
+    console.log('allOptions:', allOptions)
+
     const removeBlock = (block, index) => {
         // Verifica se o bloco possui itens com pendência
         let canDelete = true
@@ -240,6 +244,20 @@ const FormParametrosFornecedor = ({ id }) => {
         setBlocks(newBlock)
     }
 
+    const getProfissionaisModelo = async () => {
+        const response = await api.post(`/cadastros/profissional/getProfissionaisAssinatura`, {
+            formularioID: 1, // fornecedor
+            modeloID: id
+        })
+        const updatedModel = { ...model }
+        updatedModel.profissionaisPreenchem = response.data.preenche
+        updatedModel.profissionaisAprovam = response.data.aprova
+        reset({
+            ...getValues(),
+            model: updatedModel
+        })
+    }
+
     const getData = () => {
         try {
             if (type === 'new') {
@@ -261,12 +279,13 @@ const FormParametrosFornecedor = ({ id }) => {
                     setAllOptions({
                         itens: response.data.options?.itens
                     })
+                    setProfissionais(response.data.options?.profissionais)
                     setOrientacoes(response.data.orientations)
-
-                    setTextCabecalho(response.data.model.cabecalho)
 
                     //* Insere os dados no formulário
                     reset(response.data)
+
+                    getProfissionaisModelo()
 
                     setTimeout(() => {
                         response.data.blocks &&
@@ -341,7 +360,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                     register={register}
                                 />
 
-                                {/* <Input
+                                <Input
                                     xs={12}
                                     md={12}
                                     className='order-4'
@@ -353,9 +372,42 @@ const FormParametrosFornecedor = ({ id }) => {
                                     rows={4}
                                     control={control}
                                     helpText='Texto que será exibido no cabeçalho do formulário. Adicione aqui instruções e orientações para auxiliar o preenchimento pelo fornecedor.'
-                                /> */}
+                                />
 
-                                <Grid item xs={12}>
+                                {/* Profissionais que preenchem */}
+                                {profissionais && (
+                                    <>
+                                        <Select
+                                            xs={12}
+                                            md={6}
+                                            className='order-5'
+                                            multiple
+                                            title='Profissionais que preenchem'
+                                            name={`model.profissionaisPreenchem`}
+                                            options={profissionais ?? []}
+                                            value={model?.profissionaisPreenchem ?? []}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                        />
+
+                                        <Select
+                                            xs={12}
+                                            md={6}
+                                            className='order-5'
+                                            multiple
+                                            title='Profissionais que aprovam'
+                                            name={`model.profissionaisAprovam`}
+                                            options={profissionais ?? []}
+                                            value={model?.profissionaisAprovam ?? []}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                        />
+                                    </>
+                                )}
+
+                                {/* <Grid item xs={12}>
                                     <JoditEditor
                                         ref={editor}
                                         value={textCabecalho}
@@ -375,7 +427,7 @@ const FormParametrosFornecedor = ({ id }) => {
                                             setTextCabecalho(newContent)
                                         }}
                                     />
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </CardContent>
                     </Card>

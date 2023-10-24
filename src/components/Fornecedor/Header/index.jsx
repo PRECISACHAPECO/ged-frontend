@@ -6,16 +6,10 @@ import DateField from 'src/components/Form/DateField'
 import Select from 'src/components/Form/Select'
 import { dateConfig } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
-import { backRoute } from 'src/configs/defaultConfigs'
-import Router from 'next/router'
 
 const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, setValue, control, getAddressByCep }) => {
     const [dateStatus, setDateStatus] = useState({})
     const [profissionaisPreenche, setProfissionaisPreenche] = useState([])
-    const [profissionaisAprova, setProfissionaisAprova] = useState([])
-    const router = Router
-    const staticUrl = backRoute(router.pathname)
-    console.log('🚀 ~ staticUrl:', staticUrl)
 
     const setDateFormat = (type, name, value, numDays) => {
         const newDate = new Date(value)
@@ -32,7 +26,6 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
             modeloID: modeloID
         })
         setProfissionaisPreenche(response.data.preenche)
-        setProfissionaisAprova(response.data.aprova)
     }
 
     useEffect(() => {
@@ -44,7 +37,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
             {/* Data de abertura */}
             <DateField
                 xs={12}
-                md={4}
+                md={2}
                 title='Data da avaliação'
                 name={`fieldsHeader.dataAvaliacao`}
                 type='date'
@@ -62,7 +55,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
             {/* Hora de Abertura */}
             <Input
                 xs={12}
-                md={4}
+                md={2}
                 title='Hora da avaliação'
                 name={`fieldsHeader.horaAvaliacao`}
                 type='time'
@@ -76,7 +69,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
             <Select
                 xs={12}
                 md={4}
-                title='Profissional responsável'
+                title='Profissional preenchimento'
                 name={`fieldsHeader.profissionalPreenche`}
                 type='string'
                 options={profissionaisPreenche}

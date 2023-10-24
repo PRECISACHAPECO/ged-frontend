@@ -27,6 +27,7 @@ import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 import FormFornecedorProdutos from './FormFornecedorProdutos'
 import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
+import FooterFields from './Footer'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -45,6 +46,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const { createNewNotification } = useContext(NotificationContext)
     const [openModalStatus, setOpenModalStatus] = useState(false)
     const [fieldsHeader, setFieldsHeader] = useState([])
+    const [fieldsFooter, setFieldsFooter] = useState([])
     const [field, setField] = useState([])
     const [link, setLink] = useState(null)
     const [blocos, setBlocos] = useState([])
@@ -306,6 +308,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     setLoading(false)
 
                     setFieldsHeader(response.data.fieldsHeader)
+                    setFieldsFooter(response.data.fieldsFooter)
                     setField(response.data.fields)
                     setProdutos(response.data.produtos)
                     setBlocos(response.data.blocos)
@@ -954,6 +957,20 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 </CardContent>
                             </Card>
                         </>
+                    )}
+
+                    {/* Rodapé com data, hora e assinatura */}
+                    {unidade && (
+                        <FooterFields
+                            modeloID={unidade.parFornecedorModeloID}
+                            values={fieldsFooter}
+                            fields={field}
+                            disabled={!canEdit.status}
+                            register={register}
+                            errors={errors}
+                            setValue={setValue}
+                            control={control}
+                        />
                     )}
 
                     {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}
