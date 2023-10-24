@@ -1,10 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
 import InputAdornment from '@mui/material/InputAdornment'
-import { OutlinedInput, TextField } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Icon from 'src/@core/components/icon'
 import Input from 'src/components/Form/Input'
@@ -13,6 +10,8 @@ import { validationCPF } from 'src/configs/validations'
 import Alert from '@mui/material/Alert'
 import DateField from 'src/components/Form/DateField'
 import { api } from 'src/configs/api'
+import { Button, TextField, FormControl } from '@mui/material'
+import DialogNewPasswordProfessional from 'src/components/Defaults/Dialogs/DialogNewPasswordProfessional'
 
 const Fields = ({
     control,
@@ -28,9 +27,11 @@ const Fields = ({
     userExistVerifyCPF,
     setUserExistVerifyCPF,
     resetFields,
-    routeVeryfyCNP
+    routeVeryfyCNP,
+    userExistDefault
 }) => {
     const [lenghtPassword, setLenghtPassword] = useState(null)
+    const [openModalNewPassword, setOpenModalNewPassword] = useState(false)
 
     const [values, setValues] = useState({
         showPassword: false,
@@ -148,7 +149,7 @@ const Fields = ({
                 />
                 <Input
                     xs={12}
-                    md={3}
+                    md={userNewVerifyCPF ? 3 : 4}
                     title='Matricula'
                     name='fields.matricula'
                     control={control}
@@ -156,17 +157,17 @@ const Fields = ({
                 />
                 <CheckLabel
                     xs={12}
-                    md={3}
+                    md={4}
                     onClick={handleClickIsUser}
                     title='Usuário do sistema'
                     name='isUsuario'
                     value={data.fields.usuarioID > 0 ? true : false}
                     register={register}
                     disabled={getValues('fields').email && validationCPF(getValues('fields').cpf) ? false : true}
-                    helpText='Preencha o CPF(Deve ser um CPF válido) e email para habilitar essa função.'
+                    helpText='Preencha com um CPF e email válidos para habilitar esta função'
                 />
                 {userExistVerifyCPF && (
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12}>
                         <Alert severity='warning' sx={{ mt: 2 }}>
                             <Typography variant='body2'>
                                 Esse profissional já possui acesso ao sistema. A senha não será alterada!
@@ -252,6 +253,28 @@ const Fields = ({
                         </Grid>
                     </>
                 )}
+                {/* Alterar senha profissional */}
+                {(userExistDefault || userNewVerifyCPF) && (
+                    <Grid item xs={12} sm={4}>
+                        <FormControl fullWidth>
+                            <Button
+                                variant='outlined'
+                                color='primary'
+                                size='medium'
+                                startIcon={<Icon icon='uil:padlock' />}
+                                onClick={() => setOpenModalNewPassword(true)}
+                            >
+                                Alterar senha
+                            </Button>
+                        </FormControl>
+                    </Grid>
+                )}
+                {/* Modal trocar senha */}
+                <DialogNewPasswordProfessional
+                    openModal={openModalNewPassword}
+                    handleClose={() => setOpenModalNewPassword(false)}
+                    setOpenModalNewPassword={setOpenModalNewPassword}
+                />
             </>
         )
     )

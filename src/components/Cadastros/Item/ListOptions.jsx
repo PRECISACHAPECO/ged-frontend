@@ -19,7 +19,6 @@ const ListOptions = ({ data, addAnexo, register, control, errors, handleRemoveAn
     const [hasAnexo, setHasAnexo] = useState(getInitialAnexos())
 
     const handleChangeAnexo = i => {
-        console.log('🚀 ~ dddddddddddddddddddddddddyhyuyudddddddi:', i)
         const copyHasAnexo = [...hasAnexo]
         copyHasAnexo[i] = !copyHasAnexo[i]
         setHasAnexo(copyHasAnexo)
@@ -49,10 +48,11 @@ const ListOptions = ({ data, addAnexo, register, control, errors, handleRemoveAn
                             </Box>
                             <Box>
                                 <CheckLabel
-                                    title='Bloqueia formulário'
+                                    title='Gera Não Conformidade (NC)'
                                     name={`fields.opcoes[${index}].bloqueiaFormulario`}
                                     value={item.bloqueiaFormulario}
                                     register={register}
+                                    helpText='Se marcada esta resposta, bloqueia a aprovação do formulário e obrigatoriamente gera uma não conformidade (Plano de ação)'
                                 />
                             </Box>
                             <Box>

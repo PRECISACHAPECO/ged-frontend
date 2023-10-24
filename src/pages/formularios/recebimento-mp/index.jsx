@@ -49,7 +49,8 @@ const RecebimentoMP = () => {
         {
             headerName: 'Data',
             field: 'data',
-            size: 0.1
+            size: 0.1,
+            type: 'date'
         },
         {
             headerName: 'Profissional',

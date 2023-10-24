@@ -139,7 +139,8 @@ const Fornecedor = () => {
                   {
                       headerName: 'Data da Avaliação',
                       field: 'data',
-                      size: 1
+                      size: 1,
+                      type: 'date'
                   },
                   {
                       headerName: 'Cidade',
@@ -180,7 +181,8 @@ const Fornecedor = () => {
                   {
                       headerName: 'Data da Avaliação',
                       field: 'data',
-                      size: 1
+                      size: 1,
+                      type: 'date'
                   },
                   {
                       headerName: 'Cidade',

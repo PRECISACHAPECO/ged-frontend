@@ -17,7 +17,6 @@ const renderStats = (data) => {
         router.push(`/formularios/fornecedor/?s=${sale.title}`)
     }
 
-    console.log("🚀 ~ data:", data)
     return data.map((sale, index) => (
         <Grid item xs={6} sm={3} key={index}>
             <Box key={index} sx={{ display: 'flex', alignItems: 'center' }} onClick={() => handleFilterStatus(sale)} className='cursor-pointer'>

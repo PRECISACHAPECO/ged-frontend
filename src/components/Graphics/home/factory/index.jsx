@@ -47,7 +47,7 @@ const Factory = () => {
                 <Grid container spacing={6} className='match-height'>
                     {/* Por estatus em blocos separadosç */}
                     {dataFornecedor.map(row => (
-                        <Grid item xs={6} md={3}>
+                        <Grid item xs={12} md={3}>
                             <CardStatisticsVertical
                                 stats={row.stats}
                                 color={row.color}

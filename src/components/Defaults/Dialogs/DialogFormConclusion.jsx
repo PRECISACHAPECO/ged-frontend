@@ -38,7 +38,8 @@ const DialogFormConclusion = ({
     btnConfirm,
     register,
     setValue,
-    listErrors
+    listErrors,
+    canApprove
 }) => {
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState({})
@@ -75,9 +76,16 @@ const DialogFormConclusion = ({
                                     </Alert>
                                 )}
 
-                                {listErrors && !listErrors.status && (
+                                {listErrors && user.papelID == 2 && !listErrors.status && (
                                     <Alert severity='warning' sx={{ mt: 2 }}>
                                         Após concluir o formulário, o mesmo não poderá mais ser alterado!
+                                    </Alert>
+                                )}
+
+                                {!canApprove && (
+                                    <Alert severity='error' sx={{ mt: 2 }}>
+                                        Este formulário não pode ser aprovado pois possui resposta que gera não
+                                        conformidade
                                     </Alert>
                                 )}
 
@@ -93,7 +101,8 @@ const DialogFormConclusion = ({
                                         {
                                             value: 70,
                                             color: 'success',
-                                            label: 'Aprovado'
+                                            label: 'Aprovado',
+                                            disabled: canApprove ? false : true
                                         },
                                         {
                                             value: 60,

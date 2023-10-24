@@ -15,8 +15,6 @@ const Block = ({
     errors,
     disabled
 }) => {
-    console.log('🚀 ~ BLOCK:', index, values)
-
     return (
         <>
             <Card key={index} sx={{ mt: 4 }}>

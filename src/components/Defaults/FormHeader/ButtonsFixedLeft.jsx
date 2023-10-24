@@ -1,6 +1,7 @@
 import { Box, Button } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import CustomChip from 'src/@core/components/mui/chip'
+import { backRoute } from 'src/configs/defaultConfigs'
 
 const ButtonsFixedLeft = ({
     routes,
@@ -14,6 +15,7 @@ const ButtonsFixedLeft = ({
     status,
     setId,
     router,
+    type,
     onclickDelete
 }) => {
     return (
@@ -22,7 +24,9 @@ const ButtonsFixedLeft = ({
                 <Button
                     onClick={() => {
                         setId(null)
-                        router.push(currentUrl)
+                        if (type == 'new') {
+                            router.push(currentUrl)
+                        }
                     }}
                     type='button'
                     variant='outlined'

@@ -1,4 +1,4 @@
-// import * as React from 'react'
+import * as React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -10,7 +10,7 @@ import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
 //* Custom components
 import Input from 'src/components/Form/Input'
 import AnexoModeView from 'src/components/Anexos/ModeView'
-import { Alert, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
+import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
 import { backRoute, toastMessage, statusDefault } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
@@ -25,9 +25,12 @@ import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
 import FormNotification from './Dialogs/Notification/FormNotification'
 import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 import FormFornecedorProdutos from './FormFornecedorProdutos'
+import DateField from 'src/components/Form/DateField'
+import HeaderFields from './Header'
+import FooterFields from './Footer'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
-    const { user, loggedUnity } = useContext(AuthContext)
+    const { menu, user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
     const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
     const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
@@ -35,12 +38,15 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
+    const [canApprove, setCanApprove] = useState(true) //? Se true, pode aprovar o formulário
     const [unidade, setUnidade] = useState(null)
     const [produtos, setProdutos] = useState([])
     const [grupoAnexo, setGrupoAnexo] = useState([])
     const [status, setStatus] = useState(null)
     const { createNewNotification } = useContext(NotificationContext)
     const [openModalStatus, setOpenModalStatus] = useState(false)
+    const [fieldsHeader, setFieldsHeader] = useState([])
+    const [fieldsFooter, setFieldsFooter] = useState([])
     const [field, setField] = useState([])
     const [link, setLink] = useState(null)
     const [blocos, setBlocos] = useState([])
@@ -62,6 +68,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
+    console.log('🚀 ~ staticUrl:', staticUrl)
 
     const {
         reset,
@@ -162,6 +169,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         toast.success('Link copiado com sucesso!')
     }
 
+    const canConfigForm = () => {
+        let canConfig = false
+        menu.map(divisor => {
+            divisor.menu.map(menu_ => {
+                if (menu_.submenu && menu_.submenu.length > 0) {
+                    menu_.submenu.map(submenu => {
+                        if (submenu.rota == '/configuracoes/formularios') canConfig = true
+                    })
+                }
+            })
+        })
+        return canConfig
+    }
+
+    const goToFormConfig = () => {
+        setId(unidade.parFornecedorModeloID) //? ID do modelo do formulário
+        router.push(`/configuracoes/formularios/fornecedor/`)
+    }
+
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
     const objNovoFormulario = {
         id: 1,
@@ -215,12 +241,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         unidadeID: loggedUnity.unidadeID,
         icon: 'fluent:print-24-regular'
     }
+    const objFormConfig = {
+        id: 5,
+        name: 'Configurações do formulário',
+        description: 'Alterar as configurações do modelo de formulário.',
+        // component: <NewFornecedor />,
+        route: null,
+        type: null,
+        action: goToFormConfig,
+        modal: false,
+        icon: 'bi:gear',
+        identification: null
+    }
     // Monta array de ações baseado nas permissões
     const actionsData = []
     if (user.papelID == 1) actionsData.push(objNovoFormulario)
     actionsData.push(objGerarNotificacao)
     actionsData.push(objCopiarLink)
     actionsData.push(objRelatorio)
+    if (user.papelID == 1 && canConfigForm()) actionsData.push(objFormConfig)
 
     const verifyFormPending = async () => {
         try {
@@ -233,66 +272,81 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
-    const getNewData = () => {
-        try {
-            setLoading(true)
-            api.post(`${backRoute(staticUrl)}/new/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
-                console.log('getNewData: ', response.data)
+    // const getNewData = () => {
+    //     try {
+    //         setLoading(true)
+    //         api.post(`${backRoute(staticUrl)}/new/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
+    //             console.log('getNewData: ', response.data)
 
-                setField(response.data.fields)
-                setBlocos(response.data.blocos)
-                setInfo(response.data.info)
+    //             setField(response.data.fields)
+    //             setBlocos(response.data.blocos)
+    //             setInfo(response.data.info)
 
-                //* Insere os dados no formulário
-                reset(response.data)
+    //             //* Insere os dados no formulário
+    //             reset(response.data)
 
-                setCanEdit({
-                    status: true,
-                    message:
-                        'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
-                    messageType: 'info'
-                })
+    //             setCanEdit({
+    //                 status: true,
+    //                 message:
+    //                     'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
+    //                 messageType: 'info'
+    //             })
 
-                setLoading(false)
-            })
-        } catch (error) {
-            console.log('🚀 ~ error:', error)
-        }
-    }
+    //             setLoading(false)
+    //         })
+    //     } catch (error) {
+    //         console.log('🚀 ~ error:', error)
+    //     }
+    // }
 
     const getData = () => {
         setLoading(true)
-        if (id) {
-            api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID }).then(response => {
-                console.log('getData: ', response.data)
+        try {
+            api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID })
+                .then(response => {
+                    console.log('getData: ', response.data)
+                    setLoading(false)
 
-                setField(response.data.fields)
-                setProdutos(response.data.produtos)
-                setBlocos(response.data.blocos)
-                setGrupoAnexo(response.data.grupoAnexo)
-                setInfo(response.data.info)
-                setUnidade(response.data.unidade)
-                setLink(response.data.link)
-                setMovimentacao(response.data.ultimaMovimentacao)
+                    setFieldsHeader(response.data.fieldsHeader)
+                    setFieldsFooter(response.data.fieldsFooter)
+                    setField(response.data.fields)
+                    setProdutos(response.data.produtos)
+                    setBlocos(response.data.blocos)
+                    setGrupoAnexo(response.data.grupoAnexo)
+                    setInfo(response.data.info)
+                    setUnidade(response.data.unidade)
+                    setLink(response.data.link)
+                    setMovimentacao(response.data.ultimaMovimentacao)
+                    verifyIfCanAproveForm(response.data.blocos) //? Verifica se há alguma resposta que bloqueie o formulário, se sim, o mesmo não pode ser aprovado
 
-                //* Insere os dados no formulário
-                reset(response.data)
+                    //* Insere os dados no formulário
+                    reset(response.data)
 
-                let objStatus = statusDefault[response?.data?.info?.status]
-                setStatus(objStatus)
+                    let objStatus = statusDefault[response?.data?.info?.status]
+                    setStatus(objStatus)
 
-                setCanEdit({
-                    status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
-                    message:
-                        user.papelID == 2
-                            ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
-                            : 'Somente o fornecedor pode alterar as informações deste formulário!',
-                    messageType: user.papelID == 2 ? 'warning' : 'info'
+                    setCanEdit({
+                        status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
+                        message:
+                            user.papelID == 2 && response.data.info.status >= 40
+                                ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
+                                : user.papelID == 1 && response.data.info.status < 40
+                                ? 'Somente o fornecedor pode alterar as informações deste formulário!'
+                                : user.papelID == 1 && response.data.info.status == 40
+                                ? 'Este formulário está aguardando aprovação'
+                                : null,
+                        messageType: user.papelID == 2 ? 'warning' : 'info'
+                    })
+
+                    verifyFormPending()
                 })
-
-                verifyFormPending()
-                setLoading(false)
-            })
+                .catch(error => {
+                    console.log('🚀 ~ error:', error)
+                    setLoading(false)
+                })
+        } catch (error) {
+            console.log('🚀 ~ error:', error)
+            setLoading(false)
         }
     }
 
@@ -354,7 +408,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     item.respostaConfig.anexosSolicitados.length > 0
                 ) {
                     item.respostaConfig.anexosSolicitados.forEach((anexo, indexAnexo) => {
-                        if (anexo.obrigatorio == 1 && anexo.anexos.length == 0) {
+                        if (anexo.obrigatorio == 1 && anexo.anexos && anexo.anexos.length == 0) {
                             setError(
                                 `blocos[${indexBlock}].itens[${indexItem}].respostaConfig.anexosSolicitados[${indexAnexo}].anexos`,
                                 {
@@ -428,6 +482,18 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         checkErrors()
         setOpenModal(true)
         setValidateForm(true)
+    }
+
+    const verifyIfCanAproveForm = blocos => {
+        let tempCanApprove = true
+        blocos.forEach(block => {
+            block.itens.forEach(item => {
+                if (item.respostaConfig && item.respostaConfig.bloqueiaFormulario == 1) {
+                    tempCanApprove = false
+                }
+            })
+        })
+        setCanApprove(tempCanApprove)
     }
 
     const conclusionForm = async values => {
@@ -551,29 +617,32 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 .post(`${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}`, formData)
                 .then(response => {
                     setLoadingFileProduct(false)
-                    console.log('response: ', response.data)
 
-                    toast.success('Anexo adicionado com sucesso!')
+                    //* Submete formulário pra atualizar configurações dos produtos
+                    const values = getValues()
+                    onSubmit(values)
 
-                    //? Atualiza produtos
-                    const updatedProdutos = produtos.map(produto => {
-                        if (produto.produtoID == item.produtoID) {
-                            return {
-                                ...produto,
-                                produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
-                                    if (row.produtoAnexoID == item.produtoAnexoID) {
-                                        return {
-                                            ...row,
-                                            anexos: [...row.anexos, ...response.data]
-                                        }
-                                    }
-                                    return row
-                                })
-                            }
-                        }
-                        return produto
-                    })
-                    setProdutos(updatedProdutos)
+                    // toast.success('Anexo adicionado com sucesso!')
+
+                    // //? Atualiza produtos
+                    // const updatedProdutos = produtos.map(produto => {
+                    //     if (produto.produtoID == item.produtoID) {
+                    //         return {
+                    //             ...produto,
+                    //             produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
+                    //                 if (row.produtoAnexoID == item.produtoAnexoID) {
+                    //                     return {
+                    //                         ...row,
+                    //                         anexos: [...row.anexos, ...response.data]
+                    //                     }
+                    //                 }
+                    //                 return row
+                    //             })
+                    //         }
+                    //     }
+                    //     return produto
+                    // })
+                    // setProdutos(updatedProdutos)
                 })
                 .catch(error => {
                     setLoadingFileProduct(false)
@@ -600,27 +669,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 .then(response => {
                     setLoadingFileGroup(false)
 
-                    toast.success('Anexo adicionado com sucesso!')
-
-                    //? Atualiza grupoAnexo
-                    const updatedGrupoAnexo = grupoAnexo.map(grupo => {
-                        if (grupo.grupoAnexoID == item.grupoAnexoID) {
-                            return {
-                                ...grupo,
-                                itens: grupo.itens.map(row => {
-                                    if (row.grupoAnexoItemID == item.grupoAnexoItemID) {
-                                        return {
-                                            ...row,
-                                            anexos: [...row.anexos, ...response.data]
-                                        }
-                                    }
-                                    return row
-                                })
-                            }
-                        }
-                        return grupo
-                    })
-                    setGrupoAnexo(updatedGrupoAnexo)
+                    //* Submete formulário pra atualizar configurações dos grupos
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     setLoadingFileGroup(false)
@@ -643,53 +694,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append(`parFornecedorModeloBlocoID`, item.parFornecedorModeloBlocoID ?? null)
             formData.append(`itemOpcaoAnexoID`, item.itemOpcaoAnexoID ?? null)
 
-            // console.log('🚀 ~ handleFileSelectItem ~ item:', item)
-            // return
-
             await api
                 .post(`${staticUrl}/saveAnexo/${id}/item/${user.usuarioID}/${unidade.unidadeID}`, formData)
                 .then(response => {
                     setLoadingFileItem(false)
 
-                    toast.success('Anexo adicionado com sucesso!')
-
-                    //? Atualiza item
-                    const updatedItem = blocos.map(bloco => {
-                        if (bloco.parFornecedorModeloBlocoID == item.parFornecedorModeloBlocoID) {
-                            return {
-                                ...bloco,
-                                itens: bloco.itens.map(row => {
-                                    return {
-                                        ...row,
-                                        respostaConfig: {
-                                            ...row.respostaConfig,
-                                            anexosSolicitados: row.respostaConfig.anexosSolicitados.map(anexo => {
-                                                if (anexo.itemOpcaoAnexoID == item.itemOpcaoAnexoID) {
-                                                    return {
-                                                        ...anexo,
-                                                        anexos: [...anexo.anexos, ...response.data]
-                                                    }
-                                                }
-                                                return anexo
-                                            })
-                                        }
-                                    }
-                                })
-                            }
-                        }
-                        return bloco
-                    })
-                    setBlocos(updatedItem)
+                    //* Submete formulário pra atualizar configurações dos itens
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     setLoadingFileItem(false)
-                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!!!!')
                 })
         }
     }
 
     //? Função que atualiza os anexos solicitados no item, quando altera a resposta
     const setItemResposta = async value => {
+        console.log('🚀 ~ setItemResposta ~ value:', value)
         // envia pro backend verificar as configurações dessa resposta (se possui anexos, se bloqueia formulário e se possui obs)
         try {
             const response = await api.post('/cadastros/item/getItemConfigs', {
@@ -715,6 +738,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     })
                 }
             })
+            console.log('🚀 ~ updatedBlocos:', updatedBlocos)
 
             setBlocos(updatedBlocos)
         } catch (error) {
@@ -724,30 +748,12 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
     // Remove um anexo do array de anexos
     const handleRemoveAnexoProduct = async item => {
-        console.log('🚀 ~ item:', item)
         if (item) {
             await api
                 .delete(`${staticUrl}/deleteAnexo/${id}/${item.anexoID}/${unidade.unidadeID}/${user.usuarioID}/produto`)
                 .then(response => {
-                    toast.success('Anexo removido com sucesso!')
-
-                    //? Atualiza produtos
-                    const removedAnexoID = response.data
-                    const updatedProdutos = produtos.map(produto => {
-                        return {
-                            ...produto,
-                            produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
-                                return {
-                                    ...row,
-                                    anexos: row.anexos.filter(anexo => anexo.anexoID != removedAnexoID)
-                                }
-
-                                return row
-                            })
-                        }
-                        return produto
-                    })
-                    setProdutos(updatedProdutos)
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
@@ -763,24 +769,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     `${staticUrl}/deleteAnexo/${id}/${item.anexoID}/${unidade.unidadeID}/${user.usuarioID}/grupo-anexo`
                 )
                 .then(response => {
-                    toast.success('Anexo removido com sucesso!')
-
-                    //? Atualiza grupo de anexo
-                    const removedAnexoID = response.data
-                    const updatedGrupoAnexo = grupoAnexo.map(grupo => {
-                        return {
-                            ...grupo,
-                            itens: grupo.itens.map(row => {
-                                return {
-                                    ...row,
-                                    anexos: row.anexos.filter(anexo => anexo.anexoID != removedAnexoID)
-                                }
-                                return row
-                            })
-                        }
-                        return grupo
-                    })
-                    setGrupoAnexo(updatedGrupoAnexo)
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
@@ -794,31 +784,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             await api
                 .delete(`${staticUrl}/deleteAnexo/${id}/${item.anexoID}/${unidade.unidadeID}/${user.usuarioID}/item`)
                 .then(response => {
-                    toast.success('Anexo removido com sucesso!')
-
-                    //? Atualiza item
-                    const removedAnexoID = response.data
-                    const updatedItem = blocos.map(bloco => {
-                        return {
-                            ...bloco,
-                            itens: bloco.itens.map(row => {
-                                return {
-                                    ...row,
-                                    respostaConfig: {
-                                        ...row.respostaConfig,
-                                        anexosSolicitados: row.respostaConfig.anexosSolicitados.map(anexo => {
-                                            return {
-                                                ...anexo,
-                                                anexos: anexo.anexos.filter(anexo => anexo.anexoID != removedAnexoID)
-                                            }
-                                            return anexo
-                                        })
-                                    }
-                                }
-                            })
-                        }
-                    })
-                    setBlocos(updatedItem)
+                    //* Submete formulário pra atualizar configurações dos itens
+                    const values = getValues()
+                    onSubmit(values)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
@@ -827,7 +795,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     useEffect(() => {
-        type == 'new' ? getNewData() : getData()
+        type == 'edit' ? getData() : null
     }, [id, savingForm])
 
     useEffect(() => {
@@ -838,186 +806,212 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         <>
             <Loading show={isLoading} />
             <form onSubmit={handleSubmit(onSubmit)}>
-                {/* Mensagem */}
-                {!canEdit.status && (
-                    <Alert severity='warning' sx={{ mb: 2 }}>
-                        {canEdit.message}
-                    </Alert>
-                )}
+                <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
+                    {/* Mensagem */}
+                    {canEdit.message && <Alert severity='warning'>{canEdit.message}</Alert>}
 
-                {/* Última movimentação do formulário */}
-                {movimentacao && (
-                    <Alert severity='info' sx={{ mb: 2 }}>
-                        {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
-                        {movimentacao.observacao && (
-                            <p>
-                                <br />
-                                Mensagem: "{movimentacao.observacao}"
-                            </p>
-                        )}
-                    </Alert>
-                )}
+                    {/* Última movimentação do formulário */}
+                    {movimentacao && (
+                        <Alert severity='info'>
+                            {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
+                            {movimentacao.observacao && (
+                                <p>
+                                    <br />
+                                    Mensagem: "{movimentacao.observacao}"
+                                </p>
+                            )}
+                        </Alert>
+                    )}
 
-                {/* Card Header */}
-                <Card>
-                    <FormHeader
-                        btnCancel
-                        btnSave={user.papelID == 2 && info.status < 40}
-                        btnSend={
-                            (user.papelID == 1 && type == 'edit' && info.status >= 40) ||
-                            (user.papelID == 2 && info.status < 40)
-                        }
-                        btnPrint={type == 'edit' ? true : false}
-                        actionsData={actionsData}
-                        actions
-                        handleSubmit={() => handleSubmit(onSubmit)}
-                        handleSend={handleSendForm}
-                        iconConclusion={'mdi:check-bold'}
-                        titleConclusion={'Concluir Formulário'}
-                        title='Fornecedor'
-                        btnStatus={type == 'edit' ? true : false}
-                        handleBtnStatus={() => setOpenModalStatus(true)}
-                        type={type}
-                        status={status}
-                    />
+                    {/* Cabeçalho do modelo */}
+                    {info && info.cabecalhoModelo != '' && (
+                        <Card>
+                            <CardContent>
+                                <Typography variant='subtitle1' sx={{ mb: 2 }}>
+                                    {info.cabecalhoModelo}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    )}
 
-                    {/* Header */}
-                    <CardContent>
-                        <Fields
+                    {/* Card Header */}
+                    <Card>
+                        <FormHeader
+                            btnCancel
+                            btnSave={user.papelID == 2 && info.status < 40}
+                            btnSend={
+                                (user.papelID == 1 && type == 'edit' && info.status >= 40) ||
+                                (user.papelID == 2 && info.status < 40)
+                            }
+                            btnPrint={type == 'edit' ? true : false}
+                            actionsData={actionsData}
+                            actions
+                            handleSubmit={() => handleSubmit(onSubmit)}
+                            handleSend={handleSendForm}
+                            iconConclusion={'mdi:check-bold'}
+                            titleConclusion={'Concluir Formulário'}
+                            title='Fornecedor'
+                            btnStatus={type == 'edit' ? true : false}
+                            handleBtnStatus={() => setOpenModalStatus(true)}
+                            type={type}
+                            status={status}
+                        />
+
+                        {/* Header */}
+                        <CardContent>
+                            {unidade && (
+                                <HeaderFields
+                                    modeloID={unidade.parFornecedorModeloID}
+                                    values={fieldsHeader}
+                                    fields={field}
+                                    disabled={!canEdit.status}
+                                    register={register}
+                                    errors={errors}
+                                    setValue={setValue}
+                                    control={control}
+                                    getAddressByCep={getAddressByCep}
+                                />
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Produtos (se parâmetro habilitado na unidade) */}
+                    {unidade && unidade?.obrigatorioProdutoFornecedor && produtos && produtos.length > 0 && (
+                        <Card>
+                            <CardContent>
+                                {/* Listagem dos produtos selecionados pra esse fornecedor */}
+                                <FormFornecedorProdutos
+                                    key={loadingFileProduct}
+                                    values={produtos}
+                                    handleFileSelect={handleFileSelectProduct}
+                                    handleRemove={handleRemoveAnexoProduct}
+                                    loadingFile={loadingFileProduct}
+                                    disabled={!canEdit.status}
+                                    errors={errors?.produtos}
+                                />
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Blocos */}
+                    {blocos &&
+                        blocos.map((bloco, index) => (
+                            <Block
+                                key={index}
+                                index={index}
+                                blockKey={`parFornecedorModeloBlocoID`}
+                                handleFileSelect={handleFileSelectItem}
+                                setItemResposta={setItemResposta}
+                                handleRemoveAnexoItem={handleRemoveAnexoItem}
+                                setBlocos={setBlocos}
+                                values={bloco}
+                                control={control}
+                                register={register}
+                                setValue={setValue}
+                                errors={errors?.blocos}
+                                disabled={!canEdit.status}
+                            />
+                        ))}
+
+                    {/* Grupo de anexos */}
+                    {grupoAnexo &&
+                        grupoAnexo.map((grupo, indexGrupo) => (
+                            <AnexoModeView
+                                key={indexGrupo}
+                                values={{
+                                    grupo: grupo,
+                                    loadingFile: loadingFileGroup,
+                                    indexGrupo: indexGrupo,
+                                    handleFileSelect: handleFileSelectGroup,
+                                    handleRemove: handleRemoveAnexoGroup,
+                                    folder: 'grupo-anexo',
+                                    disabled: !canEdit.status,
+                                    error: errors
+                                }}
+                            />
+                        ))}
+
+                    {/* Observação do formulário */}
+                    {info && (
+                        <>
+                            <Card>
+                                <CardContent>
+                                    <Grid container spacing={4}>
+                                        <Grid item xs={12} md={12}>
+                                            <FormControl fullWidth>
+                                                <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 2 }}>
+                                                    Observações (campo de uso exclusivo da validadora)
+                                                </Typography>
+                                                <Input
+                                                    title='Observação (opcional)'
+                                                    name='info.obs'
+                                                    multiline
+                                                    rows={4}
+                                                    value={info.obs}
+                                                    disabled={!canEdit.status}
+                                                    control={control}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </>
+                    )}
+
+                    {/* Rodapé com data, hora e assinatura */}
+                    {unidade && (
+                        <FooterFields
+                            modeloID={unidade.parFornecedorModeloID}
+                            values={fieldsFooter}
+                            fields={field}
+                            disabled={!canEdit.status}
                             register={register}
                             errors={errors}
                             setValue={setValue}
                             control={control}
-                            fields={field}
-                            values={field}
-                            getAddressByCep={getAddressByCep}
-                            disabled={!canEdit.status}
                         />
-                    </CardContent>
-                </Card>
+                    )}
 
-                {/* Produtos (se parâmetro habilitado na unidade) */}
-                {unidade && unidade?.obrigatorioProdutoFornecedor && produtos && produtos.length > 0 && (
-                    <Card sx={{ mt: 4 }}>
-                        <CardContent>
-                            {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                            <FormFornecedorProdutos
-                                key={loadingFileProduct}
-                                values={produtos}
-                                handleFileSelect={handleFileSelectProduct}
-                                handleRemove={handleRemoveAnexoProduct}
-                                loadingFile={loadingFileProduct}
-                                disabled={!canEdit.status}
-                                errors={errors?.produtos}
-                            />
-                        </CardContent>
-                    </Card>
-                )}
-
-                {/* Blocos */}
-                {blocos &&
-                    blocos.map((bloco, index) => (
-                        <Block
-                            key={index}
-                            index={index}
-                            blockKey={`parFornecedorModeloBlocoID`}
-                            handleFileSelect={handleFileSelectItem}
-                            setItemResposta={setItemResposta}
-                            handleRemoveAnexoItem={handleRemoveAnexoItem}
-                            setBlocos={setBlocos}
-                            values={bloco}
-                            control={control}
-                            register={register}
-                            setValue={setValue}
-                            errors={errors?.blocos}
-                            disabled={!canEdit.status}
+                    {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}
+                    {openModalStatus && (
+                        <DialogFormStatus
+                            title='Histórico do Formulário'
+                            text={`Listagem do histórico das movimentações do formulário ${id} do Fornecedor.`}
+                            id={id}
+                            parFormularioID={1} // Fornecedor
+                            formStatus={info.status}
+                            hasFormPending={hasFormPending}
+                            canChangeStatus={user.papelID == 1 && !hasFormPending && info.status > 30}
+                            openModal={openModalStatus}
+                            handleClose={() => setOpenModalStatus(false)}
+                            btnCancel
+                            btnConfirm
+                            handleSubmit={changeFormStatus}
                         />
-                    ))}
+                    )}
 
-                {/* Grupo de anexos */}
-                {grupoAnexo &&
-                    grupoAnexo.map((grupo, indexGrupo) => (
-                        <AnexoModeView
-                            key={indexGrupo}
-                            values={{
-                                grupo: grupo,
-                                loadingFile: loadingFileGroup,
-                                indexGrupo: indexGrupo,
-                                handleFileSelect: handleFileSelectGroup,
-                                handleRemove: handleRemoveAnexoGroup,
-                                folder: 'grupo-anexo',
-                                disabled: !canEdit.status,
-                                error: errors
-                                // error: errors?.grupoAnexo?.[indexGrupo]?.itens
-                            }}
-                        />
-                    ))}
-
-                {/* Observação do formulário */}
-                {info && (
-                    <>
-                        <Card sx={{ mt: 4 }}>
-                            <CardContent>
-                                <Grid container spacing={4}>
-                                    <Grid item xs={12} md={12}>
-                                        <FormControl fullWidth>
-                                            <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 2 }}>
-                                                Observações (campo de uso exclusivo da validadora)
-                                            </Typography>
-                                            <Input
-                                                title='Observação (opcional)'
-                                                name='info.obs'
-                                                multiline
-                                                rows={4}
-                                                value={info.obs}
-                                                disabled={!canEdit.status}
-                                                control={control}
-                                            />
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    </>
-                )}
-
-                {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}
-                {openModalStatus && (
-                    <DialogFormStatus
-                        title='Histórico do Formulário'
-                        text={`Listagem do histórico das movimentações do formulário ${id} do Fornecedor.`}
-                        id={id}
-                        parFormularioID={1} // Fornecedor
-                        formStatus={info.status}
-                        hasFormPending={hasFormPending}
-                        canChangeStatus={user.papelID == 1 && !hasFormPending && info.status > 30}
-                        openModal={openModalStatus}
-                        handleClose={() => setOpenModalStatus(false)}
+                    {/* Dialog de confirmação de envio */}
+                    <DialogFormConclusion
+                        openModal={openModal}
+                        handleClose={() => {
+                            setOpenModal(false), setValidateForm(false)
+                        }}
+                        title='Concluir Formulário'
+                        text={`Deseja realmente concluir este formulário?`}
+                        info={info}
+                        canChange={!hasFormPending}
+                        register={register}
+                        setValue={setValue}
+                        getValues={getValues}
                         btnCancel
                         btnConfirm
-                        handleSubmit={changeFormStatus}
+                        btnConfirmColor='primary'
+                        conclusionForm={conclusionForm}
+                        listErrors={listErrors}
+                        canApprove={canApprove}
                     />
-                )}
-
-                {/* Dialog de confirmação de envio */}
-                <DialogFormConclusion
-                    openModal={openModal}
-                    handleClose={() => {
-                        setOpenModal(false), setValidateForm(false)
-                    }}
-                    title='Concluir Formulário'
-                    text={`Deseja realmente concluir este formulário?`}
-                    info={info}
-                    canChange={!hasFormPending}
-                    register={register}
-                    setValue={setValue}
-                    getValues={getValues}
-                    btnCancel
-                    btnConfirm
-                    btnConfirmColor='primary'
-                    conclusionForm={conclusionForm}
-                    listErrors={listErrors}
-                />
+                </Box>
             </form>
         </>
     )

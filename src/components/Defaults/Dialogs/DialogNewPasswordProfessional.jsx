@@ -1,12 +1,17 @@
-import { useState } from 'react'
-import Grid from '@mui/material/Grid'
-import FormControl from '@mui/material/FormControl'
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText } from '@mui/material'
+import { useContext, useState } from 'react'
 import InputAdornment from '@mui/material/InputAdornment'
-import { Button, TextField } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Icon from 'src/@core/components/icon'
+import { useForm } from 'react-hook-form'
+import { api } from 'src/configs/api'
+import { toast } from 'react-hot-toast'
+import { AuthContext } from 'src/context/AuthContext'
 
-const NewPassword = ({ register, errors, setShowNewPassword, showNewPassword, watch }) => {
+const DialogNewPasswordProfessional = ({ handleClose, openModal, setOpenModalNewPassword, handleDropdownClose }) => {
+    const [lenghtPassword, setLenghtPassword] = useState(null)
+    const { user, loggedUnity } = useContext(AuthContext)
+
     const [values, setValues] = useState({
         showPassword: false,
         showConfirmPassword: false
@@ -29,23 +34,39 @@ const NewPassword = ({ register, errors, setShowNewPassword, showNewPassword, wa
         event.preventDefault()
     }
 
+    const {
+        handleSubmit,
+        watch,
+        reset,
+        formState: { errors },
+        register
+    } = useForm({})
+
+    const onSubmit = async data => {
+        try {
+            const response = await api.put(`cadastros/profissional/updatePassword/${user.usuarioID}`, {
+                ...data,
+                papelID: user.papelID,
+                unidadeID: loggedUnity.unidadeID
+            })
+            toast.success('Senha atualizada com sucesso!')
+            reset()
+            setOpenModalNewPassword(false)
+            handleDropdownClose()
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (
         <>
-            <Grid item xs={6} md={4}>
-                <FormControl fullWidth>
-                    <Button
-                        variant='outlined'
-                        size='large'
-                        startIcon={<Icon icon='uil:padlock' />}
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                    >
-                        Alterar senha
-                    </Button>
-                </FormControl>
-            </Grid>
-            {showNewPassword && (
-                <>
-                    <Grid item xs={6} sm={4}>
+            <Dialog open={openModal} onClose={handleClose} aria-labelledby='form-dialog-title'>
+                <DialogTitle id='form-dialog-title'>Alterar senha</DialogTitle>
+                <DialogContent>
+                    <DialogContentText sx={{ mb: 3 }}>
+                        Preencha os campos abaixo para definir sua nova senha
+                    </DialogContentText>
+                    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
                         <TextField
                             fullWidth
                             label='Nova senha'
@@ -78,8 +99,7 @@ const NewPassword = ({ register, errors, setShowNewPassword, showNewPassword, wa
                                 }
                             })}
                         />
-                    </Grid>
-                    <Grid item xs={6} sm={4}>
+
                         <TextField
                             fullWidth
                             label='Confirmar nova senha'
@@ -116,11 +136,20 @@ const NewPassword = ({ register, errors, setShowNewPassword, showNewPassword, wa
                                 validate: value => value === watch('senha') || 'As senhas não coincidem'
                             })}
                         />
-                    </Grid>
-                </>
-            )}
+                    </form>
+                </DialogContent>
+
+                <DialogActions className='dialog-actions-dense' sx={{ mx: 2, mb: 2 }}>
+                    <Button variant='outlined' onClick={handleClose}>
+                        Cancelar
+                    </Button>
+                    <Button variant='contained' onClick={handleSubmit(onSubmit)}>
+                        Salvar
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     )
 }
 
-export default NewPassword
+export default DialogNewPasswordProfessional

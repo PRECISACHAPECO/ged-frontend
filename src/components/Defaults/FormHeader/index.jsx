@@ -146,6 +146,7 @@ const FormHeader = ({
                         onclickDelete={onclickDelete}
                         setId={setId}
                         router={router}
+                        type={type}
                     />
                     {/* // 3 pontinhos ao clicar abre opções de seleção */}
                     <div className='flex items-center gap-2'>

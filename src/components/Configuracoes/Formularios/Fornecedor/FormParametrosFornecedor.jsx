@@ -12,6 +12,7 @@ import Loading from 'src/components/Loading'
 import Icon from 'src/@core/components/icon'
 
 //* Custom components
+import Select from 'src/components/Form/Select'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import CheckLabel from 'src/components/Form/CheckLabel'
@@ -19,15 +20,27 @@ import Blocos from './Blocos'
 import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
 import FormItem from 'src/components/Cadastros/Item/FormItem'
 import HelpText from 'src/components/Defaults/HelpText'
-import { IndeterminateCheckBoxOutlined } from '@mui/icons-material'
+// import { IndeterminateCheckBoxOutlined } from '@mui/icons-material'
+
+// import JoditEditor from 'jodit-react'
 
 const FormParametrosFornecedor = ({ id }) => {
-    const { setId } = useContext(RouteContext)
+    //* Editor de texto
+    // const editor = useRef(null)
+    // const config = useMemo(
+    //     {
+    //         readonly: false, // all options from https://xdsoft.net/jodit/docs/,
+    //         placeholder: 'Start typings...'
+    //     },
+    //     []
+    // )
 
+    const { setId } = useContext(RouteContext)
     const { loggedUnity } = useContext(AuthContext)
     const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
     const [allOptions, setAllOptions] = useState(null)
+    const [profissionais, setProfissionais] = useState(null)
     const [blocks, setBlocks] = useState()
     const [orientacoes, setOrientacoes] = useState()
     const [openModalConfirmScore, setOpenModalConfirmScore] = useState(false)
@@ -49,7 +62,6 @@ const FormParametrosFornecedor = ({ id }) => {
 
     const viewItem = item => {
         if (item && item.id > 0) {
-            console.log('🚀 ~ item:', item)
             setIdInfoItem(item.id)
             setOpenModalSelectedItem(true)
         }
@@ -60,7 +72,6 @@ const FormParametrosFornecedor = ({ id }) => {
         getData()
         setTimeout(() => {
             addItem(indexNewItem)
-            console.log('🚀 ~ indexNewItem depois do settimerout:', indexNewItem)
         }, 1000)
     }
 
@@ -78,6 +89,8 @@ const FormParametrosFornecedor = ({ id }) => {
         watch,
         formState: { errors }
     } = useForm()
+
+    // const [textCabecalho, setTextCabecalho] = useState('')
 
     const onSubmit = async values => {
         const data = {
@@ -171,6 +184,8 @@ const FormParametrosFornecedor = ({ id }) => {
         setChange(!change)
     }
 
+    console.log('allOptions:', allOptions)
+
     const removeBlock = (block, index) => {
         // Verifica se o bloco possui itens com pendência
         let canDelete = true
@@ -201,17 +216,6 @@ const FormParametrosFornecedor = ({ id }) => {
         toast.success('Bloco pré-removido. Salve para concluir!')
     }
 
-    //  Ao clicar no icone de pontuação, abre o modal de confirmação de pontuação e envia para o back o item selecionado
-    // const openScoreModal = item => {
-    //     setItemScore(null)
-    //     api.post(`/formularios/fornecedor/getItemScore`, { data: item }).then(response => {
-    //         setItemScore(response.data)
-    //     })
-    //     if (setItemScore) {
-    //         setOpenModalConfirmScore(true)
-    //     }
-    // }
-
     const addBlock = () => {
         const newBlock = [...getValues('blocks')]
         newBlock.push({
@@ -240,6 +244,20 @@ const FormParametrosFornecedor = ({ id }) => {
         setBlocks(newBlock)
     }
 
+    const getProfissionaisModelo = async () => {
+        const response = await api.post(`/cadastros/profissional/getProfissionaisAssinatura`, {
+            formularioID: 1, // fornecedor
+            modeloID: id
+        })
+        const updatedModel = { ...model }
+        updatedModel.profissionaisPreenchem = response.data.preenche
+        updatedModel.profissionaisAprovam = response.data.aprova
+        reset({
+            ...getValues(),
+            model: updatedModel
+        })
+    }
+
     const getData = () => {
         try {
             if (type === 'new') {
@@ -261,9 +279,13 @@ const FormParametrosFornecedor = ({ id }) => {
                     setAllOptions({
                         itens: response.data.options?.itens
                     })
+                    setProfissionais(response.data.options?.profissionais)
                     setOrientacoes(response.data.orientations)
+
                     //* Insere os dados no formulário
                     reset(response.data)
+
+                    getProfissionaisModelo()
 
                     setTimeout(() => {
                         response.data.blocks &&
@@ -351,6 +373,61 @@ const FormParametrosFornecedor = ({ id }) => {
                                     control={control}
                                     helpText='Texto que será exibido no cabeçalho do formulário. Adicione aqui instruções e orientações para auxiliar o preenchimento pelo fornecedor.'
                                 />
+
+                                {/* Profissionais que preenchem */}
+                                {profissionais && (
+                                    <>
+                                        <Select
+                                            xs={12}
+                                            md={6}
+                                            className='order-5'
+                                            multiple
+                                            title='Profissionais que preenchem'
+                                            name={`model.profissionaisPreenchem`}
+                                            options={profissionais ?? []}
+                                            value={model?.profissionaisPreenchem ?? []}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                        />
+
+                                        <Select
+                                            xs={12}
+                                            md={6}
+                                            className='order-5'
+                                            multiple
+                                            title='Profissionais que aprovam'
+                                            name={`model.profissionaisAprovam`}
+                                            options={profissionais ?? []}
+                                            value={model?.profissionaisAprovam ?? []}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                        />
+                                    </>
+                                )}
+
+                                {/* <Grid item xs={12}>
+                                    <JoditEditor
+                                        ref={editor}
+                                        value={textCabecalho}
+                                        // name={`model.cabecalho`}
+                                        // register={register}
+                                        config={{
+                                            height: 300,
+                                            readonly: false // all options from https://xdsoft.net/jodit/doc/
+                                        }}
+                                        tabIndex={1} // tabIndex of textarea
+                                        onChange={newContent => {
+                                            console.log('🚀 ~ newContent:', newContent)
+                                            setTextCabecalho(newContent)
+                                        }}
+                                        onBlur={newContent => {
+                                            console.log('🚀 ~ newContent:', newContent)
+                                            setTextCabecalho(newContent)
+                                        }}
+                                    />
+                                </Grid> */}
                             </Grid>
                         </CardContent>
                     </Card>
@@ -364,71 +441,97 @@ const FormParametrosFornecedor = ({ id }) => {
                             <List component='nav' aria-label='main mailbox'>
                                 <Grid container spacing={2}>
                                     {/* Cabeçalho */}
-                                    <Grid item md={4} xs={4}>
+                                    <Grid item md={6}>
                                         <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                             Nome do Campo
                                         </Typography>
                                     </Grid>
-                                    <Grid item md={3} xs={4}>
+                                    <Grid item md={2}>
                                         <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
-                                            Mostra no Formulário
+                                            Mostra
                                         </Typography>
                                     </Grid>
-                                    <Grid item md={3} xs={4}>
+                                    <Grid item md={2}>
                                         <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                                             Obrigatório
                                         </Typography>
                                     </Grid>
+                                    <Grid item md={2}>
+                                        <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
+                                            Ordem
+                                        </Typography>
+                                    </Grid>
 
-                                    {headers.map((header, index) => (
+                                    {getValues(`header`).map((header, index) => (
                                         <>
-                                            <Grid item md={4} xs={6}>
+                                            <Grid item md={6}>
                                                 <Box display='flex' alignItems='center' sx={{ gap: 2 }}>
                                                     <p>{header.nomeCampo}</p>
                                                 </Box>
                                             </Grid>
-                                            <Grid item md={3} xs={3}>
-                                                <CheckLabel
-                                                    title=''
-                                                    name={`header.[${index}].mostra`}
-                                                    value={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : header.mostra
-                                                    }
-                                                    register={register}
-                                                    disabled={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : false
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item md={3} xs={3}>
-                                                <CheckLabel
-                                                    title=''
-                                                    name={`header.[${index}].obrigatorio`}
-                                                    value={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : header.obrigatorio
-                                                    }
-                                                    register={register}
-                                                    disabled={
-                                                        header.nomeColuna == 'cnpj' ||
-                                                        header.nomeColuna == 'razaoSocial' ||
-                                                        header.nomeColuna == 'dataAvaliacao'
-                                                            ? true
-                                                            : false
-                                                    }
-                                                />
-                                            </Grid>
+
+                                            <CheckLabel
+                                                xs='12'
+                                                md='2'
+                                                title=''
+                                                name={`header.[${index}].mostra`}
+                                                value={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? true
+                                                        : header.mostra
+                                                }
+                                                register={register}
+                                                helpText={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? 'Campo obrigatório'
+                                                        : null
+                                                }
+                                            />
+
+                                            <CheckLabel
+                                                xs='12'
+                                                md='2'
+                                                title=''
+                                                name={`header.[${index}].obrigatorio`}
+                                                value={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? true
+                                                        : header.obrigatorio
+                                                }
+                                                register={register}
+                                                helpText={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? 'Campo obrigatório'
+                                                        : null
+                                                }
+                                            />
+
+                                            <Input
+                                                xs='12'
+                                                md='2'
+                                                title=''
+                                                name={`header.[${index}].ordem`}
+                                                value={header.ordem}
+                                                register={register}
+                                                control={control}
+                                                type='number'
+                                            />
                                         </>
                                     ))}
                                 </Grid>

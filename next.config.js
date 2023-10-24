@@ -1,29 +1,42 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path')
 
-/** @type {import('next').NextConfig} */
+// Importe as configurações de withPWA e withTM
+const withPWA = require('next-pwa')({
+    dest: 'public',
+    register: true,
+    // disable: process.env.NODE_ENV === 'development',
+    disable: true,
+    skipWaiting: true,
+    runtimeCaching: require('next-pwa/cache'), // Importe o runtimeCaching
+    buildExcludes: [/middleware-manifest.json$/],
+})
 
-// Remove this if you're not using Fullcalendar features
 const withTM = require('next-transpile-modules')([
     '@fullcalendar/common',
     '@fullcalendar/react',
     '@fullcalendar/daygrid',
     '@fullcalendar/list',
-    '@fullcalendar/timegrid'
+    '@fullcalendar/timegrid',
 ])
 
-module.exports = withTM({
-    trailingSlash: true,
-    reactStrictMode: false,
-    experimental: {
-        esmExternals: false
-    },
-    webpack: config => {
-        config.resolve.alias = {
-            ...config.resolve.alias,
-            apexcharts: path.resolve(__dirname, './node_modules/apexcharts-clevision')
-        }
+module.exports = withPWA(
+    withTM({
+        trailingSlash: true,
+        reactStrictMode: false,
+        experimental: {
+            esmExternals: false
+        },
+        webpack(config) {
+            // Sua configuração de alias e outras customizações webpack aqui
+            config.resolve.alias = {
+                ...config.resolve.alias,
+                apexcharts: path.resolve(__dirname, './node_modules/apexcharts-clevision')
+            }
 
-        return config
-    }
-})
+            // Aqui você pode adicionar outras personalizações webpack, se necessário
+
+            return config
+        },
+    })
+)
