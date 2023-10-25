@@ -169,7 +169,6 @@ const UserDropdown = props => {
                             </Box>
                             <Divider sx={{ mt: '0 !important' }} />
 
-
                             <MenuItem>
                                 <div
                                     className='block sm:hidden -ml-2'
@@ -182,8 +181,6 @@ const UserDropdown = props => {
                                 </div>
                             </MenuItem>
 
-
-
                             <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
                                 <Box sx={styles}
                                     onClick={() => {
@@ -195,10 +192,9 @@ const UserDropdown = props => {
                                     Meus Dados
                                 </Box>
                             </MenuItem>
+
                             {/* Alterar senha */}
-
                             <div className=''>
-
                                 <MenuItem sx={{ p: 0 }} >
                                     <Box sx={styles}
                                         onClick={() => {
@@ -211,7 +207,6 @@ const UserDropdown = props => {
                                 </MenuItem>
                             </div>
 
-
                             {/* Modal trocar senha */}
                             <DialogNewPasswordProfessional
                                 openModal={openModalNewPassword}
@@ -219,7 +214,6 @@ const UserDropdown = props => {
                                 setOpenModalNewPassword={setOpenModalNewPassword}
                                 handleDropdownClose={handleDropdownClose}
                             />
-
 
                             {/* troca de unidade quando mobile */}
                             {user.papelID === 1 && (

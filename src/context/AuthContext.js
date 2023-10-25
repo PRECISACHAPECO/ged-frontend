@@ -136,6 +136,7 @@ const AuthProvider = ({ children }) => {
                     : null
                 const returnUrl = router.query.returnUr
                 setUser({ ...response.data.userData })
+                console.log("🚀 ~ handleLogin:", response.data)
 
                 // Verifica se usuário tem apenas uma unidade vinculada
                 if (response.data.unidades.length == 1) {

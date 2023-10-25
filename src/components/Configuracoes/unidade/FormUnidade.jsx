@@ -36,7 +36,7 @@ import HelpText from 'src/components/Defaults/HelpText'
 import NewPassword from './NewPassword'
 
 const FormUnidade = ({ id }) => {
-    const { user, loggedUnity } = useContext(AuthContext)
+    const { user, setUser, loggedUnity } = useContext(AuthContext)
     const { setId } = useContext(RouteContext)
     id = user.papelID === 1 ? id : loggedUnity.unidadeID
 
@@ -219,6 +219,13 @@ const FormUnidade = ({ id }) => {
                 .then(response => {
                     setPhotoProfile(response.data)
                     toast.success('Foto atualizada com sucesso!')
+
+                    //? Atualiza localstorage
+                    const userData = JSON.parse(localStorage.getItem('userData'))
+                    userData.imagem = response.data
+                    localStorage.setItem('userData', JSON.stringify(userData))
+                    //? Atualiza contexto
+                    setUser(userData)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')

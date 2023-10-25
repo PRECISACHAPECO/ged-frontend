@@ -18,7 +18,7 @@ import Permissions from './Permissions'
 const FormProfissional = ({ id }) => {
     const fileInputRef = useRef(null)
     const { setId } = useContext(RouteContext)
-    const { user, loggedUnity } = useContext(AuthContext)
+    const { user, setUser, loggedUnity } = useContext(AuthContext)
     const [data, setData] = useState(null)
     const [change, setChange] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
@@ -162,6 +162,13 @@ const FormProfissional = ({ id }) => {
                 .then(response => {
                     setPhotoProfile(response.data)
                     toast.success('Foto atualizada com sucesso!')
+
+                    //? Atualiza localstorage
+                    const userData = JSON.parse(localStorage.getItem('userData'))
+                    userData.imagem = response.data
+                    localStorage.setItem('userData', JSON.stringify(userData))
+                    //? Atualiza contexto
+                    setUser(userData)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
