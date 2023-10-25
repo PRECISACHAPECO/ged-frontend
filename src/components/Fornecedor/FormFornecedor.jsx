@@ -272,33 +272,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
-    // const getNewData = () => {
-    //     try {
-    //         setLoading(true)
-    //         api.post(`${backRoute(staticUrl)}/new/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
-    //             console.log('getNewData: ', response.data)
-
-    //             setField(response.data.fields)
-    //             setBlocos(response.data.blocos)
-    //             setInfo(response.data.info)
-
-    //             //* Insere os dados no formulário
-    //             reset(response.data)
-
-    //             setCanEdit({
-    //                 status: true,
-    //                 message:
-    //                     'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
-    //                 messageType: 'info'
-    //             })
-
-    //             setLoading(false)
-    //         })
-    //     } catch (error) {
-    //         console.log('🚀 ~ error:', error)
-    //     }
-    // }
-
     const getData = () => {
         setLoading(true)
         try {
@@ -860,17 +833,23 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         {/* Header */}
                         <CardContent>
                             {unidade && (
-                                <HeaderFields
-                                    modeloID={unidade.parFornecedorModeloID}
-                                    values={fieldsHeader}
-                                    fields={field}
-                                    disabled={!canEdit.status}
-                                    register={register}
-                                    errors={errors}
-                                    setValue={setValue}
-                                    control={control}
-                                    getAddressByCep={getAddressByCep}
-                                />
+                                <Box display='flex' flexDirection='column' sx={{ gap: 1 }}>
+                                    <Typography variant='caption' sx={{ pb: 4 }}>
+                                        {`Aberto por ${fieldsHeader.abertoPor.profissional.nome} em ${fieldsHeader.abertoPor.dataInicio} ${fieldsHeader.abertoPor.horaInicio} `}
+                                    </Typography>
+
+                                    <HeaderFields
+                                        modeloID={unidade.parFornecedorModeloID}
+                                        values={fieldsHeader}
+                                        fields={field}
+                                        disabled={!canEdit.status}
+                                        register={register}
+                                        errors={errors}
+                                        setValue={setValue}
+                                        control={control}
+                                        getAddressByCep={getAddressByCep}
+                                    />
+                                </Box>
                             )}
                         </CardContent>
                     </Card>
@@ -959,18 +938,11 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         </>
                     )}
 
-                    {/* Rodapé com data, hora e assinatura... */}
-                    {unidade && (
-                        <FooterFields
-                            modeloID={unidade.parFornecedorModeloID}
-                            values={fieldsFooter}
-                            fields={field}
-                            disabled={!canEdit.status}
-                            register={register}
-                            errors={errors}
-                            setValue={setValue}
-                            control={control}
-                        />
+                    {/* Rodapé com informações de conclusão */}
+                    {fieldsFooter && fieldsFooter.concluded && (
+                        <Typography variant='caption'>
+                            {`Concluído por ${fieldsFooter.profissionalAprova.nome} em ${fieldsFooter.dataFim} ${fieldsFooter.horaFim}.`}
+                        </Typography>
                     )}
 
                     {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}

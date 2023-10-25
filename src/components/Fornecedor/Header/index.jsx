@@ -39,9 +39,9 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 xs={12}
                 md={2}
                 title='Data da avaliação'
-                name={`fieldsHeader.dataAvaliacao`}
+                name={`fieldsHeader.data`}
                 type='date'
-                value={values?.dataAvaliacao}
+                value={values?.data}
                 disabled={disabled}
                 register={register}
                 control={control}
@@ -49,7 +49,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 typeValidation='dataPassado'
                 daysValidation={365}
                 dateStatus={dateStatus}
-                errors={errors?.fieldsHeader?.['dataAvaliacao']}
+                errors={errors?.fieldsHeader?.['data']}
             />
 
             {/* Hora de Abertura */}
@@ -57,16 +57,16 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 xs={12}
                 md={2}
                 title='Hora da avaliação'
-                name={`fieldsHeader.horaAvaliacao`}
+                name={`fieldsHeader.hora`}
                 type='time'
                 disabled={disabled}
                 register={register}
                 control={control}
-                errors={errors?.fieldsHeader?.['horaAvaliacao']}
+                errors={errors?.fieldsHeader?.['hora']}
             />
 
             {/* Profissional responsável */}
-            <Select
+            {/* <Select
                 xs={12}
                 md={4}
                 title='Profissional preenchimento'
@@ -79,7 +79,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 setValue={setValue}
                 control={control}
                 errors={errors?.fieldsHeader?.['profissionalPreenche']}
-            />
+            /> */}
 
             {/* CNPJ */}
             <Input
