@@ -66,7 +66,25 @@ const FormProfissional = ({ id }) => {
             },
             removedItems
         }
-        console.log('🚀 ~ values:', values)
+
+        // TODO Verificar se tem pelo um cargo ativo
+        // Verifica se existe pelo um cargosFuncoes são data de inativação
+        // let quantidadeObjetos = 0
+        // for (const item of data.cargosFuncoes) {
+        //     if (item.dataInativacao !== null) {
+        //         quantidadeObjetos++
+        //     }
+        // }
+
+        // if (data.cargosFuncoes.length > quantidadeObjetos) {
+        //     // toast.error(toastMessage.error)
+        //     // return
+        //     console.log('tudo certo')
+        // } else {
+        //     console.log('erro')
+        // }
+
+        // console.log('Quantidade de objetos com campo "dataInativacao" definido:', quantidadeObjetos)
 
         try {
             if (type === 'new') {
