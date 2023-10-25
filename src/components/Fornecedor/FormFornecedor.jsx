@@ -959,7 +959,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         </>
                     )}
 
-                    {/* Rodapé com data, hora e assinatura */}
+                    {/* Rodapé com data, hora e assinatura... */}
                     {unidade && (
                         <FooterFields
                             modeloID={unidade.parFornecedorModeloID}
