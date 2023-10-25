@@ -59,6 +59,7 @@ const FormProfissional = ({ id }) => {
     const onSubmit = async data => {
         const values = {
             ...data,
+            usualioLogado: user.usuarioID,
             fields: {
                 ...data.fields,
                 unidadeID: loggedUnity.unidadeID
