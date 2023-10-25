@@ -14,11 +14,15 @@ import { AuthContext } from 'src/context/AuthContext'
 import CargoFuncao from './CargoFuncao'
 import Fields from './Fields'
 import Permissions from './Permissions'
+import DialogForm from 'src/components/Defaults/Dialogs/Dialog'
+import { ParametersContext } from 'src/context/ParametersContext'
 
 const FormProfissional = ({ id }) => {
     const fileInputRef = useRef(null)
+    const [open, setOpen] = useState(false)
     const { setId } = useContext(RouteContext)
     const { user, setUser, loggedUnity } = useContext(AuthContext)
+    const { title } = useContext(ParametersContext)
     const [data, setData] = useState(null)
     const [change, setChange] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
@@ -66,7 +70,25 @@ const FormProfissional = ({ id }) => {
             },
             removedItems
         }
-        console.log('🚀 ~ values:', values)
+
+        // TODO Verificar se tem pelo um cargo ativo
+        // Verifica se existe pelo um cargosFuncoes são data de inativação
+        // let quantidadeObjetos = 0
+        // for (const item of data.cargosFuncoes) {
+        //     if (item.dataInativacao !== null) {
+        //         quantidadeObjetos++
+        //     }
+        // }
+
+        // if (data.cargosFuncoes.length > quantidadeObjetos) {
+        //     // toast.error(toastMessage.error)
+        //     // return
+        //     console.log('tudo certo')
+        // } else {
+        //     console.log('erro')
+        // }
+
+        // console.log('Quantidade de objetos com campo "dataInativacao" definido:', quantidadeObjetos)
 
         try {
             if (type === 'new') {
@@ -104,6 +126,23 @@ const FormProfissional = ({ id }) => {
             setData(response.data)
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    // Deleta os dados
+    const handleClickDelete = async () => {
+        try {
+            await api.delete(`${staticUrl}/${id}`)
+            setId(null)
+            setOpen(false)
+            toast.success(toastMessage.successDelete)
+        } catch (error) {
+            if (error.response && error.response.status === 409) {
+                toast.error(toastMessage.pendingDelete)
+                setOpen(false)
+            } else {
+                console.log(error)
+            }
         }
     }
 
@@ -368,6 +407,15 @@ const FormProfissional = ({ id }) => {
                             </CardContent>
                         </Card>
                     )}
+                    <DialogForm
+                        text='Tem certeza que deseja excluir?'
+                        title={'Excluir ' + title.title}
+                        openModal={open}
+                        handleClose={() => setOpen(false)}
+                        handleSubmit={handleClickDelete}
+                        btnCancel
+                        btnConfirm
+                    />
                 </div>
             </form>
         )
