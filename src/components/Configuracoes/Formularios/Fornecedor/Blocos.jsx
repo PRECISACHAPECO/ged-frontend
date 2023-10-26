@@ -109,7 +109,7 @@ const Blocos = ({
                                         <Select
                                             xs={12}
                                             md={7}
-                                            createNew={() => createNew(index)}
+                                            createNew={() => createNew(index, indexItem)}
                                             title={
                                                 blocks[index]?.itens[indexItem]?.itemID
                                                     ? `Item [${blocks[index]?.itens[indexItem]?.itemID}]`

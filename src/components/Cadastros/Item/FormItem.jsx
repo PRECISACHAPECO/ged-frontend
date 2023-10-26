@@ -18,7 +18,6 @@ import { AuthContext } from 'src/context/AuthContext'
 import ListOptions from './ListOptions'
 
 const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, outsideID, handleConfirmNew }) => {
-    console.log('🚀 ~ FormItem:', id)
     const [open, setOpen] = useState(false)
     const [change, setChange] = useState(false)
     const [data, setData] = useState(null)
@@ -49,13 +48,11 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
             ...data,
             unidadeID: loggedUnity.unidadeID
         }
-        console.log('onSubmit: ', values)
 
         try {
             if (type === 'new') {
                 await api.post(`cadastros/item/new/insertData`, values).then(response => {
                     if (outsideID) {
-                        console.log('🚀 ~ response:', response.data)
                         setId(outsideID)
                         handleConfirmNew(response.data)
                     } else {
@@ -101,8 +98,6 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
         try {
             const route = type === 'new' ? 'cadastros/item/new/getData' : `cadastros/item/getData/${id}`
             await api.post(route).then(response => {
-                console.log('🚀 ~ getData: ', response.data)
-
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
             })
@@ -134,7 +129,6 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
                 alternativa: value
             })
             if (response.data) {
-                console.log('🚀 ~ response.data:', response.data)
                 setChange(!change)
                 setValue('fields.opcoes', response.data)
                 setData({ ...data, fields: { ...data.fields, opcoes: response.data } })
@@ -145,12 +139,10 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
     }
 
     const handleRemoveAnexo = (value, index, indexAnexo) => {
-        console.log('🚀 ~ data, index, indexAnexo:', value, index, indexAnexo)
         let copyAnexos = [...getValues(`fields.opcoes`)]
 
         // remover anexo do array
         copyAnexos[index].anexos.splice(indexAnexo, 1)
-        console.log('🚀 ~ copyAnexos:', copyAnexos)
 
         // remover anexo do banco
         const newData = {
@@ -160,7 +152,6 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
                 opcoes: copyAnexos
             }
         }
-        console.log('🚀 ~ newData:', newData)
         setData(newData)
         setValue(`fields.opcoes`, copyAnexos)
         setChange(!change)

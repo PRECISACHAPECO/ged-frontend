@@ -53,17 +53,13 @@ const FormParametrosFornecedor = ({ id }) => {
     const [openModalSelectedItem, setOpenModalSelectedItem] = useState(false) //? Abre modal para exibir item selecionado
     const [idInfoItem, setIdInfoItem] = useState(null)
     const [newChange, setNewChange] = useState(false)
+    const [indexNewBloco, setIndexNewBloco] = useState(null)
     const [indexNewItem, setIndexNewItem] = useState(null)
 
-    const createNew = index => {
+    const createNew = (indexBloco, indexItem) => {
         setOpenModalNew(true)
-        setIndexNewItem(index)
-
-        const updatedBlocks = [...getValues('blocks')]
-        updatedBlocks[indexNewItem]?.itens.pop()
-
-        setValue('blocks', updatedBlocks)
-        setBlocks(updatedBlocks)
+        setIndexNewBloco(indexBloco)
+        setIndexNewItem(indexItem)
     }
 
     const viewItem = item => {
@@ -74,14 +70,8 @@ const FormParametrosFornecedor = ({ id }) => {
     }
 
     const handleConfirmNew = data => {
-        console.log('🚀 ~ id aidcionado:', data)
-
         setOpenModalNew(false)
-        getData()
-        setTimeout(() => {
-            addItem(indexNewItem, data.id, data.nome)
-        }, 1000)
-        setChange(!change)
+        setValue(`blocks.[${indexNewBloco}].itens.[${indexNewItem}].item`, data)
     }
 
     const router = Router
@@ -112,7 +102,6 @@ const FormParametrosFornecedor = ({ id }) => {
             arrRemovedItems: arrRemovedItems ?? [],
             orientacoes: values.orientations ?? null
         }
-        console.log('🚀 ~ onSubmit:', data)
 
         setHeaders(null) //? Pra exibir loading
 
@@ -156,34 +145,15 @@ const FormParametrosFornecedor = ({ id }) => {
         setBlocks(newBlock)
     }
 
-    const addItem = (index, id, nome) => {
-        console.log('🚀 ~ index, id, nome:', index, id, nome)
-
+    const addItem = index => {
         const newBlock = [...blocks]
-
-        if (id) {
-            newBlock[index].itens.push({
-                ordem: newBlock[index].itens?.length + 1,
-                obs: 1,
-                itemID: id,
-                nome,
-                item: {
-                    id: id,
-                    nome
-                },
-                status: 1,
-                obrigatorio: 1
-            })
-        } else {
-            newBlock[index].itens.push({
-                ordem: newBlock[index].itens?.length + 1,
-                obs: 1,
-                status: 1,
-                obrigatorio: 1
-            })
-        }
+        newBlock[index].itens.push({
+            ordem: newBlock[index].itens?.length + 1,
+            obs: 1,
+            status: 1,
+            obrigatorio: 1
+        })
         setBlocks(newBlock)
-        console.log('🚀 ~ newBlock:', newBlock)
 
         setValue(`blocks.[${index}].itens.[${newBlock[index].itens.length - 1}].new`, true)
 
