@@ -25,7 +25,6 @@ const Item = ({
     setValue,
     disabled
 }) => {
-    console.log('🚀 ~ Item values:', values)
     const { settings } = useContext(SettingsContext)
     const modeTheme = settings.mode
     const [selectedItem, setSelectedItem] = useState(null)
@@ -35,10 +34,8 @@ const Item = ({
     const [responseConfig, setResponseConfig] = useState(null)
 
     const setDateFormat = (type, name, value, numDays) => {
-        console.log('🚀 ~ type, name, value, numDays:', type, name, value, numDays)
         const newDate = new Date(value)
         const status = dateConfig(type, newDate, numDays)
-        console.log('status', status)
         setDateStatus(prevState => ({
             ...prevState,
             [name]: status

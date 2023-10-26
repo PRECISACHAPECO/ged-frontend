@@ -58,6 +58,12 @@ const FormParametrosFornecedor = ({ id }) => {
     const createNew = index => {
         setOpenModalNew(true)
         setIndexNewItem(index)
+
+        const updatedBlocks = [...getValues('blocks')]
+        updatedBlocks[indexNewItem]?.itens.pop()
+
+        setValue('blocks', updatedBlocks)
+        setBlocks(updatedBlocks)
     }
 
     const viewItem = item => {
@@ -67,12 +73,15 @@ const FormParametrosFornecedor = ({ id }) => {
         }
     }
 
-    const handleConfirmNew = id => {
+    const handleConfirmNew = data => {
+        console.log('🚀 ~ id aidcionado:', data)
+
         setOpenModalNew(false)
         getData()
         setTimeout(() => {
-            addItem(indexNewItem)
+            addItem(indexNewItem, data.id, data.nome)
         }, 1000)
+        setChange(!change)
     }
 
     const router = Router
@@ -147,16 +156,34 @@ const FormParametrosFornecedor = ({ id }) => {
         setBlocks(newBlock)
     }
 
-    const addItem = index => {
+    const addItem = (index, id, nome) => {
+        console.log('🚀 ~ index, id, nome:', index, id, nome)
+
         const newBlock = [...blocks]
 
-        newBlock[index].itens.push({
-            ordem: newBlock[index].itens?.length + 1,
-            obs: 1,
-            status: 1,
-            obrigatorio: 1
-        })
+        if (id) {
+            newBlock[index].itens.push({
+                ordem: newBlock[index].itens?.length + 1,
+                obs: 1,
+                itemID: id,
+                nome,
+                item: {
+                    id: id,
+                    nome
+                },
+                status: 1,
+                obrigatorio: 1
+            })
+        } else {
+            newBlock[index].itens.push({
+                ordem: newBlock[index].itens?.length + 1,
+                obs: 1,
+                status: 1,
+                obrigatorio: 1
+            })
+        }
         setBlocks(newBlock)
+        console.log('🚀 ~ newBlock:', newBlock)
 
         setValue(`blocks.[${index}].itens.[${newBlock[index].itens.length - 1}].new`, true)
 

@@ -55,6 +55,7 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
             if (type === 'new') {
                 await api.post(`cadastros/item/new/insertData`, values).then(response => {
                     if (outsideID) {
+                        console.log('🚀 ~ response:', response.data)
                         setId(outsideID)
                         handleConfirmNew(response.data)
                     } else {
