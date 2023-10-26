@@ -20,7 +20,7 @@ import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import GrupoAnexoList from './GrupoAnexoList.jsx'
 
-const FormGrupoAnexos = ({ id }) => {
+const FormGrupoAnexos = ({ id, btnClose, handleModalClose, handleConfirmNew, setNewChange, newChange, outsideID }) => {
     const { setId } = useContext(RouteContext)
     const router = Router
     const [data, setData] = useState(null)
@@ -46,7 +46,7 @@ const FormGrupoAnexos = ({ id }) => {
 
     const getData = async () => {
         try {
-            const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
+            const route = type === 'new' ? `cadastros/grupo-anexos/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route, { unidadeID: loggedUnity.unidadeID }).then(response => {
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
@@ -93,9 +93,18 @@ const FormGrupoAnexos = ({ id }) => {
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
-                    router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
-                    setId(response.data)
+                    if (outsideID) {
+                        setId(outsideID)
+                        handleConfirmNew(response.data)
+                    } else {
+                        router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                        setId(response.data)
+                    }
                     toast.success(toastMessage.successNew)
+
+                    // router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                    // setId(response.data)
+                    // toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
                 await api.post(`${staticUrl}/updateData/${id}`, values)
@@ -140,6 +149,10 @@ const FormGrupoAnexos = ({ id }) => {
         }
     }, [id])
 
+    useEffect(() => {
+        if (newChange) handleSubmit(onSubmit)()
+    }, [newChange])
+
     return (
         <>
             {!data && <Loading />}
@@ -149,10 +162,13 @@ const FormGrupoAnexos = ({ id }) => {
                         {/* Botões cabeçalho */}
                         <FormHeader
                             btnCancel
+                            // btnNew
                             btnSave
-                            btnNew
+                            btnClose={btnClose}
+                            handleModalClose={handleModalClose}
+                            handleSubmit={() => handleSubmit(onSubmit)}
                             btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpenDelete(true)}
+                            onclickDelete={() => setOpen(true)}
                             type={type}
                         />
 

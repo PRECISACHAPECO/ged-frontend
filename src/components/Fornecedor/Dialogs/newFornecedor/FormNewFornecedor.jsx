@@ -4,6 +4,10 @@ import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
 import { Box, Typography } from '@mui/material'
+import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
+import FormGrupoAnexos from 'src/components/Cadastros/grupoAnexos/FormGrupoAnexos'
+import FormProduto from 'src/components/Cadastros/Produto/FormProduto'
+import { RouteContext } from 'src/context/RouteContext'
 
 const FormNewFornecedor = ({
     fields,
@@ -21,6 +25,11 @@ const FormNewFornecedor = ({
     const [models, setModels] = useState([])
     const [products, setProducts] = useState([])
     const [gruposAnexo, setGruposAnexo] = useState([])
+    const [newChange, setNewChange] = useState(false)
+    const [openModalNew, setOpenModalNew] = useState(false)
+    const [titleModal, setTitleModal] = useState('')
+    const [componetSelect, setComponetSelect] = useState(null)
+    const { id } = useContext(RouteContext)
 
     const getModels = async () => {
         const result = await api.post(`/formularios/fornecedor/getModels`, { unidadeID: loggedUnity.unidadeID })
@@ -53,6 +62,28 @@ const FormNewFornecedor = ({
         getProducts()
         getGruposAnexo()
     }, [])
+
+    const handleConfirmNew = () => {}
+
+    const createNew = async name => {
+        setOpenModalNew(true)
+        if (name == 'gruposAnexo') {
+            setTitleModal('Novo grupo de anexos')
+            setComponetSelect(
+                <FormGrupoAnexos
+                    btnClose
+                    handleModalClose={() => setOpenModalNew(false)}
+                    handleConfirmNew={handleConfirmNew}
+                    setNewChange={setNewChange}
+                    newChange={newChange}
+                    outsideID={id}
+                />
+            )
+        } else if (name == 'produtos') {
+            setTitleModal('Novo produto')
+            setComponetSelect(<FormProduto />)
+        }
+    }
 
     return (
         models &&
@@ -131,6 +162,9 @@ const FormNewFornecedor = ({
                     md={12}
                     title='Grupos de Anexo'
                     multiple
+                    createNew={() => {
+                        createNew('gruposAnexo')
+                    }}
                     name={`fields.gruposAnexo`}
                     value={fields?.gruposAnexo ?? []}
                     disabled={!validCnpj}
@@ -148,6 +182,7 @@ const FormNewFornecedor = ({
                     value={fields?.produtos ?? []}
                     disabled={!validCnpj}
                     multiple
+                    createNew={() => createNew('produtos')}
                     required
                     options={products ?? []}
                     register={register}
@@ -155,6 +190,10 @@ const FormNewFornecedor = ({
                     control={control}
                     errors={errors?.fields?.produtos}
                 />
+                {/* Modal para criação de novo grupo de anexo ou  */}
+                <DialogNewCreate title={titleModal} size='md' openModal={openModalNew} setOpenModal={setOpenModalNew}>
+                    {componetSelect}
+                </DialogNewCreate>
             </>
         )
     )

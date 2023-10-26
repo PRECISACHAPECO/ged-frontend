@@ -57,7 +57,7 @@ const Select = ({
                                 }
                                 disabled={disabled}
                                 onChange={(e, newValue) => {
-                                    if (newValue && newValue.nome === '-- Novo --') {
+                                    if (newValue && e.target.innerText == '-- Novo --') {
                                         createNew()
                                         setValue(name, multiple ? [] : { nome: '' })
                                     } else {

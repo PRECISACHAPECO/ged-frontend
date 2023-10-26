@@ -4,7 +4,7 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import React from 'react'
 
-const DialogNewCreate = ({ title, description, setOpenModal, openModal, handleSave, children, size }) => {
+const DialogNewCreate = ({ title, description, setOpenModal, openModal, children, size }) => {
     return (
         <>
             <Dialog
@@ -20,9 +20,7 @@ const DialogNewCreate = ({ title, description, setOpenModal, openModal, handleSa
                             py: 2
                         }}
                     >
-                        {React.cloneElement(children, {
-                            handleSave
-                        })}
+                        {children}
                     </DialogContentText>
                 </DialogContent>
             </Dialog>

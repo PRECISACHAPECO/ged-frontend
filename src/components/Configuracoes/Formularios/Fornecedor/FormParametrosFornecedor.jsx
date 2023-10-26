@@ -608,9 +608,9 @@ const FormParametrosFornecedor = ({ id }) => {
                 handleSave={handleSave}
             >
                 <FormItem
-                    setNewChange={setNewChange}
                     btnClose
                     handleModalClose={() => setOpenModalNew(false)}
+                    setNewChange={setNewChange}
                     newChange={newChange}
                     outsideID={id}
                     handleConfirmNew={handleConfirmNew}

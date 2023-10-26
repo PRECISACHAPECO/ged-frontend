@@ -18,7 +18,7 @@ import { AuthContext } from 'src/context/AuthContext'
 import Icon from 'src/@core/components/icon'
 import AnexosList from './AnexosList'
 
-const FormProduto = ({ id }) => {
+const FormProduto = ({ id, btnClose, handleModalClose, handleConfirmNew, setNewChange, newChange, outsideID }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
@@ -89,7 +89,7 @@ const FormProduto = ({ id }) => {
     // Dados iniciais ao carregar a página
     const getData = async () => {
         try {
-            const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
+            const route = type === 'new' ? `cadastros/produto/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
                 console.log('🚀 ~ response:', response.data)
                 // setAnexos(response.data.anexos)
@@ -138,6 +138,10 @@ const FormProduto = ({ id }) => {
             }, 300)
         }
     }, [id])
+
+    useEffect(() => {
+        if (newChange) handleSubmit(onSubmit)()
+    }, [newChange])
 
     return (
         <>
