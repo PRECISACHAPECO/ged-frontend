@@ -26,7 +26,8 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, routes } = useContext(AuthContext)
+    console.log('🚀 ~ routes:', routes)
 
     const {
         trigger,
