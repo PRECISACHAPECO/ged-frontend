@@ -2,8 +2,6 @@ import { Button } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import Router from 'next/router'
 import Link from 'next/link'
-import { RouteContext } from 'src/context/RouteContext'
-import { useContext } from 'react'
 
 const ButtonsFixedRight = ({
     btnSend,
@@ -20,7 +18,8 @@ const ButtonsFixedRight = ({
     titleConclusion
 }) => {
     const router = Router
-    const { id } = useContext(RouteContext)
+
+    console.log('rota atual', router.pathname)
 
     return (
         <div className='flex items-center gap-2'>
@@ -40,22 +39,35 @@ const ButtonsFixedRight = ({
                 </Link>
             )}
             {/* Salvar */}
+            {btnSave && routes.find(route => route.rota === currentUrl && route.editar) && (
+                <Button
+                    onClick={handleSubmit}
+                    type='submit'
+                    variant='outlined'
+                    size='medium'
+                    color='primary'
+                    disabled={disabled || disabledSubmit}
+                    sx={{ display: 'flex', gap: 2 }}
+                >
+                    <Icon icon='mdi:check-bold' />
+                    <span className='hidden sm:block'>Salvar</span>
+                </Button>
+            )}
 
-            {router.pathname == '/formularios/fornecedor' ||
-                (btnSave && routes.find(route => route.rota === currentUrl && route.editar) && (
-                    <Button
-                        onClick={handleSubmit}
-                        type='submit'
-                        variant='outlined'
-                        size='medium'
-                        color='primary'
-                        disabled={disabled || disabledSubmit}
-                        sx={{ display: 'flex', gap: 2 }}
-                    >
-                        <Icon icon='mdi:check-bold' />
-                        <span className='hidden sm:block'>Salvar</span>
-                    </Button>
-                ))}
+            {router.pathname == '/formularios/fornecedor' && (
+                <Button
+                    onClick={handleSubmit}
+                    type='submit'
+                    variant='outlined'
+                    size='medium'
+                    color='primary'
+                    disabled={disabled || disabledSubmit}
+                    sx={{ display: 'flex', gap: 2 }}
+                >
+                    <Icon icon='mdi:check-bold' />
+                    <span className='hidden sm:block'>Salvar</span>
+                </Button>
+            )}
 
             {/* Fornecedor concluir formulário e envia pra fábrica avaliar */}
             {btnSend && (

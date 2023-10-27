@@ -18,7 +18,7 @@ import { AuthContext } from 'src/context/AuthContext'
 import Icon from 'src/@core/components/icon'
 import AnexosList from './AnexosList'
 
-const FormProduto = ({ id, btnClose, handleModalClose, handleConfirmNew, setNewChange, newChange, outsideID }) => {
+const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
@@ -52,12 +52,11 @@ const FormProduto = ({ id, btnClose, handleModalClose, handleConfirmNew, setNewC
         try {
             if (type === 'new') {
                 await api.post(`cadastros/produto/new/insertData`, values).then(response => {
-                    if (outsideID) {
-                        setId(outsideID)
+                    if (handleConfirmNew) {
                         handleConfirmNew(response.data)
                     } else {
                         router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
-                        setId(response.data)
+                        setId(response.data.id)
                     }
                     toast.success(toastMessage.successNew)
                 })
@@ -96,8 +95,6 @@ const FormProduto = ({ id, btnClose, handleModalClose, handleConfirmNew, setNewC
         try {
             const route = type === 'new' ? `cadastros/produto/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
-                console.log('🚀 ~ response:', response.data)
-                // setAnexos(response.data.anexos)
                 setData(response.data)
                 reset(response.data)
             })
