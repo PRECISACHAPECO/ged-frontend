@@ -809,7 +809,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
                     {/* Card Header */}
                     <Card>
-                        {/* <FormHeader
+                        <FormHeader
                             btnCancel
                             btnSave={user.papelID == 2 && info.status < 40}
                             btnSend={
@@ -828,7 +828,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             handleBtnStatus={() => setOpenModalStatus(true)}
                             type={type}
                             status={status}
-                        /> */}
+                        />
 
                         {/* Header */}
                         <CardContent>

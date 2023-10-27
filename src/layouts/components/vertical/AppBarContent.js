@@ -117,7 +117,7 @@ const AppBarContent = props => {
                 </Box >
 
                 {/* Botões de ação */}
-                <Box display='flex' alignItems='center' sx={{ gap: 2 }} >
+                {/* <Box display='flex' alignItems='center' sx={{ gap: 2 }} >
                     <FormHeader
                         btnCancel
                         btnSave
@@ -130,12 +130,11 @@ const AppBarContent = props => {
                         title='Fornecedor'
                         btnStatus
                         handleBtnStatus={() => null}
-                        type='edit'
+                        type='new'
                         status={null}
                     />
-                </Box>
+                </Box> */}
             </Box>
-
 
             <DialogSelectUnit
                 openModal={openModal}
