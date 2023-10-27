@@ -81,7 +81,16 @@ const FormNewFornecedor = ({
             )
         } else if (name == 'produtos') {
             setTitleModal('Novo produto')
-            setComponetSelect(<FormProduto />)
+            setComponetSelect(
+                <FormProduto
+                    btnClose
+                    handleModalClose={() => setOpenModalNew(false)}
+                    handleConfirmNew={handleConfirmNew}
+                    setNewChange={setNewChange}
+                    newChange={newChange}
+                    outsideID={id}
+                />
+            )
         }
     }
 

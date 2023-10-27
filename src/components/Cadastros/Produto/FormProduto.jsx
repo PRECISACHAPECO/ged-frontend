@@ -51,9 +51,14 @@ const FormProduto = ({ id, btnClose, handleModalClose, handleConfirmNew, setNewC
         console.log(values)
         try {
             if (type === 'new') {
-                await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
-                    router.push(`${backRoute(staticUrl)}`) // backRoute para remover 'novo' da rota
-                    setId(response.data)
+                await api.post(`cadastros/produto/new/insertData`, values).then(response => {
+                    if (outsideID) {
+                        setId(outsideID)
+                        handleConfirmNew(response.data)
+                    } else {
+                        router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                        setId(response.data)
+                    }
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
@@ -153,6 +158,8 @@ const FormProduto = ({ id, btnClose, handleModalClose, handleConfirmNew, setNewC
                             btnCancel
                             btnNew
                             btnSave
+                            btnClose={btnClose}
+                            handleModalClose={handleModalClose}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             btnDelete={type === 'edit' ? true : false}
                             onclickDelete={() => setOpen(true)}
