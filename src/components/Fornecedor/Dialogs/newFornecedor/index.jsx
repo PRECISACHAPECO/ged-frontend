@@ -12,6 +12,7 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
     const { loggedUnity } = useContext(AuthContext)
     const [fields, setFields] = useState(null)
     const [validationCnpj, setValidationCnpj] = useState(null)
+    const [grupoAnexosAux, setGruposAnexosAux] = useState(null)
 
     const handleCnpj = cnpj => {
         if (cnpj.length == 18) {
@@ -133,6 +134,8 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
                         <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
                             <FormNewFornecedor
                                 key={change}
+                                setGruposAnexosAux={setGruposAnexosAux}
+                                grupoAnexosAux={grupoAnexosAux}
                                 setFields={setFields}
                                 fields={fields ?? null}
                                 control={control}

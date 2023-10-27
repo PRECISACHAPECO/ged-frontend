@@ -7,7 +7,6 @@ import { Box, Typography } from '@mui/material'
 import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
 import FormGrupoAnexos from 'src/components/Cadastros/grupoAnexos/FormGrupoAnexos'
 import FormProduto from 'src/components/Cadastros/Produto/FormProduto'
-import { RouteContext } from 'src/context/RouteContext'
 
 const FormNewFornecedor = ({
     fields,
@@ -19,8 +18,11 @@ const FormNewFornecedor = ({
     errors,
     setValue,
     register,
-    reset
+    reset,
+    setGruposAnexosAux,
+    grupoAnexosAux
 }) => {
+    console.log('🚀 ~ grupoAnexosAux:', grupoAnexosAux)
     const { loggedUnity } = useContext(AuthContext)
     const [models, setModels] = useState([])
     const [products, setProducts] = useState([])
@@ -29,7 +31,6 @@ const FormNewFornecedor = ({
     const [openModalNew, setOpenModalNew] = useState(false)
     const [titleModal, setTitleModal] = useState('')
     const [componetSelect, setComponetSelect] = useState(null)
-    const { id } = useContext(RouteContext)
 
     const getModels = async () => {
         const result = await api.post(`/formularios/fornecedor/getModels`, { unidadeID: loggedUnity.unidadeID })
@@ -63,35 +64,34 @@ const FormNewFornecedor = ({
         getGruposAnexo()
     }, [])
 
-    const handleConfirmNew = () => {}
+    const handleConfirmNew = async data => {
+        // Feche o modal
+        setOpenModalNew(false)
+
+        setGruposAnexo(prevGruposAnexo => [...prevGruposAnexo, data])
+        // setGruposAnexo(prevGruposAnexo => [...prevGruposAnexo, data])
+
+        // setValue('fields.gruposAnexo', grupoAnexosAux)
+
+        setNewChange(!newChange)
+    }
 
     const createNew = async name => {
+        console.log('🚀 ~ name:', name)
         setOpenModalNew(true)
+        const gruposTemp = getValues('fields.gruposAnexo')
+        setGruposAnexosAux(gruposTemp)
         if (name == 'gruposAnexo') {
             setTitleModal('Novo grupo de anexos')
-            setComponetSelect(
-                <FormGrupoAnexos
-                    btnClose
-                    handleModalClose={() => setOpenModalNew(false)}
-                    setNewChange={setNewChange}
-                    newChange={newChange}
-                    outsideID={id}
-                    handleConfirmNew={handleConfirmNew}
-                />
-            )
+            setComponetSelect(<FormGrupoAnexos btnClose newChange={newChange} handleConfirmNew={handleConfirmNew} />)
         } else if (name == 'produtos') {
             setTitleModal('Novo produto')
-            setComponetSelect(
-                <FormProduto
-                    btnClose
-                    handleModalClose={() => setOpenModalNew(false)}
-                    handleConfirmNew={handleConfirmNew}
-                    setNewChange={setNewChange}
-                    newChange={newChange}
-                    outsideID={id}
-                />
-            )
+            setComponetSelect(<FormProduto btnClose newChange={newChange} handleConfirmNew={handleConfirmNew} />)
         }
+    }
+
+    const handleSave = async data => {
+        setOpenModalNew(false)
     }
 
     return (
@@ -200,7 +200,13 @@ const FormNewFornecedor = ({
                     errors={errors?.fields?.produtos}
                 />
                 {/* Modal para criação de novo grupo de anexo ou  */}
-                <DialogNewCreate title={titleModal} size='md' openModal={openModalNew} setOpenModal={setOpenModalNew}>
+                <DialogNewCreate
+                    title={titleModal}
+                    size='md'
+                    openModal={openModalNew}
+                    setOpenModal={setOpenModalNew}
+                    handleSave={handleSave}
+                >
                     {componetSelect}
                 </DialogNewCreate>
             </>

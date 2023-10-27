@@ -303,7 +303,7 @@ const FormParametrosFornecedor = ({ id }) => {
 
     const handleSave = async data => {
         setNewChange(true)
-        // getData()
+        getData()
         setOpenModalNew(false)
     }
 
