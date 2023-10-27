@@ -20,6 +20,7 @@ import { useRouter } from 'next/router'
 import Autocomplete from 'src/layouts/components/vertical/Autocomplete'
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
+import FormHeader from 'src/components/Defaults/FormHeader'
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
 import { Button, Snackbar, Typography } from '@mui/material'
 import DialogSelectUnit from 'src/components/Defaults/Dialogs/DialogSelectUnit'
@@ -60,58 +61,80 @@ const AppBarContent = props => {
 
     return (
         <>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className='no-print'>
-                <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
-                    {hidden && !settings.navHidden ? (
-                        <IconButton color='inherit' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
-                            <Icon icon='mdi:menu' />
-                        </IconButton>
-                    ) : null}
-                    <Autocomplete hidden={hidden} settings={settings} />
-                </Box>
-                <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography variant='h6' sx={{ fontWeight: 700 }} >{title.title}</Typography>
-                    <Typography variant='caption'>
-                        {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
-                    </Typography>
-                    {/* todo migalhas de pão */}
-                    {/* <BreadcrumbsBasic /> */}
-                </Box>
+            <Box display='flex' flexDirection='column' sx={{ width: '100%' }} >
+                {/* App Bar Content */}
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className='no-print'>
+                    <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                        {hidden && !settings.navHidden ? (
+                            <IconButton color='inherit' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
+                                <Icon icon='mdi:menu' />
+                            </IconButton>
+                        ) : null}
+                        <Autocomplete hidden={hidden} settings={settings} />
+                    </Box>
+                    <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Typography variant='h6' sx={{ fontWeight: 700 }} >{title.title}</Typography>
+                        <Typography variant='caption'>
+                            {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
+                        </Typography>
+                        {/* todo migalhas de pão */}
+                        {/* <BreadcrumbsBasic /> */}
+                    </Box>
 
-                <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
-                    <div className='hidden sm:block'>
-                        {
-                            unitsUser && unitsUser.length > 1 ? (
-                                <Button
-                                    color="secondary"
-                                    endIcon={<Icon icon='material-symbols:keyboard-arrow-down-rounded' />}
-                                    onClick={() => setOpenModal(true)}
-                                    style={{ textTransform: 'none' }}>
-                                    {loggedUnity?.nomeFantasia}
-                                </Button>
-                            ) : (
-                                <Button
-                                    color="secondary"
-                                    style={{
-                                        textTransform: 'none',
-                                        pointerEvents: 'none'
-                                    }}>
-                                    {loggedUnity?.nomeFantasia}
-                                </Button>
-                            )
-                        }
-                    </div>
-                    <div className='hidden sm:block'>
-                        <ModeToggler settings={settings} saveSettings={saveSettings} />
-                    </div>
-                    <div className='hidden sm:block'>
-                        <NotificationDropdown settings={settings} notifications={notifications} />
-                    </div>
+                    <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
+                        <div className='hidden sm:block'>
+                            {
+                                unitsUser && unitsUser.length > 1 ? (
+                                    <Button
+                                        color="secondary"
+                                        endIcon={<Icon icon='material-symbols:keyboard-arrow-down-rounded' />}
+                                        onClick={() => setOpenModal(true)}
+                                        style={{ textTransform: 'none' }}>
+                                        {loggedUnity?.nomeFantasia}
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        color="secondary"
+                                        style={{
+                                            textTransform: 'none',
+                                            pointerEvents: 'none'
+                                        }}>
+                                        {loggedUnity?.nomeFantasia}
+                                    </Button>
+                                )
+                            }
+                        </div>
+                        <div className='hidden sm:block'>
+                            <ModeToggler settings={settings} saveSettings={saveSettings} />
+                        </div>
+                        <div className='hidden sm:block'>
+                            <NotificationDropdown settings={settings} notifications={notifications} />
+                        </div>
 
-                    <UserDropdown settings={settings} />
+                        <UserDropdown settings={settings} />
 
+                    </Box>
+                </Box >
+
+                {/* Botões de ação */}
+                <Box display='flex' alignItems='center' sx={{ gap: 2 }} >
+                    <FormHeader
+                        btnCancel
+                        btnSave
+                        btnPrint
+                        actionsData={null}
+                        actions
+                        handleSubmit={() => null}
+                        iconConclusion={'mdi:check-bold'}
+                        titleConclusion={'Concluir Formulário'}
+                        title='Fornecedor'
+                        btnStatus
+                        handleBtnStatus={() => null}
+                        type='edit'
+                        status={null}
+                    />
                 </Box>
-            </Box >
+            </Box>
 
 
             <DialogSelectUnit

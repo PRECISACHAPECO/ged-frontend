@@ -118,7 +118,6 @@ const AuthProvider = ({ children }) => {
         initAuth()
     }, [])
 
-
     //* Login da fabrica (CPF)
     const handleLogin = (params, errorCallback) => {
         window.localStorage.removeItem('unreadNotifications')
