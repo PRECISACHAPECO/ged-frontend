@@ -22,9 +22,9 @@ import Loading from 'src/components/Loading'
 import toast from 'react-hot-toast'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
-import FormNotification from './Dialogs/Notification/FormNotification'
+// import FormNotification from './Dialogs/Notification/FormNotification'
 import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
-import FormFornecedorProdutos from './FormFornecedorProdutos'
+// import FormFornecedorProdutos from './FormFornecedorProdutos'
 import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
 import FooterFields from './Footer'
@@ -830,12 +830,12 @@ const FormRecebimentoMp = ({ id }) => {
                         </CardContent>
                     </Card>
 
-                    {/* Produtos (se parâmetro habilitado na unidade) */}
-                    {unidade && unidade?.obrigatorioProdutoFornecedor && produtos && produtos.length > 0 && (
+                    {/* Produtos */}
+                    {unidade && produtos && produtos.length > 0 && (
                         <Card>
                             <CardContent>
                                 {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                                <FormFornecedorProdutos
+                                {/* <FormFornecedorProdutos
                                     key={loadingFileProduct}
                                     values={produtos}
                                     handleFileSelect={handleFileSelectProduct}
@@ -843,7 +843,7 @@ const FormRecebimentoMp = ({ id }) => {
                                     loadingFile={loadingFileProduct}
                                     disabled={!canEdit.status}
                                     errors={errors?.produtos}
-                                />
+                                /> */}
                             </CardContent>
                         </Card>
                     )}
@@ -854,7 +854,7 @@ const FormRecebimentoMp = ({ id }) => {
                             <Block
                                 key={index}
                                 index={index}
-                                blockKey={`parFornecedorModeloBlocoID`}
+                                blockKey={`parRecebimentoMpModeloBlocoID`}
                                 handleFileSelect={handleFileSelectItem}
                                 setItemResposta={setItemResposta}
                                 handleRemoveAnexoItem={handleRemoveAnexoItem}
@@ -925,12 +925,12 @@ const FormRecebimentoMp = ({ id }) => {
                     {openModalStatus && (
                         <DialogFormStatus
                             title='Histórico do Formulário'
-                            text={`Listagem do histórico das movimentações do formulário ${id} do Fornecedor.`}
+                            text={`Listagem do histórico das movimentações do formulário ${id} do Recebimento de MP.`}
                             id={id}
-                            parFormularioID={1} // Fornecedor
+                            parFormularioID={2} // Recebimento MP
                             formStatus={info.status}
                             hasFormPending={hasFormPending}
-                            canChangeStatus={user.papelID == 1 && !hasFormPending && info.status > 30}
+                            canChangeStatus={!hasFormPending && info.status > 30}
                             openModal={openModalStatus}
                             handleClose={() => setOpenModalStatus(false)}
                             btnCancel
