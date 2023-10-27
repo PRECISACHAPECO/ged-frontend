@@ -2,6 +2,8 @@ import { Button } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import Router from 'next/router'
 import Link from 'next/link'
+import { RouteContext } from 'src/context/RouteContext'
+import { useContext } from 'react'
 
 const ButtonsFixedRight = ({
     btnSend,
@@ -18,8 +20,7 @@ const ButtonsFixedRight = ({
     titleConclusion
 }) => {
     const router = Router
-
-    console.log('rota atual', router.pathname)
+    const { id } = useContext(RouteContext)
 
     return (
         <div className='flex items-center gap-2'>
@@ -39,8 +40,9 @@ const ButtonsFixedRight = ({
                 </Link>
             )}
             {/* Salvar */}
-            {(btnSave && routes.find(route => route.rota === currentUrl && route.editar)) ||
-                (router.pathname == '/formularios/fornecedor' && (
+
+            {router.pathname == '/formularios/fornecedor' ||
+                (btnSave && routes.find(route => route.rota === currentUrl && route.editar) && (
                     <Button
                         onClick={handleSubmit}
                         type='submit'

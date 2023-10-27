@@ -73,10 +73,10 @@ const FormNewFornecedor = ({
                 <FormGrupoAnexos
                     btnClose
                     handleModalClose={() => setOpenModalNew(false)}
-                    handleConfirmNew={handleConfirmNew}
                     setNewChange={setNewChange}
                     newChange={newChange}
                     outsideID={id}
+                    handleConfirmNew={handleConfirmNew}
                 />
             )
         } else if (name == 'produtos') {
