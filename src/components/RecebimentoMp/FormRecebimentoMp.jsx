@@ -492,7 +492,7 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-        console.log('🚀 ~ onSubmit: ', data)
+        console.log('🚀 ~ onSubmit: ', data.form.produtos)
         return
 
         try {

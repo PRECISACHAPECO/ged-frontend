@@ -18,6 +18,8 @@ const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, erro
                     fornecedorID: fornecedorID
                 })
                 setProdutos(response.data)
+            } else {
+                setProdutos([])
             }
         } catch (error) {
             console.log('🚀 ~ error:', error)
@@ -51,18 +53,34 @@ const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, erro
                 produtos.length > 0 &&
                 produtos.map((produto, index) => (
                     <>
+                        <input
+                            type='hidden'
+                            value={produto.id}
+                            name={`produtos[${index}].produtoID`}
+                            {...register(`produtos[${index}].produtoID`)}
+                        />
+
                         <Grid container spacing={4} sx={{ pb: 2 }}>
                             {/* Checkbox com produto */}
                             <Grid item xs={12} md={4}>
-                                <CheckLabel title='Arroz' name={`aaa`} value={null} register={register} />
+                                <CheckLabel
+                                    title={produto.nome}
+                                    name={`produtos[${index}].checked`}
+                                    value={null}
+                                    register={register}
+                                />
                             </Grid>
 
                             {/* Informações do produto */}
                             <Grid item xs={12} md={8}>
                                 <Box display='flex' alignItems='center' justifyContent='end' sx={{ gap: 4, mt: 3 }}>
-                                    <Typography variant='body2'>Última avaliação: 10/01/2023</Typography>
+                                    <Typography variant='body2'>Última avaliação: {produto.ultimaAvaliacao}</Typography>
                                     <Typography variant='body2'>
-                                        Próxima avaliação: 10/01/2024 (47 dias) triangeulo menos 30 dias
+                                        Próxima avaliação: {produto.proximaAvaliacao} (
+                                        {produto.diasRestantes == 1
+                                            ? `${produto.diasRestantes} dia`
+                                            : `${produto.diasRestantes} dias`}
+                                        )
                                     </Typography>
                                     <Button variant='outlined' size='small'>
                                         <Box display='flex' alignItems='center' sx={{ gap: 1 }}>
@@ -85,7 +103,7 @@ const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, erro
                                 md={2}
                                 title='Quantidade'
                                 name='aayyyua'
-                                required={true}
+                                // required={true}
                                 register={register}
                                 control={control}
                                 errors={errors?.fields?.razaoSocial}
@@ -115,7 +133,7 @@ const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, erro
                                 md={2}
                                 title='Nº Lote'
                                 name='aaasasa'
-                                required={true}
+                                // required={true}
                                 register={register}
                                 control={control}
                                 errors={errors?.fields?.razaoSocial}
@@ -143,7 +161,7 @@ const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, erro
                                 md={2}
                                 title='NF'
                                 name='aaasasdda'
-                                required={true}
+                                // required={true}
                                 register={register}
                                 control={control}
                                 errors={errors?.fields?.razaoSocial}
