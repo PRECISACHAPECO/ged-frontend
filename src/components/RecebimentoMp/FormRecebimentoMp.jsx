@@ -28,6 +28,7 @@ import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
 import FooterFields from './Footer'
+import RecebimentoMpProdutos from './Produtos'
 
 const FormRecebimentoMp = ({ id }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -39,6 +40,7 @@ const FormRecebimentoMp = ({ id }) => {
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
     const [canApprove, setCanApprove] = useState(true) //? Se true, pode aprovar o formulário
+    const [fornecedor, setFornecedor] = useState(null)
     const [unidade, setUnidade] = useState(null)
     const [produtos, setProdutos] = useState([])
     const [grupoAnexo, setGrupoAnexo] = useState([])
@@ -163,10 +165,10 @@ const FormRecebimentoMp = ({ id }) => {
     //     }
     // }
 
-    // const copyLinkForm = () => {
-    //     navigator.clipboard.writeText(link)
-    //     toast.success('Link copiado com sucesso!')
-    // }
+    const copyLinkForm = () => {
+        navigator.clipboard.writeText(link)
+        toast.success('Link copiado com sucesso!')
+    }
 
     const canConfigForm = () => {
         let canConfig = false
@@ -188,37 +190,6 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
-
-    const objGerarNotificacao = {
-        id: 2,
-        name: 'Gerar notificação',
-        description: 'Gerar uma nova notificação para o fornecedor, podendo ser um e-mail e/ou alerta do sistema.',
-        component: (
-            <FormNotification
-                data={{
-                    email: field.find(row => row.nomeColuna == 'email')?.email
-                }}
-            />
-        ),
-        route: null,
-        type: null,
-        modal: true,
-        action: sendNotification,
-        icon: 'cil:bell',
-        identification: null
-    }
-    const objCopiarLink = {
-        id: 3,
-        name: 'Copiar link do formulário',
-        description: 'Copiar o link deste formulário.',
-        component: <NewFornecedor />,
-        route: null,
-        type: null,
-        action: copyLinkForm,
-        modal: false,
-        icon: 'solar:copy-outline',
-        identification: null
-    }
     const objRelatorio = {
         id: 4,
         name: 'Formulário do fornecedor',
@@ -242,17 +213,15 @@ const FormRecebimentoMp = ({ id }) => {
     }
     // Monta array de ações baseado nas permissões
     const actionsData = []
-    actionsData.push(objGerarNotificacao)
-    actionsData.push(objCopiarLink)
     actionsData.push(objRelatorio)
     if (user.papelID == 1 && canConfigForm()) actionsData.push(objFormConfig)
 
     const verifyFormPending = async () => {
         try {
             const parFormularioID = 2 //? Recebimento MP
-            await api.post(`${staticUrl}/verifyFormPending/${id}`, { parFormularioID }).then(response => {
-                setHasFormPending(response.data) //! true/false
-            })
+            // await api.post(`${staticUrl}/verifyFormPending/${id}`, { parFormularioID }).then(response => {
+            //     setHasFormPending(response.data) //! true/false
+            // })
         } catch (error) {
             console.log(error)
         }
@@ -267,6 +236,7 @@ const FormRecebimentoMp = ({ id }) => {
                     setLoading(false)
 
                     setFieldsHeader(response.data.fieldsHeader)
+                    setFornecedor(response.data.fieldsHeader.fornecedor)
                     setFieldsFooter(response.data.fieldsFooter)
                     setField(response.data.fields)
                     setProdutos(response.data.produtos)
@@ -817,7 +787,10 @@ const FormRecebimentoMp = ({ id }) => {
                                     <HeaderFields
                                         modeloID={unidade.parFornecedorModeloID}
                                         values={fieldsHeader}
+                                        fornecedor={fornecedor}
+                                        setFornecedor={setFornecedor}
                                         fields={field}
+                                        getValues={getValues}
                                         disabled={!canEdit.status}
                                         register={register}
                                         errors={errors}
@@ -831,22 +804,18 @@ const FormRecebimentoMp = ({ id }) => {
                     </Card>
 
                     {/* Produtos */}
-                    {unidade && produtos && produtos.length > 0 && (
-                        <Card>
-                            <CardContent>
-                                {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                                {/* <FormFornecedorProdutos
-                                    key={loadingFileProduct}
-                                    values={produtos}
-                                    handleFileSelect={handleFileSelectProduct}
-                                    handleRemove={handleRemoveAnexoProduct}
-                                    loadingFile={loadingFileProduct}
-                                    disabled={!canEdit.status}
-                                    errors={errors?.produtos}
-                                /> */}
-                            </CardContent>
-                        </Card>
-                    )}
+                    <Card>
+                        <CardContent>
+                            {/* Listagem dos produtos selecionados pra esse fornecedor */}
+                            <RecebimentoMpProdutos
+                                fornecedorID={getValues('fieldsHeader.fornecedor.id')}
+                                setValue={setValue}
+                                register={register}
+                                control={control}
+                                errors={errors}
+                            />
+                        </CardContent>
+                    </Card>
 
                     {/* Blocos */}
                     {blocos &&
