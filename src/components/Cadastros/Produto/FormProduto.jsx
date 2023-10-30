@@ -53,7 +53,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
             if (type === 'new') {
                 await api.post(`cadastros/produto/new/insertData`, values).then(response => {
                     if (handleConfirmNew) {
-                        handleConfirmNew(response.data)
+                        handleConfirmNew(response.data, 'produtos')
                     } else {
                         router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
                         setId(response.data.id)
