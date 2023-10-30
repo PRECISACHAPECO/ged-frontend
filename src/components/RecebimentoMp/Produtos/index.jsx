@@ -39,6 +39,11 @@ const RecebimentoMpProdutos = ({ fornecedorID, getValues, setValue, register, co
         }
     }
 
+    const handleCheck = index => {
+        handleChange(!change)
+        setValue(`produtos[${index}].checked`, !getValues(`produtos[${index}].checked`))
+    }
+
     useEffect(() => {
         getProdutosFornecedor()
         getApresentacoes()
@@ -80,7 +85,7 @@ const RecebimentoMpProdutos = ({ fornecedorID, getValues, setValue, register, co
                                 <CheckLabel
                                     title={produto.nome}
                                     name={`produtos[${index}].checked`}
-                                    onChange={() => handleChange(!change)}
+                                    onClick={() => handleCheck(index)}
                                     value={null}
                                     register={register}
                                 />
@@ -91,7 +96,7 @@ const RecebimentoMpProdutos = ({ fornecedorID, getValues, setValue, register, co
                                 <Box display='flex' alignItems='center' justifyContent='end' sx={{ gap: 4, mt: 3 }}>
                                     <Typography variant='body2'>Última avaliação: {produto.ultimaAvaliacao}</Typography>
                                     <Typography variant='body2'>
-                                        Próxima avaliação: {produto.proximaAvaliacao} (
+                                        Próxima avaliação: {produto.proximaAvialacao} (
                                         {produto.diasRestantes == 1
                                             ? `${produto.diasRestantes} dia`
                                             : `${produto.diasRestantes} dias`}
@@ -115,8 +120,10 @@ const RecebimentoMpProdutos = ({ fornecedorID, getValues, setValue, register, co
                             {getValues(`produtos[${index}].checked`) && (
                                 <FieldsProdutos
                                     key={change}
+                                    value={produto}
                                     apresentacoes={apresentacoes}
                                     index={index}
+                                    setValue={setValue}
                                     register={register}
                                     control={control}
                                     errors={errors}

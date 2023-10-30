@@ -1,4 +1,9 @@
-const FieldsProdutos = ({ index, apresentacoes, register, control, errors }) => {
+import Input from 'src/components/Form/Input'
+import CheckLabel from 'src/components/Form/CheckLabel'
+import DateField from 'src/components/Form/DateField'
+import Select from 'src/components/Form/Select'
+
+const FieldsProdutos = ({ value, index, apresentacoes, setValue, register, control, errors }) => {
     return (
         <>
             {/* Quantidade */}
@@ -19,7 +24,7 @@ const FieldsProdutos = ({ index, apresentacoes, register, control, errors }) => 
                 md={2}
                 required
                 title='Data da fabricação'
-                value={produto.dataFabricacao}
+                value={value.dataFabricacao}
                 name={`produtos[${index}].dataFabricacao`}
                 control={control}
                 errors={errors?.produtos?.[index]?.dataFabricacao}
@@ -70,7 +75,7 @@ const FieldsProdutos = ({ index, apresentacoes, register, control, errors }) => 
                 md={2}
                 required
                 title='Data de validade'
-                value={produto.dataValidade}
+                value={value.dataValidade}
                 name={`produtos[${index}].dataValidade`}
                 control={control}
                 errors={errors?.produtos?.[index]?.dataValidade}
