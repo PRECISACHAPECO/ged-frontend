@@ -59,7 +59,6 @@ const Select = ({
                                 onChange={(e, newValue) => {
                                     if (newValue && e.target.innerText == '-- Novo --') {
                                         createNew()
-                                        setValue(name, multiple ? [] : { nome: '' })
                                     } else {
                                         onChange && onChange(newValue)
                                         setValue(name, newValue)

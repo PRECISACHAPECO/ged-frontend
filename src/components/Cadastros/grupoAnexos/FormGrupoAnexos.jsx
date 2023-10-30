@@ -94,7 +94,7 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
             if (type === 'new') {
                 await api.post(`cadastros/grupo-anexos/new/insertData`, values).then(response => {
                     if (handleConfirmNew) {
-                        handleConfirmNew(response.data)
+                        handleConfirmNew(response.data, 'gruposAnexo')
                     } else {
                         router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
                         setId(response.data.id)

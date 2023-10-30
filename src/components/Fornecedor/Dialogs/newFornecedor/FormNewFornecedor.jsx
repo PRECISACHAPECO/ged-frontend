@@ -18,11 +18,8 @@ const FormNewFornecedor = ({
     errors,
     setValue,
     register,
-    reset,
-    setGruposAnexosAux,
-    grupoAnexosAux
+    reset
 }) => {
-    console.log('🚀 ~ grupoAnexosAux:', grupoAnexosAux)
     const { loggedUnity } = useContext(AuthContext)
     const [models, setModels] = useState([])
     const [products, setProducts] = useState([])
@@ -64,29 +61,45 @@ const FormNewFornecedor = ({
         getGruposAnexo()
     }, [])
 
-    const handleConfirmNew = async data => {
-        // Feche o modal
+    const handleConfirmNew = async (data, name) => {
         setOpenModalNew(false)
-
-        setGruposAnexo(prevGruposAnexo => [...prevGruposAnexo, data])
-        // setGruposAnexo(prevGruposAnexo => [...prevGruposAnexo, data])
-
-        // setValue('fields.gruposAnexo', grupoAnexosAux)
+        if (name == 'gruposAnexo') {
+            setGruposAnexo(prevGrupoAnexo => [...prevGrupoAnexo, data])
+            const prevGruposAnexo = [...getValues('fields.gruposAnexo')]
+            prevGruposAnexo.push(data)
+            setValue('fields.gruposAnexo', prevGruposAnexo)
+        } else if (name == 'produtos') {
+            setProducts(prevProduto => [...prevProduto, data])
+            const prevProdutos = [...getValues('fields.produtos')]
+            prevProdutos.push(data)
+            setValue('fields.produtos', prevProdutos)
+        }
 
         setNewChange(!newChange)
     }
 
     const createNew = async name => {
-        console.log('🚀 ~ name:', name)
         setOpenModalNew(true)
-        const gruposTemp = getValues('fields.gruposAnexo')
-        setGruposAnexosAux(gruposTemp)
         if (name == 'gruposAnexo') {
             setTitleModal('Novo grupo de anexos')
-            setComponetSelect(<FormGrupoAnexos btnClose newChange={newChange} handleConfirmNew={handleConfirmNew} />)
+            setComponetSelect(
+                <FormGrupoAnexos
+                    btnClose
+                    handleModalClose={() => setOpenModalNew(false)}
+                    newChange={newChange}
+                    handleConfirmNew={handleConfirmNew}
+                />
+            )
         } else if (name == 'produtos') {
             setTitleModal('Novo produto')
-            setComponetSelect(<FormProduto btnClose newChange={newChange} handleConfirmNew={handleConfirmNew} />)
+            setComponetSelect(
+                <FormProduto
+                    btnClose
+                    handleModalClose={() => setOpenModalNew(false)}
+                    newChange={newChange}
+                    handleConfirmNew={handleConfirmNew}
+                />
+            )
         }
     }
 
