@@ -2,8 +2,11 @@ import React from 'react'
 import DateField from 'src/components/Form/DateField'
 import Input from 'src/components/Form/Input'
 import Remove from 'src/components/Form/Remove'
+import useDateFormat from 'src/hooks/useDateFormat'
 
 const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => {
+    const { setDateFormat, dateStatus } = useDateFormat()
+
     return getValues('cargosFuncoes').map((item, index) => {
         return (
             <>
@@ -12,11 +15,16 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     md={2}
                     required
                     title='Data'
-                    value={item.data}
                     name={`cargosFuncoes[${index}].data`}
+                    type='date'
                     control={control}
+                    setDateFormat={setDateFormat}
+                    typeValidation='dataPassado'
+                    daysValidation={9999999999999999999}
+                    dateStatus={dateStatus}
                     errors={errors?.cargosFuncoes?.[index]?.data}
                 />
+
                 <Input
                     xs={12}
                     md={4}
@@ -38,11 +46,17 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     xs={12}
                     md={2}
                     title='Data Inativação'
-                    value={item.dataInativacao}
                     name={`cargosFuncoes[${index}].dataInativacao`}
+                    type='date'
+                    value={data?.fields?.dataNascimento}
                     control={control}
+                    setDateFormat={setDateFormat}
+                    typeValidation='dataPassado'
+                    daysValidation={9999999999999999999}
+                    dateStatus={dateStatus}
                     errors={errors?.cargosFuncoes?.[index]?.dataInativacao}
                 />
+
                 <Remove
                     xs={4}
                     md={1}

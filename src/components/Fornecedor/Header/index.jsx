@@ -3,22 +3,12 @@ import { useEffect, useState } from 'react'
 import Fields from 'src/components/Defaults/Formularios/Fields'
 import Input from 'src/components/Form/Input'
 import DateField from 'src/components/Form/DateField'
-import Select from 'src/components/Form/Select'
-import { dateConfig } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
+import useDateFormat from 'src/hooks/useDateFormat'
 
 const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, setValue, control, getAddressByCep }) => {
-    const [dateStatus, setDateStatus] = useState({})
     const [profissionaisPreenche, setProfissionaisPreenche] = useState([])
-
-    const setDateFormat = (type, name, value, numDays) => {
-        const newDate = new Date(value)
-        const status = dateConfig(type, newDate, numDays)
-        setDateStatus(prevState => ({
-            ...prevState,
-            [name]: status
-        }))
-    }
+    const { setDateFormat, dateStatus } = useDateFormat()
 
     const getProfissionais = async () => {
         const response = await api.post(`/cadastros/profissional/getProfissionaisAssinatura`, {
