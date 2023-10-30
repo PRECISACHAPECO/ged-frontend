@@ -136,6 +136,7 @@ const FormUnidade = ({ id }) => {
         }
 
         //? Se for fornecedor, atualiza os dados do usuário logado
+
         if (user.papelID == 2) {
             // Atualiza os dados do usuário logado no contexto
             for (const key in loggedUnity) {
@@ -143,6 +144,7 @@ const FormUnidade = ({ id }) => {
                     loggedUnity[key] = data[key]
                 }
             }
+
             // Atualiza os dados do usuário logado no localStorage
             localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
         }

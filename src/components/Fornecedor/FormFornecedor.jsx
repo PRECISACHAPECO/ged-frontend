@@ -57,6 +57,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [listErrors, setListErrors] = useState({ status: false, errors: [] })
     const { settings } = useContext(SettingsContext)
     const { setId } = useContext(RouteContext)
+    const [dataCopiedMyData, setDataCopiedMyData] = useState([])
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -294,6 +295,34 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
                     //* Insere os dados no formulário
                     reset(response.data)
+
+                    //? Copia os dados do fornecedor no contexto loggedUnity se o campo estiver vazio
+                    const dataOld = []
+                    for (let i = 0; i < response.data.fields.length; i++) {
+                        const nomeColuna = response.data.fields[i].nomeColuna
+                        const nomeCampo = response.data.fields[i].nomeCampo
+
+                        for (let propriedade in loggedUnity) {
+                            if (nomeColuna == 'telefone') {
+                                const telefoneColuna = loggedUnity.telefone1 ?? loggedUnity.telefone2
+                                setValue(`fields[${i}].${nomeColuna}`, telefoneColuna ?? '')
+                            }
+                            if (
+                                propriedade === nomeColuna &&
+                                !getValues(`fields[${i}].${nomeColuna}`, loggedUnity[propriedade])
+                            ) {
+                                setValue(`fields[${i}].${nomeColuna}`, loggedUnity[propriedade])
+
+                                if (loggedUnity[propriedade] !== null && loggedUnity[propriedade] !== '') {
+                                    dataOld.push({
+                                        name: nomeCampo,
+                                        value: loggedUnity[propriedade]
+                                    })
+                                }
+                            }
+                        }
+                    }
+                    setDataCopiedMyData(dataOld)
 
                     let objStatus = statusDefault[response?.data?.info?.status]
                     setStatus(objStatus)
@@ -779,6 +808,21 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         <>
             <Loading show={isLoading} />
             <form onSubmit={handleSubmit(onSubmit)}>
+                {/* Foi copiado pelo menos uma informação de meus dados */}
+                {dataCopiedMyData && dataCopiedMyData.length > 0 && (
+                    <Alert severity='info' sx={{ mb: 2, mr: 4 }}>
+                        <h1>
+                            Os seguintes campos foram copiados de <strong>Meus Dados</strong>:
+                        </h1>
+                        <div className='pt-2'>
+                            {dataCopiedMyData.map(row => (
+                                <div className='flex opacity-80'>
+                                    <p>{`- ${row.name} (${row.value})`}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </Alert>
+                )}
                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
                     {/* Mensagem */}
                     {canEdit.message && <Alert severity='warning'>{canEdit.message}</Alert>}
