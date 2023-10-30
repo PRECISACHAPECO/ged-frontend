@@ -121,7 +121,7 @@ const Item = ({
                                 })
                             }}
                             errors={errors?.[blockIndex]?.itens[index]?.resposta}
-                            blockForm={values.respostaConfig.bloqueiaFormulario == 1 ? true : false}
+                            blockForm={values.respostaConfig?.bloqueiaFormulario == 1 ? true : false}
                         />
 
                         // <Select
@@ -181,7 +181,7 @@ const Item = ({
                     )}
 
                     {/* Obs */}
-                    {values && values.respostaConfig.observacao == 1 && (
+                    {values && values.respostaConfig?.observacao == 1 && (
                         <Input
                             xs={12}
                             md={6}
