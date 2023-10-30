@@ -27,7 +27,7 @@ import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 // import FormFornecedorProdutos from './FormFornecedorProdutos'
 import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
-// import RecebimentoMpFooterFields from './Footer'
+import RecebimentoMpFooterFields from './Footer'
 import RecebimentoMpProdutos from './Produtos'
 
 const FormRecebimentoMp = ({ id }) => {
@@ -185,7 +185,7 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const goToFormConfig = () => {
-        setId(unidade.parFornecedorModeloID) //? ID do modelo do formulário
+        setId(unidade.parRecebimentoMpModeloID) //? ID do modelo do formulário
         router.push(`/configuracoes/formularios/fornecedor/`)
     }
 
@@ -492,7 +492,7 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-        console.log('🚀 ~ onSubmit: ', data.form.produtos)
+        console.log('🚀 ~ onSubmit: ', data)
         return
 
         try {
@@ -591,7 +591,7 @@ const FormRecebimentoMp = ({ id }) => {
             }
             formData.append(`usuarioID`, user.usuarioID)
             formData.append(`unidadeID`, loggedUnity.unidadeID)
-            formData.append(`parFornecedorModeloBlocoID`, item.parFornecedorModeloBlocoID ?? null)
+            formData.append(`parRecebimentoMpModeloBlocoID`, item.parRecebimentoMpModeloBlocoID ?? null)
             formData.append(`itemOpcaoAnexoID`, item.itemOpcaoAnexoID ?? null)
 
             await api
@@ -762,8 +762,8 @@ const FormRecebimentoMp = ({ id }) => {
                                         {`Aberto por ${fieldsHeader.abertoPor.profissional.nome} em ${fieldsHeader.abertoPor.dataInicio} ${fieldsHeader.abertoPor.horaInicio} `}
                                     </Typography>
 
-                                    {/* <HeaderFields
-                                        modeloID={unidade.parFornecedorModeloID}
+                                    <HeaderFields
+                                        modeloID={unidade.parRecebimentoMpModeloID}
                                         values={fieldsHeader}
                                         fornecedor={fornecedor}
                                         setFornecedor={setFornecedor}
@@ -775,7 +775,7 @@ const FormRecebimentoMp = ({ id }) => {
                                         setValue={setValue}
                                         control={control}
                                         getAddressByCep={getAddressByCep}
-                                    /> */}
+                                    />
                                 </Box>
                             )}
                         </CardContent>
@@ -863,10 +863,9 @@ const FormRecebimentoMp = ({ id }) => {
                     )}
 
                     {/* Rodapé inserir assinatura, data e hora */}
-                    {/* {unidade && fieldsFooter && !fieldsFooter.concluded && (
+                    {unidade && fieldsFooter && !fieldsFooter.concluded && (
                         <RecebimentoMpFooterFields
-                            key={unidade.parRecebimentoMpModeloID}
-                            modeloID={1}
+                            modeloID={unidade.parRecebimentoMpModeloID}
                             values={null}
                             register={register}
                             disabled={false}
@@ -874,7 +873,7 @@ const FormRecebimentoMp = ({ id }) => {
                             setValue={setValue}
                             control={control}
                         />
-                    )} */}
+                    )}
 
                     {/* Rodapé com informações de conclusão */}
                     {fieldsFooter && fieldsFooter.concluded && (
