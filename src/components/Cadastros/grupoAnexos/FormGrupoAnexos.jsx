@@ -157,7 +157,7 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
                         {/* Botões cabeçalho */}
                         <FormHeader
                             btnCancel
-                            // btnNew
+                            btnNew={handleConfirmNew ? false : true}
                             btnSave
                             btnClose={btnClose}
                             handleModalClose={handleModalClose}

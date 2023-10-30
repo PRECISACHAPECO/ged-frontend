@@ -153,7 +153,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
                     <Card>
                         <FormHeader
                             btnCancel
-                            btnNew
+                            btnNew={handleConfirmNew ? false : true}
                             btnSave
                             btnClose={btnClose}
                             handleModalClose={handleModalClose}
