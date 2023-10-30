@@ -6,9 +6,12 @@ import DateField from 'src/components/Form/DateField'
 import Select from 'src/components/Form/Select'
 import Icon from 'src/@core/components/icon'
 import { useEffect, useState } from 'react'
+import FieldsProdutos from './FieldsProdutos'
 
-const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, errors }) => {
+const RecebimentoMpProdutos = ({ fornecedorID, getValues, setValue, register, control, errors }) => {
     const [produtos, setProdutos] = useState([])
+    const [apresentacoes, setApresentacoes] = useState([])
+    const [change, handleChange] = useState(false)
     console.log('🚀 ~ produtos:', produtos)
 
     const getProdutosFornecedor = async () => {
@@ -18,6 +21,7 @@ const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, erro
                     fornecedorID: fornecedorID
                 })
                 setProdutos(response.data)
+                setValue('produtos', response.data)
             } else {
                 setProdutos([])
             }
@@ -26,8 +30,18 @@ const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, erro
         }
     }
 
+    const getApresentacoes = async () => {
+        try {
+            const response = await api.get(`/cadastros/apresentacao`)
+            setApresentacoes(response.data)
+        } catch (error) {
+            console.log('🚀 ~ error:', error)
+        }
+    }
+
     useEffect(() => {
         getProdutosFornecedor()
+        getApresentacoes()
     }, [fornecedorID])
 
     return (
@@ -66,6 +80,7 @@ const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, erro
                                 <CheckLabel
                                     title={produto.nome}
                                     name={`produtos[${index}].checked`}
+                                    onChange={() => handleChange(!change)}
                                     value={null}
                                     register={register}
                                 />
@@ -97,93 +112,16 @@ const RecebimentoMpProdutos = ({ fornecedorID, setValue, register, control, erro
                                 </Box>
                             </Grid>
 
-                            {/* Quantidade */}
-                            <Input
-                                xs={12}
-                                md={2}
-                                title='Quantidade'
-                                name='aayyyua'
-                                // required={true}
-                                register={register}
-                                control={control}
-                                errors={errors?.fields?.razaoSocial}
-                            />
-
-                            {/* Data de fabricação */}
-                            <DateField
-                                xs={12}
-                                md={2}
-                                title='Data da fabricação'
-                                name={`assa`}
-                                type='date'
-                                value={null}
-                                // disabled={disabled}
-                                register={register}
-                                control={control}
-                                // setDateFormat={setDateFormat}
-                                // typeValidation='dataPassado'
-                                // daysValidation={365}
-                                // dateStatus={dateStatus}
-                                errors={errors?.fieldsHeader?.['data']}
-                            />
-
-                            {/* Nº Lote */}
-                            <Input
-                                xs={12}
-                                md={2}
-                                title='Nº Lote'
-                                name='aaasasa'
-                                // required={true}
-                                register={register}
-                                control={control}
-                                errors={errors?.fields?.razaoSocial}
-                            />
-
-                            {/* Apresentação */}
-                            <Select
-                                xs={12}
-                                md={2}
-                                title='Apresentação'
-                                name={`uasuauh`}
-                                type='string'
-                                options={[]}
-                                value={null}
-                                // disabled={disabled}
-                                register={register}
-                                setValue={setValue}
-                                control={control}
-                                errors={errors?.fieldsHeader?.['profissional']}
-                            />
-
-                            {/* NF */}
-                            <Input
-                                xs={12}
-                                md={2}
-                                title='NF'
-                                name='aaasasdda'
-                                // required={true}
-                                register={register}
-                                control={control}
-                                errors={errors?.fields?.razaoSocial}
-                            />
-
-                            {/* Data de validade */}
-                            <DateField
-                                xs={12}
-                                md={2}
-                                title='Data da validade'
-                                name={`assahhhh`}
-                                type='date'
-                                value={null}
-                                // disabled={disabled}
-                                register={register}
-                                control={control}
-                                // setDateFormat={setDateFormat}
-                                // typeValidation='dataPassado'
-                                // daysValidation={365}
-                                // dateStatus={dateStatus}
-                                errors={errors?.fieldsHeader?.['data']}
-                            />
+                            {getValues(`produtos[${index}].checked`) && (
+                                <FieldsProdutos
+                                    key={change}
+                                    apresentacoes={apresentacoes}
+                                    index={index}
+                                    register={register}
+                                    control={control}
+                                    errors={errors}
+                                />
+                            )}
                         </Grid>
 
                         {index < produtos.length - 1 && <Divider />}

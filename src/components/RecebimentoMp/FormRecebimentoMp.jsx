@@ -809,6 +809,7 @@ const FormRecebimentoMp = ({ id }) => {
                             {/* Listagem dos produtos selecionados pra esse fornecedor */}
                             <RecebimentoMpProdutos
                                 fornecedorID={getValues('fieldsHeader.fornecedor.id')}
+                                getValues={getValues}
                                 setValue={setValue}
                                 register={register}
                                 control={control}
