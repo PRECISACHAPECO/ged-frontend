@@ -6,85 +6,87 @@ import Select from 'src/components/Form/Select'
 import { dateConfig } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
 
-const FooterFields = ({ modeloID, values, fields, disabled, register, errors, setValue, control }) => {
-    const [dateStatus, setDateStatus] = useState({})
-    const [profissionaisAprova, setProfissionaisAprova] = useState([])
+const RecebimentoMpFooterFields = ({ modeloID, values, disabled, register, errors, setValue, control }) => {
+    console.log('🚀 ~ modeloID:', modeloID)
+    // const [dateStatus, setDateStatus] = useState({})
+    // const [profissionaisAprova, setProfissionaisAprova] = useState([])
 
-    const setDateFormat = (type, name, value, numDays) => {
-        const newDate = new Date(value)
-        const status = dateConfig(type, newDate, numDays)
-        setDateStatus(prevState => ({
-            ...prevState,
-            [name]: status
-        }))
-    }
+    // const setDateFormat = (type, name, value, numDays) => {
+    //     const newDate = new Date(value)
+    //     const status = dateConfig(type, newDate, numDays)
+    //     setDateStatus(prevState => ({
+    //         ...prevState,
+    //         [name]: status
+    //     }))
+    // }
 
-    const getProfissionais = async () => {
-        const response = await api.post(`/cadastros/profissional/getProfissionaisAssinatura`, {
-            formularioID: 1, // fornecedor
-            modeloID: modeloID
-        })
-        setProfissionaisAprova(response.data.aprova)
-    }
+    // const getProfissionais = async () => {
+    //     const response = await api.post(`/cadastros/profissional/getProfissionaisAssinatura`, {
+    //         formularioID: 2, // recebimento de mp
+    //         modeloID: modeloID
+    //     })
+    //     console.log('🚀 ~ response.data:', response.data)
+    //     setProfissionaisAprova(response.data.aprova)
+    // }
 
-    useEffect(() => {
-        getProfissionais()
-    }, [])
+    // useEffect(() => {
+    //     getProfissionais()
+    // }, [])
 
     return (
         <Card>
             <CardContent>
                 <Grid container spacing={4}>
                     {/* Data de abertura */}
-                    <DateField
+                    {/* <DateField
                         xs={12}
                         md={2}
-                        title='Data da avaliação'
-                        name={`fieldsFooter.dataAvaliacao`}
+                        title='Data da conclusão'
+                        name={`fieldsFooter.dataFim`}
                         type='date'
-                        value={values?.dataAvaliacao}
+                        value={values?.dataFim}
                         disabled={disabled}
                         register={register}
                         control={control}
-                        setDateFormat={setDateFormat}
+                        // setDateFormat={setDateFormat}
                         typeValidation='dataPassado'
                         daysValidation={365}
                         dateStatus={dateStatus}
-                        errors={errors?.fieldsFooter?.['dataAvaliacao']}
-                    />
+                        // errors={errors?.fieldsFooter?.dataFim}
+                    /> */}
 
                     {/* Hora de Abertura */}
-                    <Input
+                    {/* <Input
                         xs={12}
                         md={2}
-                        title='Hora da avaliação'
-                        name={`fieldsFooter.horaAvaliacao`}
+                        title='Hora da conclusão'
+                        name={`fieldsFooter.horaFim`}
                         type='time'
                         disabled={disabled}
                         register={register}
                         control={control}
-                        errors={errors?.fieldsFooter?.['horaAvaliacao']}
-                    />
+                        // errors={errors?.fieldsFooter?.horaFim}
+                    /> */}
 
                     {/* Profissional responsável */}
-                    <Select
+                    {/* <Select
                         xs={12}
                         md={8}
                         title='Profissional que aprova'
-                        name={`fieldsFooter.profissionalAprova`}
+                        name={`fieldsFooter.profissional`}
                         type='string'
-                        options={profissionaisAprova}
-                        value={values?.profissionalAprova}
+                        options={[]}
+                        value={values?.profissional}
                         disabled={disabled}
                         register={register}
                         setValue={setValue}
                         control={control}
-                        errors={errors?.fieldsFooter?.['profissionalAprova']}
-                    />
+                        // errors={errors?.fieldsFooter?.profissional}
+                    /> */}
                 </Grid>
             </CardContent>
         </Card>
     )
 }
 
-export default FooterFields
+export default RecebimentoMpFooterFields

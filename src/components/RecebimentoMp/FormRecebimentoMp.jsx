@@ -27,7 +27,7 @@ import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
 // import FormFornecedorProdutos from './FormFornecedorProdutos'
 import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
-import FooterFields from './Footer'
+// import RecebimentoMpFooterFields from './Footer'
 import RecebimentoMpProdutos from './Produtos'
 
 const FormRecebimentoMp = ({ id }) => {
@@ -543,28 +543,6 @@ const FormRecebimentoMp = ({ id }) => {
                     //* Submete formulário pra atualizar configurações dos produtos
                     const values = getValues()
                     onSubmit(values)
-
-                    // toast.success('Anexo adicionado com sucesso!')
-
-                    // //? Atualiza produtos
-                    // const updatedProdutos = produtos.map(produto => {
-                    //     if (produto.produtoID == item.produtoID) {
-                    //         return {
-                    //             ...produto,
-                    //             produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
-                    //                 if (row.produtoAnexoID == item.produtoAnexoID) {
-                    //                     return {
-                    //                         ...row,
-                    //                         anexos: [...row.anexos, ...response.data]
-                    //                     }
-                    //                 }
-                    //                 return row
-                    //             })
-                    //         }
-                    //     }
-                    //     return produto
-                    // })
-                    // setProdutos(updatedProdutos)
                 })
                 .catch(error => {
                     setLoadingFileProduct(false)
@@ -784,7 +762,7 @@ const FormRecebimentoMp = ({ id }) => {
                                         {`Aberto por ${fieldsHeader.abertoPor.profissional.nome} em ${fieldsHeader.abertoPor.dataInicio} ${fieldsHeader.abertoPor.horaInicio} `}
                                     </Typography>
 
-                                    <HeaderFields
+                                    {/* <HeaderFields
                                         modeloID={unidade.parFornecedorModeloID}
                                         values={fieldsHeader}
                                         fornecedor={fornecedor}
@@ -797,7 +775,7 @@ const FormRecebimentoMp = ({ id }) => {
                                         setValue={setValue}
                                         control={control}
                                         getAddressByCep={getAddressByCep}
-                                    />
+                                    /> */}
                                 </Box>
                             )}
                         </CardContent>
@@ -883,6 +861,20 @@ const FormRecebimentoMp = ({ id }) => {
                             </Card>
                         </>
                     )}
+
+                    {/* Rodapé inserir assinatura, data e hora */}
+                    {/* {unidade && fieldsFooter && !fieldsFooter.concluded && (
+                        <RecebimentoMpFooterFields
+                            key={unidade.parRecebimentoMpModeloID}
+                            modeloID={1}
+                            values={null}
+                            register={register}
+                            disabled={false}
+                            errors={errors}
+                            setValue={setValue}
+                            control={control}
+                        />
+                    )} */}
 
                     {/* Rodapé com informações de conclusão */}
                     {fieldsFooter && fieldsFooter.concluded && (
