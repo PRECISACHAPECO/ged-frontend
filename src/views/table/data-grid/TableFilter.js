@@ -1,8 +1,8 @@
-import { useContext } from 'react'
-import { DataGrid, ptBR } from '@mui/x-data-grid'
-import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
-import { ParametersContext } from 'src/context/ParametersContext'
-import { RouteContext } from 'src/context/RouteContext'
+import { useContext } from 'react';
+import { DataGrid, ptBR } from '@mui/x-data-grid';
+import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar';
+import { ParametersContext } from 'src/context/ParametersContext';
+import { RouteContext } from 'src/context/RouteContext';
 
 const TableFilter = ({ rows, columns, buttonsHeader }) => {
     const {
@@ -12,30 +12,49 @@ const TableFilter = ({ rows, columns, buttonsHeader }) => {
         searchText,
         filteredData,
         setData,
-        data
-    } = useContext(ParametersContext)
+        data,
+    } = useContext(ParametersContext);
 
-    const { setId } = useContext(RouteContext)
+    const { setId } = useContext(RouteContext);
 
     // ** States
-    setData(rows)
+    setData(rows);
 
     // Função para converter a data do formato 'dd/mm/YYYY' para 'YYYY-MM-DD'
     function formatDateForComparison(date) {
-        const parts = date.split('/')
-        return `${parts[2]}-${parts[1]}-${parts[0]}`
+        const parts = date.split('/');
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
     }
+
+    // ordena as linhas, do status inativo ficam por ultimo
+    const sortedData = data.slice().sort((a, b) => {
+        if (a.status === 'Inativo' && b.status !== 'Inativo') {
+            return 1;
+        } else if (a.status !== 'Inativo' && b.status === 'Inativo') {
+            return -1;
+        }
+        return 0;
+    });
+
+    // Adiciona opacidades as linhas que estão com status inativo
+    const getRowClassName = (params) => {
+        const status = params.row.status;
+        if (status === 'Inativo') {
+            return 'inativo-row';
+        }
+        return '';
+    };
 
     //? Varre array columns, verificando se existe type date, se sim, formata data com formatDateForComparison
     columns.map((column) => {
         if (column.type === 'date') {
             column.sortComparator = (v1, v2) => {
-                const date1 = formatDateForComparison(v1)
-                const date2 = formatDateForComparison(v2)
-                return date1.localeCompare(date2)
-            }
+                const date1 = formatDateForComparison(v1);
+                const date2 = formatDateForComparison(v2);
+                return date1.localeCompare(date2);
+            };
         }
-    })
+    });
 
     return (
         <DataGrid
@@ -45,11 +64,12 @@ const TableFilter = ({ rows, columns, buttonsHeader }) => {
             pageSize={pageSize}
             rowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
             components={{ Toolbar: QuickSearchToolbar }}
-            rows={searchText ? filteredData : data}
+            rows={searchText ? filteredData : sortedData}
             onCellClick={(params, event) => {
-                setId(params.row.id)
+                setId(params.row.id);
             }}
-            onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            getRowClassName={getRowClassName}
             sx={{
                 '& .MuiDataGrid-cell': { cursor: 'pointer', overflow: 'scroll' }
             }}
@@ -57,12 +77,12 @@ const TableFilter = ({ rows, columns, buttonsHeader }) => {
                 toolbar: {
                     value: searchText,
                     clearSearch: () => handleSearch(''),
-                    onChange: event => handleSearch(event.target.value),
+                    onChange: (event) => handleSearch(event.target.value),
                     buttonsHeader: buttonsHeader
                 }
             }}
         />
-    )
-}
+    );
+};
 
-export default TableFilter
+export default TableFilter;
