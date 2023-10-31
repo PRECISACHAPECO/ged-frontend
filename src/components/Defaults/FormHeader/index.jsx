@@ -12,6 +12,7 @@ import OptionsDots from './OptionsDots'
 import ButtonsFloating from './ButtonsFloating'
 import ButtonsFixedRight from './ButtonsFixedRight'
 import ButtonsFixedLeft from './ButtonsFixedLeft'
+import useLoad from 'src/hooks/useLoad'
 
 const FormHeader = ({
     btnCancel,
@@ -44,6 +45,7 @@ const FormHeader = ({
     const { setId } = useContext(RouteContext)
     const [isVisible, setIsVisible] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
+    const { isLoading } = useLoad()
 
     const matches = useMediaQuery('(min-width:640px)')
 
@@ -80,11 +82,11 @@ const FormHeader = ({
         {
             id: 1,
             title: 'Salvar',
-            color: 'primary',
+            color: isLoading ? 'secondary' : 'primary',
             size: 'large',
             type: 'submit',
             variant: 'contained',
-            disabled: disabled || disabledSubmit,
+            disabled: disabled || disabledSubmit || isLoading,
             icon: <Icon icon='material-symbols:save' />,
             function: handleSubmit
         },

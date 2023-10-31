@@ -9,11 +9,13 @@ import { backRoute } from 'src/configs/defaultConfigs'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import useLoad from 'src/hooks/useLoad'
 
 const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, handleSave, hasListChange, openModal }) => {
     const router = Router
     const { setId } = useContext(RouteContext)
     const { routes } = useContext(AuthContext)
+    const { isLoading } = useLoad()
 
     return (
         <>
@@ -62,10 +64,10 @@ const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, handleSave, hasListCha
                         {btnSave && (
                             <Button
                                 onClick={handleSave}
-                                disabled={!hasListChange}
+                                disabled={!hasListChange || isLoading}
                                 type='button'
                                 variant='outlined'
-                                color='primary'
+                                color={isLoading ? 'secondary' : 'primary'}
                                 size='medium'
                                 sx={{ display: 'flex', gap: 2 }}
                             >

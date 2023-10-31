@@ -134,6 +134,7 @@ const Fields = ({
                     title='Data de Nascimento'
                     name={`fields.dataNascimento`}
                     type='date'
+                    required
                     value={data?.fields?.dataNascimento}
                     // disabled={disabled}
                     register={register}

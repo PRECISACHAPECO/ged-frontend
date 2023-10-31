@@ -4,7 +4,7 @@ import Input from 'src/components/Form/Input'
 import Remove from 'src/components/Form/Remove'
 import useDateFormat from 'src/hooks/useDateFormat'
 
-const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => {
+const CargoFuncao = ({ data, getValues, control, register, name, errors, removeItem }) => {
     const { setDateFormat, dateStatus } = useDateFormat()
 
     return getValues('cargosFuncoes').map((item, index) => {
@@ -13,10 +13,12 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                 <DateField
                     xs={12}
                     md={2}
-                    required
                     title='Data'
-                    name={`cargosFuncoes[${index}].data`}
                     type='date'
+                    required
+                    name={`cargosFuncoes.${[index]}.data`}
+                    // disabled={disabled}
+                    register={register}
                     control={control}
                     setDateFormat={setDateFormat}
                     typeValidation='dataPassado'
@@ -30,7 +32,7 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     md={4}
                     required
                     title='Formação / Cargo'
-                    name={`cargosFuncoes.[${index}].formacaoCargo`}
+                    name={`cargosFuncoes.${[index]}.formacaoCargo`}
                     control={control}
                     errors={errors?.cargosFuncoes?.[index]?.formacaoCargo}
                 />
@@ -38,7 +40,7 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     xs={12}
                     md={3}
                     title='Conselho'
-                    name={`cargosFuncoes.[${index}].conselho`}
+                    name={`cargosFuncoes.${[index]}.conselho`}
                     control={control}
                     errors={errors?.cargosFuncoes?.[index]?.conselho}
                 />
@@ -46,7 +48,7 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     xs={12}
                     md={2}
                     title='Data Inativação'
-                    name={`cargosFuncoes[${index}].dataInativacao`}
+                    name={`cargosFuncoes${[index]}.dataInativacao`}
                     type='date'
                     value={data?.fields?.dataNascimento}
                     control={control}
@@ -56,7 +58,6 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     dateStatus={dateStatus}
                     errors={errors?.cargosFuncoes?.[index]?.dataInativacao}
                 />
-
                 <Remove
                     xs={4}
                     md={1}

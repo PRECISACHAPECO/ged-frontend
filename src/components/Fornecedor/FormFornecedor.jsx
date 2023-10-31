@@ -28,6 +28,7 @@ import FormFornecedorProdutos from './FormFornecedorProdutos'
 import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
 import FooterFields from './Footer'
+import useLoad from 'src/hooks/useLoad'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -71,6 +72,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
     console.log('🚀 ~ staticUrl:', staticUrl)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         reset,
@@ -549,7 +551,10 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
+    console.log('🚀 ~ isLoadingaaaaaaaaaaaaaaaaaaa:', isLoading)
     const onSubmit = async (values, param = false) => {
+        startLoading()
+        console.log('função ativada inicio')
         if (param.conclusion === true) {
             values['status'] = user && user.papelID == 1 ? param.status : 40 //? Seta o status somente se for fábrica
             values['obsConclusao'] = param.obsConclusao
@@ -591,8 +596,15 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             } else {
                 toast.error(toastMessage.error)
             }
+            // stopLoading()
+            // console.log('função ativada fim try')
         } catch (error) {
             console.log(error)
+            // stopLoading()
+            // console.log('função ativada fim cath')
+        } finally {
+            stopLoading()
+            console.log('função ativada fim finally')
         }
     }
 

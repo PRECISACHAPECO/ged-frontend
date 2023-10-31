@@ -150,3 +150,8 @@ input:-ms-input-placeholder,
 input::-ms-reveal {
     background-color: #f0f8ff;
 }
+
+/* Estilo adicionado as linhas da tabela onde o status é inativo */
+.inativo-row {
+    opacity: 0.4;
+}

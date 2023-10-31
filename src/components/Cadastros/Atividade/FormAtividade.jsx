@@ -24,7 +24,6 @@ const FormAtividade = ({ id }) => {
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname // Url sem ID
-    const inputRef = useRef(null)
 
     const {
         trigger,
@@ -87,7 +86,6 @@ const FormAtividade = ({ id }) => {
         try {
             const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
             if (type === 'new' || id > 0) {
-                console.log('🚀 ~ route:', route)
                 await api.post(route).then(response => {
                     setData(response.data)
                     console.log('🚀 ~ response.data:', response.data)
@@ -107,7 +105,6 @@ const FormAtividade = ({ id }) => {
         //? Seta error nos campos obrigatórios
         if (type === 'new') {
             setTimeout(() => {
-                inputRef.current.focus()
                 trigger()
             }, 300)
         }
@@ -133,7 +130,6 @@ const FormAtividade = ({ id }) => {
                                 <Input
                                     xs={11}
                                     md={11}
-                                    // ref={inputRef}
                                     title='Nome'
                                     name='fields.nome'
                                     required={true}
