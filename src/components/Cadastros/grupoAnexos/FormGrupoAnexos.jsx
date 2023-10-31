@@ -32,6 +32,7 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
     const [savingForm, setSavingForm] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
     const [change, setChange] = useState(false)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -86,6 +87,7 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
     }
 
     const onSubmit = async values => {
+        startLoading()
         //* Valores auxiliares
         values['removedItems'] = removedItems
         values['unidade'] = loggedUnity.unidadeID
@@ -113,6 +115,8 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 

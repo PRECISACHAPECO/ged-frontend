@@ -14,6 +14,7 @@ import { RouteContext } from 'src/context/RouteContext'
 import { useContext } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
+import useLoad from 'src/hooks/useLoad'
 
 const FormSistemaQualidade = ({ id }) => {
     const [open, setOpen] = useState(false)
@@ -23,6 +24,7 @@ const FormSistemaQualidade = ({ id }) => {
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -35,6 +37,7 @@ const FormSistemaQualidade = ({ id }) => {
 
     //? Envia dados para a api
     const onSubmit = async values => {
+        startLoading()
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
@@ -52,6 +55,8 @@ const FormSistemaQualidade = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 

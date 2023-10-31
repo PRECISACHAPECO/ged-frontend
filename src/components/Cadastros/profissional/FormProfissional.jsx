@@ -16,6 +16,7 @@ import Fields from './Fields'
 import Permissions from './Permissions'
 import DialogForm from 'src/components/Defaults/Dialogs/Dialog'
 import { ParametersContext } from 'src/context/ParametersContext'
+import useLoad from 'src/hooks/useLoad'
 
 const FormProfissional = ({ id }) => {
     const fileInputRef = useRef(null)
@@ -29,6 +30,7 @@ const FormProfissional = ({ id }) => {
     const [photoProfile, setPhotoProfile] = useState(null)
     const { settings } = useContext(SettingsContext)
     const mode = settings.mode
+    const { startLoading, stopLoading } = useLoad()
 
     // Estado que é prencchindo com o valor da função verifyCPF, que verifica se o cpf digitado já esta vinculado a um usuario existente
     const [userExistVerifyCPF, setUserExistVerifyCPF] = useState(false)
@@ -63,6 +65,7 @@ const FormProfissional = ({ id }) => {
 
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async data => {
+        startLoading()
         const values = {
             ...data,
             usualioLogado: user.usuarioID,
@@ -112,6 +115,8 @@ const FormProfissional = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 

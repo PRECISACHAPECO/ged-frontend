@@ -26,6 +26,7 @@ const FormTransportador = ({ id }) => {
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
     const { loggedUnity } = useContext(AuthContext)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -38,6 +39,7 @@ const FormTransportador = ({ id }) => {
 
     //? Envia dados para a api
     const onSubmit = async values => {
+        startLoading()
         const newValues = {
             fields: {
                 ...values.fields,
@@ -61,6 +63,8 @@ const FormTransportador = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 

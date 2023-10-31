@@ -29,6 +29,7 @@ import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
 import RecebimentoMpFooterFields from './Footer'
 import RecebimentoMpProdutos from './Produtos'
+import useLoad from 'src/hooks/useLoad'
 
 const FormRecebimentoMp = ({ id }) => {
     console.log('🚀 ~ id:', id)
@@ -60,6 +61,7 @@ const FormRecebimentoMp = ({ id }) => {
     const [listErrors, setListErrors] = useState({ status: false, errors: [] })
     const { settings } = useContext(SettingsContext)
     const { setId } = useContext(RouteContext)
+    const { startLoading, stopLoading } = useLoad()
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -480,6 +482,7 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const onSubmit = async (values, param = false) => {
+        startLoading()
         if (param.conclusion === true) {
             values['status'] = param.status
             values['obsConclusao'] = param.obsConclusao
@@ -519,6 +522,8 @@ const FormRecebimentoMp = ({ id }) => {
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            stopLoading()
         }
     }
 

@@ -17,6 +17,7 @@ import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 import Icon from 'src/@core/components/icon'
 import AnexosList from './AnexosList'
+import useLoad from 'src/hooks/useLoad'
 
 const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange }) => {
     const [open, setOpen] = useState(false)
@@ -29,6 +30,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
     const { loggedUnity } = useContext(AuthContext)
     const [removedItems, setRemovedItems] = useState([])
     const [change, setChange] = useState(false)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -43,6 +45,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
 
     // Envia dados para a API
     const onSubmit = async data => {
+        startLoading()
         const values = {
             ...data,
             unidadeID: loggedUnity.unidadeID,
@@ -70,6 +73,8 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 

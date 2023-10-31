@@ -16,6 +16,7 @@ import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 import ListOptions from './ListOptions'
+import useLoad from 'src/hooks/useLoad'
 
 const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, outsideID, handleConfirmNew }) => {
     const [open, setOpen] = useState(false)
@@ -27,7 +28,7 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
     const { loggedUnity, routes } = useContext(AuthContext)
-    console.log('🚀 ~ routes:', routes)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -45,6 +46,7 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
 
     //? Envia dados para a api
     const onSubmit = async data => {
+        startLoading()
         const values = {
             ...data,
             unidadeID: loggedUnity.unidadeID
@@ -74,6 +76,8 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 

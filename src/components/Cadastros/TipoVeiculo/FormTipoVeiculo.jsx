@@ -24,6 +24,7 @@ const FormTipoVeiculo = ({ id }) => {
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -36,6 +37,7 @@ const FormTipoVeiculo = ({ id }) => {
 
     //? Envia dados para a api
     const onSubmit = async values => {
+        startLoading()
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
@@ -53,6 +55,8 @@ const FormTipoVeiculo = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 

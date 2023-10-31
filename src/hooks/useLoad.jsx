@@ -9,7 +9,9 @@ const useLoad = () => {
     }
 
     const stopLoading = () => {
-        setIsLoading(false)
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 1000)
     }
 
     return { isLoading, startLoading, stopLoading }

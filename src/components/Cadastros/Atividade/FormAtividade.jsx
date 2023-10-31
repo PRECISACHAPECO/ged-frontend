@@ -15,6 +15,7 @@ import { RouteContext } from 'src/context/RouteContext'
 import { useContext } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
+import useLoad from 'src/hooks/useLoad'
 
 const FormAtividade = ({ id }) => {
     const { title } = useContext(ParametersContext)
@@ -24,6 +25,7 @@ const FormAtividade = ({ id }) => {
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname // Url sem ID
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -36,6 +38,7 @@ const FormAtividade = ({ id }) => {
 
     //? Envia dados para a api
     const onSubmit = async values => {
+        startLoading()
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
@@ -53,6 +56,8 @@ const FormAtividade = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 
