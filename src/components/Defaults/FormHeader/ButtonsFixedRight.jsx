@@ -2,11 +2,13 @@ import { Button } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import Router from 'next/router'
 import Link from 'next/link'
+import useLoad from 'src/hooks/useLoad'
 
 const ButtonsFixedRight = ({
     btnSend,
     btnSave,
     btnNew,
+    btnNext,
     routes,
     currentUrl,
     disabled,
@@ -18,8 +20,7 @@ const ButtonsFixedRight = ({
     titleConclusion
 }) => {
     const router = Router
-
-    console.log('rota atual', router.pathname)
+    const { isLoading } = useLoad()
 
     return (
         <div className='flex items-center gap-2'>
@@ -45,8 +46,8 @@ const ButtonsFixedRight = ({
                     type='submit'
                     variant='outlined'
                     size='medium'
-                    color='primary'
-                    disabled={disabled || disabledSubmit}
+                    color={isLoading ? 'secondary' : 'primary'}
+                    disabled={disabled || disabledSubmit || isLoading}
                     sx={{ display: 'flex', gap: 2 }}
                 >
                     <Icon icon='mdi:check-bold' />
@@ -60,12 +61,25 @@ const ButtonsFixedRight = ({
                     type='submit'
                     variant='outlined'
                     size='medium'
-                    color='primary'
-                    disabled={disabled || disabledSubmit}
+                    color={isLoading ? 'secondary' : 'primary'}
+                    disabled={disabled || disabledSubmit || isLoading}
                     sx={{ display: 'flex', gap: 2 }}
                 >
                     <Icon icon='mdi:check-bold' />
                     <span className='hidden sm:block'>Salvar</span>
+                </Button>
+            )}
+            {btnNext && (
+                <Button
+                    onClick={handleSubmit}
+                    type='submit'
+                    variant='outlined'
+                    size='medium'
+                    color={isLoading ? 'secondary' : 'primary'}
+                    disabled={disabled || isLoading}
+                >
+                    <Icon icon='ooui: next-ltr' />
+                    <span className='hidden sm:block'>Avançar</span>
                 </Button>
             )}
 
