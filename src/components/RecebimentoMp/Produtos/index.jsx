@@ -10,10 +10,9 @@ import FieldsProdutos from './FieldsProdutos'
 
 const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setValue, register, control, errors }) => {
     const [produtos, setProdutos] = useState([])
+    console.log('🚀 ~ produtos:', produtos)
     const [apresentacoes, setApresentacoes] = useState([])
     const [change, handleChange] = useState(false)
-
-    console.log('🚀 ~ renderiza...', recebimentoMpID, fornecedorID)
 
     const getProdutosFornecedor = async () => {
         try {
@@ -22,7 +21,7 @@ const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setVa
                     recebimentoMpID: recebimentoMpID,
                     fornecedorID: fornecedorID
                 })
-                console.log('🚀 ~ renderiza response.data:', response.data)
+                console.log('🚀 ~ renderiza response.data:', response.data[0])
                 setProdutos(response.data)
                 setValue('produtos', response.data)
             } else {
@@ -45,6 +44,9 @@ const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setVa
     const handleCheck = index => {
         handleChange(!change)
         setValue(`produtos[${index}].checked`, !getValues(`produtos[${index}].checked`))
+        const copyProducts = [...produtos]
+        copyProducts[index].checked = !copyProducts[index].checked
+        setProdutos(copyProducts)
     }
 
     useEffect(() => {
@@ -77,7 +79,7 @@ const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setVa
                     <>
                         <input
                             type='hidden'
-                            value={produto.id}
+                            value={produto.produtoID}
                             name={`produtos[${index}].produtoID`}
                             {...register(`produtos[${index}].produtoID`)}
                         />
@@ -88,7 +90,7 @@ const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setVa
                                 <CheckLabel
                                     title={produto.nome}
                                     name={`produtos[${index}].checked`}
-                                    value={getValues(`produtos[${index}].checked`)}
+                                    value={produtos[index].checked}
                                     onClick={() => handleCheck(index)}
                                     register={register}
                                 />
@@ -120,7 +122,7 @@ const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setVa
                                 </Box>
                             </Grid>
 
-                            {getValues(`produtos[${index}].checked`) && (
+                            {produtos && produtos[index].checked && (
                                 <FieldsProdutos
                                     key={index}
                                     value={produto}
