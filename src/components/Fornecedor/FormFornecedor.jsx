@@ -31,6 +31,7 @@ import FooterFields from './Footer'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
+    console.log('🚀 ~ loggedUnitysssssssssssssssssssss:', loggedUnity)
     const [isLoading, setLoading] = useState(false)
     const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
     const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
@@ -390,8 +391,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         //? Blocos
         blocos.forEach((block, indexBlock) => {
             block.itens.forEach((item, indexItem) => {
-                console.log('🚀 ~ checkErrors -> item: ', item)
-
                 const fieldValue = getValues(`blocos[${indexBlock}].itens[${indexItem}].resposta`)
                 //? Valida resposta do item
                 if (item?.obrigatorio === 1 && !fieldValue) {
@@ -431,7 +430,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             grupoAnexo.forEach((grupo, indexGrupo) => {
                 grupo.itens.forEach((item, indexItem) => {
                     if (item.obrigatorio === 1 && item.anexos.length == 0) {
-                        console.log('gera erro grupo')
                         setError(`grupoAnexo[${indexGrupo}].itens[${indexItem}].anexos`, {
                             type: 'manual',
                             message: 'Campo obrigatário'
@@ -565,8 +563,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-        console.log('🚀 ~ onSubmit: ', data)
-        // return
 
         try {
             if (type == 'edit') {
@@ -714,7 +710,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
     //? Função que atualiza os anexos solicitados no item, quando altera a resposta
     const setItemResposta = async value => {
-        console.log('🚀 ~ setItemResposta ~ value:', value)
         // envia pro backend verificar as configurações dessa resposta (se possui anexos, se bloqueia formulário e se possui obs)
         try {
             const response = await api.post('/cadastros/item/getItemConfigs', {
@@ -728,7 +723,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     ...bloco,
                     itens: bloco.itens.map(row => {
                         if (row.itemID == value.itemID) {
-                            console.log('setItemResposta IGUAL: ', row)
                             return {
                                 ...row,
                                 respostaConfig: {
@@ -740,7 +734,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     })
                 }
             })
-            console.log('🚀 ~ updatedBlocos:', updatedBlocos)
 
             setBlocos(updatedBlocos)
         } catch (error) {
