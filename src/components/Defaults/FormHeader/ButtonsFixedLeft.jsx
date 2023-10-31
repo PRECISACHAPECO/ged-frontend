@@ -33,7 +33,7 @@ const ButtonsFixedLeft = ({
                     color='primary'
                     size='medium'
                 >
-                    <Icon icon='material-symbols:arrow-back-rounded' />
+                    <Icon icon='grommet-icons:form-previous-link' />
                 </Button>
             )}
 

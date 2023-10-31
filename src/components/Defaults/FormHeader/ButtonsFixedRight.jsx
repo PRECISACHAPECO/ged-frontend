@@ -78,7 +78,7 @@ const ButtonsFixedRight = ({
                     color={isLoading ? 'secondary' : 'primary'}
                     disabled={disabled || isLoading}
                 >
-                    <Icon icon='ooui: next-ltr' />
+                    <Icon icon='grommet-icons:form-next-link' />
                     <span className='hidden sm:block'>Avançar</span>
                 </Button>
             )}
