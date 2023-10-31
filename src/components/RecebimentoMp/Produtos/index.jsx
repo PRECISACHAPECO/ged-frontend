@@ -8,18 +8,21 @@ import Icon from 'src/@core/components/icon'
 import { useEffect, useState } from 'react'
 import FieldsProdutos from './FieldsProdutos'
 
-const RecebimentoMpProdutos = ({ fornecedorID, getValues, setValue, register, control, errors }) => {
+const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setValue, register, control, errors }) => {
     const [produtos, setProdutos] = useState([])
     const [apresentacoes, setApresentacoes] = useState([])
     const [change, handleChange] = useState(false)
-    console.log('🚀 ~ produtos:', produtos)
+
+    console.log('🚀 ~ renderiza...', recebimentoMpID, fornecedorID)
 
     const getProdutosFornecedor = async () => {
         try {
             if (fornecedorID && fornecedorID > 0) {
                 const response = await api.post(`/cadastros/produto/getProdutosFornecedor`, {
+                    recebimentoMpID: recebimentoMpID,
                     fornecedorID: fornecedorID
                 })
+                console.log('🚀 ~ renderiza response.data:', response.data)
                 setProdutos(response.data)
                 setValue('produtos', response.data)
             } else {
@@ -85,8 +88,8 @@ const RecebimentoMpProdutos = ({ fornecedorID, getValues, setValue, register, co
                                 <CheckLabel
                                     title={produto.nome}
                                     name={`produtos[${index}].checked`}
+                                    value={getValues(`produtos[${index}].checked`)}
                                     onClick={() => handleCheck(index)}
-                                    value={null}
                                     register={register}
                                 />
                             </Grid>
@@ -119,7 +122,7 @@ const RecebimentoMpProdutos = ({ fornecedorID, getValues, setValue, register, co
 
                             {getValues(`produtos[${index}].checked`) && (
                                 <FieldsProdutos
-                                    key={change}
+                                    key={index}
                                     value={produto}
                                     apresentacoes={apresentacoes}
                                     index={index}

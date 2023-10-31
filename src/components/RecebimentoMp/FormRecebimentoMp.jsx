@@ -488,12 +488,13 @@ const FormRecebimentoMp = ({ id }) => {
             form: values,
             auth: {
                 usuarioID: user.usuarioID,
+                profissionalID: user.profissionalID ?? 0,
                 papelID: user.papelID,
                 unidadeID: loggedUnity.unidadeID
             }
         }
         console.log('🚀 ~ onSubmit: ', data)
-        return
+        // return
 
         try {
             if (type == 'edit') {
@@ -785,14 +786,18 @@ const FormRecebimentoMp = ({ id }) => {
                     <Card>
                         <CardContent>
                             {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                            <RecebimentoMpProdutos
-                                fornecedorID={getValues('fieldsHeader.fornecedor.id')}
-                                getValues={getValues}
-                                setValue={setValue}
-                                register={register}
-                                control={control}
-                                errors={errors}
-                            />
+                            {fornecedor && (
+                                <RecebimentoMpProdutos
+                                    key={savingForm}
+                                    recebimentoMpID={id}
+                                    fornecedorID={fornecedor.id}
+                                    getValues={getValues}
+                                    setValue={setValue}
+                                    register={register}
+                                    control={control}
+                                    errors={errors}
+                                />
+                            )}
                         </CardContent>
                     </Card>
 
