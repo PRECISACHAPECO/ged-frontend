@@ -32,6 +32,7 @@ const Block = ({
                                 <Item
                                     key={indexItem}
                                     blockIndex={index}
+                                    blockKey={blockKey}
                                     index={indexItem}
                                     setBlocos={setBlocos}
                                     handleFileSelect={handleFileSelect}

@@ -9,8 +9,9 @@ import { useEffect, useState } from 'react'
 import FieldsProdutos from './FieldsProdutos'
 
 const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setValue, register, control, errors }) => {
+    console.log('🚀 ~ recebimentoMpID, fornecedorID:', recebimentoMpID, fornecedorID)
+
     const [produtos, setProdutos] = useState([])
-    console.log('🚀 ~ produtos:', produtos)
     const [apresentacoes, setApresentacoes] = useState([])
     const [change, handleChange] = useState(false)
 
@@ -61,14 +62,20 @@ const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setVa
             </Typography>
 
             {!fornecedorID && (
-                <Typography color='primary' variant='subtitle1' className='italic'>
-                    Nenhum fornecedor selecionado!
+                <Typography color='warning' variant='subtitle1' className='italic'>
+                    <Box display='flex' alignItems='center' sx={{ gap: 1 }}>
+                        <Icon icon='typcn:warning' color='#FFC107' />
+                        <p>Nenhum fornecedor selecionado!</p>
+                    </Box>
                 </Typography>
             )}
 
             {fornecedorID && !produtos.length && (
-                <Typography color='primary' variant='subtitle1' className='italic'>
-                    Nenhum produto aprovado para o fornecedor selecionado!
+                <Typography color='warning' variant='subtitle1' className='italic'>
+                    <Box display='flex' alignItems='center' sx={{ gap: 1 }}>
+                        <Icon icon='typcn:warning' color='#FFC107' />
+                        <p>Nenhum produto aprovado para o fornecedor selecionado!</p>
+                    </Box>
                 </Typography>
             )}
 

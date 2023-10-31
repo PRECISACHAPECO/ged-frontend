@@ -139,7 +139,7 @@ const HeaderFields = ({
 
             {/* Informações do fornecedor */}
             <Grid item xs={12} md={8}>
-                {getValues('fieldsHeader.fornecedor') && getValues('fieldsHeader.fornecedor.id') > 0 ? (
+                {getValues('fieldsHeader.fornecedor') && getValues('fieldsHeader.fornecedor.id') > 0 && (
                     <Box display='flex' flexDirection='column'>
                         <p className='text-xs'>Dados do Fornecedor</p>
                         <Box display='flex' alignItems='center' gap={4}>
@@ -151,10 +151,6 @@ const HeaderFields = ({
                             )}
                         </Box>
                     </Box>
-                ) : (
-                    <Typography color='warning' variant='subtitle2' className='italic' sx={{ mt: 4 }}>
-                        Selecione um fornecedor...
-                    </Typography>
                 )}
             </Grid>
         </Grid>

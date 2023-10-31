@@ -1,4 +1,5 @@
 import FormRecebimentoMp from 'src/components/RecebimentoMp/FormRecebimentoMp'
+import SelectModel from 'src/components/RecebimentoMp/SelectModel'
 import { ParametersContext } from 'src/context/ParametersContext'
 import { useContext, useEffect } from 'react'
 
@@ -16,7 +17,7 @@ const RecebimentoMpNovo = () => {
         })
     }, [])
 
-    return <FormRecebimentoMp />
+    return <SelectModel />
 }
 
 export default RecebimentoMpNovo

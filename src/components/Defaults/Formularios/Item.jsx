@@ -15,6 +15,7 @@ const Item = ({
     blockIndex,
     index,
     setBlocos,
+    blockKey,
     handleFileSelect,
     setItemResposta,
     handleRemoveAnexoItem,
@@ -51,7 +52,7 @@ const Item = ({
 
     //? Anexos
     const handleFileClick = item => {
-        item['parFornecedorModeloBlocoID'] = values.parFornecedorModeloBlocoID ?? 0
+        item[blockKey] = values[blockKey] ?? 0 //? blockKey: parFornecedorModeloBlocoID, parRecebimentoMpModeloBlocoID, etc
         fileInputRef.current.click()
         setSelectedItem(item)
     }
@@ -63,16 +64,7 @@ const Item = ({
     }, [handleFileSelect])
 
     return (
-        <Grid
-            index={index}
-            container
-            spacing={2}
-            // sx={{
-            //     mb: 0,
-            //     display: 'flex',
-            //     alignItems: 'center'
-            // }}
-        >
+        <Grid index={index} container spacing={2} sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Hidden do itemID */}
             <input
                 type='hidden'
@@ -115,7 +107,8 @@ const Item = ({
                                     values.alternativas.find(item => item.id == e.target.value)
                                 )
                                 setItemResposta({
-                                    parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
+                                    parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID ?? 0,
+                                    parRecebimentoMpModeloBlocoID: values.parRecebimentoMpModeloBlocoID ?? 0,
                                     itemID: values.itemID,
                                     alternativa: values.alternativas.find(item => item.id == e.target.value)
                                 })
@@ -123,26 +116,6 @@ const Item = ({
                             errors={errors?.[blockIndex]?.itens[index]?.resposta}
                             blockForm={values.respostaConfig?.bloqueiaFormulario == 1 ? true : false}
                         />
-
-                        // <Select
-                        //     title='Selecione uma resposta'
-                        //     options={values.alternativas}
-                        //     name={`blocos[${blockIndex}].itens[${index}].resposta`}
-                        //     idName={'alternativaID'}
-                        //     value={values.resposta}
-                        //     disabled={disabled}
-                        //     onChange={e =>
-                        //         setItemResposta({
-                        //             parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID,
-                        //             itemID: values.itemID,
-                        //             alternativa: e
-                        //         })
-                        //     }
-                        //     control={control}
-                        //     register={register}
-                        //     setValue={setValue}
-                        //     errors={errors?.[blockIndex]?.itens[index]?.resposta}
-                        // />
                     )}
 
                     {/* Data */}
@@ -220,7 +193,7 @@ const Item = ({
                 values.respostaConfig.anexo == 1 &&
                 values.respostaConfig.anexosSolicitados.length > 0 &&
                 values.respostaConfig.anexosSolicitados.map((anexo, indexAnexo) => (
-                    <Grid item xs={12} md={12}>
+                    <Grid item xs={12} md={12} sx={{ mb: 5 }}>
                         <AnexoListMultiple
                             modeTheme={modeTheme}
                             key={anexo}

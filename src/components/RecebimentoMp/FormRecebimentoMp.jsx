@@ -31,6 +31,7 @@ import RecebimentoMpFooterFields from './Footer'
 import RecebimentoMpProdutos from './Produtos'
 
 const FormRecebimentoMp = ({ id }) => {
+    console.log('🚀 ~ id:', id)
     const { menu, user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
     const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
@@ -584,6 +585,7 @@ const FormRecebimentoMp = ({ id }) => {
     const handleFileSelectItem = async (event, item) => {
         setLoadingFileItem(true)
         const selectedFile = event.target.files
+        console.log('🚀 ~ selectedFile:', selectedFile)
 
         if (selectedFile && selectedFile.length > 0) {
             const formData = new FormData()
@@ -594,6 +596,7 @@ const FormRecebimentoMp = ({ id }) => {
             formData.append(`unidadeID`, loggedUnity.unidadeID)
             formData.append(`parRecebimentoMpModeloBlocoID`, item.parRecebimentoMpModeloBlocoID ?? null)
             formData.append(`itemOpcaoAnexoID`, item.itemOpcaoAnexoID ?? null)
+            console.log('🚀 ~ item:', item)
 
             await api
                 .post(`${staticUrl}/saveAnexo/${id}/item/${user.usuarioID}/${unidade.unidadeID}`, formData)
@@ -749,7 +752,7 @@ const FormRecebimentoMp = ({ id }) => {
                             iconConclusion={'mdi:check-bold'}
                             titleConclusion={'Concluir Formulário'}
                             title='Recebimento de MP'
-                            btnStatus={type == 'edit' ? true : false}
+                            // btnStatus={type == 'edit' ? true : false}
                             handleBtnStatus={() => setOpenModalStatus(true)}
                             type={type}
                             status={status}
@@ -786,18 +789,17 @@ const FormRecebimentoMp = ({ id }) => {
                     <Card>
                         <CardContent>
                             {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                            {fornecedor && (
-                                <RecebimentoMpProdutos
-                                    key={savingForm}
-                                    recebimentoMpID={id}
-                                    fornecedorID={fornecedor.id}
-                                    getValues={getValues}
-                                    setValue={setValue}
-                                    register={register}
-                                    control={control}
-                                    errors={errors}
-                                />
-                            )}
+
+                            <RecebimentoMpProdutos
+                                key={savingForm}
+                                recebimentoMpID={id}
+                                fornecedorID={getValues('fieldsHeader.fornecedor.id')}
+                                getValues={getValues}
+                                setValue={setValue}
+                                register={register}
+                                control={control}
+                                errors={errors}
+                            />
                         </CardContent>
                     </Card>
 
