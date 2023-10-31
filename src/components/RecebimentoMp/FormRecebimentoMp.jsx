@@ -866,7 +866,7 @@ const FormRecebimentoMp = ({ id }) => {
                     {unidade && fieldsFooter && !fieldsFooter.concluded && (
                         <RecebimentoMpFooterFields
                             modeloID={unidade.parRecebimentoMpModeloID}
-                            values={null}
+                            values={fieldsFooter}
                             register={register}
                             disabled={false}
                             errors={errors}
@@ -878,7 +878,7 @@ const FormRecebimentoMp = ({ id }) => {
                     {/* Rodapé com informações de conclusão */}
                     {fieldsFooter && fieldsFooter.concluded && (
                         <Typography variant='caption'>
-                            {`Concluído por ${fieldsFooter.profissionalAprova.nome} em ${fieldsFooter.dataFim} ${fieldsFooter.horaFim}.`}
+                            {`Concluído por ${fieldsFooter.conclusion.profissional.nome} em ${fieldsFooter.conclusion.dataFim} ${fieldsFooter.conclusion.horaFim}.`}
                         </Typography>
                     )}
 

@@ -7,7 +7,6 @@ import { dateConfig } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
 
 const RecebimentoMpFooterFields = ({ modeloID, values, disabled, register, errors, setValue, control }) => {
-    console.log('🚀 ~ modeloID:', modeloID)
     const [dateStatus, setDateStatus] = useState({})
     const [profissionaisAprova, setProfissionaisAprova] = useState([])
 
@@ -42,9 +41,9 @@ const RecebimentoMpFooterFields = ({ modeloID, values, disabled, register, error
                         xs={12}
                         md={2}
                         title='Data da conclusão'
-                        name={`fieldsFooter.dataFim`}
+                        name={`fieldsFooter.dataConclusao`}
                         type='date'
-                        value={values?.dataFim}
+                        value={values?.dataConclusao}
                         disabled={disabled}
                         register={register}
                         control={control}
@@ -52,7 +51,7 @@ const RecebimentoMpFooterFields = ({ modeloID, values, disabled, register, error
                         typeValidation='dataPassado'
                         daysValidation={365}
                         dateStatus={dateStatus}
-                        errors={errors?.fieldsFooter?.dataFim}
+                        errors={errors?.fieldsFooter?.dataConclusao}
                     />
 
                     {/* Hora de Abertura */}
@@ -60,12 +59,12 @@ const RecebimentoMpFooterFields = ({ modeloID, values, disabled, register, error
                         xs={12}
                         md={2}
                         title='Hora da conclusão'
-                        name={`fieldsFooter.horaFim`}
+                        name={`fieldsFooter.horaConclusao`}
                         type='time'
                         disabled={disabled}
                         register={register}
                         control={control}
-                        errors={errors?.fieldsFooter?.horaFim}
+                        errors={errors?.fieldsFooter?.horaConclusao}
                     />
 
                     {/* Profissional responsável */}
