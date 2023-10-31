@@ -36,7 +36,7 @@ import HelpText from 'src/components/Defaults/HelpText'
 import NewPassword from './NewPassword'
 
 const FormUnidade = ({ id }) => {
-    const { user, setUser, loggedUnity } = useContext(AuthContext)
+    const { user, setUser, loggedUnity, setLoggedUnity } = useContext(AuthContext)
     const { setId } = useContext(RouteContext)
     id = user.papelID === 1 ? id : loggedUnity.unidadeID
 
@@ -91,7 +91,6 @@ const FormUnidade = ({ id }) => {
 
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async datas => {
-        console.log('🚀 ~ datas:', datas)
         // Verifica se o CNPJ é válido se ele for envalido retorna erro e retorna
         const cnpjValidation = validationCNPJ(datas.fields.cnpj)
         if (!cnpjValidation) {
@@ -127,25 +126,41 @@ const FormUnidade = ({ id }) => {
                 setShowNewPassword(false)
                 getData()
             }
+
+            //? Se for fornecedor, atualiza os dados do usuário logado
+            if (user.papelID === 2) {
+                setLoggedUnity({
+                    ...loggedUnity,
+                    nomeFantasia: datas.fields.nomeFantasia,
+                    complemento: datas.fields.complemento,
+                    razaoSocial: datas.fields.razaoSocial,
+                    responsavel: datas.fields.responsavel,
+                    email: datas.fields.email,
+                    telefone1: datas.fields.telefone1,
+                    telefone2: datas.fields.telefone2,
+                    cep: datas.fields.cep,
+                    logradouro: datas.fields.logradouro,
+                    numero: datas.fields.numero,
+                    complemento: datas.fields.complemento,
+                    bairro: datas.fields.bairro,
+                    cidade: datas.fields.cidade,
+                    uf: datas.fields.uf
+                })
+            }
         } catch (error) {
             if (error.response && error.response.status === 409) {
                 toast.error(toastMessage.errorRepeated)
             } else {
                 console.log(error)
             }
+        } finally {
+            atualizaLocalStorage()
         }
+    }
 
-        //? Se for fornecedor, atualiza os dados do usuário logado
-        if (user.papelID == 2) {
-            // Atualiza os dados do usuário logado no contexto
-            for (const key in loggedUnity) {
-                if (key in data) {
-                    loggedUnity[key] = data[key]
-                }
-            }
-            // Atualiza os dados do usuário logado no localStorage
-            localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
-        }
+    const atualizaLocalStorage = async () => {
+        localStorage.removeItem('loggedUnity')
+        localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
     }
 
     // Função que deleta os dados

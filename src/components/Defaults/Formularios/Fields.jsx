@@ -28,6 +28,10 @@ const Fields = ({
     const router = Router
     const staticUrl = backRoute(router.pathname)
 
+    const dataLocalStorage = localStorage.getItem('loggedUnity')
+    const formatDataLocalStorage = JSON.parse(dataLocalStorage)
+    console.log('🚀 ~ dataLocalStorage:', formatDataLocalStorage)
+
     const setDateFormat = (type, name, value, numDays) => {
         const newDate = new Date(value)
         const status = dateConfig(type, newDate, numDays)
