@@ -59,6 +59,8 @@ const FormProfissional = ({ id }) => {
         setUserExistDefault(false)
     }
 
+    console.log('errroosss', errors)
+
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async data => {
         const values = {
@@ -70,6 +72,8 @@ const FormProfissional = ({ id }) => {
             },
             removedItems
         }
+
+        // return
 
         // TODO Verificar se tem pelo um cargo ativo
         // Verifica se existe pelo um cargosFuncoes são data de inativação
@@ -372,6 +376,7 @@ const FormProfissional = ({ id }) => {
                                     <CargoFuncao
                                         getValues={getValues}
                                         control={control}
+                                        register={register}
                                         errors={errors}
                                         removeItem={removeItem}
                                         key={change}
