@@ -52,6 +52,8 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
             removedItems
         }
         console.log(values)
+        // return
+
         try {
             if (type === 'new') {
                 await api.post(`cadastros/produto/new/insertData`, values).then(response => {
@@ -100,6 +102,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
         try {
             const route = type === 'new' ? `cadastros/produto/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
+                console.log('🚀 ~ getData:', response.data)
                 setData(response.data)
                 reset(response.data)
             })
@@ -213,6 +216,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
                                     key={change}
                                     getValues={getValues}
                                     removeAnexo={removeAnexo}
+                                    setValue={setValue}
                                     control={control}
                                     register={register}
                                     errors={errors}
