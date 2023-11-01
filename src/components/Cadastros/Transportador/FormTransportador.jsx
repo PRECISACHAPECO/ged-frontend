@@ -16,6 +16,7 @@ import { AuthContext } from 'src/context/AuthContext'
 import { useContext } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
+import useLoad from 'src/hooks/useLoad'
 
 const FormTransportador = ({ id }) => {
     const [open, setOpen] = useState(false)

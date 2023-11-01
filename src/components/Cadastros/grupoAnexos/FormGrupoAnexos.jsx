@@ -128,6 +128,7 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)
+            console.log('entrou')
         } catch (error) {
             if (error.response && error.response.status === 409) {
                 toast.error(toastMessage.pendingDelete)
@@ -169,7 +170,7 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
                             handleModalClose={handleModalClose}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
+                            onclickDelete={() => setOpenDelete(true)}
                             type={type}
                         />
 

@@ -15,6 +15,7 @@ import { RouteContext } from 'src/context/RouteContext'
 import { useContext } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
+import useLoad from 'src/hooks/useLoad'
 
 const FormTipoVeiculo = ({ id }) => {
     const [open, setOpen] = useState(false)
