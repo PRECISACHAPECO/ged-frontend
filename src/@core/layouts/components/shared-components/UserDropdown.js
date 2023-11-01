@@ -89,7 +89,6 @@ const UserDropdown = props => {
             router.push(url)
         }
         setAnchorEl(null)
-        console.log("passou akii")
     }
 
     const styles = {
