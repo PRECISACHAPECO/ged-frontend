@@ -13,6 +13,7 @@ import Loading from 'src/components/Loading'
 import FormHeader from '../../Defaults/FormHeader'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { toastMessage } from 'src/configs/defaultConfigs'
+import useLoad from 'src/hooks/useLoad'
 
 //* Custom components
 import Select from 'src/components/Form/Select'
@@ -20,7 +21,7 @@ import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import GrupoAnexoList from './GrupoAnexoList.jsx'
 
-const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange }) => {
+const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange, manualUrl }) => {
     const { setId } = useContext(RouteContext)
     const router = Router
     const [data, setData] = useState(null)
@@ -163,6 +164,7 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
                             btnCancel
                             btnNew={handleConfirmNew ? false : true}
                             btnSave
+                            manualUrl={manualUrl}
                             btnClose={btnClose}
                             handleModalClose={handleModalClose}
                             handleSubmit={() => handleSubmit(onSubmit)}

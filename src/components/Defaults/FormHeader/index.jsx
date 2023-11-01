@@ -21,6 +21,7 @@ const FormHeader = ({
     btnNext,
     btnStatus,
     handleSubmit,
+    manualUrl,
     btnNew,
     btnClose,
     handleModalClose,
@@ -172,6 +173,7 @@ const FormHeader = ({
                             btnNew={btnNew}
                             btnSend={btnSend}
                             btnNext={btnNext}
+                            manualUrl={manualUrl}
                             routes={routes}
                             currentUrl={currentUrl}
                             handleSubmit={handleSubmit}

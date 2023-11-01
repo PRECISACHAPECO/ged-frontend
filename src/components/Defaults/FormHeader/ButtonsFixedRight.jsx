@@ -9,6 +9,7 @@ const ButtonsFixedRight = ({
     btnSave,
     btnNew,
     btnNext,
+    manualUrl,
     routes,
     currentUrl,
     disabled,
@@ -21,6 +22,7 @@ const ButtonsFixedRight = ({
 }) => {
     const router = Router
     const { isLoading } = useLoad()
+    const url = manualUrl ?? currentUrl
 
     return (
         <div className='flex items-center gap-2'>
@@ -40,22 +42,7 @@ const ButtonsFixedRight = ({
                 </Link>
             )}
             {/* Salvar */}
-            {btnSave && routes.find(route => route.rota === currentUrl && route.editar) && (
-                <Button
-                    onClick={handleSubmit}
-                    type='submit'
-                    variant='outlined'
-                    size='medium'
-                    color={isLoading ? 'secondary' : 'primary'}
-                    disabled={disabled || disabledSubmit || isLoading}
-                    sx={{ display: 'flex', gap: 2 }}
-                >
-                    <Icon icon='mdi:check-bold' />
-                    <span className='hidden sm:block'>Salvar</span>
-                </Button>
-            )}
-
-            {router.pathname == '/formularios/fornecedor' && (
+            {btnSave && routes.find(route => route.rota === url && route.editar) && (
                 <Button
                     onClick={handleSubmit}
                     type='submit'
@@ -82,7 +69,6 @@ const ButtonsFixedRight = ({
                     <span className='hidden sm:block'>Avançar</span>
                 </Button>
             )}
-
             {/* Fornecedor concluir formulário e envia pra fábrica avaliar */}
             {btnSend && (
                 <Button

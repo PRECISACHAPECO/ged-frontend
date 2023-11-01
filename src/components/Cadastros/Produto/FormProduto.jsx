@@ -19,7 +19,7 @@ import Icon from 'src/@core/components/icon'
 import AnexosList from './AnexosList'
 import useLoad from 'src/hooks/useLoad'
 
-const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange }) => {
+const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange, manualUrl }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
@@ -161,6 +161,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
                             btnNew={handleConfirmNew ? false : true}
                             btnSave
                             btnClose={btnClose}
+                            manualUrl={manualUrl}
                             handleModalClose={handleModalClose}
                             handleSubmit={() => handleSubmit(onSubmit)}
                             btnDelete={type === 'edit' ? true : false}

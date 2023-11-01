@@ -84,6 +84,7 @@ const FormNewFornecedor = ({
             setTitleModal('Novo grupo de anexos')
             setComponetSelect(
                 <FormGrupoAnexos
+                    manualUrl='/cadastros/grupo-anexos'
                     btnClose
                     handleModalClose={() => setOpenModalNew(false)}
                     newChange={newChange}
@@ -94,6 +95,7 @@ const FormNewFornecedor = ({
             setTitleModal('Novo produto')
             setComponetSelect(
                 <FormProduto
+                    manualUrl='/cadastros/produto'
                     btnClose
                     handleModalClose={() => setOpenModalNew(false)}
                     newChange={newChange}
