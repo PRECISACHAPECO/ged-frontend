@@ -18,7 +18,16 @@ import { AuthContext } from 'src/context/AuthContext'
 import ListOptions from './ListOptions'
 import useLoad from 'src/hooks/useLoad'
 
-const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, outsideID, handleConfirmNew }) => {
+const FormItem = ({
+    id,
+    btnClose,
+    handleModalClose,
+    setNewChange,
+    newChange,
+    outsideID,
+    handleConfirmNew,
+    manualUrl
+}) => {
     const [open, setOpen] = useState(false)
     const [change, setChange] = useState(false)
     const [data, setData] = useState(null)
@@ -189,6 +198,7 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
                                 btnCancel
                                 btnNew
                                 btnSave
+                                manualUrl={manualUrl}
                                 btnClose={btnClose}
                                 handleModalClose={handleModalClose}
                                 handleSubmit={() => handleSubmit(onSubmit)}

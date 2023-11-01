@@ -614,6 +614,7 @@ const FormParametrosFornecedor = ({ id }) => {
                     newChange={newChange}
                     outsideID={id}
                     handleConfirmNew={handleConfirmNew}
+                    manualUrl='/cadastros/item'
                 />
             </DialogNewCreate>
 
