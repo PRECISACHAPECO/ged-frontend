@@ -815,7 +815,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 {/* Foi copiado pelo menos uma informação de meus dados */}
                 {dataCopiedMyData && dataCopiedMyData.length > 0 && (
-                    <Alert severity='info' sx={{ mb: 2, mr: 4 }}>
+                    <Alert severity='info' sx={{ mb: 2 }}>
                         <h1>
                             Os seguintes campos foram copiados de <strong>Meus Dados</strong>:
                         </h1>
