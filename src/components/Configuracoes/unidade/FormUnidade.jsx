@@ -575,6 +575,18 @@ const FormUnidade = ({ id }) => {
                                                 helpText='Com esta opção marcada, será obrigatório selecionar um ou mais produtos no formulário de qualificação do fornecedor.'
                                             />
                                         </Grid>
+
+                                        <Grid container spacing={4}>
+                                            <Grid item xs={12} md={12}>
+                                                <CheckLabel
+                                                    title='Habilita quem preenche o formulário de qualificação do fornecedor (Fábrica ou Fornecedor)'
+                                                    name={`fields.obrigatorioProdutoFornecedor`}
+                                                    value={data.fields.obrigatorioProdutoFornecedor}
+                                                    register={register}
+                                                    helpText='Com esta opção marcada, será definido quem preenche o formulário de qualificação do fornecedor na criação de um novo formulário, caso contrário somente o fornecedor poderá preencher.'
+                                                />
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </CardContent>

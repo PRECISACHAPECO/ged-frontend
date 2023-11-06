@@ -3,7 +3,7 @@ import { api } from 'src/configs/api'
 import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
-import { Box, Typography } from '@mui/material'
+import { Box, Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
 import FormGrupoAnexos from 'src/components/Cadastros/grupoAnexos/FormGrupoAnexos'
 import FormProduto from 'src/components/Cadastros/Produto/FormProduto'
@@ -214,6 +214,14 @@ const FormNewFornecedor = ({
                     control={control}
                     errors={errors?.fields?.produtos}
                 />
+
+                <Grid item xs={12} md={12}>
+                    <ToggleButtonGroup exclusive color='secondary' value={null} onChange={null}>
+                        <ToggleButton value='web'>Fábrica</ToggleButton>
+                        <ToggleButton value='ios'>Fornecedor</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+
                 {/* Modal para criação de novo grupo de anexo ou  */}
                 <DialogNewCreate
                     title={titleModal}
