@@ -71,11 +71,17 @@ const FormProfissional = ({ id }) => {
             usualioLogado: user.usuarioID,
             fields: {
                 ...data.fields,
+                dataNascimento: data.fields.dataNascimento.substring(0, 10),
                 unidadeID: loggedUnity.unidadeID
             },
+            cargosFuncoes: data.cargosFuncoes.map(cargoFuncao => ({
+                ...cargoFuncao,
+                data: cargoFuncao.data.substring(0, 10),
+                dataInativacao: cargoFuncao.dataInativacao ? cargoFuncao.dataInativacao.substring(0, 10) : null // Substring para pegar os primeiros 10 caracteres
+            })),
             removedItems
         }
-
+        console.log('🚀 ~ values:', values)
         // return
 
         // TODO Verificar se tem pelo um cargo ativo
