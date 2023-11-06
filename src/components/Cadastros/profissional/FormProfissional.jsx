@@ -17,6 +17,7 @@ import Permissions from './Permissions'
 import DialogForm from 'src/components/Defaults/Dialogs/Dialog'
 import { ParametersContext } from 'src/context/ParametersContext'
 import useLoad from 'src/hooks/useLoad'
+import Select from 'src/components/Form/Select'
 
 const FormProfissional = ({ id }) => {
     const fileInputRef = useRef(null)
@@ -71,11 +72,17 @@ const FormProfissional = ({ id }) => {
             usualioLogado: user.usuarioID,
             fields: {
                 ...data.fields,
+                dataNascimento: data.fields.dataNascimento.substring(0, 10),
                 unidadeID: loggedUnity.unidadeID
             },
+            cargosFuncoes: data.cargosFuncoes.map(cargoFuncao => ({
+                ...cargoFuncao,
+                data: cargoFuncao.data.substring(0, 10),
+                dataInativacao: cargoFuncao.dataInativacao ? cargoFuncao.dataInativacao.substring(0, 10) : null // Substring para pegar os primeiros 10 caracteres
+            })),
             removedItems
         }
-
+        console.log('🚀 ~ values:', values)
         // return
 
         // TODO Verificar se tem pelo um cargo ativo
@@ -239,6 +246,30 @@ const FormProfissional = ({ id }) => {
     const handleFileClick = () => {
         fileInputRef.current.click()
     }
+
+    //Copia dados do profissional selecionado
+    const copyPermissions = async values => {
+        const value = {
+            usuarioID: values.usuarioID,
+            unidadeID: loggedUnity.unidadeID,
+            papelID: 1
+        }
+        console.log('🚀 ~ data:', data)
+        try {
+            const response = await api.post(`${staticUrl}/copyPermissions/`, value)
+            setValue('menu', response.data)
+            setData({
+                ...data,
+                menu: response.data
+            })
+
+            toast.success('Permissões copiadas com sucesso')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    console.log('dataaaaaa', data)
 
     // Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     useEffect(() => {
@@ -408,11 +439,27 @@ const FormProfissional = ({ id }) => {
                         <Card>
                             <CardHeader title='Permissões' />
                             <CardContent>
+                                <Grid container spacing={4} className='my-3'>
+                                    <Select
+                                        xs={12}
+                                        md={12}
+                                        title='Copiar permissões do profissional'
+                                        name='professional'
+                                        value={null}
+                                        options={data?.professionals}
+                                        onChange={copyPermissions}
+                                        register={register}
+                                        setValue={setValue}
+                                        control={control}
+                                    />
+                                </Grid>
                                 <Permissions
+                                    key={data}
                                     menu={data.menu}
                                     control={control}
                                     register={register}
                                     setValue={setValue}
+                                    getValues={getValues}
                                 />
                             </CardContent>
                         </Card>

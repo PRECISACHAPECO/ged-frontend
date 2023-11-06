@@ -8,6 +8,7 @@ const CargoFuncao = ({ data, getValues, control, register, name, errors, removeI
     const { setDateFormat, dateStatus } = useDateFormat()
 
     return getValues('cargosFuncoes').map((item, index) => {
+        console.log('🚀 ~ item:', item[index])
         return (
             <>
                 <DateField
@@ -21,6 +22,7 @@ const CargoFuncao = ({ data, getValues, control, register, name, errors, removeI
                     register={register}
                     control={control}
                     setDateFormat={setDateFormat}
+                    value={item.data}
                     typeValidation='dataPassado'
                     daysValidation={9999999999999999999}
                     dateStatus={dateStatus}
@@ -48,9 +50,9 @@ const CargoFuncao = ({ data, getValues, control, register, name, errors, removeI
                     xs={12}
                     md={2}
                     title='Data Inativação'
-                    name={`cargosFuncoes${[index]}.dataInativacao`}
+                    name={`cargosFuncoes.${[index]}.dataInativacao`}
                     type='date'
-                    value={data?.fields?.dataNascimento}
+                    value={item.dataInativacao}
                     control={control}
                     setDateFormat={setDateFormat}
                     typeValidation='dataPassado'
@@ -58,6 +60,7 @@ const CargoFuncao = ({ data, getValues, control, register, name, errors, removeI
                     dateStatus={dateStatus}
                     errors={errors?.cargosFuncoes?.[index]?.dataInativacao}
                 />
+
                 <Remove
                     xs={4}
                     md={1}

@@ -3,7 +3,17 @@ import Icon from 'src/@core/components/icon'
 import PermissionSubmenu from './PermissionSubmenu'
 import Check from 'src/components/Form/Check'
 
-const PermissionMenu = ({ menu, indexMenuGroup, indexMenu, expandedItem, handleChangeItem, register, setValue }) => {
+const PermissionMenu = ({
+    menu,
+    indexMenuGroup,
+    indexMenu,
+    expandedItem,
+    handleChangeItem,
+    register,
+    setValue,
+    getValues
+}) => {
+    console.log('🚀 ~PermissionMenu  menu :', getValues(`menu[${indexMenuGroup}].menu[${indexMenu}].ler`))
     return menu.rota ? (
         <>
             {/* Menu com rota => seleciona permissões */}

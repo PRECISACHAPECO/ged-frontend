@@ -5,7 +5,7 @@ import Icon from 'src/@core/components/icon'
 
 import PermissionMenu from './PermissionMenu'
 
-const Permissions = ({ register, setValue, menu, control }) => {
+const Permissions = ({ register, setValue, menu, control, getValues }) => {
     const { settings } = useContext(SettingsContext)
     const [expanded, setExpanded] = useState(false)
     const [expandedItem, setExpandedItem] = useState(false)
@@ -71,6 +71,7 @@ const Permissions = ({ register, setValue, menu, control }) => {
                                 menuGroup.menu.map((menu, indexMenu) => (
                                     <PermissionMenu
                                         key={indexMenu}
+                                        getValues={getValues}
                                         menu={menu}
                                         indexMenuGroup={indexMenuGroup}
                                         expandedItem={expandedItem}
