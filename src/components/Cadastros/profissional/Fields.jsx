@@ -123,7 +123,8 @@ const Fields = ({
                     title='CPF'
                     mask='cpf'
                     name='fields.cpf'
-                    required={userExistVerifyCPF ?? false}
+                    // required={userExistVerifyCPF ?? false}
+                    required
                     control={control}
                     errors={errors?.fields?.cpf}
                     onChange={onChangeField}
@@ -136,7 +137,6 @@ const Fields = ({
                     type='date'
                     required
                     value={data?.fields?.dataNascimento}
-                    // disabled={disabled}
                     register={register}
                     control={control}
                     setDateFormat={setDateFormat}

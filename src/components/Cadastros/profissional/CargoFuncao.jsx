@@ -8,6 +8,7 @@ const CargoFuncao = ({ data, getValues, control, register, name, errors, removeI
     const { setDateFormat, dateStatus } = useDateFormat()
 
     return getValues('cargosFuncoes').map((item, index) => {
+        console.log('🚀 ~ item:', item)
         return (
             <>
                 <DateField
@@ -21,6 +22,7 @@ const CargoFuncao = ({ data, getValues, control, register, name, errors, removeI
                     register={register}
                     control={control}
                     setDateFormat={setDateFormat}
+                    value={new Date()}
                     typeValidation='dataPassado'
                     daysValidation={9999999999999999999}
                     dateStatus={dateStatus}
