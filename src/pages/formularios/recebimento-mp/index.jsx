@@ -64,7 +64,10 @@ const RecebimentoMP = () => {
         },
         {
             headerName: 'Status',
-            field: 'status',
+            field: {
+                name: 'status',
+                cor: 'cor'
+            },
             size: 0.2
         }
     ]
