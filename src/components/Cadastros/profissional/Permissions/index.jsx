@@ -7,7 +7,7 @@ import PermissionMenu from './PermissionMenu'
 
 const Permissions = ({ register, setValue, menu, control, getValues }) => {
     const { settings } = useContext(SettingsContext)
-    const [expanded, setExpanded] = useState(false)
+    const [expanded, setExpanded] = useState('panel')
     const [expandedItem, setExpandedItem] = useState(false)
 
     // Abre os accordion

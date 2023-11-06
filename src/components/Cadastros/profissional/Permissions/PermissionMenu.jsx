@@ -13,7 +13,6 @@ const PermissionMenu = ({
     setValue,
     getValues
 }) => {
-    console.log('🚀 ~PermissionMenu  menu :', getValues(`menu[${indexMenuGroup}].menu[${indexMenu}].ler`))
     return menu.rota ? (
         <>
             {/* Menu com rota => seleciona permissões */}

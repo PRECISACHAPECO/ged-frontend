@@ -28,6 +28,7 @@ const FormProfissional = ({ id }) => {
     const [data, setData] = useState(null)
     const [change, setChange] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
+    const [changePermissions, setChangePermissions] = useState(false)
     const [photoProfile, setPhotoProfile] = useState(null)
     const { settings } = useContext(SettingsContext)
     const mode = settings.mode
@@ -62,8 +63,6 @@ const FormProfissional = ({ id }) => {
         setUserExistDefault(false)
     }
 
-    console.log('errroosss', errors)
-
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async data => {
         startLoading()
@@ -82,8 +81,7 @@ const FormProfissional = ({ id }) => {
             })),
             removedItems
         }
-        console.log('🚀 ~ values:', values)
-        // return
+        console.log('🚀 ~ onSubmit:', values)
 
         // TODO Verificar se tem pelo um cargo ativo
         // Verifica se existe pelo um cargosFuncoes são data de inativação
@@ -136,8 +134,8 @@ const FormProfissional = ({ id }) => {
 
         try {
             const response = await api.post(route)
+            console.log('🚀 ~ getData:', response.data)
             reset(response.data)
-            console.log('🚀 ~ response.data:', response.data)
             setPhotoProfile(response.data.imagem)
             setData(response.data)
         } catch (error) {
@@ -247,29 +245,43 @@ const FormProfissional = ({ id }) => {
         fileInputRef.current.click()
     }
 
-    //Copia dados do profissional selecionado
+    //? Se copiar permissões de outro profissional, seta edit como true em todos os campos
+    const setPermissionsEdit = values => {
+        const menuEdit = values.map(menuGroup => ({
+            ...menuGroup,
+            menu: menuGroup.menu.map(menu => ({
+                ...menu,
+                edit: menu.rota ? true : false
+            }))
+        }))
+
+        return menuEdit
+    }
+
+    // Copia dados do profissional selecionado
     const copyPermissions = async values => {
         const value = {
             usuarioID: values.usuarioID,
             unidadeID: loggedUnity.unidadeID,
             papelID: 1
         }
-        console.log('🚀 ~ data:', data)
+
         try {
             const response = await api.post(`${staticUrl}/copyPermissions/`, value)
-            setValue('menu', response.data)
+            //? Ao copiar permissões de outro profissional, seta edit como true em todos os campos pra atualizar no backend
+            const permissionsEdit = setPermissionsEdit(response.data)
+            //
+            setValue('menu', permissionsEdit)
             setData({
                 ...data,
-                menu: response.data
+                menu: permissionsEdit
             })
-
-            toast.success('Permissões copiadas com sucesso')
+            setChangePermissions(!changePermissions)
+            toast.success('Permissões copiadas com sucesso!')
         } catch (error) {
             console.log(error)
         }
     }
-
-    console.log('dataaaaaa', data)
 
     // Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
     useEffect(() => {
@@ -454,7 +466,7 @@ const FormProfissional = ({ id }) => {
                                     />
                                 </Grid>
                                 <Permissions
-                                    key={data}
+                                    key={changePermissions}
                                     menu={data.menu}
                                     control={control}
                                     register={register}
