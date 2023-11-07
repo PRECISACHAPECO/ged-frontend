@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import Fields from 'src/components/Defaults/Formularios/Fields'
 import Block from 'src/components/Defaults/Formularios/Block'
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
+import CustomChip from 'src/@core/components/mui/chip'
 
 //* Custom components
 import Input from 'src/components/Form/Input'
@@ -331,7 +332,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     setStatus(objStatus)
 
                     setCanEdit({
-                        status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
+                        status: user.papelID == response.data.unidade.quemPreenche ? true : false,
                         message:
                             user.papelID == 2 && response.data.info.status >= 40
                                 ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
@@ -342,6 +343,18 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 : null,
                         messageType: user.papelID == 2 ? 'warning' : 'info'
                     })
+                    // setCanEdit({
+                    //     status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
+                    //     message:
+                    //         user.papelID == 2 && response.data.info.status >= 40
+                    //             ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
+                    //             : user.papelID == 1 && response.data.info.status < 40
+                    //             ? 'Somente o fornecedor pode alterar as informações deste formulário!'
+                    //             : user.papelID == 1 && response.data.info.status == 40
+                    //             ? 'Este formulário está aguardando aprovação'
+                    //             : null,
+                    //     messageType: user.papelID == 2 ? 'warning' : 'info'
+                    // })
 
                     verifyFormPending()
                 })
@@ -553,6 +566,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
     console.log('🚀 ~ isLoadingaaaaaaaaaaaaaaaaaaa:', isLoading)
     const onSubmit = async (values, param = false) => {
+        console.log('🚀 ~ param:', param)
         startLoading()
         console.log('função ativada inicio')
         if (param.conclusion === true) {
@@ -568,7 +582,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-
+        console.log('🚀 ~ data:', data)
+        // return
         try {
             if (type == 'edit') {
                 setSavingForm(true)
@@ -860,11 +875,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     <Card>
                         <FormHeader
                             btnCancel
-                            btnSave={user.papelID == 2 && info.status < 40}
-                            btnSend={
-                                (user.papelID == 1 && type == 'edit' && info.status >= 40) ||
-                                (user.papelID == 2 && info.status < 40)
-                            }
+                            btnSave={canEdit.status}
+                            btnSend={canEdit.status || (user.papelID == 1 && info.status >= 40)}
                             btnPrint={type == 'edit' ? true : false}
                             actionsData={actionsData}
                             actions
@@ -883,9 +895,18 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         <CardContent>
                             {unidade && (
                                 <Box display='flex' flexDirection='column' sx={{ gap: 1 }}>
-                                    <Typography variant='caption' sx={{ pb: 4 }}>
-                                        {`Aberto por ${fieldsHeader.abertoPor.profissional.nome} em ${fieldsHeader.abertoPor.dataInicio} ${fieldsHeader.abertoPor.horaInicio} `}
-                                    </Typography>
+                                    <div className='flex items-center gap-2 mb-2'>
+                                        <Typography variant='caption'>
+                                            {`Aberto por ${fieldsHeader.abertoPor.profissional.nome} em ${fieldsHeader.abertoPor.dataInicio} ${fieldsHeader.abertoPor.horaInicio} `}
+                                        </Typography>
+                                        <CustomChip
+                                            size='small'
+                                            skin='light'
+                                            color={'primary'}
+                                            label={(unidade.quemPreenche == 1 ? 'Fábrica' : 'Fornecedor') + ' preenche'}
+                                            // sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+                                        />
+                                    </div>
 
                                     <HeaderFields
                                         modeloID={unidade.parFornecedorModeloID}
@@ -1003,7 +1024,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             parFormularioID={1} // Fornecedor
                             formStatus={info.status}
                             hasFormPending={hasFormPending}
-                            canChangeStatus={user.papelID == 1 && !hasFormPending && info.status > 30}
+                            canChangeStatus={!hasFormPending && unidade.quemPreenche == 2 && info.status >= 40}
                             openModal={openModalStatus}
                             handleClose={() => setOpenModalStatus(false)}
                             btnCancel

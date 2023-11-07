@@ -147,8 +147,12 @@ const Fornecedor = () => {
                       size: 1
                   },
                   {
-                      headerName: 'Responsável',
-                      field: 'responsavel',
+                      headerName: 'Quem preenche',
+                      field: 'quemPreenche',
+                      //   field: {
+                      //       name: 'quemPreenche',
+                      //       cor: 'red'
+                      //   },
                       size: 1
                   },
                   {
