@@ -11,7 +11,7 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
 
     // Ao clicar em um item e ele for do tipo report
     const handleClickReport = item => {
-        localStorage.setItem('report', JSON.stringify(item))
+        // localStorage.setItem('report', JSON.stringify(item))
     }
 
     return (

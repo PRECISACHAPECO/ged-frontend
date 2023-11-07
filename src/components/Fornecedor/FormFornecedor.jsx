@@ -199,7 +199,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         name: 'Gerar novo formulário',
         description: 'Gerar um novo formulário de preenchimento para este fornecedor.',
         component: <NewFornecedor cnpj={fieldsHeader?.cnpj} />,
-        // component: <NewFornecedor cnpj={unidade?.fornecedor?.cnpj ?? unidade?.cnpj} />,
         route: null,
         type: null,
         modal: true,

@@ -8,11 +8,10 @@ import FormNewFornecedor from './FormNewFornecedor'
 import { cnpjMask } from 'src/configs/masks'
 
 const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getValues }) => {
-    console.log('🚀 ~ cnpj no modallll:', cnpj)
     const [change, setChange] = useState(false)
     const { loggedUnity } = useContext(AuthContext)
     const [fields, setFields] = useState(null)
-    const [habilitaQuemPreencheFormFornecedor, setHabilitaQuemPreencheFormFornecedor] = useState(false)
+    const [params, setParams] = useState(null)
     const [validationCnpj, setValidationCnpj] = useState(null)
 
     const handleCnpj = cnpj => {
@@ -94,43 +93,18 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
 
         //* Requisição a API
         const result = await api.get(`https://api-publica.speedio.com.br/buscarcnpj?cnpj=${cnpjNumber}`)
-
-        // const result = {
-        //     data: {
-        //         'NOME FANTASIA': 'RDA DESENVOLVIMENTO WEB',
-        //         'RAZAO SOCIAL': 'ROBERTO DELAVI DE ARAUJO 02116471010',
-        //         CNPJ: '41153569000174',
-        //         STATUS: 'ATIVA',
-        //         'CNAE PRINCIPAL DESCRICAO': 'Outras atividades de telecomunicações não especificadas anteriormente',
-        //         'CNAE PRINCIPAL CODIGO': '6190699',
-        //         CEP: '89812600',
-        //         'DATA ABERTURA': '09/03/2021',
-        //         DDD: '49',
-        //         TELEFONE: '33160672',
-        //         EMAIL: 'roberto.delavy@gmail.com',
-        //         'TIPO LOGRADOURO': 'RUA',
-        //         LOGRADOURO: 'EUCLIDES PRADE',
-        //         NUMERO: '465 E',
-        //         COMPLEMENTO: 'COND BOULEVARD DAS ACACIAS;BLOCO A;APT 406',
-        //         BAIRRO: 'SANTA MARIA',
-        //         MUNICIPIO: 'Chapecó',
-        //         UF: 'SC'
-        //     }
-        // }
-
         return result
     }
 
     // Verifica quem preenche o formulario / fabrica ou fornecedor / Se resultado igual a 1 mostra opções
-    const verifyHabilitaQuemPreencheFormFornecedor = async () => {
+    // Parametros gerais do modal
+    const getParams = async () => {
         const data = {
             unidadeID: loggedUnity.unidadeID
         }
         try {
-            const response = await api.post('/formularios/fornecedor/habilitaQuemPreencheFormFornecedor', data)
-            if (response.data == 1) {
-                setHabilitaQuemPreencheFormFornecedor(true)
-            }
+            const response = await api.post('/formularios/fornecedor/paramsNewFornecedor', data)
+            setParams(response.data)
         } catch (e) {
             console.error(e)
         }
@@ -142,7 +116,7 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
     }, [])
 
     useEffect(() => {
-        verifyHabilitaQuemPreencheFormFornecedor()
+        getParams()
     }, [])
 
     return (
@@ -156,7 +130,7 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
                                 key={change}
                                 setFields={setFields}
                                 fields={fields ?? null}
-                                habilitaQuemPreencheFormFornecedor={habilitaQuemPreencheFormFornecedor}
+                                params={params}
                                 control={control}
                                 errors={errors}
                                 reset={reset}

@@ -11,6 +11,7 @@ import ToggleButtonLabel from 'src/components/Form/ToggleButtonLabel'
 
 const FormNewFornecedor = ({
     fields,
+    params,
     habilitaQuemPreencheFormFornecedor,
     setFields,
     handleCnpj,
@@ -122,7 +123,7 @@ const FormNewFornecedor = ({
         products && (
             <>
                 <Box>
-                    {habilitaQuemPreencheFormFornecedor && (
+                    {params?.habilitaQuemPreencheFormFornecedor && (
                         <div className='mb-6'>
                             <ToggleButtonLabel
                                 xs={12}
@@ -227,7 +228,7 @@ const FormNewFornecedor = ({
                     disabled={!validCnpj}
                     multiple
                     createNew={() => createNew('produtos')}
-                    required
+                    required={params?.obrigatorioProdutoFornecedor}
                     options={products ?? []}
                     register={register}
                     setValue={setValue}
