@@ -7,9 +7,11 @@ import { Box, Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/mat
 import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
 import FormGrupoAnexos from 'src/components/Cadastros/grupoAnexos/FormGrupoAnexos'
 import FormProduto from 'src/components/Cadastros/Produto/FormProduto'
+import ToggleButtonLabel from 'src/components/Form/ToggleButtonLabel'
 
 const FormNewFornecedor = ({
     fields,
+    habilitaQuemPreencheFormFornecedor,
     setFields,
     handleCnpj,
     validCnpj,
@@ -108,6 +110,12 @@ const FormNewFornecedor = ({
     const handleSave = async data => {
         setOpenModalNew(false)
     }
+
+    // Opções para escolher que preenche formulario (fabrica/fornecedor)
+    const options = [
+        { value: 1, label: 'Fábrica' },
+        { value: 2, label: 'Fornecedor' }
+    ]
 
     return (
         models &&
@@ -214,13 +222,16 @@ const FormNewFornecedor = ({
                     control={control}
                     errors={errors?.fields?.produtos}
                 />
-
-                <Grid item xs={12} md={12}>
-                    <ToggleButtonGroup exclusive color='secondary' value={null} onChange={null}>
-                        <ToggleButton value='web'>Fábrica</ToggleButton>
-                        <ToggleButton value='ios'>Fornecedor</ToggleButton>
-                    </ToggleButtonGroup>
-                </Grid>
+                {habilitaQuemPreencheFormFornecedor && (
+                    <ToggleButtonLabel
+                        xs={12}
+                        md={6}
+                        options={options}
+                        register={register}
+                        name='habilitaQuemPreencheFormFornecedor'
+                        setValue={setValue}
+                    />
+                )}
 
                 {/* Modal para criação de novo grupo de anexo ou  */}
                 <DialogNewCreate

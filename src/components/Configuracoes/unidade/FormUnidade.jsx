@@ -105,8 +105,8 @@ const FormUnidade = ({ id }) => {
             ...datas,
             usuarioID: loggedUnity.usuarioID,
             fields: {
-                dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD'),
-                ...datas.fields
+                ...datas.fields,
+                dataCadastro: new Date().toISOString().substring(0, 10)
             }
         }
 
@@ -186,6 +186,7 @@ const FormUnidade = ({ id }) => {
             try {
                 const response = await api.get(`${staticUrl}/${id}`)
                 reset(response.data)
+                console.log('🚀 ~ response:', response.data)
                 setData(response.data)
                 setFileCurrent(response.data.fields.cabecalhoRelatorioTitle)
                 setPhotoProfile(response.data?.fields?.cabecalhoRelatorio)
@@ -580,8 +581,8 @@ const FormUnidade = ({ id }) => {
                                             <Grid item xs={12} md={12}>
                                                 <CheckLabel
                                                     title='Habilita quem preenche o formulário de qualificação do fornecedor (Fábrica ou Fornecedor)'
-                                                    name={`fields.obrigatorioProdutoFornecedor`}
-                                                    value={data.fields.obrigatorioProdutoFornecedor}
+                                                    name={`fields.habilitaQuemPreencheFormFornecedor`}
+                                                    value={data.fields.habilitaQuemPreencheFormFornecedor}
                                                     register={register}
                                                     helpText='Com esta opção marcada, será definido quem preenche o formulário de qualificação do fornecedor na criação de um novo formulário, caso contrário somente o fornecedor poderá preencher.'
                                                 />

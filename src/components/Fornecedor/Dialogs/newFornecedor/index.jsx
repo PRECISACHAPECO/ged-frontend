@@ -11,6 +11,7 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
     const [change, setChange] = useState(false)
     const { loggedUnity } = useContext(AuthContext)
     const [fields, setFields] = useState(null)
+    const [habilitaQuemPreencheFormFornecedor, setHabilitaQuemPreencheFormFornecedor] = useState(false)
     const [validationCnpj, setValidationCnpj] = useState(null)
     const [grupoAnexosAux, setGruposAnexosAux] = useState(null)
 
@@ -120,9 +121,25 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
         return result
     }
 
+    // Verifica quem preenche o formulario / fabrica ou fornecedor / Se resultado igual a 1 mostra opções
+    const verifyHabilitaQuemPreencheFormFornecedor = async () => {
+        const data = {
+            unidadeID: loggedUnity.unidadeID
+        }
+        try {
+            const response = await api.post('/formularios/fornecedor/habilitaQuemPreencheFormFornecedor', data)
+            if (response.data == 1) {
+                setHabilitaQuemPreencheFormFornecedor(true)
+            }
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
     useEffect(() => {
         setChange(!change)
         if (cnpj && cnpj.length > 0) handleCnpj(cnpj)
+        verifyHabilitaQuemPreencheFormFornecedor()
     }, [])
 
     return (
@@ -138,6 +155,7 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
                                 grupoAnexosAux={grupoAnexosAux}
                                 setFields={setFields}
                                 fields={fields ?? null}
+                                habilitaQuemPreencheFormFornecedor={habilitaQuemPreencheFormFornecedor}
                                 control={control}
                                 errors={errors}
                                 reset={reset}
