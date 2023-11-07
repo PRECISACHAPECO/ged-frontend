@@ -59,6 +59,8 @@ const Fornecedor = () => {
 
     //? handleSubmit do modal de gerar um novo fornecedor
     const makeFornecedor = async values => {
+        console.log('🚀 ~ values:', values)
+        return
         try {
             const response = await api.post(`/formularios/fornecedor/makeFornecedor`, {
                 usuarioID: user.usuarioID,

@@ -8,12 +8,12 @@ import FormNewFornecedor from './FormNewFornecedor'
 import { cnpjMask } from 'src/configs/masks'
 
 const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getValues }) => {
+    console.log('🚀 ~ cnpj no modallll:', cnpj)
     const [change, setChange] = useState(false)
     const { loggedUnity } = useContext(AuthContext)
     const [fields, setFields] = useState(null)
     const [habilitaQuemPreencheFormFornecedor, setHabilitaQuemPreencheFormFornecedor] = useState(false)
     const [validationCnpj, setValidationCnpj] = useState(null)
-    const [grupoAnexosAux, setGruposAnexosAux] = useState(null)
 
     const handleCnpj = cnpj => {
         if (cnpj.length == 18) {
@@ -139,6 +139,9 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
     useEffect(() => {
         setChange(!change)
         if (cnpj && cnpj.length > 0) handleCnpj(cnpj)
+    }, [])
+
+    useEffect(() => {
         verifyHabilitaQuemPreencheFormFornecedor()
     }, [])
 
@@ -151,8 +154,6 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
                         <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
                             <FormNewFornecedor
                                 key={change}
-                                setGruposAnexosAux={setGruposAnexosAux}
-                                grupoAnexosAux={grupoAnexosAux}
                                 setFields={setFields}
                                 fields={fields ?? null}
                                 habilitaQuemPreencheFormFornecedor={habilitaQuemPreencheFormFornecedor}

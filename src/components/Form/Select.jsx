@@ -52,7 +52,7 @@ const Select = ({
                                 }
                                 value={
                                     multiple && field.value && field.value.length > 0
-                                        ? field.value.map(item => options.find(option => option.nome === item.nome))
+                                        ? field.value.map(item => options.find(option => option.id === item.id))
                                         : field.value ?? { nome: '' }
                                 }
                                 disabled={disabled}
