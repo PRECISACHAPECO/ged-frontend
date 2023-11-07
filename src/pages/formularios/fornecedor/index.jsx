@@ -59,18 +59,16 @@ const Fornecedor = () => {
 
     //? handleSubmit do modal de gerar um novo fornecedor
     const makeFornecedor = async values => {
-        console.log('🚀 ~ makeFornecedor : ', values)
-        return
-
         try {
             const response = await api.post(`/formularios/fornecedor/makeFornecedor`, {
                 usuarioID: user.usuarioID,
                 papelID: user.papelID,
                 unidadeID: loggedUnity.unidadeID,
-                values: values.fields
+                values: values.fields,
+                habilitaQuemPreencheFormFornecedor: values.habilitaQuemPreencheFormFornecedor
             })
             if (response.status == 200) {
-                toast.success('E-mail enviado com sucesso')
+                toast.success(response.data.message)
                 // if (values.fields.email) sendMail(values.fields.email, values.fields.cnpj, values.fields.razaoSocial)
                 setResponseConclusion(response.data)
                 setId(response.data.fornecedorID)

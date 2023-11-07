@@ -113,8 +113,8 @@ const FormNewFornecedor = ({
 
     // Opções para escolher que preenche formulario (fabrica/fornecedor)
     const options = [
-        { value: 1, label: 'Fábrica' },
-        { value: 2, label: 'Fornecedor' }
+        { value: 1, icon: 'mdi:company', label: 'Fábrica' },
+        { value: 2, icon: 'mdi:truck-fast-outline', label: 'Fornecedor' }
     ]
 
     return (
@@ -122,6 +122,18 @@ const FormNewFornecedor = ({
         products && (
             <>
                 <Box>
+                    {habilitaQuemPreencheFormFornecedor && (
+                        <div className='mb-6'>
+                            <ToggleButtonLabel
+                                xs={12}
+                                md={6}
+                                options={options}
+                                register={register}
+                                name='habilitaQuemPreencheFormFornecedor'
+                                setValue={setValue}
+                            />
+                        </div>
+                    )}
                     <Input
                         xs={12}
                         md={12}
@@ -222,7 +234,7 @@ const FormNewFornecedor = ({
                     control={control}
                     errors={errors?.fields?.produtos}
                 />
-                {habilitaQuemPreencheFormFornecedor && (
+                {/* {habilitaQuemPreencheFormFornecedor && (
                     <ToggleButtonLabel
                         xs={12}
                         md={6}
@@ -231,7 +243,7 @@ const FormNewFornecedor = ({
                         name='habilitaQuemPreencheFormFornecedor'
                         setValue={setValue}
                     />
-                )}
+                )} */}
 
                 {/* Modal para criação de novo grupo de anexo ou  */}
                 <DialogNewCreate
