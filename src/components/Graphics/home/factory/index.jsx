@@ -81,7 +81,17 @@ const Factory = () => {
             <ApexChartWrapper>
                 {fotoBinaria &&
                     fotoBinaria.map(foto => {
-                        return <img src={foto.url} alt='Imagem' />
+                        return foto.tipo === 'image/jpeg' ? (
+                            <a href={foto.url} target='_blank' className='bg-blue-600 p-4 rounded-md text-white '>
+                                <img src={foto.url} alt='Imagem' />
+                            </a>
+                        ) : (
+                            <p>
+                                <a href={foto.url} target='_blank' className='bg-green-600 p-4 rounded-md text-white '>
+                                    Abrir documento
+                                </a>
+                            </p>
+                        )
                     })}
 
                 <input
