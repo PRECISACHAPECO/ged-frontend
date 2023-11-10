@@ -4,10 +4,11 @@ import Icon from 'src/@core/components/icon'
 import { useEffect } from 'react'
 import HelpText from '../Defaults/HelpText'
 
-const ToggleButtonLabel = ({ xs, md, name, register, options, defaultValue, setValue }) => {
+const ToggleButtonLabel = ({ xs, md, name, register, options, defaultValue, setValue, setIsNotFactory }) => {
     const [selectedOption, setSelectedOption] = useState(options[defaultValue]?.value ?? options[0].value)
 
     const handleOptionChange = newValue => {
+        if (newValue == null) return
         setSelectedOption(newValue)
         if (name && register) {
             register(name).value = newValue
@@ -16,6 +17,11 @@ const ToggleButtonLabel = ({ xs, md, name, register, options, defaultValue, setV
 
     useEffect(() => {
         setValue(name, selectedOption)
+        if (selectedOption == 1) {
+            setIsNotFactory(false)
+        } else {
+            setIsNotFactory(true)
+        }
     }, [selectedOption])
 
     return (

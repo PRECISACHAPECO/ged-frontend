@@ -31,6 +31,7 @@ const FormNewFornecedor = ({
     const [openModalNew, setOpenModalNew] = useState(false)
     const [titleModal, setTitleModal] = useState('')
     const [componetSelect, setComponetSelect] = useState(null)
+    const [isNotFactory, setIsNotFactory] = useState(true)
 
     const getModels = async () => {
         const result = await api.post(`/formularios/fornecedor/getModels`, { unidadeID: loggedUnity.unidadeID })
@@ -132,6 +133,7 @@ const FormNewFornecedor = ({
                                 register={register}
                                 name='habilitaQuemPreencheFormFornecedor'
                                 setValue={setValue}
+                                setIsNotFactory={setIsNotFactory}
                             />
                         </div>
                     )}
@@ -176,18 +178,20 @@ const FormNewFornecedor = ({
                     control={control}
                     errors={errors?.fields?.nomeFantasia}
                 />
-                <Input
-                    xs={12}
-                    md={12}
-                    type='email'
-                    title='E-mail'
-                    name='fields.email'
-                    value={fields?.email}
-                    disabled={!validCnpj}
-                    required
-                    control={control}
-                    errors={errors?.fields?.email}
-                />
+                {isNotFactory && (
+                    <Input
+                        xs={12}
+                        md={12}
+                        type='email'
+                        title='E-mail'
+                        name='fields.email'
+                        value={fields?.email}
+                        disabled={!validCnpj}
+                        required
+                        control={control}
+                        errors={errors?.fields?.email}
+                    />
+                )}
                 <Select
                     xs={12}
                     md={12}
@@ -235,16 +239,6 @@ const FormNewFornecedor = ({
                     control={control}
                     errors={errors?.fields?.produtos}
                 />
-                {/* {habilitaQuemPreencheFormFornecedor && (
-                    <ToggleButtonLabel
-                        xs={12}
-                        md={6}
-                        options={options}
-                        register={register}
-                        name='habilitaQuemPreencheFormFornecedor'
-                        setValue={setValue}
-                    />
-                )} */}
 
                 {/* Modal para criação de novo grupo de anexo ou  */}
                 <DialogNewCreate
