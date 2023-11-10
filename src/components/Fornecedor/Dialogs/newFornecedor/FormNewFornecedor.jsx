@@ -21,7 +21,9 @@ const FormNewFornecedor = ({
     errors,
     setValue,
     register,
-    reset
+    reset,
+    isNotFactory,
+    setIsNotFactory
 }) => {
     const { loggedUnity } = useContext(AuthContext)
     const [models, setModels] = useState([])
@@ -31,7 +33,6 @@ const FormNewFornecedor = ({
     const [openModalNew, setOpenModalNew] = useState(false)
     const [titleModal, setTitleModal] = useState('')
     const [componetSelect, setComponetSelect] = useState(null)
-    const [isNotFactory, setIsNotFactory] = useState(true)
 
     const getModels = async () => {
         const result = await api.post(`/formularios/fornecedor/getModels`, { unidadeID: loggedUnity.unidadeID })

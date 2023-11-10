@@ -30,6 +30,7 @@ const Fornecedor = () => {
     const [open, setOpen] = useState(false)
     const [openModalConclusion, setOpenModalConclusion] = useState(false)
     const [responseConclusion, setResponseConclusion] = useState(null)
+    const [isNotFactory, setIsNotFactory] = useState(true)
 
     //* Controles modal pra inserir fornecedor
     const openModal = () => {
@@ -69,36 +70,18 @@ const Fornecedor = () => {
             })
             if (response.status == 200) {
                 toast.success(response.data.message)
-                // if (values.fields.email) sendMail(values.fields.email, values.fields.cnpj, values.fields.razaoSocial)
-                setResponseConclusion(response.data)
-                setId(response.data.fornecedorID)
-                setOpenModalConclusion(true)
+                if (isNotFactory) {
+                    setOpenModalConclusion(true)
+                    setResponseConclusion(response.data.result)
+                } else {
+                    setId(response.data.fornecedorID)
+                }
             }
         } catch (err) {
             console.error(err)
             console.error('Erro ao enviar email', err)
         }
     }
-
-    // Envia email para um novo fornecedor / Novo fornecedor
-    // const sendMail = (email, cnpj, nomeFornecedor) => {
-    //     if (email && validationEmail(email)) {
-    //         const data = {
-    //             unidadeID: loggedUnity.unidadeID,
-    //             cnpj,
-    //             nomeFornecedor,
-    //             destinatario: email
-    //         }
-
-    //         api.post(`${currentLink}/sendMail`, { data })
-    //             .then(response => {
-    //                 toast.success('E-mail enviado com sucesso')
-    //             })
-    //             .catch(error => {
-    //                 console.error('Erro ao enviar email', error)
-    //             })
-    //     }
-    // }
 
     const copyLink = () => {
         const link = responseConclusion?.link
@@ -237,7 +220,7 @@ const Fornecedor = () => {
                 openModal={open}
                 size='lg'
             >
-                <NewFornecedor />
+                <NewFornecedor isNotFactory={isNotFactory} setIsNotFactory={setIsNotFactory} />
             </DialogActs>
 
             {/* Modal que exibe mensagem de novo fornecedor habilitado */}
