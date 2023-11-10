@@ -53,6 +53,11 @@ const RecebimentoMP = () => {
             type: 'date'
         },
         {
+            headerName: 'Fornecedor',
+            field: 'fornecedor',
+            size: 0.2
+        },
+        {
             headerName: 'Profissional',
             field: 'profissional',
             size: 0.2

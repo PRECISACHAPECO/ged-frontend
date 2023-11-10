@@ -189,7 +189,7 @@ const FormRecebimentoMp = ({ id }) => {
 
     const goToFormConfig = () => {
         setId(unidade.parRecebimentoMpModeloID) //? ID do modelo do formulário
-        router.push(`/configuracoes/formularios/fornecedor/`)
+        router.push(`/configuracoes/formularios/recebimento-mp/`)
     }
 
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
@@ -233,7 +233,11 @@ const FormRecebimentoMp = ({ id }) => {
     const getData = () => {
         setLoading(true)
         try {
-            api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID })
+            api.post(`${staticUrl}/getData/${id}`, {
+                type: type,
+                profissionalID: user.profissionalID,
+                unidadeID: loggedUnity.unidadeID
+            })
                 .then(response => {
                     console.log('getData: ', response.data)
                     setLoading(false)
@@ -767,9 +771,9 @@ const FormRecebimentoMp = ({ id }) => {
                         <CardContent>
                             {unidade && (
                                 <Box display='flex' flexDirection='column' sx={{ gap: 1 }}>
-                                    <Typography variant='caption' sx={{ pb: 4 }}>
+                                    {/* <Typography variant='caption' sx={{ pb: 4 }}>
                                         {`Aberto por ${fieldsHeader.abertoPor.profissional.nome} em ${fieldsHeader.abertoPor.dataInicio} ${fieldsHeader.abertoPor.horaInicio} `}
-                                    </Typography>
+                                    </Typography> */}
 
                                     <HeaderFields
                                         modeloID={unidade.parRecebimentoMpModeloID}

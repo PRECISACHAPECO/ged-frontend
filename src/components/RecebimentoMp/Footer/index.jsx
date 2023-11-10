@@ -1,5 +1,6 @@
 import { Card, CardContent, Grid } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
 import DateField from 'src/components/Form/DateField'
 import Select from 'src/components/Form/Select'
@@ -7,6 +8,7 @@ import { dateConfig } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
 
 const RecebimentoMpFooterFields = ({ modeloID, values, disabled, register, errors, setValue, control }) => {
+    const { user } = useContext(AuthContext)
     const [dateStatus, setDateStatus] = useState({})
     const [profissionaisAprova, setProfissionaisAprova] = useState([])
 
@@ -26,6 +28,13 @@ const RecebimentoMpFooterFields = ({ modeloID, values, disabled, register, error
         })
         console.log('🚀 ~ response.data:', response.data)
         setProfissionaisAprova(response.data.aprova)
+        setDefaultProfissional(response.data.aprova)
+    }
+
+    const setDefaultProfissional = arrProfissionais => {
+        const profissionalID = user.profissionalID //? Profissional logado
+        const profissional = arrProfissionais.find(profissional => profissional.id === profissionalID)
+        if (profissional && profissional.id > 0) setValue('fieldsFooter.profissional', profissional)
     }
 
     useEffect(() => {
@@ -43,7 +52,7 @@ const RecebimentoMpFooterFields = ({ modeloID, values, disabled, register, error
                         title='Data da conclusão'
                         name={`fieldsFooter.dataConclusao`}
                         type='date'
-                        value={values?.dataConclusao}
+                        value={values?.dataConclusao ?? new Date()}
                         disabled={disabled}
                         register={register}
                         control={control}
@@ -75,7 +84,7 @@ const RecebimentoMpFooterFields = ({ modeloID, values, disabled, register, error
                         name={`fieldsFooter.profissional`}
                         type='string'
                         options={profissionaisAprova ?? []}
-                        value={values?.profissional}
+                        // value={values?.profissional}
                         disabled={disabled}
                         register={register}
                         setValue={setValue}
