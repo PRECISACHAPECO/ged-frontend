@@ -79,7 +79,7 @@ const Factory = () => {
     return (
         dataFornecedor && (
             <ApexChartWrapper>
-                {fotoBinaria &&
+                {/* {fotoBinaria &&
                     fotoBinaria.map(foto => {
                         return foto.tipo === 'image/jpeg' ? (
                             <a href={foto.url} target='_blank' className='bg-blue-600 p-4 rounded-md text-white '>
@@ -92,15 +92,15 @@ const Factory = () => {
                                 </a>
                             </p>
                         )
-                    })}
+                    })} */}
 
-                <input
+                {/* <input
                     type='file'
                     multiple
                     onChange={e => {
                         sendFoto(e)
                     }}
-                />
+                /> */}
 
                 <Grid container spacing={6} className='match-height'>
                     {/* Por estatus em blocos separadosç */}
