@@ -12,9 +12,10 @@ import { useRouter } from 'next/router'
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
+import { Card } from '@material-ui/core'
+import SelectModel from './SelectModel'
 
 const ListParametrosFornecedor = () => {
-    console.log('lista...')
     const [result, setResult] = useState(null)
     const router = useRouter()
     const currentLink = router.pathname
@@ -64,7 +65,9 @@ const ListParametrosFornecedor = () => {
                 <FormParametrosFornecedor id={id} />
             ) : (
                 //? Lista tabela de resultados da listagem
-                <Table result={result} columns={columns} btnBack btnNew />
+                <SelectModel values={result} />
+                // <p>opa</p>
+                // <Table result={result} columns={columns} btnBack btnNew />
             )}
         </>
     )

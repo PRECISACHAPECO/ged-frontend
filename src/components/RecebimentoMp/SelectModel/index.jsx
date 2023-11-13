@@ -11,6 +11,7 @@ import Icon from 'src/@core/components/icon'
 import { useEffect, useContext, useState } from 'react'
 import { api } from 'src/configs/api'
 import Router from 'next/router'
+import CardList from 'src/components/Defaults/Cards/CardList'
 
 const SelectModel = () => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -80,9 +81,16 @@ const SelectModel = () => {
         setModel(value)
     }
 
-    const goToForm = async newFormID => {
-        console.log('🚀 ~ goToForm:', newFormID)
-        onSubmit({ model: newFormID })
+    const handleNewForm = async newFormID => {
+        try {
+            onSubmit({
+                model: {
+                    id: newFormID
+                }
+            })
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     useEffect(() => {
@@ -114,27 +122,12 @@ const SelectModel = () => {
                         {models &&
                             models.length > 1 &&
                             models.map((item, index) => (
-                                <Grid item xs={12} md={3}>
-                                    <Card
-                                        onClick={() => goToForm(item.id)}
-                                        className={`cursor-pointer ${
-                                            mode == 'dark' ? 'hover:bg-[#232327]' : 'hover:bg-[#EEEEF1]'
-                                        }  shadow-xl transition-all`}
-                                    >
-                                        <CardContent>
-                                            <Box display='flex' flexDirection='column' sx={{ gap: 2 }}>
-                                                <Typography variant='body1' className='!font-extrabold'>
-                                                    {item.nome}
-                                                </Typography>
-                                                <Typography variant='subtitle2'>{`Ciclo de ${item.ciclo} dias`}</Typography>
-                                                <div className='flex items-center gap-2'>
-                                                    <Icon icon='icons8:plus' />
-                                                    <Typography variant='caption'>Criar novo</Typography>
-                                                </div>
-                                            </Box>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
+                                <CardList
+                                    icon='fluent:form-multiple-48-regular'
+                                    title={item.nome}
+                                    subtitle={`Ciclo de ${item.ciclo} dias`}
+                                    handleClick={() => handleNewForm(item.id)}
+                                />
                             ))}
                     </Grid>
                 </Box>

@@ -11,7 +11,7 @@ import { backRoute } from 'src/configs/defaultConfigs'
 import Icon from 'src/@core/components/icon'
 import useLoad from 'src/hooks/useLoad'
 
-const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, handleSave, hasListChange, openModal }) => {
+const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, type, handleSave, hasListChange, openModal }) => {
     const router = Router
     const { setId } = useContext(RouteContext)
     const { routes } = useContext(AuthContext)
@@ -20,7 +20,26 @@ const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, handleSave, hasListCha
     return (
         <>
             <div className='flex items-center justify-between my-2 w-full'>
-                <div></div>
+                {/* Div Esquerda */}
+                <div>
+                    {btnBack && (
+                        <Button
+                            onClick={() => {
+                                setId(null)
+                                if (type == 'new') {
+                                    router.push(currentUrl)
+                                }
+                            }}
+                            type='button'
+                            variant='outlined'
+                            color='primary'
+                            size='medium'
+                        >
+                            <Icon icon='grommet-icons:form-previous-link' />
+                        </Button>
+                    )}
+                </div>
+
                 {/* Div Direira */}
                 <div className='flex items-center gap-4 '>
                     <div>
