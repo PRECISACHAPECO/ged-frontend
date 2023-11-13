@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Grid, Button, ButtonGroup } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 
-const ToggleButtonLabel = ({ xs, md, name, register, setValue, setIsNotFactory }) => {
+const ToggleButtonLabel = React.memo(({ xs, md, name, register, setValue, setIsNotFactory }) => {
     const [selectedOption, setSelectedOption] = useState(1)
 
     useEffect(() => {
@@ -10,7 +10,7 @@ const ToggleButtonLabel = ({ xs, md, name, register, setValue, setIsNotFactory }
             setValue(name, selectedOption)
             setIsNotFactory(selectedOption === 1 ? false : true)
         }
-    }, [name, register, selectedOption])
+    }, [name, register, selectedOption, setValue, setIsNotFactory])
 
     return (
         <Grid item xs={xs} md={md}>
@@ -31,6 +31,6 @@ const ToggleButtonLabel = ({ xs, md, name, register, setValue, setIsNotFactory }
             {name && register && <input type='hidden' name={name} {...register(name)} value={selectedOption} />}
         </Grid>
     )
-}
+})
 
 export default ToggleButtonLabel

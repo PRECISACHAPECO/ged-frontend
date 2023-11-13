@@ -582,6 +582,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
+
         console.log('🚀 ~ data:', data)
         // return
         try {
@@ -904,7 +905,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                             skin='light'
                                             color={'primary'}
                                             label={(unidade.quemPreenche == 1 ? 'Fábrica' : 'Fornecedor') + ' preenche'}
-                                            // sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
                                         />
                                     </div>
 
@@ -912,7 +912,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                         modeloID={unidade.parFornecedorModeloID}
                                         values={fieldsHeader}
                                         fields={field}
-                                        disabled={!canEdit.status}
+                                        disabled={!canEdit.status || hasFormPending}
                                         register={register}
                                         errors={errors}
                                         setValue={setValue}
@@ -935,7 +935,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                     handleFileSelect={handleFileSelectProduct}
                                     handleRemove={handleRemoveAnexoProduct}
                                     loadingFile={loadingFileProduct}
-                                    disabled={!canEdit.status}
+                                    disabled={!canEdit.status || hasFormPending}
                                     errors={errors?.produtos}
                                 />
                             </CardContent>
@@ -958,7 +958,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 register={register}
                                 setValue={setValue}
                                 errors={errors?.blocos}
-                                disabled={!canEdit.status}
+                                disabled={!canEdit.status || hasFormPending}
                             />
                         ))}
 
@@ -997,7 +997,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                                     multiline
                                                     rows={4}
                                                     value={info.obs}
-                                                    disabled={!canEdit.status}
+                                                    disabled={!canEdit.status || hasFormPending}
                                                     control={control}
                                                 />
                                             </FormControl>

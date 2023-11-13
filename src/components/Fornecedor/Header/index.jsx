@@ -18,9 +18,34 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
         setProfissionaisPreenche(response.data.preenche)
     }
 
+    const getCurrentTime = () => {
+        const currentDate = new Date()
+        const hours = currentDate.getHours().toString().padStart(2, '0')
+        const minutes = currentDate.getMinutes().toString().padStart(2, '0')
+        return `${hours}:${minutes}`
+    }
+
+    function obterDataAtualFormatada() {
+        const dataAtual = new Date()
+
+        const ano = dataAtual.getFullYear()
+        const mes = String(dataAtual.getMonth() + 1).padStart(2, '0') // Mês é baseado em zero
+        const dia = String(dataAtual.getDate()).padStart(2, '0')
+
+        const dataFormatada = `${ano}-${mes}-${dia}`
+
+        return dataFormatada
+    }
+
     useEffect(() => {
         getProfissionais()
-    }, [])
+        if (values && !values.data) {
+            setValue('fieldsHeader.data', obterDataAtualFormatada())
+        }
+        if (values && !values.hora) {
+            setValue('fieldsHeader.hora', getCurrentTime())
+        }
+    }, [values])
 
     return (
         <Grid container spacing={4}>
@@ -31,7 +56,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 title='Data da avaliação'
                 name={`fieldsHeader.data`}
                 type='date'
-                value={values?.data}
+                value={values?.data ?? obterDataAtualFormatada()}
                 disabled={disabled}
                 register={register}
                 control={control}
@@ -48,6 +73,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 md={2}
                 title='Hora da avaliação'
                 name={`fieldsHeader.hora`}
+                value={values?.data ?? getCurrentTime()}
                 type='time'
                 disabled={disabled}
                 register={register}
