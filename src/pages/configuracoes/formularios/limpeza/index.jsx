@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
 import { AuthContext } from 'src/context/AuthContext'
+import SelectModel from './SelectModel'
 
 const ListParametrosLimpeza = () => {
     const [result, setResult] = useState(null)
@@ -61,8 +62,8 @@ const ListParametrosLimpeza = () => {
             id && id > 0 ? (
                 <FormParametrosLimpeza id={id} />
             ) : (
-                //? Lista tabela de resultados da listagem
-                <Table result={result} columns={columns} btnBack />
+                //? Lista cards
+                <SelectModel values={result} />
             )}
         </>
     )

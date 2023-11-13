@@ -3,12 +3,12 @@ import { useContext } from 'react'
 import Icon from 'src/@core/components/icon'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 
-const CardList = ({ icon, title, subtitle, handleClick }) => {
+const CardList = ({ xs, md, icon, title, subtitle, action, handleClick }) => {
     const { settings } = useContext(SettingsContext)
     const mode = settings.mode
 
     return (
-        <Grid item xs={12} md={3}>
+        <Grid item xs={xs} md={md}>
             <Card
                 onClick={handleClick}
                 className={`cursor-pointer ${
@@ -24,9 +24,12 @@ const CardList = ({ icon, title, subtitle, handleClick }) => {
                         </Typography>
                         <Typography variant='subtitle2'>{subtitle}</Typography>
                         <div className='flex items-center gap-1 text-[#4a8b57] '>
-                            <Icon icon='icon-park-solid:add-one' width={16} />
+                            <Icon
+                                icon={action == 'new' ? 'icon-park-solid:add-one' : 'grommet-icons:form-next-link'}
+                                width={16}
+                            />
                             <Typography variant='body2' color='primary'>
-                                Criar novo
+                                {action == 'new' ? 'Criar novo' : 'Acessar'}
                             </Typography>
                         </div>
                     </Box>

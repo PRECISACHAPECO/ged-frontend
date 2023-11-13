@@ -123,8 +123,12 @@ const SelectModel = () => {
                             models.length > 1 &&
                             models.map((item, index) => (
                                 <CardList
+                                    key={index}
+                                    xs={12}
+                                    md={3}
                                     icon='fluent:form-multiple-48-regular'
                                     title={item.nome}
+                                    action='new'
                                     subtitle={`Ciclo de ${item.ciclo} dias`}
                                     handleClick={() => handleNewForm(item.id)}
                                 />

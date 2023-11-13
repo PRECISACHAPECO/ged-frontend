@@ -64,10 +64,8 @@ const ListParametrosFornecedor = () => {
             id && id > 0 ? (
                 <FormParametrosFornecedor id={id} />
             ) : (
-                //? Lista tabela de resultados da listagem
+                //? Lista cards
                 <SelectModel values={result} />
-                // <p>opa</p>
-                // <Table result={result} columns={columns} btnBack btnNew />
             )}
         </>
     )

@@ -25,6 +25,7 @@ import HelpText from 'src/components/Defaults/HelpText'
 // import JoditEditor from 'jodit-react'
 
 const FormParametrosFornecedor = ({ id }) => {
+    console.log('🚀 ~ id:', id)
     //* Editor de texto
     // const editor = useRef(null)
     // const config = useMemo(
@@ -256,6 +257,7 @@ const FormParametrosFornecedor = ({ id }) => {
     }
 
     const getData = () => {
+        console.log('buscar dados no backend....')
         try {
             if (type === 'new') {
                 setModel({

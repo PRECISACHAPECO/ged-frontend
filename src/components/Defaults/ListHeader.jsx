@@ -11,11 +11,28 @@ import { backRoute } from 'src/configs/defaultConfigs'
 import Icon from 'src/@core/components/icon'
 import useLoad from 'src/hooks/useLoad'
 
-const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, type, handleSave, hasListChange, openModal }) => {
+const ListHeader = ({
+    btnNew,
+    btnPrint,
+    btnSave,
+    btnBack,
+    type,
+    partialRoute,
+    handleSave,
+    hasListChange,
+    openModal
+}) => {
     const router = Router
     const { setId } = useContext(RouteContext)
     const { routes } = useContext(AuthContext)
     const { isLoading } = useLoad()
+
+    const currentUrl =
+        type === 'new' && partialRoute
+            ? backRoute(backRoute(router.pathname))
+            : type === 'new' || partialRoute
+            ? backRoute(router.pathname)
+            : router.pathname
 
     return (
         <>
