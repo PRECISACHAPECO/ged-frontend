@@ -114,12 +114,6 @@ const FormNewFornecedor = ({
         setOpenModalNew(false)
     }
 
-    // Opções para escolher que preenche formulario (fabrica/fornecedor)
-    const options = [
-        { value: 1, icon: 'mdi:company', label: 'Fábrica' },
-        { value: 2, icon: 'mdi:truck-fast-outline', label: 'Fornecedor' }
-    ]
-
     return (
         models &&
         products && (
@@ -130,7 +124,6 @@ const FormNewFornecedor = ({
                             <ToggleButtonLabel
                                 xs={12}
                                 md={6}
-                                options={options}
                                 register={register}
                                 name='habilitaQuemPreencheFormFornecedor'
                                 setValue={setValue}

@@ -1,62 +1,34 @@
-import React, { useState } from 'react'
-import { Grid, Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
+import React, { useState, useEffect } from 'react'
+import { Grid, Button, ButtonGroup } from '@mui/material'
 import Icon from 'src/@core/components/icon'
-import { useEffect } from 'react'
-import HelpText from '../Defaults/HelpText'
 
-const ToggleButtonLabel = ({ xs, md, name, register, options, defaultValue, setValue, setIsNotFactory }) => {
-    const [selectedOption, setSelectedOption] = useState(options[defaultValue]?.value ?? options[0].value)
-
-    const handleOptionChange = newValue => {
-        if (newValue == null) return
-        setSelectedOption(newValue)
-        if (name && register) {
-            register(name).value = newValue
-        }
-    }
+const ToggleButtonLabel = ({ xs, md, name, register, setValue, setIsNotFactory }) => {
+    const [selectedOption, setSelectedOption] = useState(1)
 
     useEffect(() => {
-        setValue(name, selectedOption)
-        if (selectedOption == 1) {
-            setIsNotFactory(false)
-        } else {
-            setIsNotFactory(true)
+        if (name && register) {
+            setValue(name, selectedOption)
+            setIsNotFactory(selectedOption === 1 ? false : true)
         }
-    }, [selectedOption])
+    }, [name, register, selectedOption])
 
     return (
         <Grid item xs={xs} md={md}>
-            <Box display='flex' flexDirection='column' alignItems='start'>
-                <div className='flex items-center gap-1 mb-1'>
-                    <Typography variant='caption'>Será preenchido por</Typography>
-
-                    <div>
-                        <HelpText
-                            text='Define quem irá preencher esse formulário de qualificação. Se marcado fornecedor, será enviado um email com as instruções e dados de acesso para o fornecedor preencher.'
-                            position={'top'}
-                        />
+            <ButtonGroup color='primary'>
+                <Button onClick={() => setSelectedOption(1)} variant={selectedOption === 1 ? 'contained' : 'outlined'}>
+                    <div className='flex items-center gap-2 py-2 px-1'>
+                        <Icon icon='mdi:company' />
+                        <p className='capitalize'>Fabrica</p>
                     </div>
-                </div>
-
-                <ToggleButtonGroup
-                    exclusive
-                    color='primary'
-                    value={selectedOption}
-                    onChange={(_, newValue) => {
-                        handleOptionChange(newValue)
-                    }}
-                >
-                    {options.map(option => (
-                        <ToggleButton key={option.value} value={option.value}>
-                            <div className='flex items-center gap-2'>
-                                <Icon icon={option.icon} />
-                                <p className='capitalize'>{option.label}</p>
-                            </div>
-                        </ToggleButton>
-                    ))}
-                </ToggleButtonGroup>
-                {name && register && <input type='hidden' name={name} {...register(name)} value={selectedOption} />}
-            </Box>
+                </Button>
+                <Button onClick={() => setSelectedOption(2)} variant={selectedOption === 2 ? 'contained' : 'outlined'}>
+                    <div className='flex items-center gap-2 py-2 px-1'>
+                        <Icon icon='mdi:truck-fast-outline' />
+                        <p className='capitalize'>Fornecedor</p>
+                    </div>
+                </Button>
+            </ButtonGroup>
+            {name && register && <input type='hidden' name={name} {...register(name)} value={selectedOption} />}
         </Grid>
     )
 }
