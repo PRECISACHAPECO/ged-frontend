@@ -21,7 +21,9 @@ const FormNewFornecedor = ({
     errors,
     setValue,
     register,
-    reset
+    reset,
+    isNotFactory,
+    setIsNotFactory
 }) => {
     const { loggedUnity } = useContext(AuthContext)
     const [models, setModels] = useState([])
@@ -31,7 +33,6 @@ const FormNewFornecedor = ({
     const [openModalNew, setOpenModalNew] = useState(false)
     const [titleModal, setTitleModal] = useState('')
     const [componetSelect, setComponetSelect] = useState(null)
-    const [isNotFactory, setIsNotFactory] = useState(true)
 
     const getModels = async () => {
         const result = await api.post(`/formularios/fornecedor/getModels`, { unidadeID: loggedUnity.unidadeID })
@@ -113,12 +114,6 @@ const FormNewFornecedor = ({
         setOpenModalNew(false)
     }
 
-    // Opções para escolher que preenche formulario (fabrica/fornecedor)
-    const options = [
-        { value: 1, icon: 'mdi:company', label: 'Fábrica' },
-        { value: 2, icon: 'mdi:truck-fast-outline', label: 'Fornecedor' }
-    ]
-
     return (
         models &&
         products && (
@@ -129,7 +124,6 @@ const FormNewFornecedor = ({
                             <ToggleButtonLabel
                                 xs={12}
                                 md={6}
-                                options={options}
                                 register={register}
                                 name='habilitaQuemPreencheFormFornecedor'
                                 setValue={setValue}

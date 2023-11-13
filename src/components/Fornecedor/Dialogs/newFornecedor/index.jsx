@@ -7,7 +7,17 @@ import { api } from 'src/configs/api'
 import FormNewFornecedor from './FormNewFornecedor'
 import { cnpjMask } from 'src/configs/masks'
 
-const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getValues }) => {
+const NewFornecedor = ({
+    cnpj,
+    control,
+    setValue,
+    register,
+    errors,
+    reset,
+    getValues,
+    isNotFactory,
+    setIsNotFactory
+}) => {
     const [change, setChange] = useState(false)
     const { loggedUnity } = useContext(AuthContext)
     const [fields, setFields] = useState(null)
@@ -139,6 +149,8 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
                                 register={register}
                                 handleCnpj={handleCnpj}
                                 validCnpj={validationCnpj}
+                                isNotFactory={isNotFactory}
+                                setIsNotFactory={setIsNotFactory}
                             />
                         </Box>
                     </Grid>

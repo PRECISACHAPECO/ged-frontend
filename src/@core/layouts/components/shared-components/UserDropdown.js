@@ -45,11 +45,14 @@ const UserDropdown = props => {
     // Controla troca de unidade
     const { saveSettings, settings } = useSettings()
     const mode = settings.mode
-    const [openModal, setOpenModal] = useState(false);
-    const [open, setOpen] = useState(false)
     const [unity, setSelectedUnit] = useState(null);
     const { notifications } = useContext(NotificationContext)
     const handleCloseModalSelectUnits = () => setOpenModal(false);
+    // mostrar opções da lista
+    const [open, setOpen] = useState(false)
+    // modal troca de unidade
+    const [openModal, setOpenModal] = useState(false);
+    // modal nova senha
     const [openModalNewPassword, setOpenModalNewPassword] = useState(false)
 
 
@@ -87,8 +90,11 @@ const UserDropdown = props => {
     const handleDropdownClose = (url) => {
         if (url) {
             router.push(url)
+            setAnchorEl(null)
         }
-        setAnchorEl(null)
+        if (!openModalNewPassword) {
+
+        }
     }
 
     const styles = {
