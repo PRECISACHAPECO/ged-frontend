@@ -5,6 +5,7 @@ import Input from 'src/components/Form/Input'
 import DateField from 'src/components/Form/DateField'
 import { api } from 'src/configs/api'
 import useDateFormat from 'src/hooks/useDateFormat'
+import { getCurrentDate, getCurrentTime } from 'src/configs/defaultConfigs'
 
 const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, setValue, control, getAddressByCep }) => {
     const [profissionaisPreenche, setProfissionaisPreenche] = useState([])
@@ -12,31 +13,10 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
 
     const getProfissionais = async () => {
         const response = await api.post(`/cadastros/profissional/getProfissionaisAssinatura`, {
-            formularioID: 1, // fornecedor
+            formularioID: 1,
             modeloID: modeloID
         })
         setProfissionaisPreenche(response.data.preenche)
-    }
-
-    // Hora atual
-    const getCurrentTime = () => {
-        const currentDate = new Date()
-        const hours = currentDate.getHours().toString().padStart(2, '0')
-        const minutes = currentDate.getMinutes().toString().padStart(2, '0')
-        return `${hours}:${minutes}`
-    }
-
-    // Data atual
-    function getCurrentDate() {
-        const currentDate = new Date()
-
-        const year = currentDate.getFullYear()
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0')
-        const day = String(currentDate.getDate()).padStart(2, '0')
-
-        const formattedDate = `${year}-${month}-${day}`
-
-        return formattedDate
     }
 
     useEffect(() => {
