@@ -30,6 +30,7 @@ const FormParametrosRecebimentoMP = ({ id }) => {
     const [headers, setHeaders] = useState()
     const [allOptions, setAllOptions] = useState(null)
     const [blocks, setBlocks] = useState()
+    const [profissionais, setProfissionais] = useState(null)
     const [orientacoes, setOrientacoes] = useState()
     const [openModalConfirmScore, setOpenModalConfirmScore] = useState(false)
     const [itemScore, setItemScore] = useState()
@@ -202,7 +203,7 @@ const FormParametrosRecebimentoMP = ({ id }) => {
                 id: id,
                 unidadeID: loggedUnity.unidadeID
             }).then(response => {
-                console.log('🚀 ~ response:', response.data)
+                console.log('🚀 ~ response dataaaaaa:', response.data)
                 //* Estados
                 setModel(response.data.model)
                 setHeaders(response.data.header)
@@ -210,6 +211,7 @@ const FormParametrosRecebimentoMP = ({ id }) => {
                 setAllOptions({
                     itens: response.data.options?.itens
                 })
+                setProfissionais(response.data.options?.profissionais)
                 setOrientacoes(response.data.orientations)
 
                 //* Insere os dados no formulário
@@ -285,6 +287,52 @@ const FormParametrosRecebimentoMP = ({ id }) => {
                                         value={model.status}
                                         register={register}
                                     />
+                                    <Input
+                                        xs={12}
+                                        md={12}
+                                        className='order-4'
+                                        title='Cabeçalho'
+                                        name={`model.cabecalho`}
+                                        required={false}
+                                        value={model.cabecalho}
+                                        multiline
+                                        rows={4}
+                                        control={control}
+                                        helpText='Texto que será exibido no cabeçalho do formulário. Adicione aqui instruções e orientações para auxiliar o preenchimento pelo fornecedor.'
+                                    />
+
+                                    {/* Profissionais que preenchem */}
+                                    {profissionais && (
+                                        <>
+                                            <Select
+                                                xs={12}
+                                                md={6}
+                                                className='order-5'
+                                                multiple
+                                                title='Profissionais que preenchem'
+                                                name={`model.profissionaisPreenchem`}
+                                                options={profissionais ?? []}
+                                                value={model?.profissionaisPreenchem ?? []}
+                                                register={register}
+                                                setValue={setValue}
+                                                control={control}
+                                            />
+
+                                            <Select
+                                                xs={12}
+                                                md={6}
+                                                className='order-5'
+                                                multiple
+                                                title='Profissionais que aprovam'
+                                                name={`model.profissionaisAprovam`}
+                                                options={profissionais ?? []}
+                                                value={model?.profissionaisAprovam ?? []}
+                                                register={register}
+                                                setValue={setValue}
+                                                control={control}
+                                            />
+                                        </>
+                                    )}
                                 </Grid>
                             </CardContent>
                         </Card>
