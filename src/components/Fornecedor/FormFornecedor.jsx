@@ -30,6 +30,7 @@ import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
 import FooterFields from './Footer'
 import useLoad from 'src/hooks/useLoad'
+import DialogDelete from '../Defaults/Dialogs/DialogDelete'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -61,6 +62,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const { settings } = useContext(SettingsContext)
     const { setId } = useContext(RouteContext)
     const [dataCopiedMyData, setDataCopiedMyData] = useState([])
+    const [openModalDeleted, setOpenModalDeleted] = useState(false)
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -876,6 +878,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     <Card>
                         <FormHeader
                             btnCancel
+                            btnDelete
+                            onclickDelete={() => setOpenModalDeleted(true)}
                             btnSave={canEdit.status}
                             btnSend={canEdit.status || (user.papelID == 1 && info.status >= 40)}
                             btnPrint={type == 'edit' ? true : false}
@@ -890,6 +894,18 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             handleBtnStatus={() => setOpenModalStatus(true)}
                             type={type}
                             status={status}
+                        />
+                        {/* Modal que deleta formulario */}
+                        <DialogDelete
+                            title='Excluir Formulário'
+                            description='Tem certeza que deseja exluir o formulario?'
+                            params={{
+                                route: 'formularios/fornecedor/delete/2',
+                                messageSucceeded: 'Formulario excluido com sucesso!',
+                                MessageEventrror: 'Erro ao tentar excluir formulario'
+                            }}
+                            open={openModalDeleted}
+                            handleClose={() => setOpenModalDeleted(false)}
                         />
 
                         {/* Header */}
