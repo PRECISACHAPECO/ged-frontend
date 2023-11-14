@@ -10,6 +10,7 @@ const Block = ({
     setBlocos,
     values,
     blockKey,
+    changeAllOptions,
     setItemResposta,
     handleFileSelect,
     handleRemoveAnexoItem,
@@ -19,30 +20,20 @@ const Block = ({
     errors,
     disabled
 }) => {
-    console.log('🚀 ~ values:', values)
     const [totalColumns, setTotalColumns] = useState(0)
     const [newValues, setNewValues] = useState([])
-    console.log('🚀 ~ totalColumns:', totalColumns)
-    console.log('🚀 ~ newValues:', newValues)
 
     const updateResponse = ({ e, values, blockIndex, index }) => {
-        console.log('🚀 ~ e.target.value:', e.target.value, blockIndex, index, values)
-
         setValue(
             `blocos[${blockIndex}].itens[${index}].resposta`,
             values.alternativas.find(item => item.id == e.target.value)
         )
         setItemResposta({
-            parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID ?? 0,
-            parRecebimentoMpModeloBlocoID: values.parRecebimentoMpModeloBlocoID ?? 0,
+            // parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID ?? 0,
+            // parRecebimentoMpModeloBlocoID: values.parRecebimentoMpModeloBlocoID ?? 0,
             itemID: values.itemID,
             alternativa: values.alternativas.find(item => item.id == e.target.value)
         })
-    }
-
-    const handleChangeOptions = colIndex => {
-        console.log('🚀 ~ colIndex:', colIndex)
-        // const
     }
 
     const getTotalColumns = () => {
@@ -53,20 +44,6 @@ const Block = ({
                 if (item.alternativas.length > total) total = item.alternativas.length
             })
         setTotalColumns(total)
-        insertFirstBlankItem(total)
-    }
-
-    //? Insere um item vazio na 1ª posição do array de itens, pra crie a coluna de marcar todos
-    const insertFirstBlankItem = total => {
-        const tempValues = [...values.itens]
-        tempValues.unshift({
-            // alternativas: array com o total de colunas em totalColumns
-            alternativas: [...Array(total)].map(() => ({
-                id: null,
-                nome: 'Marcar todos'
-            }))
-        })
-        setNewValues(tempValues)
     }
 
     useEffect(() => {
@@ -85,16 +62,18 @@ const Block = ({
                         </Grid>
 
                         {/* Itens */}
-                        {newValues &&
-                            newValues.map((item, indexItem) => (
+                        {values &&
+                            values.itens &&
+                            values.itens.map((item, indexItem) => (
                                 <Item
                                     key={indexItem}
                                     blockIndex={index}
                                     blockKey={blockKey}
                                     index={indexItem}
                                     setBlocos={setBlocos}
+                                    totalColumns={totalColumns}
                                     updateResponse={updateResponse}
-                                    onClick={handleChangeOptions}
+                                    changeAllOptions={changeAllOptions}
                                     handleFileSelect={handleFileSelect}
                                     setItemResposta={setItemResposta}
                                     handleRemoveAnexoItem={handleRemoveAnexoItem}

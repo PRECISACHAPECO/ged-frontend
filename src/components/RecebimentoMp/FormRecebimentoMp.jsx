@@ -35,6 +35,7 @@ const FormRecebimentoMp = ({ id }) => {
     console.log('🚀 ~ id:', id)
     const { menu, user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
+    const [change, setChange] = useState(false)
     const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
     const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
     const [loadingFileItem, setLoadingFileItem] = useState(false) //? loading de carregamento do arquivo
@@ -630,8 +631,9 @@ const FormRecebimentoMp = ({ id }) => {
         try {
             const response = await api.post('/cadastros/item/getItemConfigs', {
                 itemID: value.itemID,
-                alternativaItemID: value.alternativa.id
+                alternativaItemID: value.alternativa.id ?? null
             })
+            console.log('🚀 ~ setItemResposta response:', response.data)
 
             // Limpar o array de anexos solicitados do item selecionado do bloco
             const updatedBlocos = blocos.map(bloco => {
@@ -675,23 +677,6 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     // Remove um anexo do array de anexos
-    const handleRemoveAnexoGroup = async item => {
-        if (item) {
-            await api
-                .delete(
-                    `${staticUrl}/deleteAnexo/${id}/${item.anexoID}/${unidade.unidadeID}/${user.usuarioID}/grupo-anexo`
-                )
-                .then(response => {
-                    const values = getValues()
-                    onSubmit(values)
-                })
-                .catch(error => {
-                    toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
-                })
-        }
-    }
-
-    // Remove um anexo do array de anexos
     const handleRemoveAnexoItem = async item => {
         if (item) {
             await api
@@ -705,6 +690,40 @@ const FormRecebimentoMp = ({ id }) => {
                     toast.error(error.response?.data?.message ?? 'Erro ao remover anexo, tente novamente!')
                 })
         }
+    }
+
+    const changeAllOptions = colIndex => {
+        const tempBlocos = [...blocos]
+
+        //? Formulário
+        tempBlocos.map((bloco, index) => {
+            // bloco
+            bloco.itens.map((item, indexItem) => {
+                // item
+                setValue(`blocos[${index}].itens[${indexItem}].resposta`, item.alternativas[colIndex])
+            })
+        })
+
+        //? Estado
+        setBlocos(prev =>
+            prev.map(bloco => ({
+                ...bloco,
+                itens: bloco.itens.map(item => ({
+                    ...item,
+                    resposta:
+                        item.alternativas[colIndex] && item.alternativas[colIndex].id > 0
+                            ? item.alternativas[colIndex]
+                            : null
+                }))
+            }))
+        )
+
+        setChange(!change)
+
+        //* Submete formulário pra atualizar configurações dos produtos
+        const values = getValues()
+        console.log('🚀 ~ envia:', values)
+        onSubmit(values)
     }
 
     useEffect(() => {
@@ -816,13 +835,14 @@ const FormRecebimentoMp = ({ id }) => {
                     {blocos &&
                         blocos.map((bloco, index) => (
                             <Block
-                                key={index}
+                                key={change}
                                 index={index}
                                 blockKey={`parRecebimentoMpModeloBlocoID`}
                                 handleFileSelect={handleFileSelectItem}
                                 setItemResposta={setItemResposta}
                                 handleRemoveAnexoItem={handleRemoveAnexoItem}
                                 setBlocos={setBlocos}
+                                changeAllOptions={changeAllOptions}
                                 values={bloco}
                                 control={control}
                                 register={register}

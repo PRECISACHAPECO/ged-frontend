@@ -5,38 +5,65 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { Box, Tooltip } from '@mui/material'
 import Icon from 'src/@core/components/icon'
+import { useEffect, useState } from 'react'
 
 const RadioLabel = ({
     xs,
     md,
     index,
     values,
+    totalColumns,
     defaultValue,
     name,
+    changeAllOptions,
     disabled,
     errors,
     handleChange,
-    onClick,
     blockForm
 }) => {
     return (
         <Grid item xs={xs} md={md}>
             {/* <Box display='flex' alignItems='center' sx={{ gap: 2 }}> */}
             {/* <Grid container sx={{ backgroundColor: 'green' }}> */}
+
+            {/* Marcar todos */}
+            <RadioGroup row>
+                {index == 0 &&
+                    [...Array(totalColumns)].map((item, indexCol) => (
+                        <Grid item xs={12} md={2}>
+                            <FormControlLabel
+                                key={indexCol}
+                                value={indexCol}
+                                control={<Radio disabled={disabled} error={errors ? true : false} />}
+                                onChange={() => changeAllOptions(indexCol)}
+                                label='Marcar todos'
+                                fullWidth
+                                sx={{
+                                    '& .MuiFormControlLabel-label': {
+                                        fontSize: '0.8rem',
+                                        color: 'text.secondary'
+                                    },
+                                    '&:hover': {
+                                        '& .MuiFormControlLabel-label': {
+                                            color: 'primary.main'
+                                        }
+                                    }
+                                }}
+                            />
+                        </Grid>
+                    ))}
+            </RadioGroup>
+
             <RadioGroup row name={name} defaultValue={defaultValue} onChange={handleChange}>
                 {values &&
-                    values.length > 0 &&
                     values.map((item, indexCol) => (
                         <Grid item xs={12} md={2}>
                             <FormControlLabel
                                 key={indexCol}
                                 value={item.id}
                                 control={<Radio disabled={disabled} error={errors ? true : false} />}
-                                onClick={index == 0 ? () => onClick(indexCol) : null}
                                 label={item.nome}
                                 fullWidth
-                                // diminuir tamanho do label
-
                                 sx={{
                                     '& .MuiFormControlLabel-label': {
                                         fontSize: '0.8rem',
