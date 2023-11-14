@@ -91,6 +91,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
             arrRemovedItems: arrRemovedItems ?? [],
             orientacoes: values.orientations ?? null
         }
+        console.log('🚀 ~ onSubmit: ', data)
 
         setHeaders(null) //? Pra exibir loading
 
