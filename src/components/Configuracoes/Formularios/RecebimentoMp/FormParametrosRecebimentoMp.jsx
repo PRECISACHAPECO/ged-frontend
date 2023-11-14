@@ -64,6 +64,7 @@ const FormParametrosRecebimentoMP = ({ id }) => {
             arrRemovedItems: arrRemovedItems,
             orientacoes: values.orientations
         }
+        console.log('🚀 ~ data submit recebimento:', data)
 
         setHeaders(null) //? Pra exibir loading
 
@@ -199,30 +200,39 @@ const FormParametrosRecebimentoMP = ({ id }) => {
 
     const getData = () => {
         try {
-            api.post(`${staticUrl}/getData`, {
-                id: id,
-                unidadeID: loggedUnity.unidadeID
-            }).then(response => {
-                console.log('🚀 ~ response dataaaaaa:', response.data)
-                //* Estados
-                setModel(response.data.model)
-                setHeaders(response.data.header)
-                setBlocks(response.data.blocks)
-                setAllOptions({
-                    itens: response.data.options?.itens
+            if (type === 'new') {
+                setModel({
+                    nome: '',
+                    ciclo: '',
+                    cabecalho: '',
+                    status: 1
                 })
-                setProfissionais(response.data.options?.profissionais)
-                setOrientacoes(response.data.orientations)
-
-                //* Insere os dados no formulário
-                reset(response.data)
-
-                setTimeout(() => {
-                    response.data?.blocks?.map((block, indexBlock) => {
-                        refreshOptions(block, indexBlock, response.data.blocks, response.data.options)
+            } else {
+                api.post(`${staticUrl}/getData`, {
+                    id: id,
+                    unidadeID: loggedUnity.unidadeID
+                }).then(response => {
+                    console.log('🚀 ~ response dataaaaaa:', response.data)
+                    //* Estados
+                    setModel(response.data.model)
+                    setHeaders(response.data.header)
+                    setBlocks(response.data.blocks)
+                    setAllOptions({
+                        itens: response.data.options?.itens
                     })
-                }, 3000)
-            })
+                    setProfissionais(response.data.options?.profissionais)
+                    setOrientacoes(response.data.orientations)
+
+                    //* Insere os dados no formulário
+                    reset(response.data)
+
+                    setTimeout(() => {
+                        response.data?.blocks?.map((block, indexBlock) => {
+                            refreshOptions(block, indexBlock, response.data.blocks, response.data.options)
+                        })
+                    }, 3000)
+                })
+            }
         } catch (error) {
             console.log(error)
         }
