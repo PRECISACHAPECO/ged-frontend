@@ -73,7 +73,7 @@ const ListParametrosFormularios = () => {
                 ) : null
             ) : (
                 //? Lista tabela de resultados da listagem
-                <Table result={result} columns={columns} />
+                <Table result={result} columns={columns} btnNew={false} />
             )}
         </>
     )
