@@ -1,9 +1,22 @@
-import { Autocomplete, Box, Button, Card, CardContent, FormControl, Grid, TextField, Typography } from '@mui/material'
+import {
+    Autocomplete,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    FormControl,
+    FormControlLabel,
+    Grid,
+    TextField,
+    Typography
+} from '@mui/material'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import Item from 'src/components/Defaults/Formularios/Item'
 import CheckLabel from 'src/components/Form/CheckLabel'
 import RadioLabel from 'src/components/Form/RadioLabel'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
 
 const Block = ({
     index,
@@ -55,10 +68,39 @@ const Block = ({
             <Card key={index} sx={{ mt: 4 }}>
                 <CardContent>
                     <Grid container>
-                        <Grid item xs={12} md={12}>
+                        <Grid item xs={12} md={6}>
                             <Typography color='primary' variant='subtitle1' sx={{ fontWeight: 700, mb: 6 }}>
                                 {values?.nome}
                             </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            {/* Marcar todos */}
+                            <RadioGroup row>
+                                {[...Array(totalColumns)].map((item, indexCol) => (
+                                    <Grid item xs={12} md={3}>
+                                        <FormControlLabel
+                                            key={indexCol}
+                                            value={indexCol}
+                                            control={<Radio disabled={disabled} error={errors ? true : false} />}
+                                            onChange={() => changeAllOptions(indexCol)}
+                                            label='Marcar todos'
+                                            fullWidth
+                                            sx={{
+                                                '& .MuiFormControlLabel-label': {
+                                                    fontSize: '0.8rem',
+                                                    color: 'text.secondary',
+                                                    fontWeight: 700
+                                                },
+                                                '&:hover': {
+                                                    '& .MuiFormControlLabel-label': {
+                                                        color: 'primary.main'
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                    </Grid>
+                                ))}
+                            </RadioGroup>
                         </Grid>
 
                         {/* Itens */}

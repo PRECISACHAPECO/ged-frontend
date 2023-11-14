@@ -26,72 +26,46 @@ const RadioLabel = ({
             {/* <Box display='flex' alignItems='center' sx={{ gap: 2 }}> */}
             {/* <Grid container sx={{ backgroundColor: 'green' }}> */}
 
-            {/* Marcar todos */}
-            <RadioGroup row>
-                {index == 0 &&
-                    [...Array(totalColumns)].map((item, indexCol) => (
-                        <Grid item xs={12} md={2}>
-                            <FormControlLabel
-                                key={indexCol}
-                                value={indexCol}
-                                control={<Radio disabled={disabled} error={errors ? true : false} />}
-                                onChange={() => changeAllOptions(indexCol)}
-                                label='Marcar todos'
-                                fullWidth
-                                sx={{
-                                    '& .MuiFormControlLabel-label': {
-                                        fontSize: '0.8rem',
-                                        color: 'text.secondary'
-                                    },
-                                    '&:hover': {
-                                        '& .MuiFormControlLabel-label': {
-                                            color: 'primary.main'
-                                        }
-                                    }
-                                }}
-                            />
-                        </Grid>
-                    ))}
-            </RadioGroup>
-
             <RadioGroup row name={name} defaultValue={defaultValue} onChange={handleChange}>
                 {values &&
                     values.map((item, indexCol) => (
-                        <Grid item xs={12} md={2}>
-                            <FormControlLabel
-                                key={indexCol}
-                                value={item.id}
-                                control={<Radio disabled={disabled} error={errors ? true : false} />}
-                                label={item.nome}
-                                fullWidth
-                                sx={{
-                                    '& .MuiFormControlLabel-label': {
-                                        fontSize: '0.8rem',
-                                        color: 'text.secondary'
-                                    },
-                                    '&:hover': {
+                        <Grid item xs={12} md={3}>
+                            <Box display='flex' alignItems='center' sx={{ gap: 2 }}>
+                                <FormControlLabel
+                                    key={indexCol}
+                                    value={item.id}
+                                    control={<Radio disabled={disabled} error={errors ? true : false} />}
+                                    label={item.nome}
+                                    fullWidth
+                                    sx={{
                                         '& .MuiFormControlLabel-label': {
-                                            color: 'primary.main'
+                                            fontSize: '0.8rem',
+                                            color: 'text.secondary'
+                                        },
+                                        '&:hover': {
+                                            '& .MuiFormControlLabel-label': {
+                                                color: 'primary.main'
+                                            }
                                         }
-                                    }
-                                }}
-                            />
+                                    }}
+                                />
+                                {/* ícone informando que resposta impede aprovação do formulário */}
+                                {blockForm && indexCol == values.length - 1 && (
+                                    <Tooltip
+                                        title='Esta resposta impede a aprovação deste formulário e obrigatoriamente será gerada uma Não Conformidade (plano de ação)'
+                                        placement='top'
+                                        arrow
+                                    >
+                                        <p>
+                                            <Icon icon='typcn:warning' color='#FFC107' />
+                                        </p>
+                                    </Tooltip>
+                                )}
+                            </Box>
                         </Grid>
                     ))}
             </RadioGroup>
 
-            {/* ícone informando que resposta impede aprovação do formulário */}
-            {blockForm && (
-                <Tooltip
-                    title='Esta resposta impede a aprovação deste formulário e obrigatoriamente será gerada uma Não Conformidade (plano de ação)'
-                    placement='top'
-                    arrow
-                >
-                    <p>
-                        <Icon icon='typcn:warning' color='#FFC107' />
-                    </p>
-                </Tooltip>
-            )}
             {/* </Grid> */}
             {/* </Box> */}
         </Grid>
