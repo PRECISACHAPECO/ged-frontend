@@ -900,9 +900,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             title='Excluir Formulário'
                             description='Tem certeza que deseja exluir o formulario?'
                             params={{
-                                route: 'formularios/fornecedor/delete/2',
+                                route: `formularios/fornecedor/delete/${id}`,
                                 messageSucceeded: 'Formulario excluido com sucesso!',
-                                MessageEventrror: 'Erro ao tentar excluir formulario'
+                                MessageEventrror: 'Dado possui pendência.'
                             }}
                             open={openModalDeleted}
                             handleClose={() => setOpenModalDeleted(false)}
