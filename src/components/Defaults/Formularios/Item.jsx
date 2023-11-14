@@ -15,7 +15,8 @@ const Item = ({
     blockIndex,
     index,
     setBlocos,
-    onClick,
+    changeAllOptions,
+    totalColumns,
     blockKey,
     handleFileSelect,
     setItemResposta,
@@ -100,23 +101,12 @@ const Item = ({
                             md={12}
                             index={index}
                             defaultValue={values?.resposta?.id}
+                            totalColumns={totalColumns}
                             values={values.alternativas}
                             name={`blocos[${blockIndex}].itens[${index}].resposta`}
-                            onClick={onClick}
+                            changeAllOptions={changeAllOptions}
                             disabled={disabled}
                             handleChange={e => updateResponse({ e, values, blockIndex, index })}
-                            // handleChange={e => {
-                            // setValue(
-                            //     `blocos[${blockIndex}].itens[${index}].resposta`,
-                            //     values.alternativas.find(item => item.id == e.target.value)
-                            // )
-                            // setItemResposta({
-                            //     parFornecedorModeloBlocoID: values.parFornecedorModeloBlocoID ?? 0,
-                            //     parRecebimentoMpModeloBlocoID: values.parRecebimentoMpModeloBlocoID ?? 0,
-                            //     itemID: values.itemID,
-                            //     alternativa: values.alternativas.find(item => item.id == e.target.value)
-                            // })
-                            // }}
                             errors={errors?.[blockIndex]?.itens[index]?.resposta}
                             blockForm={values.respostaConfig?.bloqueiaFormulario == 1 ? true : false}
                         />
