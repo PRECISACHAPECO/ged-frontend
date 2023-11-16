@@ -20,6 +20,7 @@ import Blocos from './Blocos'
 import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
 import FormItem from 'src/components/Cadastros/Item/FormItem'
 import HelpText from 'src/components/Defaults/HelpText'
+import DialogDelete from 'src/components/Defaults/Dialogs/DialogDelete'
 
 const FormParametrosRecebimentoMp = ({ id }) => {
     console.log('🚀 ~ id:', id)
@@ -44,6 +45,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
     const [newChange, setNewChange] = useState(false)
     const [indexNewBloco, setIndexNewBloco] = useState(null)
     const [indexNewItem, setIndexNewItem] = useState(null)
+    const [openModalDeleted, setOpenModalDeleted] = useState(false)
 
     const createNew = (indexBloco, indexItem) => {
         setOpenModalNew(true)
@@ -313,6 +315,20 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                             btnSave
                             handleSubmit={() => handleSubmit(onSubmit)}
                             type={type}
+                            btnDelete
+                            onclickDelete={() => setOpenModalDeleted(true)}
+                        />
+                        {/* Modal que deleta formulario */}
+                        <DialogDelete
+                            title='Excluir Formulário'
+                            description='Tem certeza que deseja exluir o formulario?'
+                            params={{
+                                route: `/configuracoes/formularios/recebimento-mp/delete/${id}`,
+                                messageSucceded: 'Formulário excluído com sucesso!',
+                                MessageError: 'Dado possui pendência!'
+                            }}
+                            open={openModalDeleted}
+                            handleClose={() => setOpenModalDeleted(false)}
                         />
                         <CardContent>
                             <Grid container spacing={4}>

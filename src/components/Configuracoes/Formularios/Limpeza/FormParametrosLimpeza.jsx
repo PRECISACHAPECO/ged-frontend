@@ -23,6 +23,7 @@ import CheckLabel from 'src/components/Form/CheckLabel'
 import Remove from 'src/components/Form/Remove'
 import HelpText from 'src/components/Defaults/HelpText'
 import Blocos from './Blocos'
+import DialogDelete from 'src/components/Defaults/Dialogs/DialogDelete'
 
 const FormParametrosLimpeza = ({ id }) => {
     const { user, loggedUnity } = useContext(AuthContext)
@@ -37,6 +38,7 @@ const FormParametrosLimpeza = ({ id }) => {
     const [arrRemovedItems, setArrRemovedItems] = useState([])
     const [arrRemovedBlocks, setArrRemovedBlocks] = useState([])
     const [change, setChange] = useState(false)
+    const [openModalDeleted, setOpenModalDeleted] = useState(false)
 
     const router = Router
     const type = 'edit'
@@ -247,6 +249,20 @@ const FormParametrosLimpeza = ({ id }) => {
                                 btnSave
                                 handleSubmit={() => handleSubmit(onSubmit)}
                                 type={type}
+                                btnDelete
+                                onclickDelete={() => setOpenModalDeleted(true)}
+                            />
+                            {/* Modal que deleta formulario */}
+                            <DialogDelete
+                                title='Excluir Formulário'
+                                description='Tem certeza que deseja exluir o formulario?'
+                                params={{
+                                    route: `/configuracoes/formularios/limpeza/delete/${id}`,
+                                    messageSucceded: 'Formulário excluído com sucesso!',
+                                    MessageError: 'Dado possui pendência!'
+                                }}
+                                open={openModalDeleted}
+                                handleClose={() => setOpenModalDeleted(false)}
                             />
                             <CardContent>
                                 <Grid container spacing={4}>
