@@ -90,10 +90,9 @@ const UserDropdown = props => {
     const handleDropdownClose = (url) => {
         if (url) {
             router.push(url)
-            setAnchorEl(null)
         }
         if (!openModalNewPassword) {
-
+            setAnchorEl(null)
         }
     }
 

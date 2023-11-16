@@ -1,20 +1,21 @@
-import { Button, Divider, Grid, Typography } from '@mui/material'
+import { Grid } from '@mui/material'
 import { useEffect, useState, useContext } from 'react'
 import { AuthContext } from 'src/context/AuthContext'
 import Fields from 'src/components/Defaults/Formularios/Fields'
 import Input from 'src/components/Form/Input'
 import DateField from 'src/components/Form/DateField'
 import Select from 'src/components/Form/Select'
-import CheckLabel from 'src/components/Form/CheckLabel'
 import { dateConfig } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
-import { Box } from '@mui/system'
+import { SettingsContext } from 'src/@core/context/settingsContext'
+import Router from 'next/router'
+import { RouteContext } from 'src/context/RouteContext'
+import Icon from 'src/@core/components/icon'
 
 const HeaderFields = ({
     modeloID,
     values,
     fields,
-    getValues,
     fornecedor,
     setFornecedor,
     disabled,
@@ -24,11 +25,14 @@ const HeaderFields = ({
     control,
     getAddressByCep
 }) => {
-    console.log('🚀 ~~~ HeaderFields RECEBIMENTO:', values)
     const { user, loggedUnity } = useContext(AuthContext)
     const [dateStatus, setDateStatus] = useState({})
     const [profissionaisPreenchimento, setProfissionaisPreenchimento] = useState([])
     const [fornecedoresAprovados, setFornecedoresAprovados] = useState([])
+    const { settings } = useContext(SettingsContext)
+    const mode = settings.mode
+    const router = Router
+    const { setId } = useContext(RouteContext)
 
     const setDateFormat = (type, name, value, numDays) => {
         const newDate = new Date(value)
@@ -59,6 +63,12 @@ const HeaderFields = ({
         const profissionalID = user.profissionalID //? Profissional logado
         const profissional = arrProfissionais.find(profissional => profissional.id === profissionalID)
         if (profissional && profissional.id > 0) setValue('fieldsHeader.profissional', profissional)
+    }
+
+    // Função que envia para o formulario do fornecedor selecionado
+    const handleGoToSupplier = () => {
+        setId(fornecedor.id)
+        router.push('/formularios/fornecedor/')
     }
 
     useEffect(() => {
@@ -176,19 +186,20 @@ const HeaderFields = ({
                 errors={errors?.fieldsHeader?.['fornecedor']}
             />
             {/* Informações do fornecedor */}
-            <Grid item xs={12} md={8}>
-                {getValues('fieldsHeader.fornecedor') && getValues('fieldsHeader.fornecedor.id') > 0 && (
-                    <Box display='flex' flexDirection='column'>
+            <Grid item xs={12} md={4}>
+                {fornecedor && fornecedor.id > 0 && (
+                    <div
+                        onClick={handleGoToSupplier}
+                        className={`${
+                            mode == 'dark' ? 'bg-[#18181a]' : 'bg-[#EEEEF1]'
+                        } flex flex-col gap-2 p-4 rounded-xl cursor-pointer relative`}
+                    >
+                        <Icon icon='uil:external-link-alt' className='absolute top-4 right-4 text-xl' />
                         <p className='text-xs'>Dados do Fornecedor</p>
-                        <Box display='flex' alignItems='center' gap={4}>
-                            {getValues('fieldsHeader.fornecedor.telefone') && (
-                                <p>Telefone: {getValues('fieldsHeader.fornecedor.telefone')}</p>
-                            )}
-                            {getValues('fieldsHeader.fornecedor.cidade') && (
-                                <p>Cidade: {getValues('fieldsHeader.fornecedor.cidade')}</p>
-                            )}
-                        </Box>
-                    </Box>
+                        <p>Nome: {fornecedor.nome}</p>
+                        <p>Telefone: {fornecedor.telefone}</p>
+                        <p>Cidade: {fornecedor.cidade}</p>
+                    </div>
                 )}
             </Grid>
         </Grid>

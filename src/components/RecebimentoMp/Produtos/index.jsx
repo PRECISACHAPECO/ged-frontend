@@ -9,8 +9,6 @@ import { useEffect, useState } from 'react'
 import FieldsProdutos from './FieldsProdutos'
 
 const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setValue, register, control, errors }) => {
-    console.log('🚀 ~ recebimentoMpID, fornecedorID:', recebimentoMpID, fornecedorID)
-
     const [produtos, setProdutos] = useState([])
     const [apresentacoes, setApresentacoes] = useState([])
     const [change, handleChange] = useState(false)
@@ -22,7 +20,6 @@ const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setVa
                     recebimentoMpID: recebimentoMpID,
                     fornecedorID: fornecedorID
                 })
-                console.log('🚀 ~ renderiza response.data:', response.data[0])
                 setProdutos(response.data)
                 setValue('produtos', response.data)
             } else {

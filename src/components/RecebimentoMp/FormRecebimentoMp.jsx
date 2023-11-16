@@ -33,7 +33,6 @@ import useLoad from 'src/hooks/useLoad'
 import DialogDelete from '../Defaults/Dialogs/DialogDelete'
 
 const FormRecebimentoMp = ({ id }) => {
-    console.log('🚀 ~ id:', id)
     const { menu, user, loggedUnity } = useContext(AuthContext)
     const [isLoading, setLoading] = useState(false)
     const [change, setChange] = useState(false)
@@ -75,7 +74,6 @@ const FormRecebimentoMp = ({ id }) => {
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
-    console.log('🚀 ~ staticUrl:', staticUrl)
 
     const {
         reset,
@@ -242,7 +240,6 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             })
                 .then(response => {
-                    console.log('getData: ', response.data)
                     setLoading(false)
 
                     setFieldsHeader(response.data.fieldsHeader)
@@ -327,8 +324,6 @@ const FormRecebimentoMp = ({ id }) => {
         //? Blocos
         blocos.forEach((block, indexBlock) => {
             block.itens.forEach((item, indexItem) => {
-                console.log('🚀 ~ checkErrors -> item: ', item)
-
                 const fieldValue = getValues(`blocos[${indexBlock}].itens[${indexItem}].resposta`)
                 //? Valida resposta do item
                 if (item?.obrigatorio === 1 && !fieldValue) {
@@ -368,7 +363,6 @@ const FormRecebimentoMp = ({ id }) => {
             grupoAnexo.forEach((grupo, indexGrupo) => {
                 grupo.itens.forEach((item, indexItem) => {
                     if (item.obrigatorio === 1 && item.anexos.length == 0) {
-                        console.log('gera erro grupo')
                         setError(`grupoAnexo[${indexGrupo}].itens[${indexItem}].anexos`, {
                             type: 'manual',
                             message: 'Campo obrigatário'
@@ -504,7 +498,6 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-        console.log('🚀 ~ onSubmit: ', data)
         // return
 
         try {
@@ -597,7 +590,6 @@ const FormRecebimentoMp = ({ id }) => {
     const handleFileSelectItem = async (event, item) => {
         setLoadingFileItem(true)
         const selectedFile = event.target.files
-        console.log('🚀 ~ selectedFile:', selectedFile)
 
         if (selectedFile && selectedFile.length > 0) {
             const formData = new FormData()
@@ -608,7 +600,6 @@ const FormRecebimentoMp = ({ id }) => {
             formData.append(`unidadeID`, loggedUnity.unidadeID)
             formData.append(`parRecebimentoMpModeloBlocoID`, item.parRecebimentoMpModeloBlocoID ?? null)
             formData.append(`itemOpcaoAnexoID`, item.itemOpcaoAnexoID ?? null)
-            console.log('🚀 ~ item:', item)
 
             await api
                 .post(`${staticUrl}/saveAnexo/${id}/item/${user.usuarioID}/${unidade.unidadeID}`, formData)
@@ -628,14 +619,12 @@ const FormRecebimentoMp = ({ id }) => {
 
     //? Função que atualiza os anexos solicitados no item, quando altera a resposta
     const setItemResposta = async value => {
-        console.log('🚀 ~ setItemResposta ~ value:', value)
         // envia pro backend verificar as configurações dessa resposta (se possui anexos, se bloqueia formulário e se possui obs)
         try {
             const response = await api.post('/cadastros/item/getItemConfigs', {
                 itemID: value.itemID,
                 alternativaItemID: value.alternativa.id ?? null
             })
-            console.log('🚀 ~ setItemResposta response:', response.data)
 
             // Limpar o array de anexos solicitados do item selecionado do bloco
             const updatedBlocos = blocos.map(bloco => {
@@ -643,7 +632,6 @@ const FormRecebimentoMp = ({ id }) => {
                     ...bloco,
                     itens: bloco.itens.map(row => {
                         if (row.itemID == value.itemID) {
-                            console.log('setItemResposta IGUAL: ', row)
                             return {
                                 ...row,
                                 respostaConfig: {
@@ -655,7 +643,6 @@ const FormRecebimentoMp = ({ id }) => {
                     })
                 }
             })
-            console.log('🚀 ~ updatedBlocos:', updatedBlocos)
 
             setBlocos(updatedBlocos)
         } catch (error) {
@@ -719,12 +706,12 @@ const FormRecebimentoMp = ({ id }) => {
                 }))
             }))
         )
+        console.log('id do fornecedorrr', getValues('fieldsHeader.fornecedor.id'))
 
         setChange(!change)
 
         //* Submete formulário pra atualizar configurações dos produtos
         const values = getValues()
-        console.log('🚀 ~ envia:', values)
         onSubmit(values)
     }
 
@@ -802,7 +789,6 @@ const FormRecebimentoMp = ({ id }) => {
                             open={openModalDeleted}
                             handleClose={() => setOpenModalDeleted(false)}
                         />
-
                         {/* Header */}
                         <CardContent>
                             {unidade && (
