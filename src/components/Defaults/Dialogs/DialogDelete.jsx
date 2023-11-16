@@ -19,7 +19,7 @@ const DialogDelete = ({ title, description, open, handleClose, params }) => {
             setId(null)
         } catch (err) {
             console.log(err)
-            toast.success(params.MessageError)
+            toast.error(params.MessageError)
         } finally {
             handleClose()
         }
