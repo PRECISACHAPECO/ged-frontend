@@ -878,7 +878,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     <Card>
                         <FormHeader
                             btnCancel
-                            btnDelete
+                            btnDelete={info.status < 40 ? true : false}
                             onclickDelete={() => setOpenModalDeleted(true)}
                             btnSave={canEdit.status}
                             btnSend={canEdit.status || (user.papelID == 1 && info.status >= 40)}
@@ -901,8 +901,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             description='Tem certeza que deseja exluir o formulario?'
                             params={{
                                 route: `formularios/fornecedor/delete/${id}`,
-                                messageSucceeded: 'Formulario excluido com sucesso!',
-                                MessageEventrror: 'Dado possui pendência.'
+                                messageSucceded: 'Formulário excluído com sucesso!',
+                                MessageError: 'Dado possui pendência!'
                             }}
                             open={openModalDeleted}
                             handleClose={() => setOpenModalDeleted(false)}

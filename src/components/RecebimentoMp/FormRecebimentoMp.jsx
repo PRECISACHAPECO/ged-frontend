@@ -30,6 +30,7 @@ import HeaderFields from './Header'
 import RecebimentoMpFooterFields from './Footer'
 import RecebimentoMpProdutos from './Produtos'
 import useLoad from 'src/hooks/useLoad'
+import DialogDelete from '../Defaults/Dialogs/DialogDelete'
 
 const FormRecebimentoMp = ({ id }) => {
     console.log('🚀 ~ id:', id)
@@ -63,6 +64,7 @@ const FormRecebimentoMp = ({ id }) => {
     const { settings } = useContext(SettingsContext)
     const { setId } = useContext(RouteContext)
     const { startLoading, stopLoading } = useLoad()
+    const [openModalDeleted, setOpenModalDeleted] = useState(false)
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -773,6 +775,8 @@ const FormRecebimentoMp = ({ id }) => {
                             btnSave={info.status < 40}
                             btnSend={info.status >= 40}
                             btnPrint={type == 'edit' ? true : false}
+                            btnDelete={info.status < 40 ? true : false}
+                            onclickDelete={() => setOpenModalDeleted(true)}
                             actionsData={actionsData}
                             actions
                             handleSubmit={() => handleSubmit(onSubmit)}
@@ -784,6 +788,19 @@ const FormRecebimentoMp = ({ id }) => {
                             handleBtnStatus={() => setOpenModalStatus(true)}
                             type={type}
                             status={status}
+                        />
+
+                        {/* Modal que deleta formulario */}
+                        <DialogDelete
+                            title='Excluir Formulário'
+                            description='Tem certeza que deseja exluir o formulario?'
+                            params={{
+                                route: `formularios/recebimento-mp/delete/${id}`,
+                                messageSucceded: 'Formulário excluído com sucesso!',
+                                MessageError: 'Dado possui pendência!'
+                            }}
+                            open={openModalDeleted}
+                            handleClose={() => setOpenModalDeleted(false)}
                         />
 
                         {/* Header */}
