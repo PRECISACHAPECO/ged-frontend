@@ -1,36 +1,36 @@
 import { useState, useEffect, useContext } from 'react'
-
 import { useForm } from 'react-hook-form'
-import { Box, Button, Card, CardContent, Grid, List, Typography } from '@mui/material'
+import { Button, Card, CardContent, Grid, List, Typography, Box } from '@mui/material'
+import { RouteContext } from 'src/context/RouteContext'
 import Router from 'next/router'
-import { backRoute } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
 import FormHeader from 'src/components/Defaults/FormHeader'
-import { ParametersContext } from 'src/context/ParametersContext'
-import { RouteContext } from 'src/context/RouteContext'
 import { AuthContext } from 'src/context/AuthContext'
 import toast from 'react-hot-toast'
-import { toastMessage } from 'src/configs/defaultConfigs'
+import { backRoute, toastMessage } from 'src/configs/defaultConfigs'
 import Loading from 'src/components/Loading'
 import Icon from 'src/@core/components/icon'
-import DialogConfirmScore from 'src/components/Defaults/Dialogs/DialogConfirmScore'
 
 //* Custom components
 import Select from 'src/components/Form/Select'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import CheckLabel from 'src/components/Form/CheckLabel'
-import Remove from 'src/components/Form/Remove'
-import HelpText from 'src/components/Defaults/HelpText'
 import Blocos from './Blocos'
+import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
+import FormItem from 'src/components/Cadastros/Item/FormItem'
+import HelpText from 'src/components/Defaults/HelpText'
 
-const FormParametrosRecebimentoMP = ({ id }) => {
-    const { user, loggedUnity } = useContext(AuthContext)
+const FormParametrosRecebimentoMp = ({ id }) => {
+    console.log('🚀 ~ id:', id)
+
+    const { setId } = useContext(RouteContext)
+    const { loggedUnity } = useContext(AuthContext)
     const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
     const [allOptions, setAllOptions] = useState(null)
-    const [blocks, setBlocks] = useState()
     const [profissionais, setProfissionais] = useState(null)
+    const [blocks, setBlocks] = useState()
     const [orientacoes, setOrientacoes] = useState()
     const [openModalConfirmScore, setOpenModalConfirmScore] = useState(false)
     const [itemScore, setItemScore] = useState()
@@ -38,9 +38,33 @@ const FormParametrosRecebimentoMP = ({ id }) => {
     const [arrRemovedItems, setArrRemovedItems] = useState([])
     const [arrRemovedBlocks, setArrRemovedBlocks] = useState([])
     const [change, setChange] = useState(false)
+    const [openModalNew, setOpenModalNew] = useState(false) //? Abre modal para criar novo item
+    const [openModalSelectedItem, setOpenModalSelectedItem] = useState(false) //? Abre modal para exibir item selecionado
+    const [idInfoItem, setIdInfoItem] = useState(null)
+    const [newChange, setNewChange] = useState(false)
+    const [indexNewBloco, setIndexNewBloco] = useState(null)
+    const [indexNewItem, setIndexNewItem] = useState(null)
+
+    const createNew = (indexBloco, indexItem) => {
+        setOpenModalNew(true)
+        setIndexNewBloco(indexBloco)
+        setIndexNewItem(indexItem)
+    }
+
+    const viewItem = item => {
+        if (item && item.id > 0) {
+            setIdInfoItem(item.id)
+            setOpenModalSelectedItem(true)
+        }
+    }
+
+    const handleConfirmNew = data => {
+        setOpenModalNew(false)
+        setValue(`blocks.[${indexNewBloco}].itens.[${indexNewItem}].item`, data)
+    }
 
     const router = Router
-    const type = 'edit'
+    const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
 
     const {
@@ -50,29 +74,47 @@ const FormParametrosRecebimentoMP = ({ id }) => {
         reset,
         getValues,
         control,
+        watch,
         formState: { errors }
     } = useForm()
 
+    // const [textCabecalho, setTextCabecalho] = useState('')
+
     const onSubmit = async values => {
         const data = {
-            id: id,
+            id: id ?? null,
             unidadeID: loggedUnity.unidadeID,
             model: values.model,
-            header: values.header,
-            blocks: values.blocks,
-            arrRemovedBlocks: arrRemovedBlocks,
-            arrRemovedItems: arrRemovedItems,
-            orientacoes: values.orientations
+            header: values.header ?? null,
+            blocks: values.blocks ?? [],
+            arrRemovedBlocks: arrRemovedBlocks ?? [],
+            arrRemovedItems: arrRemovedItems ?? [],
+            orientacoes: values.orientations ?? null
         }
-        console.log('🚀 ~ data submit recebimento:', data)
+        console.log('🚀 ~ onSubmit: ', data)
 
         setHeaders(null) //? Pra exibir loading
 
         try {
-            await api.put(`${staticUrl}/updateData`, data).then(response => {
-                toast.success(toastMessage.successUpdate)
-                setSavingForm(!savingForm)
-            })
+            if (type === 'new') {
+                //? New
+                await api.put(`/configuracoes/formularios/recebimento-mp/insertData`, data).then(response => {
+                    toast.success(toastMessage.successUpdate)
+                    router.push(`/configuracoes/formularios/recebimento-mp/`)
+                    setTimeout(() => {
+                        setId(response.data.id)
+                    }, 1000)
+                })
+            } else {
+                //? Edit
+                await api.put(`/configuracoes/formularios/recebimento-mp/updateData`, data).then(response => {
+                    toast.success(toastMessage.successUpdate)
+                    setSavingForm(!savingForm)
+                    if (openModalNew) {
+                        setOutsideLink(true)
+                    }
+                })
+            }
         } catch (error) {
             console.log(error)
         }
@@ -94,9 +136,7 @@ const FormParametrosRecebimentoMP = ({ id }) => {
     }
 
     const addItem = index => {
-        // setChangeItem(!changeItem)
         const newBlock = [...blocks]
-
         newBlock[index].itens.push({
             ordem: newBlock[index].itens?.length + 1,
             obs: 1,
@@ -131,6 +171,8 @@ const FormParametrosRecebimentoMP = ({ id }) => {
         setChange(!change)
     }
 
+    console.log('allOptions:', allOptions)
+
     const removeBlock = (block, index) => {
         // Verifica se o bloco possui itens com pendência
         let canDelete = true
@@ -148,7 +190,7 @@ const FormParametrosRecebimentoMP = ({ id }) => {
 
         // Inserir no array de blocos removidos
         let newRemovedBlocks = [...arrRemovedBlocks]
-        newRemovedBlocks.push(block.dados.parLimpezaModeloBlocoID)
+        newRemovedBlocks.push(block.dados.parRecebimentoMpModeloBlocoID)
         setArrRemovedBlocks(newRemovedBlocks)
 
         // Remove bloco
@@ -161,17 +203,6 @@ const FormParametrosRecebimentoMP = ({ id }) => {
         toast.success('Bloco pré-removido. Salve para concluir!')
     }
 
-    // //  Ao clicar no icone de pontuação, abre o modal de confirmação de pontuação e envia para o back o item selecionado
-    // const openScoreModal = item => {
-    //     setItemScore(null)
-    //     api.post(`/formularios/fornecedor/getItemScore`, { data: item }).then(response => {
-    //         setItemScore(response.data)
-    //     })
-    //     if (setItemScore) {
-    //         setOpenModalConfirmScore(true)
-    //     }
-    // }
-
     const addBlock = () => {
         const newBlock = [...getValues('blocks')]
         newBlock.push({
@@ -180,6 +211,8 @@ const FormParametrosRecebimentoMP = ({ id }) => {
                 nome: '',
                 status: 1
             },
+            categorias: [],
+            atividades: [],
             optionsBlock: {
                 itens: [...allOptions.itens]
             },
@@ -198,7 +231,22 @@ const FormParametrosRecebimentoMP = ({ id }) => {
         setBlocks(newBlock)
     }
 
+    const getProfissionaisModelo = async () => {
+        const response = await api.post(`/cadastros/profissional/getProfissionaisAssinatura`, {
+            formularioID: 2, // recebimento MP
+            modeloID: id
+        })
+        const updatedModel = { ...model }
+        updatedModel.profissionaisPreenchem = response.data.preenche
+        updatedModel.profissionaisAprovam = response.data.aprova
+        reset({
+            ...getValues(),
+            model: updatedModel
+        })
+    }
+
     const getData = () => {
+        console.log('buscar dados no backend....')
         try {
             if (type === 'new') {
                 setModel({
@@ -206,13 +254,14 @@ const FormParametrosRecebimentoMP = ({ id }) => {
                     ciclo: '',
                     cabecalho: '',
                     status: 1
+
+                    // AA
                 })
             } else {
-                api.post(`${staticUrl}/getData`, {
-                    id: id,
+                api.post(`/configuracoes/formularios/recebimento-mp/getData/${id}`, {
                     unidadeID: loggedUnity.unidadeID
                 }).then(response => {
-                    console.log('🚀 ~ response dataaaaaa:', response.data)
+                    console.log('🚀 ~ getData: ', response.data)
                     //* Estados
                     setModel(response.data.model)
                     setHeaders(response.data.header)
@@ -226,10 +275,13 @@ const FormParametrosRecebimentoMP = ({ id }) => {
                     //* Insere os dados no formulário
                     reset(response.data)
 
+                    getProfissionaisModelo()
+
                     setTimeout(() => {
-                        response.data?.blocks?.map((block, indexBlock) => {
-                            refreshOptions(block, indexBlock, response.data.blocks, response.data.options)
-                        })
+                        response.data.blocks &&
+                            response.data.blocks.map((block, indexBlock) => {
+                                refreshOptions(block, indexBlock, response.data.blocks, response.data.options)
+                            })
                     }, 3000)
                 })
             }
@@ -242,190 +294,268 @@ const FormParametrosRecebimentoMP = ({ id }) => {
         getData()
     }, [id, savingForm])
 
+    const handleSave = async data => {
+        setNewChange(true)
+        getData()
+        setOpenModalNew(false)
+    }
+
     return (
         <>
-            {!headers ? (
-                <Loading />
-            ) : (
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    {/* Modelo */}
-                    {model && (
-                        <Card>
-                            <FormHeader
-                                partialRoute
-                                btnCancel
-                                btnSave
-                                handleSubmit={() => handleSubmit(onSubmit)}
-                                type={type}
-                            />
-                            <CardContent>
-                                <Grid container spacing={4}>
-                                    <Input
-                                        className='order-1'
-                                        xs={12}
-                                        md={8}
-                                        title='Modelo'
-                                        name={`model.nome`}
-                                        value={model.nome}
-                                        required={true}
-                                        control={control}
-                                        errors={errors?.model?.nome}
-                                    />
-                                    <Input
-                                        className='order-1'
-                                        xs={12}
-                                        md={3}
-                                        type='number'
-                                        title={`Ciclo (dias)`}
-                                        name={`model.ciclo`}
-                                        value={model.ciclo}
-                                        required={true}
-                                        control={control}
-                                        errors={errors?.model?.ciclo}
-                                        help={{
-                                            text: '...',
-                                            position: 'top',
-                                            gapLeft: '10px'
+            <Loading show={!model} />
+            <form onSubmit={handleSubmit(onSubmit)}>
+                {/* Modelo */}
+                {model && (
+                    <Card>
+                        <FormHeader
+                            partialRoute
+                            btnCancel
+                            btnSave
+                            handleSubmit={() => handleSubmit(onSubmit)}
+                            type={type}
+                        />
+                        <CardContent>
+                            <Grid container spacing={4}>
+                                <Input
+                                    className='order-1'
+                                    xs={12}
+                                    md={8}
+                                    title='Modelo'
+                                    name={`model.nome`}
+                                    value={model.nome}
+                                    required={true}
+                                    control={control}
+                                    errors={errors?.model?.nome}
+                                />
+                                <Input
+                                    className='order-1'
+                                    xs={12}
+                                    md={3}
+                                    type='number'
+                                    title={`Ciclo (dias)`}
+                                    name={`model.ciclo`}
+                                    value={model.ciclo}
+                                    required={true}
+                                    control={control}
+                                    helpText='Ciclo de vencimento deste formulário.'
+                                    errors={errors?.model?.ciclo}
+                                />
+                                <Check
+                                    className='order-2 md:order-3'
+                                    xs={2}
+                                    md={1}
+                                    title='Ativo'
+                                    name={`model.status`}
+                                    value={model.status}
+                                    register={register}
+                                />
+
+                                <Input
+                                    xs={12}
+                                    md={12}
+                                    className='order-4'
+                                    title='Cabeçalho'
+                                    name={`model.cabecalho`}
+                                    required={false}
+                                    value={model.cabecalho}
+                                    multiline
+                                    rows={4}
+                                    control={control}
+                                    helpText='Texto que será exibido no cabeçalho do formulário. Adicione aqui instruções e orientações para auxiliar o preenchimento do formulário.'
+                                />
+
+                                {/* Profissionais que preenchem */}
+                                {profissionais && (
+                                    <>
+                                        <Select
+                                            xs={12}
+                                            md={6}
+                                            className='order-5'
+                                            multiple
+                                            title='Profissionais que preenchem'
+                                            name={`model.profissionaisPreenchem`}
+                                            options={profissionais ?? []}
+                                            value={model?.profissionaisPreenchem ?? []}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                        />
+
+                                        <Select
+                                            xs={12}
+                                            md={6}
+                                            className='order-5'
+                                            multiple
+                                            title='Profissionais que aprovam'
+                                            name={`model.profissionaisAprovam`}
+                                            options={profissionais ?? []}
+                                            value={model?.profissionaisAprovam ?? []}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                        />
+                                    </>
+                                )}
+
+                                {/* <Grid item xs={12}>
+                                    <JoditEditor
+                                        ref={editor}
+                                        value={textCabecalho}
+                                        // name={`model.cabecalho`}
+                                        // register={register}
+                                        config={{
+                                            height: 300,
+                                            readonly: false // all options from https://xdsoft.net/jodit/doc/
+                                        }}
+                                        tabIndex={1} // tabIndex of textarea
+                                        onChange={newContent => {
+                                            console.log('🚀 ~ newContent:', newContent)
+                                            setTextCabecalho(newContent)
+                                        }}
+                                        onBlur={newContent => {
+                                            console.log('🚀 ~ newContent:', newContent)
+                                            setTextCabecalho(newContent)
                                         }}
                                     />
-                                    <Check
-                                        className='order-2 md:order-3'
-                                        xs={2}
-                                        md={1}
-                                        title='Ativo'
-                                        name={`model.status`}
-                                        value={model.status}
-                                        register={register}
-                                    />
-                                    <Input
-                                        xs={12}
-                                        md={12}
-                                        className='order-4'
-                                        title='Cabeçalho'
-                                        name={`model.cabecalho`}
-                                        required={false}
-                                        value={model.cabecalho}
-                                        multiline
-                                        rows={4}
-                                        control={control}
-                                        helpText='Texto que será exibido no cabeçalho do formulário. Adicione aqui instruções e orientações para auxiliar o preenchimento pelo fornecedor.'
-                                    />
+                                </Grid> */}
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                )}
 
-                                    {/* Profissionais que preenchem */}
-                                    {profissionais && (
+                {/* Cabeçalho */}
+                {headers && (
+                    <Card sx={{ mt: 4 }}>
+                        <CardContent>
+                            {/* Lista campos */}
+                            <List component='nav' aria-label='main mailbox'>
+                                <Grid container spacing={2}>
+                                    {/* Cabeçalho */}
+                                    <Grid item md={6}>
+                                        <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
+                                            Nome do Campo
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item md={2}>
+                                        <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
+                                            Mostra
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item md={2}>
+                                        <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
+                                            Obrigatório
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item md={2}>
+                                        <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
+                                            Ordem
+                                        </Typography>
+                                    </Grid>
+
+                                    {getValues(`header`).map((header, index) => (
                                         <>
-                                            <Select
-                                                xs={12}
-                                                md={6}
-                                                className='order-5'
-                                                multiple
-                                                title='Profissionais que preenchem'
-                                                name={`model.profissionaisPreenchem`}
-                                                options={profissionais ?? []}
-                                                value={model?.profissionaisPreenchem ?? []}
+                                            <Grid item md={6}>
+                                                <Box display='flex' alignItems='center' sx={{ gap: 2 }}>
+                                                    <p>{header.nomeCampo}</p>
+                                                </Box>
+                                            </Grid>
+
+                                            <CheckLabel
+                                                xs='12'
+                                                md='2'
+                                                title=''
+                                                name={`header.[${index}].mostra`}
+                                                value={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? true
+                                                        : header.mostra
+                                                }
                                                 register={register}
-                                                setValue={setValue}
-                                                control={control}
+                                                helpText={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? 'Campo obrigatório'
+                                                        : null
+                                                }
                                             />
 
-                                            <Select
-                                                xs={12}
-                                                md={6}
-                                                className='order-5'
-                                                multiple
-                                                title='Profissionais que aprovam'
-                                                name={`model.profissionaisAprovam`}
-                                                options={profissionais ?? []}
-                                                value={model?.profissionaisAprovam ?? []}
+                                            <CheckLabel
+                                                xs='12'
+                                                md='2'
+                                                title=''
+                                                name={`header.[${index}].obrigatorio`}
+                                                value={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? true
+                                                        : header.obrigatorio
+                                                }
                                                 register={register}
-                                                setValue={setValue}
+                                                helpText={
+                                                    header.nomeColuna == 'cnpj' ||
+                                                    header.nomeColuna == 'razaoSocial' ||
+                                                    header.nomeColuna == 'nome' ||
+                                                    header.nomeColuna == 'dataAvaliacao' ||
+                                                    header.nomeColuna == 'responsavel'
+                                                        ? 'Campo obrigatório'
+                                                        : null
+                                                }
+                                            />
+
+                                            <Input
+                                                xs='12'
+                                                md='2'
+                                                title=''
+                                                name={`header.[${index}].ordem`}
+                                                value={header.ordem}
+                                                register={register}
                                                 control={control}
+                                                type='number'
                                             />
                                         </>
-                                    )}
+                                    ))}
                                 </Grid>
-                            </CardContent>
-                        </Card>
-                    )}
+                            </List>
+                        </CardContent>
+                    </Card>
+                )}
 
-                    {/* Cabeçalho */}
-                    {headers && (
-                        <Card sx={{ mt: 4 }}>
-                            <CardContent>
-                                {/* Lista campos */}
-                                <List component='nav' aria-label='main mailbox'>
-                                    <Grid container spacing={2}>
-                                        {/* Cabeçalho */}
-                                        <Grid item md={4} xs={4}>
-                                            <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
-                                                Nome do Campo
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item md={3} xs={4}>
-                                            <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
-                                                Mostra no Formulário
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item md={3} xs={4}>
-                                            <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
-                                                Obrigatório
-                                            </Typography>
-                                        </Grid>
-
-                                        {headers.map((header, index) => (
-                                            <>
-                                                <Grid item md={4} xs={6}>
-                                                    {header.nomeCampo}
-                                                </Grid>
-                                                <Grid item md={3} xs={3}>
-                                                    <CheckLabel
-                                                        title=''
-                                                        name={`header.[${index}].mostra`}
-                                                        value={header.mostra}
-                                                        register={register}
-                                                        disabled={header.nomeColuna == 'cnpj' ? true : false}
-                                                    />
-                                                </Grid>
-                                                <Grid item md={3} xs={3}>
-                                                    <CheckLabel
-                                                        title=''
-                                                        name={`header.[${index}].obrigatorio`}
-                                                        value={header.obrigatorio}
-                                                        register={register}
-                                                        disabled={header.nomeColuna == 'cnpj' ? true : false}
-                                                    />
-                                                </Grid>
-                                            </>
-                                        ))}
-                                    </Grid>
-                                </List>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* Blocos */}
-                    {!blocks ? (
-                        <Loading />
-                    ) : (
-                        <Blocos
-                            blocks={blocks}
-                            errors={errors}
-                            control={control}
-                            register={register}
-                            removeItem={removeItem}
-                            addItem={addItem}
-                            getValues={getValues}
-                            removeBlock={removeBlock}
-                            setValue={setValue}
-                            openModalConfirmScore={openModalConfirmScore}
-                            setOpenModalConfirmScore={setOpenModalConfirmScore}
-                            itemScore={itemScore}
-                            allOptions={allOptions}
-                            key={change}
-                        />
-                    )}
-
-                    {/* Botão inserir bloco */}
+                {/* Blocos */}
+                {!blocks && <Loading />}
+                {blocks && (
+                    <Blocos
+                        blocks={blocks}
+                        errors={errors}
+                        control={control}
+                        register={register}
+                        watch={watch}
+                        removeItem={removeItem}
+                        addItem={addItem}
+                        getValues={getValues}
+                        removeBlock={removeBlock}
+                        setValue={setValue}
+                        allOptions={allOptions}
+                        openModalConfirmScore={openModalConfirmScore}
+                        setOpenModalConfirmScore={setOpenModalConfirmScore}
+                        itemScore={itemScore}
+                        setItemScore
+                        createNew={createNew}
+                        viewItem={viewItem}
+                        key={change}
+                    />
+                )}
+                {/* Botão inserir bloco */}
+                {type === 'edit' && model && (
                     <Grid item xs={12} md={12} sx={{ mt: 4 }}>
                         <Button
                             variant='outlined'
@@ -438,31 +568,60 @@ const FormParametrosRecebimentoMP = ({ id }) => {
                             Inserir Bloco
                         </Button>
                     </Grid>
+                )}
 
-                    {/* Orientações */}
-                    {orientacoes && (
-                        <Card md={12} sx={{ mt: 4 }}>
-                            <CardContent>
-                                <Grid container spacing={4}>
-                                    <Input
-                                        xs={12}
-                                        md={12}
-                                        title='Orientações'
-                                        name={`orientations.obs`}
-                                        required={false}
-                                        value={orientacoes?.obs}
-                                        multiline
-                                        rows={4}
-                                        control={control}
-                                    />
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    )}
-                </form>
-            )}
+                {/* Orientações */}
+                {orientacoes && (
+                    <Card md={12} sx={{ mt: 4 }}>
+                        <CardContent>
+                            <Grid container spacing={4}>
+                                <Input
+                                    xs={12}
+                                    md={12}
+                                    title='Orientações'
+                                    name={`orientations.obs`}
+                                    required={false}
+                                    value={orientacoes?.obs}
+                                    multiline
+                                    rows={4}
+                                    control={control}
+                                />
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                )}
+            </form>
+
+            {/* Modal para criação de novo item */}
+            <DialogNewCreate
+                title='Novo item'
+                size='md'
+                openModal={openModalNew}
+                setOpenModal={setOpenModalNew}
+                handleSave={handleSave}
+            >
+                <FormItem
+                    btnClose
+                    handleModalClose={() => setOpenModalNew(false)}
+                    setNewChange={setNewChange}
+                    newChange={newChange}
+                    outsideID={id}
+                    handleConfirmNew={handleConfirmNew}
+                    manualUrl='/cadastros/item'
+                />
+            </DialogNewCreate>
+
+            {/* Modal para ver item selecionado */}
+            <DialogNewCreate
+                title='Detalhes do Item'
+                size='md'
+                openModal={openModalSelectedItem}
+                setOpenModal={setOpenModalSelectedItem}
+            >
+                <FormItem id={idInfoItem} btnClose handleModalClose={() => setOpenModalSelectedItem(false)} />
+            </DialogNewCreate>
         </>
     )
 }
 
-export default FormParametrosRecebimentoMP
+export default FormParametrosRecebimentoMp
