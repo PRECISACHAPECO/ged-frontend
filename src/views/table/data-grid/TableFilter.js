@@ -1,10 +1,11 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DataGrid, ptBR } from '@mui/x-data-grid';
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar';
 import { ParametersContext } from 'src/context/ParametersContext';
 import { RouteContext } from 'src/context/RouteContext';
+import DialogLog from 'src/components/Defaults/Dialogs/DialogLog';
 
-const TableFilter = ({ rows, columns, buttonsHeader }) => {
+const TableFilter = ({ rows, columns, buttonsHeader, modaLog }) => {
     const {
         handleSearch,
         pageSize,
@@ -16,6 +17,8 @@ const TableFilter = ({ rows, columns, buttonsHeader }) => {
     } = useContext(ParametersContext);
 
     const { setId } = useContext(RouteContext);
+    const [rowSelected, setRowSelected] = useState(null)
+    const [openModalLog, setOpenModalLog] = useState(false)
 
     // ** States
     setData(rows);
@@ -56,32 +59,50 @@ const TableFilter = ({ rows, columns, buttonsHeader }) => {
         }
     });
 
+    // Função ativada ao clicar na linha
+    const handleClickRow = (row) => {
+        if (modaLog) {
+            setRowSelected(row)
+            setOpenModalLog(true)
+        } else {
+            setId(row.id);
+        }
+    };
+
     return (
-        <DataGrid
-            localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-            autoHeight
-            columns={columns}
-            pageSize={pageSize}
-            rowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
-            components={{ Toolbar: QuickSearchToolbar }}
-            rows={searchText ? filteredData : sortedData}
-            onCellClick={(params, event) => {
-                setId(params.row.id);
-            }}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            getRowClassName={getRowClassName}
-            sx={{
-                '& .MuiDataGrid-cell': { cursor: 'pointer', overflow: 'scroll' }
-            }}
-            componentsProps={{
-                toolbar: {
-                    value: searchText,
-                    clearSearch: () => handleSearch(''),
-                    onChange: (event) => handleSearch(event.target.value),
-                    buttonsHeader: buttonsHeader
-                }
-            }}
-        />
+        <>
+            <DataGrid
+                localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+                autoHeight
+                columns={columns}
+                pageSize={pageSize}
+                rowsPerPageOptions={[10, 20, 30, 40, 50, 100]}
+                components={{ Toolbar: QuickSearchToolbar }}
+                rows={searchText ? filteredData : sortedData}
+                onCellClick={(params, event) => {
+                    handleClickRow(params.row)
+                }}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                getRowClassName={getRowClassName}
+                sx={{
+                    '& .MuiDataGrid-cell': { cursor: 'pointer', overflow: 'scroll' }
+                }}
+                componentsProps={{
+                    toolbar: {
+                        value: searchText,
+                        clearSearch: () => handleSearch(''),
+                        onChange: (event) => handleSearch(event.target.value),
+                        buttonsHeader: buttonsHeader
+                    }
+                }}
+            />
+            {/* Modal que abre com informações do log */}
+            <DialogLog
+                open={openModalLog}
+                handleClose={() => setOpenModalLog(false)}
+                row={rowSelected}
+            />
+        </>
     );
 };
 

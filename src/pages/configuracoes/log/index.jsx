@@ -22,9 +22,8 @@ const Usuario = () => {
 
     const getList = async () => {
         try {
-            const response = await api.get(`${currentLink}/1`)
+            const response = await api.get(`${currentLink}/${loggedUnity.unidadeID}`)
             setResult(response.data)
-            console.log('🚀 ~ response:', response)
             setTitle({
                 title: 'Log',
                 subtitle: {
@@ -51,15 +50,28 @@ const Usuario = () => {
         {
             title: 'Nome',
             field: 'nome',
-            size: 0.8
+            size: 0.3
         },
         {
-            headerName: 'Status',
-            field: {
-                name: 'status',
-                cor: 'cor'
-            },
-            size: 0.1
+            headerName: 'Usuário',
+            field: 'usuario',
+            size: 0.2
+        },
+        {
+            headerName: 'Data hora',
+            field: 'dataHora',
+            type: 'date',
+            size: 0.2
+        },
+        {
+            headerName: 'Tabelas',
+            field: 'tabelas',
+            size: 0.2
+        },
+        {
+            headerName: 'Scripts',
+            field: 'scripts',
+            size: 0.3
         }
     ]
 
@@ -71,7 +83,7 @@ const Usuario = () => {
             <Loading />
         ) : (
             // Lista tabela de resultados da listagem
-            <Table result={result} columns={columns} />
+            <Table result={result} columns={columns} modaLog />
         )
     )
 }
