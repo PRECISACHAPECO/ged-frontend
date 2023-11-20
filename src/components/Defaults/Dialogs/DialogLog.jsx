@@ -34,15 +34,46 @@ const DialogLog = ({ open, handleClose, row }) => {
     }, [row])
 
     function formatarAlteracao(alteracao, operacao) {
+        console.log('🚀 ~ alteracao:ddddddd', alteracao)
         try {
             if (operacao == 'login') return 'Usuário logou no sistema'
             if (operacao == 'logout') return 'Usuário saiu do sistema'
             const objetoAlteracao = JSON.parse(alteracao)
-            return JSON.stringify(objetoAlteracao, null, 2)
+            let jsonString = JSON.stringify(objetoAlteracao, null, 2)
+
+            // Adiciona a cor amarela aos objetos que têm "alterado" igual a "true"
+            jsonString = jsonString.replace(
+                /(\"alterado\": true)/g,
+                '<span style="background-color: #ce9728; padding: 2px 1px; border-radius: 4px">$1</span>'
+            )
+
+            return <pre dangerouslySetInnerHTML={{ __html: jsonString }} />
         } catch (error) {
             return alteracao
         }
     }
+
+    // function formatarAlteracao(alteracao, operacao) {
+    //     console.log('🚀 ~ alteracao:ddddddd', alteracao)
+    //     try {
+    //         if (operacao == 'login') return 'Usuário logou no sistema'
+    //         if (operacao == 'logout') return 'Usuário saiu do sistema'
+    //         const objetoAlteracao = JSON.parse(alteracao)
+    //         let jsonString = JSON.stringify(objetoAlteracao, null, 2)
+
+    //         // Adiciona a cor amarela ao objeto "ajuda" que têm "alterado" igual a "true"
+
+    //         jsonString = jsonString.replace(
+    //             /(\"ajuda\": {\"alterado\": true)/g,
+    //             '<span style="background-color: yellow;">$1</span>'
+    //         )
+    //         jsonString = jsonString.replace(/(\}\")/g, '<span style="background-color: yellow;">$1</span>')
+
+    //         return <pre dangerouslySetInnerHTML={{ __html: jsonString }} />
+    //     } catch (error) {
+    //         return alteracao
+    //     }
+    // }
 
     return (
         row &&
@@ -144,8 +175,8 @@ const DialogLog = ({ open, handleClose, row }) => {
 
                                     <div
                                         className={`${
-                                            mode == 'dark' ? 'bg-[#202023]' : 'bg-[#f7f7f9]'
-                                        }  p-2 rounded-lg`}
+                                            mode === 'dark' ? 'bg-[#202023]' : 'bg-[#f7f7f9]'
+                                        } p-2 rounded-lg`}
                                     >
                                         <pre>{formatarAlteracao(log.alteracao, log.operacao)}</pre>
                                     </div>

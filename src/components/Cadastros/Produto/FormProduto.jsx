@@ -27,7 +27,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, user } = useContext(AuthContext)
     const [removedItems, setRemovedItems] = useState([])
     const [change, setChange] = useState(false)
     const { startLoading, stopLoading } = useLoad()
@@ -49,6 +49,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
         const values = {
             ...data,
             unidadeID: loggedUnity.unidadeID,
+            usuarioID: user.usuarioID,
             removedItems
         }
         console.log(values)
@@ -83,7 +84,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
     // Deleta os dados
     const handleClickDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/${id}`)
+            await api.delete(`${staticUrl}/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)

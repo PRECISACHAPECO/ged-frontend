@@ -69,6 +69,7 @@ const FormProfissional = ({ id }) => {
         const values = {
             ...data,
             usualioLogado: user.usuarioID,
+            unidadeID: loggedUnity.unidadeID,
             fields: {
                 ...data.fields,
                 dataNascimento: data.fields.dataNascimento.substring(0, 10),
@@ -232,7 +233,7 @@ const FormProfissional = ({ id }) => {
 
     const handleDeleteImage = async () => {
         try {
-            await api.delete(`${staticUrl}/photo-profile/${id}/${loggedUnity.unidadeID}`)
+            await api.delete(`${staticUrl}/photo-profile/${id}/${loggedUnity.unidadeID}/${user.usuarioID}`)
             setPhotoProfile(null)
             toast.success('Foto removida com sucesso!')
         } catch (error) {

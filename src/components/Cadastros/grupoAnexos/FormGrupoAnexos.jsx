@@ -129,7 +129,6 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
     //! Função que deleta os dados
     const handleDelete = async () => {
         try {
-            // await api.delete(`${staticUrl}/deleteData/${id}`)
             await api.delete(`${staticUrl}/deleteData/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
