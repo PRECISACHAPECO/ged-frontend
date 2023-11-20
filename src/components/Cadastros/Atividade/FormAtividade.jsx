@@ -16,6 +16,7 @@ import { useContext } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import useLoad from 'src/hooks/useLoad'
+import { AuthContext } from 'src/context/AuthContext'
 
 const FormAtividade = ({ id }) => {
     const { title } = useContext(ParametersContext)
@@ -25,6 +26,7 @@ const FormAtividade = ({ id }) => {
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname // Url sem ID
+    const { loggedUnity, user } = useContext(AuthContext)
     const { startLoading, stopLoading } = useLoad()
 
     const {
@@ -37,7 +39,12 @@ const FormAtividade = ({ id }) => {
     } = useForm()
 
     //? Envia dados para a api
-    const onSubmit = async values => {
+    const onSubmit = async data => {
+        const values = {
+            ...data,
+            usuarioID: user.usuarioID,
+            unidadeID: loggedUnity.unidadeID
+        }
         startLoading()
         try {
             if (type === 'new') {
@@ -64,7 +71,7 @@ const FormAtividade = ({ id }) => {
     //? Função que deleta os dados
     const handleClickDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/${id}`)
+            await api.delete(`${staticUrl}/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)

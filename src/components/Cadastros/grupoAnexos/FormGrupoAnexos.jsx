@@ -29,7 +29,7 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, user } = useContext(AuthContext)
     const [savingForm, setSavingForm] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
     const [change, setChange] = useState(false)
@@ -87,7 +87,12 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
         setChange(!change)
     }
 
-    const onSubmit = async values => {
+    const onSubmit = async data => {
+        const values = {
+            ...data,
+            usuarioID: user.usuarioID,
+            unidadeID: loggedUnity.unidadeID
+        }
         startLoading()
         //* Valores auxiliares
         values['removedItems'] = removedItems
@@ -124,7 +129,8 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
     //! Função que deleta os dados
     const handleDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/deleteData/${id}`)
+            // await api.delete(`${staticUrl}/deleteData/${id}`)
+            await api.delete(`${staticUrl}/deleteData/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)
