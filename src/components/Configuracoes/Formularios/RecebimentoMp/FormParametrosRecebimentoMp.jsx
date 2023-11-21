@@ -26,7 +26,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
     console.log('🚀 ~ id:', id)
 
     const { setId } = useContext(RouteContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, user } = useContext(AuthContext)
     const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
     const [allOptions, setAllOptions] = useState(null)
@@ -86,6 +86,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
         const data = {
             id: id ?? null,
             unidadeID: loggedUnity.unidadeID,
+            usuarioID: user.usuarioID,
             model: values.model,
             header: values.header ?? null,
             blocks: values.blocks ?? [],
