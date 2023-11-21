@@ -53,28 +53,6 @@ const DialogLog = ({ open, handleClose, row }) => {
         }
     }
 
-    // function formatarAlteracao(alteracao, operacao) {
-    //     console.log('🚀 ~ alteracao:ddddddd', alteracao)
-    //     try {
-    //         if (operacao == 'login') return 'Usuário logou no sistema'
-    //         if (operacao == 'logout') return 'Usuário saiu do sistema'
-    //         const objetoAlteracao = JSON.parse(alteracao)
-    //         let jsonString = JSON.stringify(objetoAlteracao, null, 2)
-
-    //         // Adiciona a cor amarela ao objeto "ajuda" que têm "alterado" igual a "true"
-
-    //         jsonString = jsonString.replace(
-    //             /(\"ajuda\": {\"alterado\": true)/g,
-    //             '<span style="background-color: yellow;">$1</span>'
-    //         )
-    //         jsonString = jsonString.replace(/(\}\")/g, '<span style="background-color: yellow;">$1</span>')
-
-    //         return <pre dangerouslySetInnerHTML={{ __html: jsonString }} />
-    //     } catch (error) {
-    //         return alteracao
-    //     }
-    // }
-
     return (
         row &&
         data && (
@@ -155,7 +133,15 @@ const DialogLog = ({ open, handleClose, row }) => {
                                                 />
                                             </CustomAvatar>
                                             <Typography sx={{ color: 'text.secondary', marginTop: '-4px' }}>
-                                                {log.operacao}
+                                                {log.operacao == 'insert'
+                                                    ? 'Inclusão'
+                                                    : log.operacao == 'update'
+                                                    ? 'Alteração'
+                                                    : log.operacao == 'delete'
+                                                    ? 'Exclusão'
+                                                    : log.operacao == 'login'
+                                                    ? 'Login efetuado'
+                                                    : 'Logout efetuado'}
                                             </Typography>
                                         </div>
                                         <div>

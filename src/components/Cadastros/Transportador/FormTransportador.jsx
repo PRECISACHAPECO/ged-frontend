@@ -26,7 +26,7 @@ const FormTransportador = ({ id }) => {
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, user } = useContext(AuthContext)
     const { startLoading, stopLoading } = useLoad()
 
     const {
@@ -39,17 +39,16 @@ const FormTransportador = ({ id }) => {
     } = useForm()
 
     //? Envia dados para a api
-    const onSubmit = async values => {
+    const onSubmit = async data => {
         startLoading()
-        const newValues = {
-            fields: {
-                ...values.fields,
-                unidadeID: loggedUnity.unidadeID
-            }
+        const values = {
+            ...data,
+            usuarioID: user.usuarioID,
+            unidadeID: loggedUnity.unidadeID
         }
         try {
             if (type === 'new') {
-                await api.post(`${backRoute(staticUrl)}/new/insertData`, newValues).then(response => {
+                await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
                     router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
                     setId(response.data)
                     toast.success(toastMessage.successNew)
@@ -72,7 +71,7 @@ const FormTransportador = ({ id }) => {
     //? Função que deleta os dados
     const handleClickDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/${id}`)
+            await api.delete(`${staticUrl}/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)

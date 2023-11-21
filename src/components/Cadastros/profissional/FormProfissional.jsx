@@ -82,26 +82,6 @@ const FormProfissional = ({ id }) => {
             })),
             removedItems
         }
-        console.log('🚀 ~ onSubmit:', values)
-
-        // TODO Verificar se tem pelo um cargo ativo
-        // Verifica se existe pelo um cargosFuncoes são data de inativação
-        // let quantidadeObjetos = 0
-        // for (const item of data.cargosFuncoes) {
-        //     if (item.dataInativacao !== null) {
-        //         quantidadeObjetos++
-        //     }
-        // }
-
-        // if (data.cargosFuncoes.length > quantidadeObjetos) {
-        //     // toast.error(toastMessage.error)
-        //     // return
-        //     console.log('tudo certo')
-        // } else {
-        //     console.log('erro')
-        // }
-
-        // console.log('Quantidade de objetos com campo "dataInativacao" definido:', quantidadeObjetos)
 
         try {
             if (type === 'new') {
@@ -147,7 +127,8 @@ const FormProfissional = ({ id }) => {
     // Deleta os dados
     const handleClickDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/${id}`)
+            // await api.delete(`${staticUrl}/${id}`)
+            await api.delete(`${staticUrl}/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)
