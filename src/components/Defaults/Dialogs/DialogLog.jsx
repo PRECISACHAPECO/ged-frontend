@@ -1,23 +1,17 @@
-import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
 import { api } from 'src/configs/api'
-import toast from 'react-hot-toast'
 import { useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Box, DialogContent, DialogTitle, Grid, Typography } from '@mui/material'
+import { DialogContent, DialogTitle, Grid, Typography } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
 import { AuthContext } from 'src/context/AuthContext'
-import Chip from '@mui/material/Chip'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 
 const DialogLog = ({ open, handleClose, row }) => {
-    console.log('🚀 ~ row:', row)
     const router = useRouter()
     const [data, setData] = useState(null)
-    console.log('🚀 ~ data:', data)
     const { loggedUnity } = useContext(AuthContext)
     const currentLink = router.pathname
     const { settings } = useContext(SettingsContext)
@@ -128,6 +122,8 @@ const DialogLog = ({ open, handleClose, row }) => {
                                                             ? 'mingcute:delete-line'
                                                             : log.operacao == 'login'
                                                             ? 'ic:round-login'
+                                                            : log.operacao == 'email'
+                                                            ? 'mynaui:send'
                                                             : 'ic:round-logout'
                                                     }
                                                 />
@@ -141,6 +137,8 @@ const DialogLog = ({ open, handleClose, row }) => {
                                                     ? 'Exclusão'
                                                     : log.operacao == 'login'
                                                     ? 'Login efetuado'
+                                                    : log.operacao == 'email'
+                                                    ? 'Envio de E-mail'
                                                     : 'Logout efetuado'}
                                             </Typography>
                                         </div>
