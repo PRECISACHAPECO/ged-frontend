@@ -8,13 +8,15 @@ import { api } from 'src/configs/api'
 import { useContext } from 'react'
 import { RouteContext } from 'src/context/RouteContext'
 import toast from 'react-hot-toast'
+import { AuthContext } from 'src/context/AuthContext'
 
 const DialogDelete = ({ title, description, open, handleClose, params }) => {
     const { setId } = useContext(RouteContext)
+    const { user, loggedUnity } = useContext(AuthContext)
 
     const handleConfirmDelete = async () => {
         try {
-            const response = await api.delete(params.route)
+            const response = await api.delete(`${params.route}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             toast.success(params.messageSucceded)
             setId(null)
         } catch (err) {

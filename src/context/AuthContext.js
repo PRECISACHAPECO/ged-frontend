@@ -23,7 +23,10 @@ const defaultProvider = {
     setLoading: () => Boolean,
     login: () => Promise.resolve(),
     logout: () => Promise.resolve(),
-    register: () => Promise.resolve()
+    register: () => Promise.resolve(),
+    loggedUnity: null,
+    setLoggedUnity: () => Promise.resolve(),
+
 }
 
 const AuthContext = createContext(defaultProvider)
