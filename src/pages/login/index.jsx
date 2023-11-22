@@ -192,7 +192,7 @@ const LoginPage = ({ units }) => {
         // Recebe usuário e unidade e seta rotas de acordo com o perfil
         getRoutes(userAux.usuarioID, selectedUnit.unidadeID, userAux.admin, selectedUnit.papelID)
 
-        auth.login({ cpf, password, rememberMe, verifyUnits }, () => {
+        auth.login({ cpf, password, rememberMe, verifyUnits, selectedUnit }, () => {
             setError('cpf', {
                 type: 'manual',
                 message: 'CPF e/ou senha inválidos!'

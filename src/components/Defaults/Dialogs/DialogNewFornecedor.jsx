@@ -108,6 +108,7 @@ const DialogNewFornecedor = ({ handleClose, openModal, makeFornecedor, loadingSa
         await api
             .post(`/formularios/fornecedor/fornecedorStatus`, {
                 unidadeID: loggedUnity.unidadeID,
+                usuarioID: user.usuarioID,
                 cnpj: cnpj,
                 status: 1
             })

@@ -138,15 +138,31 @@ const AuthProvider = ({ children }) => {
                     : null
                 const returnUrl = router.query.returnUr
                 setUser({ ...response.data.userData })
-                console.log("🚀 ~ handleLogin:", response.data)
 
                 // Verifica se usuário tem apenas uma unidade vinculada
                 if (response.data.unidades.length == 1) {
+                    console.log("tem mais de uma unidade login normal")
                     setLoggedUnity(response.data.unidades[0])
                     localStorage.setItem('loggedUnity', JSON.stringify(response.data.unidades[0]))
                     getMenu(response.data.unidades[0].papelID)
                     // Recebe usuário e unidade e seta rotas de acordo com o perfil
                     getRoutes(response.data.userData.usuarioID, response.data.unidades[0].unidadeID, response.data.userData.admin, response.data.unidades[0].papelID)
+                } else {
+                    const { nomeFantasia, cnpj, unidadeID, ...userDataWithoutFields } = response.data.userData;
+                    const formatData = {
+                        unidadeID: params.selectedUnit,
+                        userData: userDataWithoutFields
+                    }
+                    const saveDataLogMultiUnit = async () => {
+                        try {
+                            const response = await api.post('/login/saveDataLogMultiUnit', formatData)
+                            console.log("🚀 ~ response:", response)
+                        } catch (err) {
+                            console.log(err)
+                        }
+                    }
+                    saveDataLogMultiUnit()
+
                 }
 
                 setRouteBackend('/login')

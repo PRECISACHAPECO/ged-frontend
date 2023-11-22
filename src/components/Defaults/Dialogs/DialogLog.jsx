@@ -28,10 +28,7 @@ const DialogLog = ({ open, handleClose, row }) => {
     }, [row])
 
     function formatarAlteracao(alteracao, operacao) {
-        console.log('🚀 ~ alteracao:ddddddd', alteracao)
         try {
-            if (operacao == 'login') return 'Usuário logou no sistema'
-            if (operacao == 'logout') return 'Usuário saiu do sistema'
             const objetoAlteracao = JSON.parse(alteracao)
             let jsonString = JSON.stringify(objetoAlteracao, null, 2)
 
