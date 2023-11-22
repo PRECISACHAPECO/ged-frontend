@@ -41,13 +41,12 @@ const SelectModel = () => {
             const data = {
                 model: values.model,
                 profissionalID: user.profissionalID,
+                usuarioID: user.usuarioID,
                 unidadeID: loggedUnity.unidadeID
             }
-            console.log('🚀 ~ data:', data)
 
             const response = await api.post(`/formularios/recebimento-mp/insertData`, data)
             if (response) {
-                console.log('🚀 ~ response.data.recebimentoMpID:', response.data.recebimentoMpID)
                 toast.success('Novo formulário criado!')
                 setId(response.data.recebimentoMpID)
                 router.push(`/formularios/recebimento-mp/`)
