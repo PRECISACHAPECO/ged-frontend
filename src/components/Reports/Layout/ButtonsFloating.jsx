@@ -1,21 +1,21 @@
+import React from 'react'
 import Fab from '@mui/material/Fab'
 import Icon from 'src/@core/components/icon'
-import { useState, useEffect } from 'react'
-import LayoutReport from 'src/components/Reports/Layout'
+import { PDFDownloadLink, PDFViewer, Text } from '@react-pdf/renderer'
+import { useState } from 'react'
 
 // Componentes dos relatórios
-import Fornecedor from '../../Reports/Formularios/Fornecedor'
-import { PDFDownloadLink } from '@react-pdf/renderer'
+// import Fornecedor from '../../Reports/Formularios/Fornecedor''
+
+const MyDocument = () => (
+    <PDFViewer width='100%' height='600'>
+        <Text>Hellloo</Text>
+    </PDFViewer>
+)
 
 const ButtonsFloating = () => {
-    const [data, setData] = useState(null)
-
     const signature = () => {
         console.log('Assinatura eletronica')
-    }
-
-    const print = () => {
-        window.print()
     }
 
     const closePage = () => {
@@ -23,31 +23,14 @@ const ButtonsFloating = () => {
     }
 
     const savePdf = () => {
-        console.log('entrou akiii')
         return (
-            <PDFDownloadLink
-                document={
-                    // <LayoutReport>
-                    <Fornecedor />
-                    // </LayoutReport>
-                }
-                fileName='somename.pdf'
-            >
+            <PDFDownloadLink document={<MyDocument />} fileName='somename.pdf'>
                 {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
             </PDFDownloadLink>
         )
     }
 
     const dataButtons = [
-        {
-            id: 1,
-            title: 'Imprimir',
-            color: 'primary',
-            size: 'large',
-            variant: 'contained',
-            icon: 'material-symbols:print',
-            function: print
-        },
         {
             id: 2,
             title: 'Assinar digitalmente',
@@ -76,12 +59,6 @@ const ButtonsFloating = () => {
             function: closePage
         }
     ]
-
-    useEffect(() => {
-        const reportParameters = JSON.parse(localStorage.getItem('reportParameters'))
-        setData(reportParameters)
-        localStorage.removeItem('reportParameters')
-    }, [])
 
     return (
         <div className='fixed bottom-10 right-8 flex flex-col-reverse gap-2 no-print '>

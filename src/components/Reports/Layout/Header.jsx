@@ -6,7 +6,7 @@ import Router from 'next/router'
 const styles = {
     header: {
         position: 'fixed',
-        top: -5,
+        top: 5,
         left: 0,
         right: 0,
         margin: '0 auto',
@@ -63,17 +63,32 @@ const Header = () => {
     return (
         <View style={styles.header}>
             {/* Vazio... */}
-            <View style={{ width: '100%' }}>
+            <View style={{ width: '10%' }}>
                 <Text></Text>
             </View>
             {/* Descrição */}
-            <View style={{ width: '100%' }}>
-                <Text style={[styles.title, styles.content]}>
+            <View
+                style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 5
+                }}
+            >
+                <Text style={[styles.title, styles.content, { width: '100%' }]}>
                     {data?.unidade?.tituloRelatorio ?? 'Cabeçalho não definido'}
                 </Text>
+                <Text style={[styles.title, styles.content, { width: '60%', fontSize: 8 }]}>
+                    {data?.unidade?.endereco ?? 'Endereço não definido'}
+                </Text>
+                <Text
+                    style={[styles.title, styles.content, { width: '100%', fontSize: 8 }]}
+                >{`CNPJ: ${data?.unidade?.cnpj}`}</Text>
             </View>
             {/* Imagem */}
-            <View style={styles.imageContainer}>
+            <View style={[styles.imageContainer, { width: '10%' }]}>
                 {data?.unidade?.url ? <Image src={data?.unidade?.url} style={styles.image} /> : ''}
             </View>
         </View>

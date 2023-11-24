@@ -5,45 +5,47 @@ import { styles } from './styles'
 
 const index = () => {
     const data = getData()
+    console.log('🚀 ~ data:', data)
+
+    const fornecedor = data?.header?.filter(row => row.name === 'Nome Fantasia')[0].value
+
     return (
         data && (
-            <>
-                {/* Fields / Campos dinamicos  */}
-                <View style={styles.containerFields}>
-                    {data.fields?.map((field, index) => (
-                        <Fragment key={index}>
-                            <View style={[styles.fields, { width: '33%' }]}>
-                                <Text style={styles.fieldTitle}>{field.title ?? 'NI'}</Text>
-                                <Text style={styles.fieldValue}>{field.value ?? 'NI'}</Text>
-                            </View>
-                            {(index + 1) % 3 === 0 && <View style={styles.separator} />}
-                        </Fragment>
-                    ))}
-                </View>
-                <View style={styles.separator} />
-                {/* Dados adicionais */}
+            <View style={{ width: '100%' }}>
                 <View
                     style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 7,
-                        paddingVertical: 10,
-                        paddingBottom: 10
+                        padding: 3,
+                        backgroundColor: '#eee',
+                        marginTop: 20,
+                        border: '1px solid #ddd'
                     }}
                 >
-                    <Text style={styles.fieldTitle}>
-                        Atividades: <Text style={styles.fieldValue}>{data.atividades ?? 'NI'}</Text>
-                    </Text>
-                    <Text style={styles.fieldTitle}>
-                        Sistema de qualidade: <Text style={styles.fieldValue}>{data.sistemaQualidade ?? 'NI'}</Text>
-                    </Text>
-                    <Text style={styles.fieldTitle}>
-                        Categoria: <Text style={styles.fieldValue}>{data.categoria ?? 'NI'}</Text>
+                    <Text style={{ width: '100%', textAlign: 'center', fontSize: 12 }}>
+                        QUALIFICAÇÃO DE FORNECEDORES
                     </Text>
                 </View>
-                <View style={styles.separator} />
+                <View style={{ marginTop: 20 }}>
+                    <Text style={{ fontSize: 10 }}>
+                        A empresa <Text>{data?.unidade}</Text> possui como norma de BPF a avaliação de seus fornecedores
+                        quanto as matérias primas e ingredientes por estes fornecidos.
+                    </Text>
+                </View>
+                <View style={{ marginTop: 20 }}>
+                    <View style={styles.containerFields}>
+                        {data.header?.map((field, index) => (
+                            <>
+                                <View style={[styles.fields, { width: '33%' }]}>
+                                    <Text style={styles.fieldTitle}>{field.name ?? 'NI'}</Text>
+                                    <Text style={styles.fieldValue}>{field.value ?? 'NI'}</Text>
+                                </View>
+                                {(index + 1) % 3 === 0 && <View style={styles.separator} />}
+                            </>
+                        ))}
+                    </View>
+                </View>
+
                 {/* Tabela contendo os itens por bloco */}
-                {data.blocos?.map((block, index) => (
+                {data.blocks?.map((block, index) => (
                     <View style={block} key={index}>
                         <Text style={[styles.blockTitle, { paddingTop: 20 }]}>{block.nome}</Text>
                         <View style={styles.table}>
@@ -80,7 +82,7 @@ const index = () => {
                         </View>
                     </View>
                 ))}
-            </>
+            </View>
         )
     )
 }

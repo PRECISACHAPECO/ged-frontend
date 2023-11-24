@@ -43,6 +43,22 @@ const DialogLog = ({ open, handleClose, row }) => {
             return alteracao
         }
     }
+    // function formatarAlteracao(alteracao, operacao) {
+    //     try {
+    //         const objetoAlteracao = JSON.parse(alteracao)
+    //         let jsonString = JSON.stringify(objetoAlteracao, null, 2)
+
+    //         // Adiciona a cor amarela aos objetos que têm "alterado" igual a "true" e "antes" diferente de "depois"
+    //         jsonString = jsonString.replace(
+    //             /("alterado": true, "antes": "([^"]+)", "depois": "\2")/g,
+    //             '<span style="background-color: #ce9728; padding: 2px 1px; border-radius: 4px;">$1</span>'
+    //         )
+
+    //         return <pre dangerouslySetInnerHTML={{ __html: jsonString }} />
+    //     } catch (error) {
+    //         return alteracao
+    //     }
+    // }
 
     return (
         row &&

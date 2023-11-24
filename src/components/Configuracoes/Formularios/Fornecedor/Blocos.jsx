@@ -119,7 +119,7 @@ const Blocos = ({
                                             value={blocks[index]?.itens[indexItem]?.item ?? null}
                                             required={true}
                                             disabled={item.hasPending == 1 ? true : false}
-                                            options={blocks[index].optionsBlock?.itens}
+                                            options={blocks[index]?.optionsBlock?.itens}
                                             register={register}
                                             setValue={setValue}
                                             control={control}

@@ -9,7 +9,6 @@ const getData = () => {
     const fetchData = async () => {
         try {
             const response = await api.post('relatorio/fornecedor/dadosFornecedor', { data: report })
-            console.log('🚀 ~ response:', response.data)
             setData(response.data)
         } catch (e) {
             console.log(e)

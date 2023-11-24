@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
 
     header: {
         position: 'fixed',
-        top: -5,
+        top: -10,
         left: 0,
         right: 0,
         margin: '0 auto',
@@ -53,14 +53,14 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         width: '100%',
-        paddingTop: 7
+        paddingTop: 2
     },
     fields: {
         display: 'flex',
         flexDirection: 'column',
         gap: '2px',
-        paddingBottom: 10,
-        paddingTop: 10
+        paddingBottom: 5,
+        paddingTop: 5
     },
     fieldTitle: {
         fontSize: 8,

@@ -252,7 +252,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         id: 5,
         name: 'Configurações do formulário',
         description: 'Alterar as configurações do modelo de formulário.',
-        // component: <NewFornecedor />,
         route: null,
         type: null,
         action: goToFormConfig,
