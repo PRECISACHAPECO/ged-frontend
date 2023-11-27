@@ -30,6 +30,27 @@ const index = () => {
                         quanto as matérias primas e ingredientes por estes fornecidos.
                     </Text>
                 </View>
+                Fornecedor
+                <View style={{ marginTop: 20 }}>
+                    <Text style={{ fontSize: 10 }}>
+                        Fornecedor: <Text style={{ fontWeight: 'bold', fontSize: 10 }}>{fornecedor}</Text>
+                    </Text>
+                </View>
+                {/* Produtos */}
+                <View style={{ marginTop: 20 }}>
+                    <Text style={{ fontSize: 10 }}>
+                        {data?.produtos?.length > 1 ? 'Produtos fornecidos: ' : 'Produto fornecido: '}
+                        {data?.produtos?.map((row, index) => {
+                            return (
+                                <Text style={{ fontWeight: 'bold', fontSize: 10 }} key={index}>
+                                    {' '}
+                                    {row.produtos}
+                                </Text>
+                            )
+                        })}
+                    </Text>
+                </View>
+                {/* Campos dinâmicos do header */}
                 <View style={{ marginTop: 20 }}>
                     <View style={styles.containerFields}>
                         {data.header?.map((field, index) => (
@@ -43,7 +64,6 @@ const index = () => {
                         ))}
                     </View>
                 </View>
-
                 {/* Tabela contendo os itens por bloco */}
                 {data.blocks?.map((block, index) => (
                     <View style={block} key={index}>
