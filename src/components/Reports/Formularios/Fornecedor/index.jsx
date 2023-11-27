@@ -40,14 +40,12 @@ const index = () => {
                 <View style={{ marginTop: 20 }}>
                     <Text style={{ fontSize: 10 }}>
                         {data?.produtos?.length > 1 ? 'Produtos fornecidos: ' : 'Produto fornecido: '}
-                        {data?.produtos?.map((row, index) => {
-                            return (
-                                <Text style={{ fontWeight: 'bold', fontSize: 10 }} key={index}>
-                                    {' '}
-                                    {row.produtos}
-                                </Text>
-                            )
-                        })}
+                        {data?.produtos?.map((row, index) => (
+                            <Text key={index}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 10 }}>{row.produtos}</Text>
+                                {index !== data.produtos.length - 1 && ', '}
+                            </Text>
+                        ))}
                     </Text>
                 </View>
                 {/* Campos dinâmicos do header */}
@@ -92,10 +90,10 @@ const index = () => {
                                         <Text style={styles.tableContentcolumn}>{item.nome}</Text>
                                     </View>
                                     <View style={[styles.tableContent, { width: '20%' }]}>
-                                        <Text style={styles.tableContentcolumn}>{item.resposta ?? '--'}</Text>
+                                        <Text style={styles.tableContentcolumn}>{item.resposta ?? ''}</Text>
                                     </View>
                                     <View style={[styles.tableContent, { width: '20%' }]}>
-                                        <Text style={styles.tableContentcolumn}>{item.obsResposta ?? '--'}</Text>
+                                        <Text style={styles.tableContentcolumn}>{item.obsResposta ?? ''}</Text>
                                     </View>
                                 </View>
                             ))}
