@@ -1,11 +1,10 @@
 import { Text, View } from '@react-pdf/renderer'
 import React from 'react'
 import getData from './getData'
-import { styles } from './styles'
+import { styles } from '../../defaults/styles'
 
 const index = () => {
     const data = getData()
-    console.log('🚀 ~ data:', data)
 
     const fornecedor = data?.header?.filter(row => row.name === 'Nome Fantasia')[0].value
 
@@ -64,11 +63,12 @@ const index = () => {
                 </View>
                 {/* Tabela contendo os itens por bloco */}
                 {data.blocks?.map((block, index) => (
-                    <View style={block} key={index}>
-                        <Text style={[styles.blockTitle, { paddingTop: 20 }]}>{block.nome}</Text>
+                    <View style={[block, { marginTop: 30 }]} key={index}>
+                        {/* <Text style={[styles.blockTitle, { paddingTop: 20 }]}>{block.nome}</Text> */}
                         <View style={styles.table}>
                             <View style={styles.tableTitle}>
-                                <Text style={[styles.tableTitlecolumn, { width: '60%' }]}>Item</Text>
+                                {/* <Text style={[styles.tableTitlecolumn, { width: '60%' }]}>Item</Text> */}
+                                <Text style={[styles.tableTitlecolumn, { width: '60%' }]}>{block.nome}</Text>
                                 <Text
                                     style={[
                                         styles.tableTitlecolumn,
