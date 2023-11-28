@@ -6,17 +6,11 @@ import { PDFDownloadLink, Document, Page } from '@react-pdf/renderer'
 // reports defaults
 import Footer from './Footer'
 import Header from './Header'
-
-// reports
-import Fornecedor from '../Formularios/Fornecedor/DadosFornecedor'
-
-const reportComponents = {
-    Fornecedor: Fornecedor
-    // Adicione outros componentes conforme necessário
-}
+import ReportComponents from './reportComponents'
 
 const MyDoc = ({ nameComponent }) => {
-    const ReportComponent = reportComponents[nameComponent]
+    const data = ReportComponents()
+    const ReportComponent = data[nameComponent]
 
     return (
         <Document>
@@ -34,7 +28,7 @@ const MyDoc = ({ nameComponent }) => {
     )
 }
 
-const ButtonsFloating = () => {
+const ButtonsFloating = ({ nameComponent }) => {
     const signature = () => {
         console.log('Assinatura eletronica')
     }
@@ -75,7 +69,7 @@ const ButtonsFloating = () => {
                     </div>
                 ))}
             <div>
-                <PDFDownloadLink document={<MyDoc nameComponent='Fornecedor' />} fileName='somename.pdf'>
+                <PDFDownloadLink document={<MyDoc nameComponent={nameComponent} />} fileName={nameComponent}>
                     {({ blob, url, loading, error }) => (
                         <div style={{ textAlign: 'center' }}>
                             <Fab color='primary' size='large' variant='outlined'>

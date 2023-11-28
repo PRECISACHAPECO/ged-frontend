@@ -11,7 +11,7 @@ const getData = () => {
             ...report.params.data
         }
         try {
-            const response = await api.post(report.params.route, data)
+            const response = await api.post(`relatorio/${report.params.route}`, data)
             setData(response.data)
         } catch (e) {
             console.log(e)

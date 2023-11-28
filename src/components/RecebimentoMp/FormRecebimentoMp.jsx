@@ -205,7 +205,7 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID,
                 papelID: user.papelID
             },
-            route: 'relatorio/fornecedor/dadosFornecedor'
+            route: 'recebimentoMp/dadosRecebimentoMp'
         },
         icon: 'fluent:print-24-regular'
     }

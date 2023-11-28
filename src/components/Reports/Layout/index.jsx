@@ -1,7 +1,7 @@
 import React from 'react'
-import Header from './Header'
 import { Document, PDFViewer, Page } from '@react-pdf/renderer'
 import Footer from './Footer'
+import Header from './Header'
 
 const LayoutReport = ({ children }) => {
     return (

@@ -44,7 +44,7 @@ const Header = () => {
 
     const fetchData = async () => {
         const data = {
-            ...report,
+            ...report.params.data,
             isFornecedor: route === 'fornecedor' ? true : false
         }
 
