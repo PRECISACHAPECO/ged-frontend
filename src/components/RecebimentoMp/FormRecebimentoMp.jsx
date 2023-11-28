@@ -197,11 +197,16 @@ const FormRecebimentoMp = ({ id }) => {
     const objRelatorio = {
         id: 4,
         name: 'Formulário do recebimentpMp',
-        nameComponent: 'recebimentpMp',
+        nameComponent: 'DadosRecebimentoMp',
         type: 'report',
-        papelID: user.papelID,
-        fornecedorID: id,
-        unidadeID: loggedUnity.unidadeID,
+        params: {
+            data: {
+                recebimentoMpID: id,
+                unidadeID: loggedUnity.unidadeID,
+                papelID: user.papelID
+            },
+            route: 'relatorio/fornecedor/dadosFornecedor'
+        },
         icon: 'fluent:print-24-regular'
     }
     const objFormConfig = {

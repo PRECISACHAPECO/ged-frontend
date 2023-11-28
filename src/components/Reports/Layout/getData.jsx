@@ -7,8 +7,11 @@ const getData = () => {
     const report = JSON.parse(reportJSON)
 
     const fetchData = async () => {
+        const data = {
+            ...report.params.data
+        }
         try {
-            const response = await api.post('relatorio/fornecedor/dadosFornecedor', { data: report })
+            const response = await api.post(report.params.route, data)
             setData(response.data)
         } catch (e) {
             console.log(e)

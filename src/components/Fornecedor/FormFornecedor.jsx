@@ -244,9 +244,14 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         name: 'Formulário do fornecedor',
         nameComponent: 'DadosFornecedor',
         type: 'report',
-        papelID: user.papelID,
-        fornecedorID: id,
-        unidadeID: loggedUnity.unidadeID,
+        params: {
+            data: {
+                fornecedorID: id,
+                unidadeID: loggedUnity.unidadeID,
+                papelID: user.papelID
+            },
+            route: 'relatorio/fornecedor/dadosFornecedor'
+        },
         icon: 'fluent:print-24-regular'
     }
     const objFormConfig = {
