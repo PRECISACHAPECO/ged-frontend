@@ -242,7 +242,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const objRelatorio = {
         id: 4,
         name: 'Formulário do fornecedor',
-        nameComponent: 'Fornecedor',
+        nameComponent: 'DadosFornecedor',
         type: 'report',
         papelID: user.papelID,
         fornecedorID: id,

@@ -8,7 +8,7 @@ import Footer from './Footer'
 import Header from './Header'
 
 // reports
-import Fornecedor from '../Formularios/Fornecedor'
+import Fornecedor from '../Formularios/Fornecedor/DadosFornecedor'
 
 const reportComponents = {
     Fornecedor: Fornecedor

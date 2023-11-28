@@ -24,7 +24,6 @@ import FormHeader from 'src/components/Defaults/FormHeader'
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
 import { Button, Snackbar, Typography } from '@mui/material'
 import DialogSelectUnit from 'src/components/Defaults/Dialogs/DialogSelectUnit'
-import BreadcrumbsBasic from 'src/components/BreadcrumbsBasic'
 
 const AppBarContent = props => {
     // ** Props
@@ -78,7 +77,6 @@ const AppBarContent = props => {
                             {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
                         </Typography>
                         {/* todo migalhas de pão */}
-                        {/* <BreadcrumbsBasic /> */}
                     </Box>
 
                     <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>

@@ -2,9 +2,10 @@ import React from 'react'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import LayoutReport from 'src/components/Reports/Layout'
 import ButtonsFloating from 'src/components/Reports/Layout/ButtonsFloating'
+import { Page, Text, View } from '@react-pdf/renderer'
 
 // Componentes dos relatórios
-import Fornecedor from '../../components/Reports/Formularios/Fornecedor'
+import DadosFornecedor from '../../components/Reports/Formularios/Fornecedor/DadosFornecedor'
 
 const PageReport = () => {
     const reportJSON = localStorage.getItem('report')
@@ -12,17 +13,42 @@ const PageReport = () => {
     const nameComponent = report?.nameComponent
 
     const componentMap = {
-        Fornecedor: Fornecedor
+        DadosFornecedor: DadosFornecedor,
+        DadosFornecedores: DadosFornecedor
     }
-
     const DynamicComponent = componentMap[nameComponent]
+
+    //! Erro ao gerar o relatório
+    const ComponentError = () => {
+        return (
+            <Page size='A4'>
+                <View>
+                    <Text
+                        style={{
+                            color: 'red',
+                            fontSize: 20,
+                            padding: 10
+                        }}
+                    >
+                        Erro ao carregar o relatório. Entre em contato com o suporte.
+                    </Text>
+                </View>
+            </Page>
+        )
+    }
 
     return (
         <BlankLayout>
-            <>
-                <ButtonsFloating />
-                <LayoutReport>{DynamicComponent && <DynamicComponent />}</LayoutReport>
-            </>
+            {DynamicComponent ? (
+                <>
+                    <ButtonsFloating />
+                    <LayoutReport>
+                        <DynamicComponent />
+                    </LayoutReport>
+                </>
+            ) : (
+                <ComponentError />
+            )}
         </BlankLayout>
     )
 }

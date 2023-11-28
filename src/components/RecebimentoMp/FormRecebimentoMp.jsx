@@ -196,7 +196,8 @@ const FormRecebimentoMp = ({ id }) => {
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
     const objRelatorio = {
         id: 4,
-        name: 'Formulário do fornecedor',
+        name: 'Formulário do recebimentpMp',
+        nameComponent: 'recebimentpMp',
         type: 'report',
         papelID: user.papelID,
         fornecedorID: id,
