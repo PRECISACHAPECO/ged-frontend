@@ -201,7 +201,7 @@ const FormRecebimentoMp = ({ id }) => {
         type: 'report',
         params: {
             data: {
-                recebimentoMpID: id,
+                id,
                 unidadeID: loggedUnity.unidadeID,
                 papelID: user.papelID
             },

@@ -11,7 +11,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 //* Custom components
 import Input from 'src/components/Form/Input'
 import AnexoModeView from 'src/components/Anexos/ModeView'
-import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
+import { Alert, Box, Button, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
 import { backRoute, toastMessage, statusDefault } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
@@ -31,6 +31,7 @@ import HeaderFields from './Header'
 import FooterFields from './Footer'
 import useLoad from 'src/hooks/useLoad'
 import DialogDelete from '../Defaults/Dialogs/DialogDelete'
+import TestePDF from '../TestePDF'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -246,7 +247,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         type: 'report',
         params: {
             data: {
-                fornecedorID: id,
+                id,
                 unidadeID: loggedUnity.unidadeID,
                 papelID: user.papelID
             },
@@ -912,6 +913,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             open={openModalDeleted}
                             handleClose={() => setOpenModalDeleted(false)}
                         />
+                        <TestePDF />
 
                         {/* Header */}
                         <CardContent>

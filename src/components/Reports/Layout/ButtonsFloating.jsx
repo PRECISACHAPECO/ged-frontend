@@ -69,7 +69,11 @@ const ButtonsFloating = ({ nameComponent }) => {
                     </div>
                 ))}
             <div>
-                <PDFDownloadLink document={<MyDoc nameComponent={nameComponent} />} fileName={nameComponent}>
+                <PDFDownloadLink
+                    document={<MyDoc nameComponent={nameComponent} />}
+                    fileName={nameComponent}
+                    targetDirectory='C:/Users/Jonatan/Desktop/teste'
+                >
                     {({ blob, url, loading, error }) => (
                         <div style={{ textAlign: 'center' }}>
                             <Fab color='primary' size='large' variant='outlined'>
