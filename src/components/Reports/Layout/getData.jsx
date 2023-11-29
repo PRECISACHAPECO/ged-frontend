@@ -18,7 +18,9 @@ const getData = () => {
         }
     }
     useEffect(() => {
-        fetchData()
+        if (report) {
+            fetchData()
+        }
     }, [])
     return data
 }

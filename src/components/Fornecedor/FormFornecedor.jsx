@@ -32,10 +32,28 @@ import FooterFields from './Footer'
 import useLoad from 'src/hooks/useLoad'
 import DialogDelete from '../Defaults/Dialogs/DialogDelete'
 import TestePDF from '../TestePDF'
+import { Document, Page, Text } from '@react-pdf/renderer'
+import DadosFornecedor from 'src/components/Reports/Formularios/Fornecedor/DadosFornecedor'
+import Header from '../Reports/Layout/Header'
+import Footer from '../Reports/Layout/Footer'
+
+const MyDoc = () => {
+    return (
+        <Document>
+            <Page
+                size='A4'
+                style={{
+                    paddingHorizontal: 25
+                }}
+            >
+                <Text>Helllo</Text>
+            </Page>
+        </Document>
+    )
+}
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
-    console.log('🚀 ~ loggedUnitysssssssssssssssssssss:', loggedUnity)
     const [isLoading, setLoading] = useState(false)
     const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
     const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
@@ -64,6 +82,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const { setId } = useContext(RouteContext)
     const [dataCopiedMyData, setDataCopiedMyData] = useState([])
     const [openModalDeleted, setOpenModalDeleted] = useState(false)
+    const [blobSaveReport, setBlobSaveReport] = useState(null) // Salva o blob do relatório que sera salvo no back
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -501,11 +520,31 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
-    const handleSendForm = () => {
+    const handleSendForm = blob => {
+        setBlobSaveReport(blob)
         checkErrors()
         setOpenModal(true)
         setValidateForm(true)
     }
+
+    useEffect(() => {
+        const objRelatorio = {
+            id: 4,
+            name: 'Formulário do fornecedor',
+            nameComponent: 'DadosFornecedor',
+            type: 'report',
+            params: {
+                data: {
+                    id,
+                    unidadeID: loggedUnity.unidadeID,
+                    papelID: user.papelID
+                },
+                route: 'fornecedor/dadosFornecedor'
+            },
+            icon: 'fluent:print-24-regular'
+        }
+        localStorage.setItem('report', JSON.stringify(objRelatorio))
+    }, [])
 
     const verifyIfCanAproveForm = blocos => {
         let tempCanApprove = true
@@ -519,7 +558,23 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         setCanApprove(tempCanApprove)
     }
 
+    // Salva o relatório do fornecedor
+    const sendPdfToServer = async () => {
+        const formData = new FormData()
+        formData.append('files[]', blobSaveReport, 'fornecedor.pdf')
+
+        try {
+            const response = await api.post(
+                `/formularios/fornecedor/saveRelatorio/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`,
+                formData
+            )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const conclusionForm = async values => {
+        sendPdfToServer()
         values['conclusion'] = true
         await handleSubmit(onSubmit)(values)
     }
@@ -893,6 +948,20 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             actions
                             handleSubmit={() => handleSubmit(onSubmit)}
                             handleSend={handleSendForm}
+                            componentSaveReport={
+                                <Document>
+                                    <Page
+                                        size='A4'
+                                        style={{
+                                            paddingHorizontal: 25
+                                        }}
+                                    >
+                                        <Header />
+                                        <DadosFornecedor />
+                                        <Footer />
+                                    </Page>
+                                </Document>
+                            }
                             iconConclusion={'mdi:check-bold'}
                             titleConclusion={'Concluir Formulário'}
                             title='Fornecedor'

@@ -27,6 +27,7 @@ const FormHeader = ({
     handleModalClose,
     disabledSubmit,
     handleSend,
+    componentSaveReport,
     iconConclusion,
     titleConclusion,
     disabledSend,
@@ -181,6 +182,7 @@ const FormHeader = ({
                             disabledSend={disabledSend}
                             disabledSubmit={disabledSubmit}
                             handleSend={handleSend}
+                            componentSaveReport={componentSaveReport}
                             iconConclusion={iconConclusion}
                             titleConclusion={titleConclusion}
                         />

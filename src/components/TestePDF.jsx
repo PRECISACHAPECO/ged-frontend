@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Fab } from '@mui/material'
 import { Icon } from '@iconify/react'
-import { Document, PDFDownloadLink, Page, Text } from '@react-pdf/renderer'
+import { BlobProvider, Document, Page, Text } from '@react-pdf/renderer'
 import { api } from 'src/configs/api'
 
 const MyDoc = () => {
@@ -44,7 +44,7 @@ const TestePDF = () => {
     }
 
     return (
-        <PDFDownloadLink document={<MyDoc />} fileName='teste.pdf'>
+        <BlobProvider document={<MyDoc />}>
             {({ blob, url, loading, error }) => (
                 <div style={{ textAlign: 'center' }}>
                     <Fab color='primary' size='large' variant='outlined' onClick={() => sendPdfToServer(blob)}>
@@ -52,7 +52,7 @@ const TestePDF = () => {
                     </Fab>
                 </div>
             )}
-        </PDFDownloadLink>
+        </BlobProvider>
     )
 }
 

@@ -44,8 +44,7 @@ const Header = () => {
 
     const fetchData = async () => {
         const data = {
-            ...report.params.data,
-            isFornecedor: route === 'fornecedor' ? true : false
+            ...report?.params?.data
         }
 
         try {
@@ -57,7 +56,9 @@ const Header = () => {
     }
 
     useEffect(() => {
-        fetchData()
+        if (report) {
+            fetchData()
+        }
     }, [])
 
     return (

@@ -1,9 +1,7 @@
-import { Button, IconButton, Menu, MenuItem } from '@mui/material'
+import { Button, Menu, MenuItem } from '@mui/material'
 import Icon from 'src/@core/components/icon'
-import LayoutReport from 'src/components/Reports/Layout'
 import DialogActs from '../Dialogs/DialogActs'
-import { useContext, useState } from 'react'
-import { ParametersContext } from 'src/context/ParametersContext'
+import { useState } from 'react'
 
 const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) => {
     const [openModal, setOpenModal] = useState(false)

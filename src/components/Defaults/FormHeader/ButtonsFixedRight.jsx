@@ -3,6 +3,7 @@ import Icon from 'src/@core/components/icon'
 import Router from 'next/router'
 import Link from 'next/link'
 import useLoad from 'src/hooks/useLoad'
+import { BlobProvider, Document, Page, Text } from '@react-pdf/renderer'
 
 const ButtonsFixedRight = ({
     btnSend,
@@ -17,6 +18,7 @@ const ButtonsFixedRight = ({
     disabledSubmit,
     handleSubmit,
     handleSend,
+    componentSaveReport,
     iconConclusion,
     titleConclusion
 }) => {
@@ -71,18 +73,22 @@ const ButtonsFixedRight = ({
             )}
             {/* Fornecedor concluir formulário e envia pra fábrica avaliar */}
             {btnSend && (
-                <Button
-                    onClick={handleSend}
-                    type='button'
-                    variant='contained'
-                    size='medium'
-                    color='primary'
-                    disabled={disabled || disabledSend}
-                    sx={{ display: 'flex', gap: 2 }}
-                >
-                    <Icon icon={iconConclusion ?? 'carbon:send-filled'} />
-                    <span className='hidden sm:block'>{titleConclusion}</span>
-                </Button>
+                <BlobProvider document={componentSaveReport}>
+                    {({ blob, url, loading, error }) => (
+                        <Button
+                            onClick={() => handleSend(blob)}
+                            type='button'
+                            variant='contained'
+                            size='medium'
+                            color='primary'
+                            disabled={disabled || disabledSend}
+                            sx={{ display: 'flex', gap: 2 }}
+                        >
+                            <Icon icon={iconConclusion ?? 'carbon:send-filled'} />
+                            <span className='hidden sm:block'>{titleConclusion}</span>
+                        </Button>
+                    )}
+                </BlobProvider>
             )}
         </div>
     )
