@@ -561,7 +561,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     // Salva o relatório do fornecedor
     const sendPdfToServer = async () => {
         const formData = new FormData()
-        formData.append('files[]', blobSaveReport, 'fornecedor.pdf')
+        formData.append('files[]', blobSaveReport, `${id}-fornecedor.pdf`)
 
         try {
             const response = await api.post(
