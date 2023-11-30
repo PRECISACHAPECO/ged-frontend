@@ -2,10 +2,13 @@ import { Button, Menu, MenuItem } from '@mui/material'
 import Icon from 'src/@core/components/icon'
 import DialogActs from '../Dialogs/DialogActs'
 import { useState } from 'react'
+import { useContext } from 'react'
+import { AuthContext } from 'src/context/AuthContext'
 
 const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) => {
     const [openModal, setOpenModal] = useState(false)
     const [item, setItem] = useState(null)
+    // const { setParamsReport } = useContext(AuthContext)
 
     // Ao clicar em um item e ele for do tipo report
     const handleClickReport = item => {
@@ -52,6 +55,8 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 {actionsData?.map(item => {
+                    // console.log('🚀 ~ item:', item)
+                    // setParamsReport(item)
                     return (
                         <MenuItem
                             key={item.id}
@@ -70,7 +75,10 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                             )}
 
                             {item.type == 'report' ? (
-                                <a href='/relatorio' target='_blank' rel='noopener noreferrer'>
+                                <a
+                                    href={`/relatorio?nameComponent=${item.nameComponent}&id=${item.params.data.id}&unidadeID=${item.params.data.unidadeID}&papelID=${item.params.data.papelID}&usuarioID=${item.params.data.usuarioID}`}
+                                    target='_blank'
+                                >
                                     {item.name}
                                 </a>
                             ) : (

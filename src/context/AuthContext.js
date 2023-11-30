@@ -53,6 +53,7 @@ const AuthProvider = ({ children }) => {
         status: false,
         version: null,
     })
+    const [paramsReport, setParamsReport] = useState({})
 
     const router = useRouter();
     const staticUrl = backRoute(router.pathname) // Url sem ID
@@ -374,6 +375,8 @@ const AuthProvider = ({ children }) => {
         setNewVersionAvailable,
         setOpenModalUpdate,
         openModalUpdate,
+        paramsReport, setParamsReport
+
     }
 
     return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

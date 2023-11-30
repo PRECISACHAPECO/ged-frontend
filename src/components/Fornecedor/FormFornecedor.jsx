@@ -31,7 +31,6 @@ import HeaderFields from './Header'
 import FooterFields from './Footer'
 import useLoad from 'src/hooks/useLoad'
 import DialogDelete from '../Defaults/Dialogs/DialogDelete'
-import TestePDF from '../TestePDF'
 import { Document, Page, Text } from '@react-pdf/renderer'
 import DadosFornecedor from 'src/components/Reports/Formularios/Fornecedor/DadosFornecedor'
 import Header from '../Reports/Layout/Header'
@@ -268,7 +267,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             data: {
                 id,
                 unidadeID: loggedUnity.unidadeID,
-                papelID: user.papelID
+                papelID: user.papelID,
+                usuarioID: user.usuarioID
             },
             route: 'fornecedor/dadosFornecedor'
         },
@@ -982,7 +982,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             open={openModalDeleted}
                             handleClose={() => setOpenModalDeleted(false)}
                         />
-                        <TestePDF />
 
                         {/* Header */}
                         <CardContent>

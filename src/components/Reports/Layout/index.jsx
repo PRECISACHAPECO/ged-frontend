@@ -3,7 +3,9 @@ import { Document, PDFViewer, Page } from '@react-pdf/renderer'
 import Footer from './Footer'
 import Header from './Header'
 
-const LayoutReport = ({ children }) => {
+const LayoutReport = ({ params, children }) => {
+    // console.log('🚀 ~ params layout:', params)
+
     return (
         <PDFViewer style={{ width: '100%', height: '100vh' }}>
             <Document>
@@ -13,7 +15,7 @@ const LayoutReport = ({ children }) => {
                         paddingHorizontal: 25
                     }}
                 >
-                    <Header />
+                    <Header params={params} />
                     {children}
                     <Footer />
                 </Page>
