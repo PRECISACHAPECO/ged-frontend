@@ -40,16 +40,16 @@ const Header = ({ params }) => {
     const route = Router.pathname.split('/')[2]
     const [data, setData] = useState([])
 
-    // const reportJSON = localStorage.getItem('report')
-    // const report = JSON.parse(reportJSON)
+    const reportJSON = localStorage.getItem('report')
+    const report = JSON.parse(reportJSON)
 
     const fetchData = async () => {
-        // const data = {
-        //     ...report?.params?.data
-        // }
+        const data = {
+            ...report?.params?.data
+        }
 
         try {
-            const response = await api.post('relatorio/header', params)
+            const response = await api.post('relatorio/header', data)
             setData(response.data)
         } catch (error) {
             console.error('Erro ao buscar os dados do cabeçalho:', error)
