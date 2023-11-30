@@ -60,9 +60,9 @@ const AppBarContent = props => {
 
     return (
         <>
-            <Box display='flex' flexDirection='column' sx={{ width: '100%' }} >
+            <Box display='flex' flexDirection='column' className='w-full' >
                 {/* App Bar Content */}
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className='no-print'>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className='bg-[#e7e6e6] px-4 rounded-b-lg py-1'>
                     <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
                         {hidden && !settings.navHidden ? (
                             <IconButton color='inherit' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
@@ -79,7 +79,7 @@ const AppBarContent = props => {
                         {/* todo migalhas de pão */}
                     </Box>
 
-                    <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box className='flex items-center' >
                         <div className='hidden sm:block'>
                             {
                                 unitsUser && unitsUser.length > 1 ? (
@@ -114,24 +114,32 @@ const AppBarContent = props => {
                     </Box>
                 </Box >
 
+
                 {/* Botões de ação */}
-                {/* <Box display='flex' alignItems='center' sx={{ gap: 2 }} >
-                    <FormHeader
-                        btnCancel
-                        btnSave
-                        btnPrint
-                        actionsData={null}
-                        actions
-                        handleSubmit={() => null}
-                        iconConclusion={'mdi:check-bold'}
-                        titleConclusion={'Concluir Formulário'}
-                        title='Fornecedor'
-                        btnStatus
-                        handleBtnStatus={() => null}
-                        type='new'
-                        status={null}
-                    />
-                </Box> */}
+
+
+                <FormHeader
+                    btnCancel
+                    btnDelete={{}}
+                    onclickDelete={{}}
+                    btnSave={{}}
+                    btnSend={{}}
+                    btnPrint={{}}
+                    // actionsData={{}}
+                    actions
+                    handleSubmit={{}}
+                    handleSend={{}}
+
+                    iconConclusion={'mdi:check-bold'}
+                    titleConclusion={'Concluir Formulário'}
+                    title='Fornecedor'
+                    btnStatus={{}}
+                    handleBtnStatus={{}}
+                // type={type}
+                // status={status}
+                />
+
+
             </Box>
 
             <DialogSelectUnit

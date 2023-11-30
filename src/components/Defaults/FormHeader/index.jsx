@@ -189,7 +189,7 @@ const FormHeader = ({
                     </div>
                 </div>
                 {/* Botões flutuantes */}
-                <ButtonsFloating
+                {/* <ButtonsFloating
                     isVisible={isVisible}
                     dataButtons={dataButtons}
                     btnSave={btnSave}
@@ -197,7 +197,7 @@ const FormHeader = ({
                     matches={matches}
                     routes={routes}
                     currentUrl={currentUrl}
-                />
+                /> */}
                 <Box sx={{ mt: 4 }}>
                     {status && !matches && (
                         <Box display='flex' alignItems='center' justifyContent='flex-start'>
