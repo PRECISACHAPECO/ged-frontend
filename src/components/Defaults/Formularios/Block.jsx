@@ -65,7 +65,7 @@ const Block = ({
 
     return (
         <>
-            <Card key={index} sx={{ mt: 4 }}>
+            <Card key={index}>
                 <CardContent>
                     <Grid container>
                         <Grid item xs={12} md={6}>

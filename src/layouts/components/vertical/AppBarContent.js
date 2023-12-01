@@ -31,6 +31,7 @@ const AppBarContent = props => {
     const { title } = useContext(ParametersContext)
     const { id, setId } = useContext(RouteContext)
     const { notifications } = useContext(NotificationContext)
+    const mode = settings.mode
 
     const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
 
@@ -62,7 +63,7 @@ const AppBarContent = props => {
         <>
             <Box display='flex' flexDirection='column' className='w-full' >
                 {/* App Bar Content */}
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className='bg-[#e7e6e6] px-4 rounded-b-lg py-1'>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className={`px-4 rounded-b-lg py-1 ${mode == 'dark' ? 'bg-[#1c1c1e]' : 'bg-[#ebebeb]'} `}>
                     <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
                         {hidden && !settings.navHidden ? (
                             <IconButton color='inherit' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
@@ -71,7 +72,7 @@ const AppBarContent = props => {
                         ) : null}
                         <Autocomplete hidden={hidden} settings={settings} />
                     </Box>
-                    <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0px' }}>
                         <Typography variant='h6' sx={{ fontWeight: 700 }} >{title.title}</Typography>
                         <Typography variant='caption'>
                             {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
@@ -114,8 +115,8 @@ const AppBarContent = props => {
                     </Box>
                 </Box >
 
-
                 {/* Botões de ação */}
+<<<<<<< HEAD
 
                 <div className='bg-red-600'>
 
@@ -143,6 +144,29 @@ const AppBarContent = props => {
 
 
             </Box>
+=======
+                <FormHeader
+                    btnCancel
+                    btnDelete={{}}
+                    onclickDelete={{}}
+                    btnSave={{}}
+                    btnSend={{}}
+                    btnPrint={{}}
+                    // actionsData={{}}
+                    actions
+                    handleSubmit={{}}
+                    handleSend={{}}
+
+                    iconConclusion={'mdi:check-bold'}
+                    titleConclusion={'Concluir Formulário'}
+                    title='Fornecedor'
+                    btnStatus={{}}
+                    handleBtnStatus={{}}
+                // type={type}
+                // status={status}
+                />
+            </Box >
+>>>>>>> e674eb942dd78997a9daaeba61310af11a61890d
 
             <DialogSelectUnit
                 openModal={openModal}

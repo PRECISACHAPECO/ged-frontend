@@ -36,6 +36,7 @@ const MainContentWrapper = styled(Box)({
 const ContentWrapper = styled('main')(({ theme }) => ({
     flexGrow: 1,
     width: '100%',
+    // backgroundColor: 'blue',
     padding: theme.spacing(6),
     transition: 'padding .25s ease-in-out',
     [theme.breakpoints.down('sm')]: {
@@ -86,7 +87,7 @@ const VerticalLayout = props => {
                     />
                 )}
                 <MainContentWrapper
-                    className='layout-content-wrapper'
+                    className={`layout-content-wrapper ${settings.mode == 'dark' ? 'bg-[#202023]' : 'bg-[#f5f5f5]'}`}
                     sx={{ ...(contentHeightFixed && { maxHeight: '100vh' }) }}
                 >
                     <AppBar
@@ -97,7 +98,7 @@ const VerticalLayout = props => {
                     />
 
                     <ContentWrapper
-                        className='layout-page-content'
+                        className='layout-page-content !pt-0'
                         sx={{
                             ...(contentHeightFixed && {
                                 overflow: 'hidden',
