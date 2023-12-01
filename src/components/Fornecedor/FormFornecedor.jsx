@@ -908,22 +908,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     </Alert>
                 )}
                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
-                    {/* Mensagem */}
-                    {canEdit.message && <Alert severity='warning'>{canEdit.message}</Alert>}
-
-                    {/* Última movimentação do formulário */}
-                    {movimentacao && (
-                        <Alert severity='info'>
-                            {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
-                            {movimentacao.observacao && (
-                                <p>
-                                    <br />
-                                    Mensagem: "{movimentacao.observacao}"
-                                </p>
-                            )}
-                        </Alert>
-                    )}
-
                     {/* Cabeçalho do modelo */}
                     {info && info.cabecalhoModelo != '' && (
                         <Card>
@@ -937,7 +921,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
                     {/* Card Header */}
                     <Card>
-                        <FormHeader
+                        {/* <FormHeader
                             btnCancel
                             btnDelete={info.status < 40 ? true : false}
                             onclickDelete={() => setOpenModalDeleted(true)}
@@ -969,7 +953,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             handleBtnStatus={() => setOpenModalStatus(true)}
                             type={type}
                             status={status}
-                        />
+                        /> */}
                         {/* Modal que deleta formulario */}
                         <DialogDelete
                             title='Excluir Formulário'
@@ -1144,6 +1128,22 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         listErrors={listErrors}
                         canApprove={canApprove}
                     />
+
+                    {/* Mensagem */}
+                    {canEdit.message && <Alert severity='warning'>{canEdit.message}</Alert>}
+
+                    {/* Última movimentação do formulário */}
+                    {movimentacao && (
+                        <Alert severity='info'>
+                            {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
+                            {movimentacao.observacao && (
+                                <p>
+                                    <br />
+                                    Mensagem: "{movimentacao.observacao}"
+                                </p>
+                            )}
+                        </Alert>
+                    )}
                 </Box>
             </form>
         </>

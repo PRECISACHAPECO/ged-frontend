@@ -13,6 +13,7 @@ import ButtonsFloating from './ButtonsFloating'
 import ButtonsFixedRight from './ButtonsFixedRight'
 import ButtonsFixedLeft from './ButtonsFixedLeft'
 import useLoad from 'src/hooks/useLoad'
+import { SettingsContext } from 'src/@core/context/settingsContext'
 
 const FormHeader = ({
     btnCancel,
@@ -49,6 +50,7 @@ const FormHeader = ({
     const [isVisible, setIsVisible] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
     const { isLoading } = useLoad()
+    const { settings } = useContext(SettingsContext)
 
     const matches = useMediaQuery('(min-width:640px)')
 
@@ -135,59 +137,63 @@ const FormHeader = ({
 
     return (
         <>
-            <CardContent>
-                <div className='flex items-center justify-between'>
-                    {/* Div da esquerda */}
-                    <ButtonsFixedLeft
+            <CardContent
+                className={`flex items-center justify-between ${
+                    settings.mode == 'dark' ? 'bg-[#202023]' : 'bg-[#F7F7F9]'
+                }`}
+            >
+                {/* Div da esquerda */}
+                <ButtonsFixedLeft
+                    routes={routes}
+                    currentUrl={currentUrl}
+                    btnCancel={btnCancel}
+                    btnDelete={btnDelete}
+                    btnStatus={btnStatus}
+                    btnClose={btnClose}
+                    handleModalClose={handleModalClose}
+                    status={status}
+                    handleBtnStatus={handleBtnStatus}
+                    onclickDelete={onclickDelete}
+                    setId={setId}
+                    router={router}
+                    type={type}
+                />
+
+                {/* // 3 pontinhos ao clicar abre opções de seleção */}
+                <div className='flex items-center gap-2'>
+                    {/*Div direita */}
+                    {actions && (
+                        <OptionsDots
+                            anchorEl={anchorEl}
+                            open={open}
+                            handleClose={handleClose}
+                            handleClick={handleClick}
+                            disabled={disabled}
+                            disabledPrint={disabledPrint}
+                            btnPrint={btnPrint}
+                            actionsData={actionsData}
+                            matches={matches}
+                        />
+                    )}
+                    <ButtonsFixedRight
+                        btnSave={btnSave}
+                        btnNew={btnNew}
+                        btnSend={btnSend}
+                        btnNext={btnNext}
+                        manualUrl={manualUrl}
                         routes={routes}
                         currentUrl={currentUrl}
-                        btnCancel={btnCancel}
-                        btnDelete={btnDelete}
-                        btnStatus={btnStatus}
-                        btnClose={btnClose}
-                        handleModalClose={handleModalClose}
-                        status={status}
-                        handleBtnStatus={handleBtnStatus}
-                        onclickDelete={onclickDelete}
-                        setId={setId}
-                        router={router}
-                        type={type}
+                        handleSubmit={handleSubmit}
+                        disabled={disabled}
+                        disabledSend={disabledSend}
+                        disabledSubmit={disabledSubmit}
+                        handleSend={handleSend}
+                        componentSaveReport={componentSaveReport}
+                        iconConclusion={iconConclusion}
+                        titleConclusion={titleConclusion}
                     />
-                    {/* // 3 pontinhos ao clicar abre opções de seleção */}
-                    <div className='flex items-center gap-2'>
-                        {/*Div direita */}
-                        {actions && (
-                            <OptionsDots
-                                anchorEl={anchorEl}
-                                open={open}
-                                handleClose={handleClose}
-                                handleClick={handleClick}
-                                disabled={disabled}
-                                disabledPrint={disabledPrint}
-                                btnPrint={btnPrint}
-                                actionsData={actionsData}
-                                matches={matches}
-                            />
-                        )}
-                        <ButtonsFixedRight
-                            btnSave={btnSave}
-                            btnNew={btnNew}
-                            btnSend={btnSend}
-                            btnNext={btnNext}
-                            manualUrl={manualUrl}
-                            routes={routes}
-                            currentUrl={currentUrl}
-                            handleSubmit={handleSubmit}
-                            disabled={disabled}
-                            disabledSend={disabledSend}
-                            disabledSubmit={disabledSubmit}
-                            handleSend={handleSend}
-                            componentSaveReport={componentSaveReport}
-                            iconConclusion={iconConclusion}
-                            titleConclusion={titleConclusion}
-                        />
-                    </div>
                 </div>
+
                 {/* Botões flutuantes */}
                 {/* <ButtonsFloating
                     isVisible={isVisible}
@@ -198,7 +204,7 @@ const FormHeader = ({
                     routes={routes}
                     currentUrl={currentUrl}
                 /> */}
-                <Box sx={{ mt: 4 }}>
+                {/* <Box sx={{ mt: 4 }}>
                     {status && !matches && (
                         <Box display='flex' alignItems='center' justifyContent='flex-start'>
                             <CustomChip
@@ -210,7 +216,7 @@ const FormHeader = ({
                             />
                         </Box>
                     )}
-                </Box>
+                </Box> */}
             </CardContent>
         </>
     )

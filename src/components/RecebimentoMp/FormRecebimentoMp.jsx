@@ -734,22 +734,6 @@ const FormRecebimentoMp = ({ id }) => {
             <Loading show={isLoading} />
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
-                    {/* Mensagem */}
-                    {canEdit.message && <Alert severity='warning'>{canEdit.message}</Alert>}
-
-                    {/* Última movimentação do formulário */}
-                    {movimentacao && (
-                        <Alert severity='info'>
-                            {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
-                            {movimentacao.observacao && (
-                                <p>
-                                    <br />
-                                    Mensagem: "{movimentacao.observacao}"
-                                </p>
-                            )}
-                        </Alert>
-                    )}
-
                     {/* Cabeçalho do modelo */}
                     {info && info.cabecalhoModelo != '' && (
                         <Card>
@@ -763,7 +747,7 @@ const FormRecebimentoMp = ({ id }) => {
 
                     {/* Card Header */}
                     <Card>
-                        <FormHeader
+                        {/* <FormHeader
                             btnCancel
                             btnSave={info.status < 40}
                             btnSend={info.status >= 40}
@@ -781,7 +765,7 @@ const FormRecebimentoMp = ({ id }) => {
                             handleBtnStatus={() => setOpenModalStatus(true)}
                             type={type}
                             status={status}
-                        />
+                        /> */}
 
                         {/* Modal que deleta formulario */}
                         <DialogDelete
@@ -925,6 +909,22 @@ const FormRecebimentoMp = ({ id }) => {
                         <Typography variant='caption'>
                             {`Concluído por ${fieldsFooter.conclusion.profissional.nome} em ${fieldsFooter.conclusion.dataFim} ${fieldsFooter.conclusion.horaFim}.`}
                         </Typography>
+                    )}
+
+                    {/* Mensagem */}
+                    {canEdit.message && <Alert severity='warning'>{canEdit.message}</Alert>}
+
+                    {/* Última movimentação do formulário */}
+                    {movimentacao && (
+                        <Alert severity='info'>
+                            {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
+                            {movimentacao.observacao && (
+                                <p>
+                                    <br />
+                                    Mensagem: "{movimentacao.observacao}"
+                                </p>
+                            )}
+                        </Alert>
                     )}
 
                     {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}
