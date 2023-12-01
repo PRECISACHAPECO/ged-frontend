@@ -733,6 +733,26 @@ const FormRecebimentoMp = ({ id }) => {
         <>
             <Loading show={isLoading} />
             <form onSubmit={handleSubmit(onSubmit)}>
+                <FormHeader
+                    btnCancel
+                    btnSave={info.status < 40}
+                    btnSend={info.status >= 40}
+                    btnPrint={type == 'edit' ? true : false}
+                    btnDelete={info.status < 40 ? true : false}
+                    onclickDelete={() => setOpenModalDeleted(true)}
+                    actionsData={actionsData}
+                    actions
+                    handleSubmit={() => handleSubmit(onSubmit)}
+                    handleSend={handleSendForm}
+                    iconConclusion={'mdi:check-bold'}
+                    titleConclusion={'Concluir Formulário'}
+                    title='Recebimento de MP'
+                    // btnStatus={type == 'edit' ? true : false}
+                    handleBtnStatus={() => setOpenModalStatus(true)}
+                    type={type}
+                    status={status}
+                />
+
                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
                     {/* Cabeçalho do modelo */}
                     {info && info.cabecalhoModelo != '' && (
@@ -747,26 +767,6 @@ const FormRecebimentoMp = ({ id }) => {
 
                     {/* Card Header */}
                     <Card>
-                        {/* <FormHeader
-                            btnCancel
-                            btnSave={info.status < 40}
-                            btnSend={info.status >= 40}
-                            btnPrint={type == 'edit' ? true : false}
-                            btnDelete={info.status < 40 ? true : false}
-                            onclickDelete={() => setOpenModalDeleted(true)}
-                            actionsData={actionsData}
-                            actions
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            handleSend={handleSendForm}
-                            iconConclusion={'mdi:check-bold'}
-                            titleConclusion={'Concluir Formulário'}
-                            title='Recebimento de MP'
-                            // btnStatus={type == 'edit' ? true : false}
-                            handleBtnStatus={() => setOpenModalStatus(true)}
-                            type={type}
-                            status={status}
-                        /> */}
-
                         {/* Modal que deleta formulario */}
                         <DialogDelete
                             title='Excluir Formulário'
