@@ -1,7 +1,7 @@
 import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { api } from 'src/configs/api'
-import { Card, CardContent, Grid } from '@mui/material'
+import { Button, Card, CardContent, Grid } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import DialogForm from 'src/components/Defaults/Dialogs/Dialog'
@@ -133,6 +133,9 @@ const FormApresentacao = ({ id }) => {
                             onclickDelete={() => setOpen(true)}
                             type={type}
                         />
+                        <Button variant='contained' color='rocket'>
+                            Rocket
+                        </Button>
                         <CardContent>
                             <Grid container spacing={5}>
                                 <Input

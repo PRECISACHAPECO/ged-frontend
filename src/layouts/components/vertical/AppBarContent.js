@@ -117,27 +117,29 @@ const AppBarContent = props => {
 
                 {/* Botões de ação */}
 
+                <div className='bg-red-600'>
 
-                <FormHeader
-                    btnCancel
-                    btnDelete={{}}
-                    onclickDelete={{}}
-                    btnSave={{}}
-                    btnSend={{}}
-                    btnPrint={{}}
-                    // actionsData={{}}
-                    actions
-                    handleSubmit={{}}
-                    handleSend={{}}
+                    <FormHeader
+                        btnCancel
+                        btnDelete={{}}
+                        onclickDelete={{}}
+                        btnSave={{}}
+                        btnSend={{}}
+                        btnPrint={{}}
+                        // actionsData={{}}
+                        actions
+                        handleSubmit={{}}
+                        handleSend={{}}
 
-                    iconConclusion={'mdi:check-bold'}
-                    titleConclusion={'Concluir Formulário'}
-                    title='Fornecedor'
-                    btnStatus={{}}
-                    handleBtnStatus={{}}
-                // type={type}
-                // status={status}
-                />
+                        iconConclusion={'mdi:check-bold'}
+                        titleConclusion={'Concluir Formulário'}
+                        title='Fornecedor'
+                        btnStatus={{}}
+                        handleBtnStatus={{}}
+                    // type={type}
+                    // status={status}
+                    />
+                </div>
 
 
             </Box>
