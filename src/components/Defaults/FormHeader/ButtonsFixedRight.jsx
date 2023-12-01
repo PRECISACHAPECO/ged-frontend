@@ -48,7 +48,7 @@ const ButtonsFixedRight = ({
                 <Button
                     onClick={handleSubmit}
                     type='submit'
-                    variant='outlined'
+                    variant='contained'
                     size='medium'
                     color={isLoading ? 'secondary' : 'primary'}
                     disabled={disabled || disabledSubmit || isLoading}

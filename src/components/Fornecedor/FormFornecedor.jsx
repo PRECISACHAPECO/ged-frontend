@@ -892,22 +892,55 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         <>
             <Loading show={isLoading} />
             <form onSubmit={handleSubmit(onSubmit)}>
-                {/* Foi copiado pelo menos uma informação de meus dados */}
-                {dataCopiedMyData && dataCopiedMyData.length > 0 && (
-                    <Alert severity='info' sx={{ mb: 2 }}>
-                        <h1>
-                            Os seguintes campos foram copiados de <strong>Meus Dados</strong>:
-                        </h1>
-                        <div className='pt-2'>
-                            {dataCopiedMyData.map(row => (
-                                <div className='flex opacity-80'>
-                                    <p>{`- ${row.name} (${row.value})`}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </Alert>
-                )}
+                <FormHeader
+                    btnCancel
+                    btnDelete={info.status < 40 ? true : false}
+                    onclickDelete={() => setOpenModalDeleted(true)}
+                    btnSave={canEdit.status}
+                    btnSend={canEdit.status || (user.papelID == 1 && info.status >= 40)}
+                    btnPrint={type == 'edit' ? true : false}
+                    actionsData={actionsData}
+                    actions
+                    handleSubmit={() => handleSubmit(onSubmit)}
+                    handleSend={handleSendForm}
+                    componentSaveReport={
+                        <Document>
+                            <Page
+                                size='A4'
+                                style={{
+                                    paddingHorizontal: 25
+                                }}
+                            >
+                                <Header />
+                                <DadosFornecedor />
+                                <Footer />
+                            </Page>
+                        </Document>
+                    }
+                    iconConclusion={'mdi:check-bold'}
+                    titleConclusion={'Concluir Formulário'}
+                    title='Fornecedor'
+                    btnStatus={type == 'edit' ? true : false}
+                    handleBtnStatus={() => setOpenModalStatus(true)}
+                    type={type}
+                    status={status}
+                />
                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
+                    {/* Foi copiado pelo menos uma informação de meus dados */}
+                    {dataCopiedMyData && dataCopiedMyData.length > 0 && (
+                        <Alert severity='info' sx={{ mb: 2 }}>
+                            <h1>
+                                Os seguintes campos foram copiados de <strong>Meus Dados</strong>:
+                            </h1>
+                            <div className='pt-2'>
+                                {dataCopiedMyData.map(row => (
+                                    <div className='flex opacity-80'>
+                                        <p>{`- ${row.name} (${row.value})`}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </Alert>
+                    )}
                     {/* Cabeçalho do modelo */}
                     {info && info.cabecalhoModelo != '' && (
                         <Card>
@@ -921,39 +954,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
                     {/* Card Header */}
                     <Card>
-                        {/* <FormHeader
-                            btnCancel
-                            btnDelete={info.status < 40 ? true : false}
-                            onclickDelete={() => setOpenModalDeleted(true)}
-                            btnSave={canEdit.status}
-                            btnSend={canEdit.status || (user.papelID == 1 && info.status >= 40)}
-                            btnPrint={type == 'edit' ? true : false}
-                            actionsData={actionsData}
-                            actions
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            handleSend={handleSendForm}
-                            componentSaveReport={
-                                <Document>
-                                    <Page
-                                        size='A4'
-                                        style={{
-                                            paddingHorizontal: 25
-                                        }}
-                                    >
-                                        <Header />
-                                        <DadosFornecedor />
-                                        <Footer />
-                                    </Page>
-                                </Document>
-                            }
-                            iconConclusion={'mdi:check-bold'}
-                            titleConclusion={'Concluir Formulário'}
-                            title='Fornecedor'
-                            btnStatus={type == 'edit' ? true : false}
-                            handleBtnStatus={() => setOpenModalStatus(true)}
-                            type={type}
-                            status={status}
-                        /> */}
                         {/* Modal que deleta formulario */}
                         <DialogDelete
                             title='Excluir Formulário'

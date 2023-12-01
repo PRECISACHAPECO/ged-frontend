@@ -4,6 +4,7 @@ import useScrollTrigger from '@mui/material/useScrollTrigger'
 import MuiAppBar from '@mui/material/AppBar'
 import MuiToolbar from '@mui/material/Toolbar'
 
+
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
@@ -12,7 +13,7 @@ const AppBar = styled(MuiAppBar)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing(0, 0),
-    // backgroundColor: '#1c1c1c',
+    backgroundColor: theme.palette.mode == 'dark' ? '#202023' : '#F7F7F9',
     color: theme.palette.text.primary,
     minHeight: theme.mixins.toolbar.minHeight,
     [theme.breakpoints.down('sm')]: {
@@ -64,7 +65,7 @@ const LayoutAppBar = props => {
         <AppBar
             elevation={0}
             color='default'
-            // className='layout-navbar'
+            className='layout-navbar'
             sx={{ ...userAppBarStyle, paddingBottom: 0, marginBottom: 0 }}
             position={appBar === 'fixed' ? 'sticky' : 'static'}
             {...userAppBarProps}

@@ -31,7 +31,6 @@ const AppBarContent = props => {
     const { title } = useContext(ParametersContext)
     const { id, setId } = useContext(RouteContext)
     const { notifications } = useContext(NotificationContext)
-    const mode = settings.mode
 
     const { user, setLoggedUnity, loggedUnity, unitsUser, getRoutes, getMenu } = useContext(AuthContext)
 
@@ -61,112 +60,58 @@ const AppBarContent = props => {
 
     return (
         <>
-            <Box display='flex' flexDirection='column' className='w-full' >
-                {/* App Bar Content */}
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className={`px-4 rounded-b-lg py-1 ${mode == 'dark' ? 'bg-[#1c1c1e]' : 'bg-[#ebebeb]'} `}>
-                    <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
-                        {hidden && !settings.navHidden ? (
-                            <IconButton color='inherit' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
-                                <Icon icon='mdi:menu' />
-                            </IconButton>
-                        ) : null}
-                        <Autocomplete hidden={hidden} settings={settings} />
-                    </Box>
-                    <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0px' }}>
-                        <Typography variant='h6' sx={{ fontWeight: 700 }} >{title.title}</Typography>
-                        <Typography variant='caption'>
-                            {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
-                        </Typography>
-                        {/* todo migalhas de pão */}
-                    </Box>
+            {/* App Bar Content */}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className='w-full mx-4 py-1 '>
+                <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                    {hidden && !settings.navHidden ? (
+                        <IconButton color='inherit' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
+                            <Icon icon='mdi:menu' />
+                        </IconButton>
+                    ) : null}
+                    <Autocomplete hidden={hidden} settings={settings} />
+                </Box>
+                <Box className='app-title' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant='h6' sx={{ fontWeight: 700 }} >{title.title}</Typography>
+                    <Typography variant='caption'>
+                        {title.subtitle.new ? `Novo` : title.subtitle.id ? `ID: ${title.subtitle.id}` : title.subtitle.count ? `Total de registros: ${title.subtitle.count}` : ``}
+                    </Typography>
+                    {/* todo migalhas de pão */}
+                    {/* <BreadcrumbsBasic /> */}
+                </Box>
+                <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
+                    <div className='hidden sm:block'>
+                        {
+                            unitsUser && unitsUser.length > 1 ? (
+                                <Button
+                                    color="secondary"
+                                    endIcon={<Icon icon='material-symbols:keyboard-arrow-down-rounded' />}
+                                    onClick={() => setOpenModal(true)}
+                                    style={{ textTransform: 'none' }}>
+                                    {loggedUnity?.nomeFantasia}
+                                </Button>
+                            ) : (
+                                <Button
+                                    color="secondary"
+                                    style={{
+                                        textTransform: 'none',
+                                        pointerEvents: 'none'
+                                    }}>
+                                    {loggedUnity?.nomeFantasia}
+                                </Button>
+                            )
+                        }
+                    </div>
+                    <div className='hidden sm:block'>
+                        <ModeToggler settings={settings} saveSettings={saveSettings} />
+                    </div>
+                    <div className='hidden sm:block'>
+                        <NotificationDropdown settings={settings} notifications={notifications} />
+                    </div>
 
-                    <Box className='flex items-center' >
-                        <div className='hidden sm:block'>
-                            {
-                                unitsUser && unitsUser.length > 1 ? (
-                                    <Button
-                                        color="secondary"
-                                        endIcon={<Icon icon='material-symbols:keyboard-arrow-down-rounded' />}
-                                        onClick={() => setOpenModal(true)}
-                                        style={{ textTransform: 'none' }}>
-                                        {loggedUnity?.nomeFantasia}
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        color="secondary"
-                                        style={{
-                                            textTransform: 'none',
-                                            pointerEvents: 'none'
-                                        }}>
-                                        {loggedUnity?.nomeFantasia}
-                                    </Button>
-                                )
-                            }
-                        </div>
-                        <div className='hidden sm:block'>
-                            <ModeToggler settings={settings} saveSettings={saveSettings} />
-                        </div>
-                        <div className='hidden sm:block'>
-                            <NotificationDropdown settings={settings} notifications={notifications} />
-                        </div>
+                    <UserDropdown settings={settings} />
 
-                        <UserDropdown settings={settings} />
-
-                    </Box>
-                </Box >
-
-                {/* Botões de ação */}
-<<<<<<< HEAD
-
-                <div className='bg-red-600'>
-
-                    <FormHeader
-                        btnCancel
-                        btnDelete={{}}
-                        onclickDelete={{}}
-                        btnSave={{}}
-                        btnSend={{}}
-                        btnPrint={{}}
-                        // actionsData={{}}
-                        actions
-                        handleSubmit={{}}
-                        handleSend={{}}
-
-                        iconConclusion={'mdi:check-bold'}
-                        titleConclusion={'Concluir Formulário'}
-                        title='Fornecedor'
-                        btnStatus={{}}
-                        handleBtnStatus={{}}
-                    // type={type}
-                    // status={status}
-                    />
-                </div>
-
-
-            </Box>
-=======
-                <FormHeader
-                    btnCancel
-                    btnDelete={{}}
-                    onclickDelete={{}}
-                    btnSave={{}}
-                    btnSend={{}}
-                    btnPrint={{}}
-                    // actionsData={{}}
-                    actions
-                    handleSubmit={{}}
-                    handleSend={{}}
-
-                    iconConclusion={'mdi:check-bold'}
-                    titleConclusion={'Concluir Formulário'}
-                    title='Fornecedor'
-                    btnStatus={{}}
-                    handleBtnStatus={{}}
-                // type={type}
-                // status={status}
-                />
+                </Box>
             </Box >
->>>>>>> e674eb942dd78997a9daaeba61310af11a61890d
 
             <DialogSelectUnit
                 openModal={openModal}

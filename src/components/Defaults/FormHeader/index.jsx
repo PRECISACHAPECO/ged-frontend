@@ -137,65 +137,64 @@ const FormHeader = ({
 
     return (
         <>
-            <CardContent
-                className={`flex items-center justify-between ${
-                    settings.mode == 'dark' ? 'bg-[#202023]' : 'bg-[#F7F7F9]'
-                }`}
+            <div
+                className={`sticky top-20 pb-2 mb-2 z-50 ${settings.mode == 'dark' ? 'bg-[#202023]' : 'bg-[#F7F7F9]'}`}
             >
-                {/* Div da esquerda */}
-                <ButtonsFixedLeft
-                    routes={routes}
-                    currentUrl={currentUrl}
-                    btnCancel={btnCancel}
-                    btnDelete={btnDelete}
-                    btnStatus={btnStatus}
-                    btnClose={btnClose}
-                    handleModalClose={handleModalClose}
-                    status={status}
-                    handleBtnStatus={handleBtnStatus}
-                    onclickDelete={onclickDelete}
-                    setId={setId}
-                    router={router}
-                    type={type}
-                />
-
-                {/* // 3 pontinhos ao clicar abre opções de seleção */}
-                <div className='flex items-center gap-2'>
-                    {/*Div direita */}
-                    {actions && (
-                        <OptionsDots
-                            anchorEl={anchorEl}
-                            open={open}
-                            handleClose={handleClose}
-                            handleClick={handleClick}
-                            disabled={disabled}
-                            disabledPrint={disabledPrint}
-                            btnPrint={btnPrint}
-                            actionsData={actionsData}
-                            matches={matches}
-                        />
-                    )}
-                    <ButtonsFixedRight
-                        btnSave={btnSave}
-                        btnNew={btnNew}
-                        btnSend={btnSend}
-                        btnNext={btnNext}
-                        manualUrl={manualUrl}
+                <div className={`flex items-center justify-between w-full `} style={{ zIndex: 1000 }}>
+                    {/* Div da esquerda */}
+                    <ButtonsFixedLeft
                         routes={routes}
                         currentUrl={currentUrl}
-                        handleSubmit={handleSubmit}
-                        disabled={disabled}
-                        disabledSend={disabledSend}
-                        disabledSubmit={disabledSubmit}
-                        handleSend={handleSend}
-                        componentSaveReport={componentSaveReport}
-                        iconConclusion={iconConclusion}
-                        titleConclusion={titleConclusion}
+                        btnCancel={btnCancel}
+                        btnDelete={btnDelete}
+                        btnStatus={btnStatus}
+                        btnClose={btnClose}
+                        handleModalClose={handleModalClose}
+                        status={status}
+                        handleBtnStatus={handleBtnStatus}
+                        onclickDelete={onclickDelete}
+                        setId={setId}
+                        router={router}
+                        type={type}
                     />
-                </div>
 
-                {/* Botões flutuantes */}
-                {/* <ButtonsFloating
+                    {/* // 3 pontinhos ao clicar abre opções de seleção */}
+                    <div className='flex items-center gap-2'>
+                        {/*Div direita */}
+                        {actions && (
+                            <OptionsDots
+                                anchorEl={anchorEl}
+                                open={open}
+                                handleClose={handleClose}
+                                handleClick={handleClick}
+                                disabled={disabled}
+                                disabledPrint={disabledPrint}
+                                btnPrint={btnPrint}
+                                actionsData={actionsData}
+                                matches={matches}
+                            />
+                        )}
+                        <ButtonsFixedRight
+                            btnSave={btnSave}
+                            btnNew={btnNew}
+                            btnSend={btnSend}
+                            btnNext={btnNext}
+                            manualUrl={manualUrl}
+                            routes={routes}
+                            currentUrl={currentUrl}
+                            handleSubmit={handleSubmit}
+                            disabled={disabled}
+                            disabledSend={disabledSend}
+                            disabledSubmit={disabledSubmit}
+                            handleSend={handleSend}
+                            componentSaveReport={componentSaveReport}
+                            iconConclusion={iconConclusion}
+                            titleConclusion={titleConclusion}
+                        />
+                    </div>
+
+                    {/* Botões flutuantes */}
+                    {/* <ButtonsFloating
                     isVisible={isVisible}
                     dataButtons={dataButtons}
                     btnSave={btnSave}
@@ -204,7 +203,7 @@ const FormHeader = ({
                     routes={routes}
                     currentUrl={currentUrl}
                 /> */}
-                {/* <Box sx={{ mt: 4 }}>
+                    {/* <Box sx={{ mt: 4 }}>
                     {status && !matches && (
                         <Box display='flex' alignItems='center' justifyContent='flex-start'>
                             <CustomChip
@@ -217,7 +216,8 @@ const FormHeader = ({
                         </Box>
                     )}
                 </Box> */}
-            </CardContent>
+                </div>
+            </div>
         </>
     )
 }

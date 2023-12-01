@@ -22,7 +22,7 @@ import ScrollToTop from 'src/@core/components/scroll-to-top'
 
 const VerticalLayoutWrapper = styled('div')({
     height: '100%',
-    display: 'flex'
+    display: 'flex',
 })
 
 const MainContentWrapper = styled(Box)({
@@ -36,7 +36,6 @@ const MainContentWrapper = styled(Box)({
 const ContentWrapper = styled('main')(({ theme }) => ({
     flexGrow: 1,
     width: '100%',
-    // backgroundColor: 'blue',
     padding: theme.spacing(6),
     transition: 'padding .25s ease-in-out',
     [theme.breakpoints.down('sm')]: {
@@ -63,7 +62,6 @@ const VerticalLayout = props => {
     // ** Toggle Functions
     const toggleNavVisibility = () => setNavVisible(!navVisible)
 
-
     return (
         <>
             <VerticalLayoutWrapper className='layout-wrapper'>
@@ -87,7 +85,7 @@ const VerticalLayout = props => {
                     />
                 )}
                 <MainContentWrapper
-                    className={`layout-content-wrapper ${settings.mode == 'dark' ? 'bg-[#202023]' : 'bg-[#f5f5f5]'}`}
+                    className={`layout-content-wrapper pt-0 ${settings.mode == 'dark' ? 'bg-[#202023]' : 'bg-[#f5f5f5]'}`}
                     sx={{ ...(contentHeightFixed && { maxHeight: '100vh' }) }}
                 >
                     <AppBar

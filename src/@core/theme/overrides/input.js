@@ -30,7 +30,6 @@ const input = theme => {
                     borderTopRightRadius: 8,
                     backgroundColor: `rgba(${theme.palette.customColors.main}, 0.05)`,
                     '&:hover:not(.Mui-disabled)': {
-                        // backgroundColor: `rgba(${theme.palette.customColors.main}, 0.08)`
                         backgroundColor: theme.palette.customColors.disabledBg,
                     },
                     '&:before': {
@@ -64,6 +63,10 @@ const input = theme => {
                     '&.Mui-disabled': {
                         backgroundColor: theme.palette.customColors.disabledBg,
                     },
+                    // diminuir padding vertical
+                    // '& .MuiOutlinedInput-input': {
+                    //     padding: '8px 14px',
+                    // }
                 }
             }
         }
