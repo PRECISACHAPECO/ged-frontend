@@ -116,6 +116,35 @@ const AppBarContent = props => {
                 </Box >
 
                 {/* Botões de ação */}
+<<<<<<< HEAD
+
+                <div className='bg-red-600'>
+
+                    <FormHeader
+                        btnCancel
+                        btnDelete={{}}
+                        onclickDelete={{}}
+                        btnSave={{}}
+                        btnSend={{}}
+                        btnPrint={{}}
+                        // actionsData={{}}
+                        actions
+                        handleSubmit={{}}
+                        handleSend={{}}
+
+                        iconConclusion={'mdi:check-bold'}
+                        titleConclusion={'Concluir Formulário'}
+                        title='Fornecedor'
+                        btnStatus={{}}
+                        handleBtnStatus={{}}
+                    // type={type}
+                    // status={status}
+                    />
+                </div>
+
+
+            </Box>
+=======
                 <FormHeader
                     btnCancel
                     btnDelete={{}}
@@ -137,6 +166,7 @@ const AppBarContent = props => {
                 // status={status}
                 />
             </Box >
+>>>>>>> e674eb942dd78997a9daaeba61310af11a61890d
 
             <DialogSelectUnit
                 openModal={openModal}

@@ -73,6 +73,12 @@ const DefaultPalette = (mode, skin) => {
             dark: '#64C623',
             contrastText: whiteColor
         },
+        rocket: {
+            light: '#6a48b9',
+            main: '#6a48b9',
+            dark: '#6a48b9',
+            contrastText: whiteColor
+        },
         grey: {
             50: '#FAFAFA',
             100: '#F5F5F5',
