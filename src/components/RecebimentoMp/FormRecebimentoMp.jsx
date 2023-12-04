@@ -30,6 +30,7 @@ import RecebimentoMpProdutos from './Produtos'
 import useLoad from 'src/hooks/useLoad'
 import DialogDelete from '../Defaults/Dialogs/DialogDelete'
 import DadosRecebimentoMp from 'src/components/Reports/Formularios/RecebimentoMp/DadosRecebimentoMp'
+import { useFormContext } from 'src/context/FormContext'
 
 const FormRecebimentoMp = ({ id }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -40,7 +41,7 @@ const FormRecebimentoMp = ({ id }) => {
     const [loadingFileItem, setLoadingFileItem] = useState(false) //? loading de carregamento do arquivo
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
-    const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
+    const [hasFormPending, setHasFormPending] = useState(false) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
     const [canApprove, setCanApprove] = useState(true) //? Se true, pode aprovar o formulário
     const [fornecedor, setFornecedor] = useState(null)
     const [unidade, setUnidade] = useState(null)
@@ -59,10 +60,12 @@ const FormRecebimentoMp = ({ id }) => {
     const [openModal, setOpenModal] = useState(false)
     const [openModalNewFornecedor, setOpenModalNewFornecedor] = useState(false)
     const [listErrors, setListErrors] = useState({ status: false, errors: [] })
+    const [blobSaveReport, setBlobSaveReport] = useState(null) // Salva o blob do relatório que sera salvo no back
     const { settings } = useContext(SettingsContext)
     const { setId } = useContext(RouteContext)
     const { startLoading, stopLoading } = useLoad()
     const [openModalDeleted, setOpenModalDeleted] = useState(false)
+    const { setReportParameters, sendPdfToServer } = useFormContext()
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -194,18 +197,13 @@ const FormRecebimentoMp = ({ id }) => {
 
     // Nomes e rotas dos relatórios passados para o componente FormHeader/MenuReports
     const objRelatorio = {
-        id: 4,
-        name: 'Formulário do recebimentpMp',
+        id: id,
+        name: 'Formulário do Recebimento de MP',
         nameComponent: 'DadosRecebimentoMp',
         type: 'report',
-        params: {
-            data: {
-                id,
-                unidadeID: loggedUnity.unidadeID,
-                papelID: user.papelID
-            },
-            route: 'recebimentoMp/dadosRecebimentoMp'
-        },
+        unidadeID: loggedUnity.unidadeID,
+        papelID: user.papelID,
+        route: 'recebimentoMp/dadosRecebimentoMp',
         icon: 'fluent:print-24-regular'
     }
     const objFormConfig = {
@@ -416,7 +414,8 @@ const FormRecebimentoMp = ({ id }) => {
         }
     }
 
-    const handleSendForm = () => {
+    const handleSendForm = blob => {
+        setBlobSaveReport(blob)
         checkErrors()
         setOpenModal(true)
         setValidateForm(true)
@@ -435,6 +434,7 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const conclusionForm = async values => {
+        sendPdfToServer(id, blobSaveReport, 'recebimento-mp')
         values['conclusion'] = true
         await handleSubmit(onSubmit)(values)
     }
@@ -728,6 +728,18 @@ const FormRecebimentoMp = ({ id }) => {
         checkErrors()
     }, [])
 
+    //? Seta informações do relatório no localstorage através do contexto (pra gravar arquivo .pdf na conclusão do formulário)
+    useEffect(() => {
+        setReportParameters({
+            id: id,
+            nameComponent: 'DadosRecebimentoMp',
+            route: 'recebimentoMp/dadosRecebimentoMp',
+            unidadeID: loggedUnity.unidadeID,
+            papelID: user.papelID,
+            usuarioID: user.usuarioID
+        })
+    }, [])
+
     return (
         <>
             <Loading show={isLoading} />
@@ -735,7 +747,7 @@ const FormRecebimentoMp = ({ id }) => {
                 <FormHeader
                     btnCancel
                     btnSave={info.status < 40}
-                    btnSend={info.status >= 40}
+                    btnSend={info.status >= 30}
                     btnPrint={type == 'edit' ? true : false}
                     btnDelete={info.status < 40 ? true : false}
                     onclickDelete={() => setOpenModalDeleted(true)}

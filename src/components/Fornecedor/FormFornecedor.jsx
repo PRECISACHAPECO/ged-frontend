@@ -65,7 +65,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [dataCopiedMyData, setDataCopiedMyData] = useState([])
     const [openModalDeleted, setOpenModalDeleted] = useState(false)
     const [blobSaveReport, setBlobSaveReport] = useState(null) // Salva o blob do relatório que sera salvo no back
-    const { setReportParameters } = useFormContext()
+    const { setReportParameters, sendPdfToServer } = useFormContext()
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -141,7 +141,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 email: values.email,
                 alerta: values.alerta
             }
-            console.log('🚀 ~ data dat notificação:', data)
             createNewNotification(data)
 
             //* Envia e-mail
@@ -506,18 +505,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         setValidateForm(true)
     }
 
-    //? Seta informações do relatório no localstorage através do contexto (pra gravar arquivo .pdf na conclusão do formulário)
-    useEffect(() => {
-        setReportParameters({
-            id: id,
-            nameComponent: 'DadosFornecedor',
-            route: 'fornecedor/dadosFornecedor',
-            unidadeID: loggedUnity.unidadeID,
-            papelID: user.papelID,
-            usuarioID: user.usuarioID
-        })
-    }, [])
-
     const verifyIfCanAproveForm = blocos => {
         let tempCanApprove = true
         blocos.forEach(block => {
@@ -530,23 +517,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         setCanApprove(tempCanApprove)
     }
 
-    // Salva o relatório do fornecedor
-    const sendPdfToServer = async () => {
-        const formData = new FormData()
-        formData.append('files[]', blobSaveReport, `${id}-fornecedor.pdf`)
-
-        try {
-            const response = await api.post(
-                `/formularios/fornecedor/saveRelatorio/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`,
-                formData
-            )
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     const conclusionForm = async values => {
-        sendPdfToServer()
+        sendPdfToServer(id, blobSaveReport, 'fornecedor')
         values['conclusion'] = true
         await handleSubmit(onSubmit)(values)
     }
@@ -617,7 +589,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             }
         }
 
-        console.log('🚀 ~ data:', data)
         // return
         try {
             if (type == 'edit') {
@@ -857,6 +828,18 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
     useEffect(() => {
         checkErrors()
+    }, [])
+
+    //? Seta informações do relatório no localstorage através do contexto (pra gravar arquivo .pdf na conclusão do formulário)
+    useEffect(() => {
+        setReportParameters({
+            id: id,
+            nameComponent: 'DadosFornecedor',
+            route: 'fornecedor/dadosFornecedor',
+            unidadeID: loggedUnity.unidadeID,
+            papelID: user.papelID,
+            usuarioID: user.usuarioID
+        })
     }, [])
 
     return (
