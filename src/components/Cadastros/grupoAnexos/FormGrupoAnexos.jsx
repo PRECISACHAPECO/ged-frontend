@@ -164,22 +164,22 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
             {!data && <Loading />}
             {data && (
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Card>
-                        {/* Botões cabeçalho */}
-                        <FormHeader
-                            btnCancel
-                            btnNew={handleConfirmNew ? false : true}
-                            btnSave
-                            manualUrl={manualUrl}
-                            btnClose={btnClose}
-                            handleModalClose={handleModalClose}
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpenDelete(true)}
-                            type={type}
-                        />
+                    {/* Botões cabeçalho */}
+                    <FormHeader
+                        btnCancel
+                        btnNew={handleConfirmNew ? false : true}
+                        btnSave
+                        manualUrl={manualUrl}
+                        btnClose={btnClose}
+                        handleModalClose={handleModalClose}
+                        handleSubmit={() => handleSubmit(onSubmit)}
+                        btnDelete={type === 'edit' ? true : false}
+                        onclickDelete={() => setOpenDelete(true)}
+                        type={type}
+                    />
 
-                        {/* Formulário */}
+                    {/* Formulário */}
+                    <Card>
                         {data && (
                             <CardContent>
                                 <Grid container spacing={4}>
