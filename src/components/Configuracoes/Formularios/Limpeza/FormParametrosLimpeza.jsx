@@ -240,30 +240,30 @@ const FormParametrosLimpeza = ({ id }) => {
                 <Loading />
             ) : (
                 <form onSubmit={handleSubmit(onSubmit)}>
+                    <FormHeader
+                        partialRoute
+                        btnCancel
+                        btnSave
+                        handleSubmit={() => handleSubmit(onSubmit)}
+                        type={type}
+                        btnDelete
+                        onclickDelete={() => setOpenModalDeleted(true)}
+                    />
+                    {/* Modal que deleta formulario */}
+                    <DialogDelete
+                        title='Excluir Formulário'
+                        description='Tem certeza que deseja exluir o formulario?'
+                        params={{
+                            route: `/configuracoes/formularios/limpeza/delete/${id}`,
+                            messageSucceded: 'Formulário excluído com sucesso!',
+                            MessageError: 'Dado possui pendência!'
+                        }}
+                        open={openModalDeleted}
+                        handleClose={() => setOpenModalDeleted(false)}
+                    />
                     {/* Modelo */}
                     {model && (
                         <Card>
-                            <FormHeader
-                                partialRoute
-                                btnCancel
-                                btnSave
-                                handleSubmit={() => handleSubmit(onSubmit)}
-                                type={type}
-                                btnDelete
-                                onclickDelete={() => setOpenModalDeleted(true)}
-                            />
-                            {/* Modal que deleta formulario */}
-                            <DialogDelete
-                                title='Excluir Formulário'
-                                description='Tem certeza que deseja exluir o formulario?'
-                                params={{
-                                    route: `/configuracoes/formularios/limpeza/delete/${id}`,
-                                    messageSucceded: 'Formulário excluído com sucesso!',
-                                    MessageError: 'Dado possui pendência!'
-                                }}
-                                open={openModalDeleted}
-                                handleClose={() => setOpenModalDeleted(false)}
-                            />
                             <CardContent>
                                 <Grid container spacing={4}>
                                     <Input
