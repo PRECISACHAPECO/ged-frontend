@@ -22,15 +22,14 @@ import Loading from 'src/components/Loading'
 import toast from 'react-hot-toast'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import DialogFormConclusion from '../Defaults/Dialogs/DialogFormConclusion'
-// import FormNotification from './Dialogs/Notification/FormNotification'
 import NewFornecedor from 'src/components/Fornecedor/Dialogs/NewFornecedor'
-// import FormFornecedorProdutos from './FormFornecedorProdutos'
 import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
 import RecebimentoMpFooterFields from './Footer'
 import RecebimentoMpProdutos from './Produtos'
 import useLoad from 'src/hooks/useLoad'
 import DialogDelete from '../Defaults/Dialogs/DialogDelete'
+import DadosRecebimentoMp from 'src/components/Reports/Formularios/RecebimentoMp/DadosRecebimentoMp'
 
 const FormRecebimentoMp = ({ id }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -747,6 +746,7 @@ const FormRecebimentoMp = ({ id }) => {
                     iconConclusion={'mdi:check-bold'}
                     titleConclusion={'Concluir Formulário'}
                     title='Recebimento de MP'
+                    componentSaveReport={<DadosRecebimentoMp />}
                     // btnStatus={type == 'edit' ? true : false}
                     handleBtnStatus={() => setOpenModalStatus(true)}
                     type={type}

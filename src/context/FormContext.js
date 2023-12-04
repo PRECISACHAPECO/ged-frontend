@@ -1,40 +1,38 @@
-// FormProvider.js
-
 import React, { createContext, useState } from 'react';
-import { useForm } from 'react-hook-form';
 
-const FormContext = createContext({});
+const defaultValues = {
+    setReportParameters: () => { }
+}
 
-const FormProvider = ({ children, onSubmit }) => {
-    const {
-        trigger,
-        handleSubmit,
-        reset,
-        setValue,
-        getValues,
-        control,
-        formState: { errors },
-        register,
-    } = useForm();
+const FormContext = createContext(defaultValues);
+
+const FormProvider = ({ children }) => {
+
+    const setReportParameters = (parameters) => {
+        const values = {
+            id: parameters.id,
+            nameComponent: parameters.nameComponent, //? Mesmo nome do componente
+            route: parameters.route, //? Rota do backend
+            unidadeID: parameters.unidadeID,
+            papelID: parameters.papelID,
+            usuarioID: parameters.usuarioID,
+        }
+        localStorage.setItem('report', JSON.stringify(values));
+    }
 
     const values = {
-        trigger,
-        handleSubmit,
-        reset,
-        control,
-        setValue,
-        getValues,
-        errors,
-        register,
+        setReportParameters
     };
 
     return (
         <FormContext.Provider value={values}>
-
             {children}
-
         </FormContext.Provider>
     );
 };
 
-export { FormContext, FormProvider };
+const useFormContext = () => {
+    return React.useContext(FormContext);
+};
+
+export { FormContext, FormProvider, useFormContext };

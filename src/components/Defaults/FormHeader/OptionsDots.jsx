@@ -4,15 +4,16 @@ import DialogActs from '../Dialogs/DialogActs'
 import { useState } from 'react'
 import { useContext } from 'react'
 import { AuthContext } from 'src/context/AuthContext'
+import { useFormContext } from 'src/context/FormContext'
 
 const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) => {
     const [openModal, setOpenModal] = useState(false)
     const [item, setItem] = useState(null)
-    // const { setParamsReport } = useContext(AuthContext)
+    const { setReportParameters } = useFormContext()
 
     // Ao clicar em um item e ele for do tipo report
     const handleClickReport = item => {
-        localStorage.setItem('report', JSON.stringify(item))
+        setReportParameters(item)
     }
 
     return (
@@ -75,10 +76,7 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                             )}
 
                             {item.type == 'report' ? (
-                                <a
-                                    href={`/relatorio?nameComponent=${item.nameComponent}&id=${item.params.data.id}&unidadeID=${item.params.data.unidadeID}&papelID=${item.params.data.papelID}&usuarioID=${item.params.data.usuarioID}`}
-                                    target='_blank'
-                                >
+                                <a href={`/relatorio`} target='_blank'>
                                     {item.name}
                                 </a>
                             ) : (

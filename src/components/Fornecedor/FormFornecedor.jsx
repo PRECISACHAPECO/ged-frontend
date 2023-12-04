@@ -31,25 +31,8 @@ import HeaderFields from './Header'
 import FooterFields from './Footer'
 import useLoad from 'src/hooks/useLoad'
 import DialogDelete from '../Defaults/Dialogs/DialogDelete'
-import { Document, Page, Text } from '@react-pdf/renderer'
 import DadosFornecedor from 'src/components/Reports/Formularios/Fornecedor/DadosFornecedor'
-import Header from '../Reports/Layout/Header'
-import Footer from '../Reports/Layout/Footer'
-
-const MyDoc = () => {
-    return (
-        <Document>
-            <Page
-                size='A4'
-                style={{
-                    paddingHorizontal: 25
-                }}
-            >
-                <Text>Helllo</Text>
-            </Page>
-        </Document>
-    )
-}
+import { useFormContext } from 'src/context/FormContext'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -82,6 +65,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [dataCopiedMyData, setDataCopiedMyData] = useState([])
     const [openModalDeleted, setOpenModalDeleted] = useState(false)
     const [blobSaveReport, setBlobSaveReport] = useState(null) // Salva o blob do relatório que sera salvo no back
+    const { setReportParameters } = useFormContext()
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -259,19 +243,14 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         identification: null
     }
     const objRelatorio = {
-        id: 4,
+        id: id,
         name: 'Formulário do fornecedor',
         nameComponent: 'DadosFornecedor',
         type: 'report',
-        params: {
-            data: {
-                id,
-                unidadeID: loggedUnity.unidadeID,
-                papelID: user.papelID,
-                usuarioID: user.usuarioID
-            },
-            route: 'fornecedor/dadosFornecedor'
-        },
+        unidadeID: loggedUnity.unidadeID,
+        papelID: user.papelID,
+        usuarioID: user.usuarioID,
+        route: 'fornecedor/dadosFornecedor',
         icon: 'fluent:print-24-regular'
     }
     const objFormConfig = {
@@ -527,23 +506,16 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         setValidateForm(true)
     }
 
+    //? Seta informações do relatório no localstorage através do contexto (pra gravar arquivo .pdf na conclusão do formulário)
     useEffect(() => {
-        const objRelatorio = {
-            id: 4,
-            name: 'Formulário do fornecedor',
+        setReportParameters({
+            id: id,
             nameComponent: 'DadosFornecedor',
-            type: 'report',
-            params: {
-                data: {
-                    id,
-                    unidadeID: loggedUnity.unidadeID,
-                    papelID: user.papelID
-                },
-                route: 'fornecedor/dadosFornecedor'
-            },
-            icon: 'fluent:print-24-regular'
-        }
-        localStorage.setItem('report', JSON.stringify(objRelatorio))
+            route: 'fornecedor/dadosFornecedor',
+            unidadeID: loggedUnity.unidadeID,
+            papelID: user.papelID,
+            usuarioID: user.usuarioID
+        })
     }, [])
 
     const verifyIfCanAproveForm = blocos => {
@@ -902,20 +874,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     actions
                     handleSubmit={() => handleSubmit(onSubmit)}
                     handleSend={handleSendForm}
-                    componentSaveReport={
-                        <Document>
-                            <Page
-                                size='A4'
-                                style={{
-                                    paddingHorizontal: 25
-                                }}
-                            >
-                                <Header />
-                                <DadosFornecedor />
-                                <Footer />
-                            </Page>
-                        </Document>
-                    }
+                    componentSaveReport={<DadosFornecedor />}
                     iconConclusion={'mdi:check-bold'}
                     titleConclusion={'Concluir Formulário'}
                     title='Fornecedor'

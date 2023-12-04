@@ -4,6 +4,8 @@ import Router from 'next/router'
 import Link from 'next/link'
 import useLoad from 'src/hooks/useLoad'
 import { BlobProvider, Document, Page, Text } from '@react-pdf/renderer'
+import Header from 'src/components/Reports/Layout/Header'
+import Footer from 'src/components/Reports/Layout/Footer'
 
 const ButtonsFixedRight = ({
     btnSend,
@@ -25,6 +27,23 @@ const ButtonsFixedRight = ({
     const router = Router
     const { isLoading } = useLoad()
     const url = manualUrl ?? currentUrl
+
+    const DocumentPdf = () => {
+        return (
+            <Document>
+                <Page
+                    size='A4'
+                    style={{
+                        paddingHorizontal: 25
+                    }}
+                >
+                    <Header />
+                    {componentSaveReport}
+                    <Footer />
+                </Page>
+            </Document>
+        )
+    }
 
     return (
         <div className='flex items-center gap-2'>
@@ -73,7 +92,7 @@ const ButtonsFixedRight = ({
             )}
             {/* Fornecedor concluir formulário e envia pra fábrica avaliar */}
             {btnSend && (
-                <BlobProvider document={componentSaveReport}>
+                <BlobProvider document={<DocumentPdf />}>
                     {({ blob, url, loading, error }) => (
                         <Button
                             onClick={() => handleSend(blob)}

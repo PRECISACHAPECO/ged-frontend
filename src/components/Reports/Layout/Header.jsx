@@ -44,12 +44,8 @@ const Header = ({ params }) => {
     const report = JSON.parse(reportJSON)
 
     const fetchData = async () => {
-        const data = {
-            ...report?.params?.data
-        }
-
         try {
-            const response = await api.post('relatorio/header', data)
+            const response = await api.post('relatorio/header', report)
             setData(response.data)
         } catch (error) {
             console.error('Erro ao buscar os dados do cabeçalho:', error)

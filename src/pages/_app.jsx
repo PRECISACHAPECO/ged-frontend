@@ -56,6 +56,7 @@ import 'src/iconify-bundle/icons-bundle-react'
 // ** Global css styles
 import '../../styles/globals.css'
 import { useContext, useEffect } from 'react'
+import { FormProvider } from 'src/context/FormContext'
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -117,34 +118,39 @@ const App = props => {
             </Head>
             <RouteProvider>
                 <ParametersProvider>
-                    <AuthProvider>
-                        <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
-                            <SettingsConsumer>
-                                {({ settings }) => {
-                                    return (
-                                        <NotificationProvider>
-                                            <ThemeComponent settings={settings}>
-                                                <WindowWrapper>
-                                                    <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                                                        <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
-                                                            {getLayout(<Component {...pageProps} />)}
-                                                        </AclGuard>
-                                                    </Guard>
-                                                </WindowWrapper>
-                                                <ReactHotToast>
-                                                    <Toaster
-                                                        position={settings.toastPosition}
-                                                        toastOptions={{ className: 'react-hot-toast' }}
-                                                        style={{ zIndex: 999999 }}
-                                                    />
-                                                </ReactHotToast>
-                                            </ThemeComponent>
-                                        </NotificationProvider>
-                                    )
-                                }}
-                            </SettingsConsumer>
-                        </SettingsProvider>
-                    </AuthProvider>
+                    <FormProvider>
+                        <AuthProvider>
+                            <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
+                                <SettingsConsumer>
+                                    {({ settings }) => {
+                                        return (
+                                            <NotificationProvider>
+                                                <ThemeComponent settings={settings}>
+                                                    <WindowWrapper>
+                                                        <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                                                            <AclGuard
+                                                                aclAbilities={aclAbilities}
+                                                                guestGuard={guestGuard}
+                                                            >
+                                                                {getLayout(<Component {...pageProps} />)}
+                                                            </AclGuard>
+                                                        </Guard>
+                                                    </WindowWrapper>
+                                                    <ReactHotToast>
+                                                        <Toaster
+                                                            position={settings.toastPosition}
+                                                            toastOptions={{ className: 'react-hot-toast' }}
+                                                            style={{ zIndex: 999999 }}
+                                                        />
+                                                    </ReactHotToast>
+                                                </ThemeComponent>
+                                            </NotificationProvider>
+                                        )
+                                    }}
+                                </SettingsConsumer>
+                            </SettingsProvider>
+                        </AuthProvider>
+                    </FormProvider>
                 </ParametersProvider>
             </RouteProvider>
         </CacheProvider>
