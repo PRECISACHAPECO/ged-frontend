@@ -252,16 +252,16 @@ const FormUnidade = ({ id }) => {
             {!data && <Loading />}
             {data && (
                 <>
-                    <Card>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <FormHeader
-                                btnCancel={user.papelID === 1 ? true : false}
-                                btnSave
-                                handleSubmit={() => handleSubmit(onSubmit)}
-                                btnDelete={type === 'edit' && user.papelID === 1 ? true : false}
-                                onclickDelete={() => setOpenModalDeleted(true)}
-                                type={type}
-                            />
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <FormHeader
+                            btnCancel={user.papelID === 1 ? true : false}
+                            btnSave
+                            handleSubmit={() => handleSubmit(onSubmit)}
+                            btnDelete={type === 'edit' && user.papelID === 1 ? true : false}
+                            onclickDelete={() => setOpenModalDeleted(true)}
+                            type={type}
+                        />
+                        <Card>
                             <DialogDelete
                                 title='Excluir Unidade'
                                 description='Tem certeza que deseja exluir a unidade?'
@@ -518,8 +518,8 @@ const FormUnidade = ({ id }) => {
                                     </Grid>
                                 </Grid>
                             </CardContent>
-                        </form>
-                    </Card>
+                        </Card>
+                    </form>
 
                     {/* Parâmetros da unidade */}
                     {type == 'edit' && user.papelID == 1 && (

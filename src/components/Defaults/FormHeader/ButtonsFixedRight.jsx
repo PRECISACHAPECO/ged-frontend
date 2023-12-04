@@ -4,8 +4,14 @@ import Router from 'next/router'
 import Link from 'next/link'
 import useLoad from 'src/hooks/useLoad'
 import { BlobProvider, Document, Page, Text } from '@react-pdf/renderer'
+<<<<<<< HEAD
 import Header from 'src/components/Reports/Layout/Header'
 import Footer from 'src/components/Reports/Layout/Footer'
+=======
+import { useContext } from 'react'
+import { AuthContext } from 'src/context/AuthContext'
+import { RouteContext } from 'src/context/RouteContext'
+>>>>>>> 428c24b58c37bccd6a3ffa9cef7a1e56c53da4a8
 
 const ButtonsFixedRight = ({
     btnSend,
@@ -27,6 +33,8 @@ const ButtonsFixedRight = ({
     const router = Router
     const { isLoading } = useLoad()
     const url = manualUrl ?? currentUrl
+    const { user } = useContext(AuthContext)
+    const { id } = useContext(RouteContext)
 
     const DocumentPdf = () => {
         return (
@@ -63,20 +71,22 @@ const ButtonsFixedRight = ({
                 </Link>
             )}
             {/* Salvar */}
-            {btnSave && routes.find(route => route.rota === url && route.editar) && (
-                <Button
-                    onClick={handleSubmit}
-                    type='submit'
-                    variant='contained'
-                    size='medium'
-                    color={isLoading ? 'secondary' : 'primary'}
-                    disabled={disabled || disabledSubmit || isLoading}
-                    sx={{ display: 'flex', gap: 2 }}
-                >
-                    <Icon icon='mdi:check-bold' />
-                    <span className='hidden sm:block'>Salvar</span>
-                </Button>
-            )}
+            {btnSave &&
+                (routes.find(route => route.rota === url && route.editar) ||
+                    (currentUrl === '/cadastros/profissional' && user.profissionalID == id)) && (
+                    <Button
+                        onClick={handleSubmit}
+                        type='submit'
+                        variant='contained'
+                        size='medium'
+                        color={isLoading ? 'secondary' : 'primary'}
+                        disabled={disabled || disabledSubmit || isLoading}
+                        sx={{ display: 'flex', gap: 2 }}
+                    >
+                        <Icon icon='mdi:check-bold' />
+                        <span className='hidden sm:block'>Salvar</span>
+                    </Button>
+                )}
             {btnNext && (
                 <Button
                     onClick={handleSubmit}
