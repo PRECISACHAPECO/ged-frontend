@@ -123,17 +123,17 @@ const FormTransportador = ({ id }) => {
         <>
             {!data && <Loading />}
             {data && (
-                <Card>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <FormHeader
-                            btnCancel
-                            btnSave
-                            btnNew
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
-                            type={type}
-                        />
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <FormHeader
+                        btnCancel
+                        btnSave
+                        btnNew
+                        handleSubmit={() => handleSubmit(onSubmit)}
+                        btnDelete={type === 'edit' ? true : false}
+                        onclickDelete={() => setOpen(true)}
+                        type={type}
+                    />
+                    <Card>
                         <CardContent>
                             <Grid container spacing={5}>
                                 <Input
@@ -156,8 +156,8 @@ const FormTransportador = ({ id }) => {
                                 />
                             </Grid>
                         </CardContent>
-                    </form>
-                </Card>
+                    </Card>
+                </form>
             )}
             <DialogForm
                 text='Tem certeza que deseja excluir?'

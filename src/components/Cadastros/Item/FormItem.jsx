@@ -194,20 +194,20 @@ const FormItem = ({
             {!data && <Loading />}
             {data && (
                 <>
-                    <Card>
-                        <form onSubmit={handleSubmit(onSubmit)} id='formItem'>
-                            <FormHeader
-                                btnCancel
-                                btnNew
-                                btnSave
-                                manualUrl={manualUrl}
-                                btnClose={btnClose}
-                                handleModalClose={handleModalClose}
-                                handleSubmit={() => handleSubmit(onSubmit)}
-                                btnDelete={type === 'edit' ? true : false}
-                                onclickDelete={() => setOpen(true)}
-                                type={type}
-                            />
+                    <form onSubmit={handleSubmit(onSubmit)} id='formItem'>
+                        <FormHeader
+                            btnCancel
+                            btnNew
+                            btnSave
+                            manualUrl={manualUrl}
+                            btnClose={btnClose}
+                            handleModalClose={handleModalClose}
+                            handleSubmit={() => handleSubmit(onSubmit)}
+                            btnDelete={type === 'edit' ? true : false}
+                            onclickDelete={() => setOpen(true)}
+                            type={type}
+                        />
+                        <Card>
                             <CardContent>
                                 <Grid container spacing={5}>
                                     <Select
@@ -268,8 +268,8 @@ const FormItem = ({
                                     <Divider />
                                 </Grid>
                             </CardContent>
-                        </form>
-                    </Card>
+                        </Card>
+                    </form>
 
                     <ListOptions
                         key={change}

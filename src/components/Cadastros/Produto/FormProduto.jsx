@@ -159,19 +159,19 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
             {!data && <Loading />}
             {data && (
                 <form onSubmit={handleSubmit(onSubmit)} className='space-y-3'>
+                    <FormHeader
+                        btnCancel
+                        btnNew={handleConfirmNew ? false : true}
+                        btnSave
+                        btnClose={btnClose}
+                        manualUrl={manualUrl}
+                        handleModalClose={handleModalClose}
+                        handleSubmit={() => handleSubmit(onSubmit)}
+                        btnDelete={type === 'edit' ? true : false}
+                        onclickDelete={() => setOpen(true)}
+                        type={type}
+                    />
                     <Card>
-                        <FormHeader
-                            btnCancel
-                            btnNew={handleConfirmNew ? false : true}
-                            btnSave
-                            btnClose={btnClose}
-                            manualUrl={manualUrl}
-                            handleModalClose={handleModalClose}
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
-                            type={type}
-                        />
                         <CardContent>
                             <Grid container spacing={5}>
                                 <Input
