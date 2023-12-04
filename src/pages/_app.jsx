@@ -118,8 +118,8 @@ const App = props => {
             </Head>
             <RouteProvider>
                 <ParametersProvider>
-                    <FormProvider>
-                        <AuthProvider>
+                    <AuthProvider>
+                        <FormProvider>
                             <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
                                 <SettingsConsumer>
                                     {({ settings }) => {
@@ -149,8 +149,8 @@ const App = props => {
                                     }}
                                 </SettingsConsumer>
                             </SettingsProvider>
-                        </AuthProvider>
-                    </FormProvider>
+                        </FormProvider>
+                    </AuthProvider>
                 </ParametersProvider>
             </RouteProvider>
         </CacheProvider>

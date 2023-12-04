@@ -4,14 +4,11 @@ import Router from 'next/router'
 import Link from 'next/link'
 import useLoad from 'src/hooks/useLoad'
 import { BlobProvider, Document, Page, Text } from '@react-pdf/renderer'
-<<<<<<< HEAD
-import Header from 'src/components/Reports/Layout/Header'
-import Footer from 'src/components/Reports/Layout/Footer'
-=======
 import { useContext } from 'react'
 import { AuthContext } from 'src/context/AuthContext'
 import { RouteContext } from 'src/context/RouteContext'
->>>>>>> 428c24b58c37bccd6a3ffa9cef7a1e56c53da4a8
+import Header from 'src/components/Reports/Layout/Header'
+import Footer from 'src/components/Reports/Layout/Footer'
 
 const ButtonsFixedRight = ({
     btnSend,
@@ -100,7 +97,7 @@ const ButtonsFixedRight = ({
                     <span className='hidden sm:block'>Avançar</span>
                 </Button>
             )}
-            {/* Fornecedor concluir formulário e envia pra fábrica avaliar */}
+            {/* Conclusão de formulário (salva arquivo .pdf do formulário) */}
             {btnSend && (
                 <BlobProvider document={<DocumentPdf />}>
                     {({ blob, url, loading, error }) => (
