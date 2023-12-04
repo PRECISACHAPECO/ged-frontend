@@ -275,17 +275,17 @@ const AuthProvider = ({ children }) => {
     }
 
     //* Quando o usuario mudar de rota atualizar o currentRoute
-    useEffect(() => {
-        setCurrentRoute(router.pathname)
-        if (currentRoute) {
-            //  Se a rota atual for dinamica, remove o id da rota
-            removeDynamicRouteId()
-            const permission = routes.find(rota => rota.rota === currentRoute)
-            if (!permission?.rota && currentRoute !== '/' && currentRoute !== '/login' && currentRoute !== '/login-fornecedor' && currentRoute !== '/esqueceu-sua-senha?type=login' && currentRoute !== '/esqueceu-sua-senha?type=fornecedor' && currentRoute !== '/redefinir-senha' && currentRoute !== '/fornecedor' && currentRoute !== '/registro' && currentRoute !== '/home' && currentRoute !== '/401' && currentRoute !== '/relatorio') {
-                router.push('/401')
-            }
-        }
-    }, [currentRoute])
+    // useEffect(() => {
+    //     setCurrentRoute(router.pathname)
+    //     if (currentRoute) {
+    //         //  Se a rota atual for dinamica, remove o id da rota
+    //         removeDynamicRouteId()
+    //         const permission = routes.find(rota => rota.rota === currentRoute)
+    //         if (!permission?.rota && currentRoute !== '/' && currentRoute !== '/login' && currentRoute !== '/login-fornecedor' && currentRoute !== currentRoute !== '/redefinir-senha' && currentRoute !== '/fornecedor' && currentRoute !== '/registro' && currentRoute !== '/home' && currentRoute !== '/401' && currentRoute !== '/relatorio') {
+    //             router.push('/401')
+    //         }
+    //     }
+    // }, [currentRoute])
 
 
     //! Quando carregar o sistema, faz uma requisicao ao github para saber a versão atual do sistema
