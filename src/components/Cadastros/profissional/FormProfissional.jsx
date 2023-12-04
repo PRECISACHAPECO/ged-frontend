@@ -23,7 +23,7 @@ const FormProfissional = ({ id }) => {
     const fileInputRef = useRef(null)
     const [open, setOpen] = useState(false)
     const { setId } = useContext(RouteContext)
-    const { user, setUser, loggedUnity } = useContext(AuthContext)
+    const { user, setUser, loggedUnity, routes } = useContext(AuthContext)
     const { title } = useContext(ParametersContext)
     const [data, setData] = useState(null)
     const [change, setChange] = useState(false)
@@ -39,6 +39,7 @@ const FormProfissional = ({ id }) => {
     const [userNewVerifyCPF, setUserNewVerifyCPF] = useState(false)
     // Se usuarioID vindo no getData for maior que 0  adiciona true
     const [userExistDefault, setUserExistDefault] = useState(false)
+    console.log('🚀 ~ userExistDefault:', userExistDefault)
 
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
@@ -399,67 +400,74 @@ const FormProfissional = ({ id }) => {
                             </Grid>
                         </CardContent>
                     </Card>
-                    <Card>
-                        <CardHeader title='Cargos / Funções' />
-                        <CardContent>
-                            <Grid container spacing={5}>
-                                {/* Cargo / Função do profissonal */}
-                                {data && (
-                                    <CargoFuncao
-                                        getValues={getValues}
-                                        control={control}
-                                        register={register}
-                                        errors={errors}
-                                        removeItem={removeItem}
-                                        key={change}
-                                    />
-                                )}
-                                <Button
-                                    variant='outlined'
-                                    color='primary'
-                                    sx={{ mt: 4, ml: 4 }}
-                                    startIcon={<Icon icon='material-symbols:add-circle-outline-rounded' />}
-                                    onClick={() => {
-                                        addItem()
-                                    }}
-                                >
-                                    Inserir item
-                                </Button>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-
-                    {/* userExistVerifyCPF */}
-
-                    {(userExistDefault || userNewVerifyCPF) && (
+                    {
+                        // routes.find(route => route.rota === staticUrl && route.ler) &&
+                        // (userNewVerifyCPF || userExistDefault) &&
                         <Card>
-                            <CardHeader title='Permissões' />
+                            <CardHeader title='Cargos / Funções' />
                             <CardContent>
-                                <Grid container spacing={4} className='my-3'>
-                                    <Select
-                                        xs={12}
-                                        md={12}
-                                        title='Copiar permissões do profissional'
-                                        name='professional'
-                                        value={null}
-                                        options={data?.professionals}
-                                        onChange={copyPermissions}
-                                        register={register}
-                                        setValue={setValue}
-                                        control={control}
-                                    />
+                                <Grid container spacing={5}>
+                                    {/* Cargo / Função do profissonal */}
+                                    {data && (
+                                        <CargoFuncao
+                                            getValues={getValues}
+                                            control={control}
+                                            register={register}
+                                            errors={errors}
+                                            removeItem={removeItem}
+                                            key={change}
+                                        />
+                                    )}
+                                    <Button
+                                        variant='outlined'
+                                        color='primary'
+                                        sx={{ mt: 4, ml: 4 }}
+                                        startIcon={<Icon icon='material-symbols:add-circle-outline-rounded' />}
+                                        onClick={() => {
+                                            addItem()
+                                        }}
+                                    >
+                                        Inserir item
+                                    </Button>
                                 </Grid>
-                                <Permissions
-                                    key={changePermissions}
-                                    menu={data.menu}
-                                    control={control}
-                                    register={register}
-                                    setValue={setValue}
-                                    getValues={getValues}
-                                />
                             </CardContent>
                         </Card>
-                    )}
+                    }
+
+                    {/* userExistVerifyCPF */}
+                    {/* routes.find(route => route.rota === staticUrl && route.editar) */}
+
+                    {routes.find(route => route.rota === staticUrl && route.ler) &&
+                        (userNewVerifyCPF || userExistDefault) && (
+                            <Card>
+                                <CardHeader title='Permissões' />
+                                <CardContent>
+                                    <Grid container spacing={4} className='my-3'>
+                                        <Select
+                                            xs={12}
+                                            md={12}
+                                            title='Copiar permissões do profissional'
+                                            name='professional'
+                                            value={null}
+                                            options={data?.professionals}
+                                            onChange={copyPermissions}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                        />
+                                    </Grid>
+                                    <Permissions
+                                        key={changePermissions}
+                                        menu={data.menu}
+                                        control={control}
+                                        register={register}
+                                        setValue={setValue}
+                                        getValues={getValues}
+                                    />
+                                </CardContent>
+                            </Card>
+                        )}
+
                     <DialogForm
                         text='Tem certeza que deseja excluir?'
                         title={'Excluir ' + title.title}

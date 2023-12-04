@@ -20,7 +20,7 @@ const ButtonsFixedLeft = ({
 }) => {
     return (
         <div className='flex gap-2'>
-            {btnCancel && !btnClose && (
+            {btnCancel && !btnClose && routes.find(route => route.rota === currentUrl && route.ler) && (
                 <Button
                     onClick={() => {
                         setId(null)
