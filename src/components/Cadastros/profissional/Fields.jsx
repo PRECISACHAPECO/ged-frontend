@@ -29,7 +29,8 @@ const Fields = ({
     setUserExistVerifyCPF,
     resetFields,
     routeVeryfyCNP,
-    userExistDefault
+    userExistDefault,
+    type
 }) => {
     const [lenghtPassword, setLenghtPassword] = useState(null)
     const [openModalNewPassword, setOpenModalNewPassword] = useState(false)
@@ -159,7 +160,7 @@ const Fields = ({
                 />
                 <Input
                     xs={12}
-                    md={userNewVerifyCPF ? 3 : 4}
+                    md={userNewVerifyCPF ? 2 : 4}
                     title='Matricula'
                     name='fields.matricula'
                     control={control}
@@ -167,7 +168,7 @@ const Fields = ({
                 />
                 <CheckLabel
                     xs={12}
-                    md={4}
+                    md={2}
                     onClick={handleClickIsUser}
                     title='Usuário do sistema'
                     name='isUsuario'
@@ -187,7 +188,7 @@ const Fields = ({
                 )}
                 {userNewVerifyCPF && (
                     <>
-                        <Grid item xs={12} sm={3}>
+                        <Grid item xs={12} sm={4}>
                             <TextField
                                 fullWidth
                                 label='Senha'
@@ -223,7 +224,7 @@ const Fields = ({
                                 })}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={3}>
+                        <Grid item xs={12} sm={4}>
                             <TextField
                                 fullWidth
                                 label='Confirme a senha'
@@ -264,8 +265,8 @@ const Fields = ({
                     </>
                 )}
                 {/* Alterar senha profissional */}
-                {(userExistDefault || userNewVerifyCPF) && (
-                    <Grid item xs={12} sm={4}>
+                {(userExistDefault || userNewVerifyCPF) && type != 'new' && (
+                    <Grid item xs={12} sm={2}>
                         <FormControl fullWidth>
                             <Button
                                 variant='outlined'

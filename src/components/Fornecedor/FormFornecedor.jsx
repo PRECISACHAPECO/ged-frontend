@@ -627,7 +627,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
-    console.log('🚀 ~ isLoadingaaaaaaaaaaaaaaaaaaa:', isLoading)
     const onSubmit = async (values, param = false) => {
         console.log('🚀 ~ param:', param)
         startLoading()

@@ -280,17 +280,18 @@ const FormProfissional = ({ id }) => {
     return (
         data && (
             <form onSubmit={handleSubmit(onSubmit)}>
+                <FormHeader
+                    btnCancel
+                    btnSave
+                    btnNew
+                    handleSubmit={() => handleSubmit(onSubmit)}
+                    btnDelete={type === 'edit' ? true : false}
+                    onclickDelete={() => setOpen(true)}
+                    type={type}
+                />
+
                 <div className='space-y-4'>
                     <Card>
-                        <FormHeader
-                            btnCancel
-                            btnSave
-                            btnNew
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
-                            type={type}
-                        />
                         <CardContent>
                             <Grid container spacing={5}>
                                 {/* Imagem */}
@@ -391,6 +392,7 @@ const FormProfissional = ({ id }) => {
                                             resetFields={resetFields}
                                             routeVeryfyCNP={routeVeryfyCNP}
                                             userExistDefault={userExistDefault}
+                                            type={type}
                                         />
                                     </Grid>
                                 </Grid>
