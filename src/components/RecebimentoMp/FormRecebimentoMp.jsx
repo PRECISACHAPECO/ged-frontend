@@ -31,6 +31,7 @@ import useLoad from 'src/hooks/useLoad'
 import DialogDelete from '../Defaults/Dialogs/DialogDelete'
 import DadosRecebimentoMp from 'src/components/Reports/Formularios/RecebimentoMp/DadosRecebimentoMp'
 import { useFormContext } from 'src/context/FormContext'
+import RecebimentoMpNaoConformidade from './NaoConformidade'
 
 const FormRecebimentoMp = ({ id }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
@@ -244,6 +245,8 @@ const FormRecebimentoMp = ({ id }) => {
             })
                 .then(response => {
                     setLoading(false)
+
+                    console.log('getData: ', response.data)
 
                     setFieldsHeader(response.data.fieldsHeader)
                     setFornecedor(response.data.fieldsHeader.fornecedor)
@@ -503,6 +506,7 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
+        // console.log('🚀 ~ onSubmit: ', data)
         // return
 
         try {
@@ -770,9 +774,7 @@ const FormRecebimentoMp = ({ id }) => {
                     {info && info.cabecalhoModelo != '' && (
                         <Card>
                             <CardContent>
-                                <Typography variant='subtitle1' sx={{ mb: 2 }}>
-                                    {info.cabecalhoModelo}
-                                </Typography>
+                                <Typography variant='subtitle1'>{info.cabecalhoModelo}</Typography>
                             </CardContent>
                         </Card>
                     )}
@@ -921,6 +923,16 @@ const FormRecebimentoMp = ({ id }) => {
                         <Typography variant='caption'>
                             {`Concluído por ${fieldsFooter.conclusion.profissional.nome} em ${fieldsFooter.conclusion.dataFim} ${fieldsFooter.conclusion.horaFim}.`}
                         </Typography>
+                    )}
+
+                    {/* Não Conformidade */}
+                    {info.naoConformidade && (
+                        <RecebimentoMpNaoConformidade
+                            recebimentoMpID={id}
+                            register={register}
+                            control={control}
+                            setValue={setValue}
+                        />
                     )}
 
                     {/* Mensagem */}
