@@ -3,21 +3,12 @@ import Icon from 'src/@core/components/icon'
 import Router from 'next/router'
 import Link from 'next/link'
 import useLoad from 'src/hooks/useLoad'
-<<<<<<< HEAD
-import Header from 'src/components/Reports/Layout/Header'
-import Footer from 'src/components/Reports/Layout/Footer'
-import { useContext } from 'react'
-import { AuthContext } from 'src/context/AuthContext'
-import { RouteContext } from 'src/context/RouteContext'
-import { BlobProvider, Document, Page } from '@react-pdf/renderer'
-=======
 import { BlobProvider, Document, Page, Text } from '@react-pdf/renderer'
 import { useContext } from 'react'
 import { AuthContext } from 'src/context/AuthContext'
 import { RouteContext } from 'src/context/RouteContext'
 import Header from 'src/components/Reports/Layout/Header'
 import Footer from 'src/components/Reports/Layout/Footer'
->>>>>>> cfd3d5018b6ec169db882626031d2162ff6dbd35
 
 const ButtonsFixedRight = ({
     btnSend,

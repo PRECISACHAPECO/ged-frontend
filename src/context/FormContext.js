@@ -12,7 +12,6 @@ const FormContext = createContext(defaultValues);
 
 const FormProvider = ({ children }) => {
     const { user, loggedUnity } = useContext(AuthContext)
-    console.log("🚀 ~~~~~ user:", user)
 
     const setReportParameters = (parameters) => {
         const values = {

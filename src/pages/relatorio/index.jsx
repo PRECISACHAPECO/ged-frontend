@@ -5,7 +5,7 @@ import ButtonsFloating from 'src/components/Reports/Layout/ButtonsFloating'
 import ComponentError from '../../components/Reports/Layout/ComponentError'
 import ReportComponents from 'src/components/Reports/Layout/reportComponents'
 import { useRouter } from 'next/router'
-import { AuthContext } from 'src/context/AuthContext'
+import { useTheme } from '@mui/material'
 
 const PageReport = () => {
     const reportJSON = localStorage.getItem('report')
@@ -14,8 +14,6 @@ const PageReport = () => {
     const reportComponents = ReportComponents()
     const DynamicComponent = reportComponents[nameComponent]
     const [params, setParams] = React.useState({})
-    // const { paramsReport } = useContext(AuthContext)
-    // console.log('🚀 ~ paramsReport:', paramsReport)
 
     const router = useRouter()
     useEffect(() => {
@@ -41,8 +39,9 @@ const PageReport = () => {
 PageReport.getLayout = page => <BlankLayout>{page}</BlankLayout>
 
 PageReport.setConfig = () => {
+    const { palette } = useTheme()
     return {
-        mode: 'dark'
+        mode: palette.mode
     }
 }
 
