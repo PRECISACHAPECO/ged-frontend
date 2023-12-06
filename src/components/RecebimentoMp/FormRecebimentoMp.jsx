@@ -509,7 +509,7 @@ const FormRecebimentoMp = ({ id }) => {
             }
         }
         console.log('🚀 ~ onSubmit: ', data)
-        return
+        // return
 
         try {
             if (type == 'edit') {
@@ -754,6 +754,7 @@ const FormRecebimentoMp = ({ id }) => {
                     btnCancel
                     btnSave={info.status < 40}
                     btnSend={info.status >= 30}
+                    btnConclusionNc={info.status >= 40 && info.status <= 70 && info.naoConformidade}
                     btnPrint={type == 'edit' ? true : false}
                     btnDelete={info.status < 40 ? true : false}
                     onclickDelete={() => setOpenModalDeleted(true)}

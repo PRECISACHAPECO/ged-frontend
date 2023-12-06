@@ -46,10 +46,10 @@ const RecebimentoMpNaoConformidade = ({
             <div className='flex flex-col gap-2'>
                 <div
                     className={`${
-                        settings.mode == 'dark' ? 'bg-[#353D39]' : 'bg-[#E2EAE4]'
-                    } p-5 rounded-xl border border-[#4A8B57] text-center`}
+                        settings.mode == 'dark' ? 'bg-[#4B3537]' : 'bg-[#F8E2E2]'
+                    } p-5 rounded-xl border border-[#FF4D49] text-center`}
                 >
-                    <Typography color='primary' variant='subtitle1' sx={{ fontWeight: 700 }}>
+                    <Typography color='error' variant='subtitle1' sx={{ fontWeight: 700 }}>
                         Plano de Ação
                     </Typography>
                 </div>
