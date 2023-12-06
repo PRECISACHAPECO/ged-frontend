@@ -14,16 +14,17 @@ const FormProvider = ({ children }) => {
     const { user, loggedUnity } = useContext(AuthContext)
 
     const setReportParameters = (parameters) => {
-        const values = {
-            id: parameters.id,
-            nameComponent: parameters.nameComponent, //? Mesmo nome do componente
-            route: parameters.route, //? Rota do backend
-            unidadeID: parameters.unidadeID,
-            papelID: parameters.papelID,
-            usuarioID: parameters.usuarioID,
-        }
-        localStorage.setItem('report', JSON.stringify(values));
+        // const values = {
+        //     id: parameters.id,
+        //     nameComponent: parameters.nameComponent, //? Mesmo nome do componente
+        //     route: parameters.route, //? Rota do backend
+        //     unidadeID: parameters.unidadeID,
+        //     papelID: parameters.papelID,
+        //     usuarioID: parameters.usuarioID,
+        // }
+        localStorage.setItem('report', JSON.stringify(parameters));
     }
+
 
     const sendPdfToServer = async (id, fileBlob, type) => {
         const formData = new FormData()

@@ -249,6 +249,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         unidadeID: loggedUnity.unidadeID,
         papelID: user.papelID,
         usuarioID: user.usuarioID,
+        status: info.status,
         route: 'fornecedor/dadosFornecedor',
         icon: 'fluent:print-24-regular'
     }

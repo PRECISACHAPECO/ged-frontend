@@ -8,6 +8,7 @@ import Footer from './Footer'
 import Header from './Header'
 import ReportComponents from './reportComponents'
 import DialogSignatureReport from 'src/components/Defaults/Dialogs/DialogSignatureReport'
+import { useFormContext } from 'src/context/FormContext'
 
 const MyDoc = ({ nameComponent }) => {
     const data = ReportComponents()
@@ -31,6 +32,8 @@ const MyDoc = ({ nameComponent }) => {
 
 const ButtonsFloating = ({ nameComponent }) => {
     const [openModalSignatureReport, setOpenModalSignatureReport] = useState(false)
+    const reportJSON = localStorage.getItem('report')
+    const report = JSON.parse(reportJSON)
     const signature = () => {
         setOpenModalSignatureReport(true)
     }
@@ -46,6 +49,7 @@ const ButtonsFloating = ({ nameComponent }) => {
             color: 'primary',
             size: 'large',
             variant: 'outlined',
+            disable: false,
             icon: 'ooui:close',
             function: closePage
         },
@@ -55,6 +59,7 @@ const ButtonsFloating = ({ nameComponent }) => {
             color: 'primary',
             size: 'large',
             variant: 'outlined',
+            disable: report.status < 40 ? true : false,
             icon: 'fluent:signature-24-filled',
             function: signature
         }
@@ -64,9 +69,14 @@ const ButtonsFloating = ({ nameComponent }) => {
         <div className='fixed bottom-10 right-8 flex flex-col gap-2'>
             {dataButtons &&
                 dataButtons.map(item => (
-                    <div key={item.id} style={{ textAlign: 'center' }} onClick={item.function}>
-                        <Fab color={item.color} size={item.size} variant={item.variant}>
-                            <Icon icon={item.icon} />
+                    <div key={item.id} onClick={!item.disable ? item.function : null}>
+                        <Fab
+                            color={item.color}
+                            size={item.size}
+                            variant={item.variant}
+                            className={item.disable ? 'hover:opacity-20 opacity-20' : ''}
+                        >
+                            <Icon icon={item.icon} className={item.disable ? 'cursor-default' : ''} />
                         </Fab>
                     </div>
                 ))}
