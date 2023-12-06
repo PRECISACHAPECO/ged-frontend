@@ -7,7 +7,7 @@ import { Typography } from '@mui/material'
 import { api } from 'src/configs/api'
 import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const DialogSignatureReport = ({ title, description, open, handleClose }) => {
     const [logged, setLogged] = useState(false)
@@ -40,7 +40,7 @@ const DialogSignatureReport = ({ title, description, open, handleClose }) => {
     }
 
     return (
-        <Dialog open={open} maxWidth='lg' fullWidth>
+        <Dialog open={open} maxWidth='xl' fullWidth>
             <DialogTitle id='form-dialog-title'>
                 {title}
                 <IconButton
