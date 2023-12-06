@@ -4,8 +4,6 @@ import Footer from './Footer'
 import Header from './Header'
 
 const LayoutReport = ({ params, children }) => {
-    // console.log('🚀 ~ params layout:', params)
-
     return (
         <PDFViewer style={{ width: '100%', height: '100vh' }}>
             <Document>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Fab from '@mui/material/Fab'
 import Icon from 'src/@core/components/icon'
 import { PDFDownloadLink, Document, Page } from '@react-pdf/renderer'
@@ -7,6 +7,7 @@ import { PDFDownloadLink, Document, Page } from '@react-pdf/renderer'
 import Footer from './Footer'
 import Header from './Header'
 import ReportComponents from './reportComponents'
+import DialogSignatureReport from 'src/components/Defaults/Dialogs/DialogSignatureReport'
 
 const MyDoc = ({ nameComponent }) => {
     const data = ReportComponents()
@@ -29,8 +30,9 @@ const MyDoc = ({ nameComponent }) => {
 }
 
 const ButtonsFloating = ({ nameComponent }) => {
+    const [openModalSignatureReport, setOpenModalSignatureReport] = useState(false)
     const signature = () => {
-        console.log('Assinatura eletronica')
+        setOpenModalSignatureReport(true)
     }
 
     const closePage = () => {
@@ -83,6 +85,12 @@ const ButtonsFloating = ({ nameComponent }) => {
                     )}
                 </PDFDownloadLink>
             </div>
+            {/* Modal para assinatura do relatório */}
+            <DialogSignatureReport
+                open={openModalSignatureReport}
+                handleClose={() => setOpenModalSignatureReport(false)}
+                title={'Assinatura do relatório'}
+            />
         </div>
     )
 }
