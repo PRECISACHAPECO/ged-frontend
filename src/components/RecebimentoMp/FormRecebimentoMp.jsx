@@ -43,6 +43,7 @@ const FormRecebimentoMp = ({ id }) => {
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(false) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
+    const [naoConformidades, setNaoConformidades] = useState([])
     const [canApprove, setCanApprove] = useState(true) //? Se true, pode aprovar o formulário
     const [fornecedor, setFornecedor] = useState(null)
     const [unidade, setUnidade] = useState(null)
@@ -260,6 +261,7 @@ const FormRecebimentoMp = ({ id }) => {
                     setLink(response.data.link)
                     setMovimentacao(response.data.ultimaMovimentacao)
                     verifyIfCanAproveForm(response.data.blocos) //? Verifica se há alguma resposta que bloqueie o formulário, se sim, o mesmo não pode ser aprovado
+                    setNaoConformidades(response.data.naoConformidades) //! Seta não conformidades
 
                     //* Insere os dados no formulário
                     reset(response.data)
@@ -506,8 +508,8 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-        // console.log('🚀 ~ onSubmit: ', data)
-        // return
+        console.log('🚀 ~ onSubmit: ', data)
+        return
 
         try {
             if (type == 'edit') {
@@ -929,6 +931,9 @@ const FormRecebimentoMp = ({ id }) => {
                     {info.naoConformidade && (
                         <RecebimentoMpNaoConformidade
                             recebimentoMpID={id}
+                            values={naoConformidades}
+                            produtos={produtos}
+                            getValues={getValues}
                             register={register}
                             control={control}
                             setValue={setValue}
