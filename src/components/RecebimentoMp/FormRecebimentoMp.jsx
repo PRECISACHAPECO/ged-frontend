@@ -316,16 +316,17 @@ const FormRecebimentoMp = ({ id }) => {
         //? Produtos
         if (produtos && produtos.length > 0) {
             produtos.forEach((produto, indexProduto) => {
-                produto.produtoAnexosDescricao.forEach((anexo, indexAnexo) => {
-                    if (anexo.obrigatorio === 1 && anexo.anexos.length == 0) {
-                        setError(`produtos[${indexProduto}].produtoAnexosDescricao[${indexAnexo}].anexos`, {
-                            type: 'manual',
-                            message: 'Campo obrigatório'
-                        })
-                        arrErrors.push(`Anexo: ${produto?.nome} / ${anexo?.nome}`)
-                        hasErrors = true
-                    }
-                })
+                produto.produtoAnexosDescricao &&
+                    produto.produtoAnexosDescricao.forEach((anexo, indexAnexo) => {
+                        if (anexo.obrigatorio === 1 && anexo.anexos.length == 0) {
+                            setError(`produtos[${indexProduto}].produtoAnexosDescricao[${indexAnexo}].anexos`, {
+                                type: 'manual',
+                                message: 'Campo obrigatório'
+                            })
+                            arrErrors.push(`Anexo: ${produto?.nome} / ${anexo?.nome}`)
+                            hasErrors = true
+                        }
+                    })
             })
         }
 
@@ -495,7 +496,7 @@ const FormRecebimentoMp = ({ id }) => {
     const onSubmit = async (values, param = false) => {
         startLoading()
         if (param.conclusion === true) {
-            values['status'] = param.status
+            values['info']['status'] = param.status
             values['obsConclusao'] = param.obsConclusao
         }
 
@@ -752,9 +753,8 @@ const FormRecebimentoMp = ({ id }) => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FormHeader
                     btnCancel
-                    btnSave={info.status < 40}
+                    btnSave={info.status < 40 || (info.status < 70 && info.naoConformidade)}
                     btnSend={info.status >= 30}
-                    btnConclusionNc={info.status >= 40 && info.status <= 70 && info.naoConformidade}
                     btnPrint={type == 'edit' ? true : false}
                     btnDelete={info.status < 40 ? true : false}
                     onclickDelete={() => setOpenModalDeleted(true)}
@@ -766,7 +766,7 @@ const FormRecebimentoMp = ({ id }) => {
                     titleConclusion={'Concluir Formulário'}
                     title='Recebimento de MP'
                     componentSaveReport={<DadosRecebimentoMp />}
-                    // btnStatus={type == 'edit' ? true : false}
+                    btnStatus={type == 'edit' ? true : false}
                     handleBtnStatus={() => setOpenModalStatus(true)}
                     type={type}
                     status={status}

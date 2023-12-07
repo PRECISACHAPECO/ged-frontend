@@ -12,7 +12,6 @@ import { BlobProvider, Document, Page } from '@react-pdf/renderer'
 
 const ButtonsFixedRight = ({
     btnSend,
-    btnConclusionNc,
     btnSave,
     btnNew,
     btnNext,
@@ -116,22 +115,6 @@ const ButtonsFixedRight = ({
                         </Button>
                     )}
                 </BlobProvider>
-            )}
-
-            {/* Concluir NC */}
-            {btnConclusionNc && routes.find(route => route.rota === url && route.editar) && (
-                <Button
-                    onClick={handleSubmit}
-                    type='submit'
-                    variant='contained'
-                    size='medium'
-                    color={isLoading ? 'secondary' : 'primary'}
-                    disabled={disabled || disabledSubmit || isLoading}
-                    sx={{ display: 'flex', gap: 2 }}
-                >
-                    <Icon icon='mdi:check-bold' />
-                    <span className='hidden sm:block'>Concluir Plano de Ação</span>
-                </Button>
             )}
         </div>
     )

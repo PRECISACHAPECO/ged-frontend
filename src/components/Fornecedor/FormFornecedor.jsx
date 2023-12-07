@@ -967,6 +967,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 index={index}
                                 blockKey={`parFornecedorModeloBlocoID`}
                                 handleFileSelect={handleFileSelectItem}
+                                changeAllOptions={null}
                                 setItemResposta={setItemResposta}
                                 handleRemoveAnexoItem={handleRemoveAnexoItem}
                                 setBlocos={setBlocos}

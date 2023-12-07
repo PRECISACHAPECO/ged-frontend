@@ -19,7 +19,6 @@ const FormHeader = ({
     btnCancel,
     btnSave,
     btnSend,
-    btnConclusionNc,
     btnNext,
     btnStatus,
     handleSubmit,
@@ -179,7 +178,6 @@ const FormHeader = ({
                             btnSave={btnSave}
                             btnNew={btnNew}
                             btnSend={btnSend}
-                            btnConclusionNc={btnConclusionNc}
                             btnNext={btnNext}
                             manualUrl={manualUrl}
                             routes={routes}
