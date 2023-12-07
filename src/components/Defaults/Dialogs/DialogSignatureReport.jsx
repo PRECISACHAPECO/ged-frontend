@@ -49,7 +49,7 @@ const DialogSignatureReport = ({ title, description, open, handleClose }) => {
             const route = `/formularios/fornecedor/saveSignedDocument/${report.id}/${report.usuarioID}/${report.unidadeID}/${hashSignedDocument}`
             const response = await api.post(route)
             console.log('🚀 ~ response:', response)
-            toast.success('Documento assinado com sucesso!')
+            toast.success('Documento assinado salvo com sucesso!')
         } catch (error) {
             console.log(error)
         }
