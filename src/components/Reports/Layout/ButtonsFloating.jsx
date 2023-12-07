@@ -8,7 +8,7 @@ import Footer from './Footer'
 import Header from './Header'
 import ReportComponents from './reportComponents'
 import DialogSignatureReport from 'src/components/Defaults/Dialogs/DialogSignatureReport'
-import { useFormContext } from 'src/context/FormContext'
+import { useEffect } from 'react'
 
 const MyDoc = ({ nameComponent }) => {
     const data = ReportComponents()
