@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import { useState } from 'react'
 import Loading from 'src/components/Loading'
 import { useEffect } from 'react'
+import toast from 'react-hot-toast'
 
 const DialogSignatureReport = ({ title, description, open, handleClose }) => {
     const [logged, setLogged] = useState(false)
@@ -20,44 +21,35 @@ const DialogSignatureReport = ({ title, description, open, handleClose }) => {
     const handleClick = async () => {
         setLogged(!logged)
         if (logged) {
-            handleClose()
             setLogged(false)
             setIdReport(null)
+            handleClose()
         } else {
-            await createSignature()
+            await createDocumentAutentique()
         }
     }
 
-    const createSignature = async () => {
+    const createDocumentAutentique = async () => {
         try {
             const response = await api.post(
-                `/formularios/fornecedor/assinaturaRelatorio/${report.id}/${report.usuarioID}/${report.unidadeID}`
+                `/formularios/fornecedor/createDocumentAutentique/${report.id}/${report.usuarioID}/${report.unidadeID}`
             )
             setIdReport(response.data)
-            localStorage.setItem('reportSignature', JSON.stringify(response.data))
+            localStorage.setItem('hashSignedDocument', JSON.stringify(response.data))
         } catch (err) {
             console.log(err)
         }
     }
-    const signedReport = async () => {
-        try {
-            const response = await axios.head(pathReport)
-            return true
-        } catch (err) {
-            console.log({ message: 'documento não assinado' })
-            return false
-        }
-    }
 
-    const saveSignatureReport = async () => {
-        const reportJSON = localStorage.getItem('reportSignature')
-        const reportSignature = JSON.parse(reportJSON)
-        if (!reportSignature) return
-        const response = await api.post(
-            `/formularios/fornecedor/saveSignatureReport/${report.id}/${report.usuarioID}/${report.unidadeID}/${reportSignature}`
-        )
-        console.log(response)
+    const saveSignedDocument = async () => {
+        const reportJSON = localStorage.getItem('hashSignedDocument')
+        const hashSignedDocument = JSON.parse(reportJSON)
+        if (!hashSignedDocument) return
         try {
+            const route = `/formularios/fornecedor/saveSignedDocument/${report.id}/${report.usuarioID}/${report.unidadeID}/${hashSignedDocument}`
+            const response = await api.post(route)
+            console.log('🚀 ~ response:', response)
+            toast.success('Documento assinado com sucesso!')
         } catch (error) {
             console.log(error)
         }
@@ -67,12 +59,12 @@ const DialogSignatureReport = ({ title, description, open, handleClose }) => {
         handleClose()
         setLogged(false)
         setIdReport(null)
-        localStorage.removeItem('reportSignature')
+        localStorage.removeItem('hashSignedDocument')
     }
 
     useEffect(() => {
         if (!open) {
-            saveSignatureReport()
+            saveSignedDocument()
             handleCloseModal()
         }
     }, [handleClose])
