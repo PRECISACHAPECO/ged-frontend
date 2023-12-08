@@ -46,8 +46,13 @@ const DialogSignatureReport = ({ title, description, open, handleClose }) => {
         const hashSignedDocument = JSON.parse(reportJSON)
         if (!hashSignedDocument) return
         try {
-            const route = `/formularios/fornecedor/saveSignedDocument/${report.id}/${report.usuarioID}/${report.unidadeID}/${hashSignedDocument}`
-            const response = await api.post(route)
+            const route = `/formularios/fornecedor/saveSignedDocument`
+            const response = await api.post(route, {
+                id: report.id,
+                usuarioID: report.usuarioID,
+                unidadeID: report.unidadeID,
+                hashSignedDocument: hashSignedDocument
+            })
             console.log('🚀 ~ response:', response)
             toast.success('Documento assinado salvo com sucesso!')
         } catch (error) {
