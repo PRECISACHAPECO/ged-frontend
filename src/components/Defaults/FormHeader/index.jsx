@@ -42,7 +42,8 @@ const FormHeader = ({
     actionsData,
     type,
     status,
-    partialRoute
+    partialRoute,
+    outsideID
 }) => {
     const router = Router
     const { routes } = useContext(AuthContext)
@@ -138,7 +139,11 @@ const FormHeader = ({
     return (
         <>
             <div
-                className={`sticky top-20 pb-2 mb-2 z-50 ${settings.mode == 'dark' ? 'bg-[#202023]' : 'bg-[#F7F7F9]'}`}
+                className={`sticky -top-20 pb-2 mb-2 z-50 ${
+                    outsideID ? 'px-4' : settings.mode === 'dark' ? 'bg-[#202023]' : 'bg-[#F7F7F9]'
+                }
+                
+                `}
             >
                 <div className={`flex items-center justify-between w-full `} style={{ zIndex: 1000 }}>
                     {/* Div da esquerda */}

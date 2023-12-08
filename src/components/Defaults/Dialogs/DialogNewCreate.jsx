@@ -15,13 +15,7 @@ const DialogNewCreate = ({ title, description, setOpenModal, openModal, children
             >
                 <DialogTitle id='form-dialog-title'>{title}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText
-                        sx={{
-                            py: 2
-                        }}
-                    >
-                        {children}
-                    </DialogContentText>
+                    <DialogContentText>{children}</DialogContentText>
                 </DialogContent>
             </Dialog>
         </>

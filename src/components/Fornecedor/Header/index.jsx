@@ -8,6 +8,7 @@ import useDateFormat from 'src/hooks/useDateFormat'
 import { getCurrentDate, getCurrentTime } from 'src/configs/defaultConfigs'
 
 const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, setValue, control, getAddressByCep }) => {
+    console.log('🚀 ~ values:', values)
     const [profissionaisPreenche, setProfissionaisPreenche] = useState([])
     const { setDateFormat, dateStatus } = useDateFormat()
 
@@ -31,6 +32,38 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
 
     return (
         <Grid container spacing={4}>
+            <Input
+                xs={12}
+                md={2}
+                title='Data da abertura'
+                name={`fieldsHeader.abertoPor.dataInicio`}
+                value={values.abertoPor.dataInicio}
+                disabled={true}
+                register={register}
+                control={control}
+            />
+            <Input
+                xs={12}
+                md={2}
+                title='Hora da abertura'
+                name={`fieldsHeader.abertoPor.horaInicio`}
+                value={values.abertoPor.dataInicio}
+                type='time'
+                disabled={true}
+                register={register}
+                control={control}
+            />
+            <Input
+                xs={12}
+                md={8}
+                title='Aberto por'
+                name={`fieldsHeader.abertoPor.profissional.nome`}
+                value={values.abertoPor.profissional.nome}
+                disabled={true}
+                register={register}
+                control={control}
+            />
+
             {/* Data de abertura */}
             <DateField
                 xs={12}

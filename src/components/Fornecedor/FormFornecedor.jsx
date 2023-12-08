@@ -913,7 +913,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         <CardContent>
                             {unidade && (
                                 <Box display='flex' flexDirection='column' sx={{ gap: 1 }}>
-                                    <div className='flex items-center gap-2 mb-2'>
+                                    {/* <div className='flex items-center gap-2 mb-2'>
                                         <Typography variant='caption'>
                                             {`Aberto por ${fieldsHeader.abertoPor.profissional.nome} em ${fieldsHeader.abertoPor.dataInicio} ${fieldsHeader.abertoPor.horaInicio} `}
                                         </Typography>
@@ -923,7 +923,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                             color={'primary'}
                                             label={(unidade.quemPreenche == 1 ? 'Fábrica' : 'Fornecedor') + ' preenche'}
                                         />
-                                    </div>
+                                    </div> */}
+                                    {/* Campos fixos do header */}
 
                                     <HeaderFields
                                         modeloID={unidade.parFornecedorModeloID}
