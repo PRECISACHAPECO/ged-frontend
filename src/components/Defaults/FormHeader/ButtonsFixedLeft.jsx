@@ -77,18 +77,6 @@ const ButtonsFixedLeft = ({
                     <span className='hidden sm:block'>Status</span>
                 </Button>
             )}
-
-            {status && (
-                <Box display='flex' alignItems='center' justifyContent='flex-end'>
-                    <CustomChip
-                        size='small'
-                        skin='light'
-                        color={status.color}
-                        label={status.title}
-                        sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-                    />
-                </Box>
-            )}
         </div>
     )
 }

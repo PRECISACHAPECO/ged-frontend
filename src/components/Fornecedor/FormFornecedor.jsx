@@ -867,6 +867,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     type={type}
                     status={status}
                 />
+                {/* Div superior com tags e status */}
+                <div className='flex gap-2 mb-2'>
+                    {status && (
+                        <CustomChip
+                            size='small'
+                            skin='light'
+                            color={status.color}
+                            label={status.title}
+                            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+                        />
+                    )}
+                    <CustomChip
+                        size='small'
+                        skin='light'
+                        color={'primary'}
+                        label={(unidade?.quemPreenche == 1 ? 'Fábrica' : 'Fornecedor') + ' preenche'}
+                    />
+                </div>
+
                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
                     {/* Foi copiado pelo menos uma informação de meus dados */}
                     {dataCopiedMyData && dataCopiedMyData.length > 0 && (
