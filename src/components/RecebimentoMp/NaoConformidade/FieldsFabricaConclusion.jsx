@@ -30,7 +30,7 @@ const FieldsFabricaConclusion = ({ index, value, register, control, setValue }) 
                     multiline
                     rows={4}
                     title='Conclusão'
-                    name={`naoConformidades[${index}].conclusao`}
+                    name={`naoConformidade.itens[${index}].conclusao`}
                     control={control}
                     errors={null}
                 />
@@ -39,7 +39,7 @@ const FieldsFabricaConclusion = ({ index, value, register, control, setValue }) 
                 <Grid item xs={12} md={12}>
                     <RadioGroup
                         row
-                        name={`naoConformidades[${index}].status`}
+                        name={`naoConformidade.itens[${index}].status`}
                         defaultValue={value?.status}
                         onChange={null}
                         sx={{ mt: 0 }}
@@ -77,7 +77,7 @@ const FieldsFabricaConclusion = ({ index, value, register, control, setValue }) 
                     xs={12}
                     md={3}
                     title='Data'
-                    name={`naoConformidades[${index}].dataConclusao`}
+                    name={`naoConformidade.itens[${index}].dataConclusao`}
                     type='date'
                     value={value?.dataConclusao}
                     register={register}
@@ -93,7 +93,7 @@ const FieldsFabricaConclusion = ({ index, value, register, control, setValue }) 
                     xs={12}
                     md={3}
                     title='Hora'
-                    name={`naoConformidades[${index}].horaConclusao`}
+                    name={`naoConformidade.itens[${index}].horaConclusao`}
                     type='time'
                     register={register}
                     control={control}
@@ -104,7 +104,7 @@ const FieldsFabricaConclusion = ({ index, value, register, control, setValue }) 
                     xs={12}
                     md={6}
                     title='Profissional preenchimento'
-                    name={`naoConformidades[${index}].profissionalConclusao`}
+                    name={`naoConformidade.itens[${index}].profissionalConclusao`}
                     type='string'
                     options={[]}
                     register={register}

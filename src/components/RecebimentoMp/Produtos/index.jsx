@@ -8,7 +8,16 @@ import Icon from 'src/@core/components/icon'
 import { useEffect, useState } from 'react'
 import FieldsProdutos from './FieldsProdutos'
 
-const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setValue, register, control, errors }) => {
+const RecebimentoMpProdutos = ({
+    recebimentoMpID,
+    fornecedorID,
+    getValues,
+    setValue,
+    register,
+    control,
+    errors,
+    disabled
+}) => {
     const [produtos, setProdutos] = useState([])
     const [apresentacoes, setApresentacoes] = useState([])
     const [change, handleChange] = useState(false)
@@ -97,6 +106,7 @@ const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setVa
                                     value={produtos[index].checked}
                                     onClick={() => handleCheck(index)}
                                     register={register}
+                                    disabled={disabled}
                                 />
                             </Grid>
 
@@ -136,6 +146,7 @@ const RecebimentoMpProdutos = ({ recebimentoMpID, fornecedorID, getValues, setVa
                                     register={register}
                                     control={control}
                                     errors={errors}
+                                    disabled={disabled}
                                 />
                             )}
                         </Grid>

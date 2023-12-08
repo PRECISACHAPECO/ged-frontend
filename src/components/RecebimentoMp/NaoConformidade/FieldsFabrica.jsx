@@ -17,6 +17,7 @@ const FieldsFabrica = ({
     control,
     setValue
 }) => {
+    console.log('🚀 ~ FieldsFabrica ~ produtos:', produtos)
     const { setDateFormat, dateStatus } = useDateFormat()
     const [ncType, setNcType] = useState(1)
 
@@ -27,7 +28,7 @@ const FieldsFabrica = ({
                 md={4}
                 onClick={handlePreenchimentoFornecedor}
                 title='Fornecedor preenche?'
-                name={`naoConformidades[${index}].fornecedorPreenche`}
+                name={`naoConformidade.itens[${index}].fornecedorPreenche`}
                 value={value.fornecedorPreenche}
                 register={register}
                 helpText='Se marcado, o fornecedor deve preencher o plano de ação com seu acesso ao sistema.'
@@ -38,7 +39,7 @@ const FieldsFabrica = ({
                     xs={12}
                     md={3}
                     title='Data'
-                    name={`naoConformidades[${index}].data`}
+                    name={`naoConformidade.itens[${index}].data`}
                     type='date'
                     value={value?.data}
                     register={register}
@@ -54,7 +55,7 @@ const FieldsFabrica = ({
                     xs={12}
                     md={3}
                     title='Hora'
-                    name={`naoConformidades[${index}].hora`}
+                    name={`naoConformidade.itens[${index}].hora`}
                     type='time'
                     register={register}
                     control={control}
@@ -65,7 +66,7 @@ const FieldsFabrica = ({
                     xs={12}
                     md={6}
                     title='Profissional preenchimento'
-                    name={`naoConformidades[${index}].profissionalPreenchimento`}
+                    name={`naoConformidade.itens[${index}].profissionalPreenchimento`}
                     type='string'
                     options={[]}
                     register={register}
@@ -96,7 +97,7 @@ const FieldsFabrica = ({
                     xs={12}
                     md={9}
                     title='Produto'
-                    name={`naoConformidades[${index}].produto`}
+                    name={`naoConformidade.itens[${index}].produto`}
                     type='string'
                     disabled={ncType != 1}
                     options={produtos ?? []}
@@ -113,7 +114,7 @@ const FieldsFabrica = ({
                     rows={4}
                     title='Descrição da não conformidade'
                     value={value?.descricao}
-                    name={`naoConformidades[${index}].descricao`}
+                    name={`naoConformidade.itens[${index}].descricao`}
                     control={control}
                     errors={null}
                 />
@@ -124,7 +125,7 @@ const FieldsFabrica = ({
                     multiline
                     rows={4}
                     title='Ações solicitadas'
-                    name={`naoConformidades[${index}].acoesSolicitadas`}
+                    name={`naoConformidade.itens[${index}].acoesSolicitadas`}
                     control={control}
                     errors={null}
                 />
