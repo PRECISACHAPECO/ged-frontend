@@ -931,32 +931,17 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         {/* Header */}
                         <CardContent>
                             {unidade && (
-                                <Box display='flex' flexDirection='column' sx={{ gap: 1 }}>
-                                    {/* <div className='flex items-center gap-2 mb-2'>
-                                        <Typography variant='caption'>
-                                            {`Aberto por ${fieldsHeader.abertoPor.profissional.nome} em ${fieldsHeader.abertoPor.dataInicio} ${fieldsHeader.abertoPor.horaInicio} `}
-                                        </Typography>
-                                        <CustomChip
-                                            size='small'
-                                            skin='light'
-                                            color={'primary'}
-                                            label={(unidade.quemPreenche == 1 ? 'Fábrica' : 'Fornecedor') + ' preenche'}
-                                        />
-                                    </div> */}
-                                    {/* Campos fixos do header */}
-
-                                    <HeaderFields
-                                        modeloID={unidade.parFornecedorModeloID}
-                                        values={fieldsHeader}
-                                        fields={field}
-                                        disabled={!canEdit.status || hasFormPending}
-                                        register={register}
-                                        errors={errors}
-                                        setValue={setValue}
-                                        control={control}
-                                        getAddressByCep={getAddressByCep}
-                                    />
-                                </Box>
+                                <HeaderFields
+                                    modeloID={unidade.parFornecedorModeloID}
+                                    values={fieldsHeader}
+                                    fields={field}
+                                    disabled={!canEdit.status || hasFormPending}
+                                    register={register}
+                                    errors={errors}
+                                    setValue={setValue}
+                                    control={control}
+                                    getAddressByCep={getAddressByCep}
+                                />
                             )}
                         </CardContent>
                     </Card>

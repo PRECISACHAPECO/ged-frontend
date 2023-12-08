@@ -10,6 +10,7 @@ import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
 //* Custom components
 import Input from 'src/components/Form/Input'
 import AnexoModeView from 'src/components/Anexos/ModeView'
+import CustomChip from 'src/@core/components/mui/chip'
 import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
 import { backRoute, toastMessage, statusDefault } from 'src/configs/defaultConfigs'
@@ -777,6 +778,19 @@ const FormRecebimentoMp = ({ id }) => {
                     type={type}
                     status={status}
                 />
+
+                {/* Div superior com tags e status */}
+                <div className='flex gap-2 mb-2'>
+                    {status && (
+                        <CustomChip
+                            size='small'
+                            skin='light'
+                            color={status.color}
+                            label={status.title}
+                            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+                        />
+                    )}
+                </div>
 
                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
                     {/* Cabeçalho do modelo */}
