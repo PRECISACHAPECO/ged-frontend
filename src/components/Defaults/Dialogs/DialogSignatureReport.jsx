@@ -54,7 +54,7 @@ const DialogSignatureReport = ({ title, description, open, handleClose }) => {
                 hashSignedDocument: hashSignedDocument
             })
             console.log('🚀 ~ response:', response)
-            toast.success('Documento assinado salvo com sucesso!')
+            toast.success(response.data.message)
         } catch (error) {
             console.log(error)
         }

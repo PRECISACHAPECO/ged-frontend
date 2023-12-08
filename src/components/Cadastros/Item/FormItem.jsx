@@ -206,6 +206,7 @@ const FormItem = ({
                             btnDelete={type === 'edit' ? true : false}
                             onclickDelete={() => setOpen(true)}
                             type={type}
+                            outsideID={outsideID}
                         />
                         <Card>
                             <CardContent>

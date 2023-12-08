@@ -42,7 +42,8 @@ const FormHeader = ({
     actionsData,
     type,
     status,
-    partialRoute
+    partialRoute,
+    outsideID
 }) => {
     const router = Router
     const { routes } = useContext(AuthContext)

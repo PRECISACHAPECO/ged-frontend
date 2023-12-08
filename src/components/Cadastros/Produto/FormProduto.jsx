@@ -19,7 +19,7 @@ import Icon from 'src/@core/components/icon'
 import AnexosList from './AnexosList'
 import useLoad from 'src/hooks/useLoad'
 
-const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange, manualUrl }) => {
+const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange, manualUrl, outsideID }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
@@ -170,6 +170,7 @@ const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChan
                         btnDelete={type === 'edit' ? true : false}
                         onclickDelete={() => setOpen(true)}
                         type={type}
+                        outsideID={outsideID}
                     />
                     <Card>
                         <CardContent>

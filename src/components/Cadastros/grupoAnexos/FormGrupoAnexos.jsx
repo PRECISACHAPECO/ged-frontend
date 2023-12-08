@@ -21,7 +21,7 @@ import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import GrupoAnexoList from './GrupoAnexoList.jsx'
 
-const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange, manualUrl }) => {
+const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange, manualUrl, outsideID }) => {
     const { setId } = useContext(RouteContext)
     const router = Router
     const [data, setData] = useState(null)
@@ -176,6 +176,7 @@ const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, new
                         btnDelete={type === 'edit' ? true : false}
                         onclickDelete={() => setOpenDelete(true)}
                         type={type}
+                        outsideID={outsideID}
                     />
 
                     {/* Formulário */}

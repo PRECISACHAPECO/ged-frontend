@@ -73,7 +73,10 @@ const FormProfissional = ({ id }) => {
             unidadeID: loggedUnity.unidadeID,
             fields: {
                 ...data.fields,
-                dataNascimento: data.fields.dataNascimento.substring(0, 10),
+                dataNascimento: data.fields.dataNascimento.startsWith('0')
+                    ? '1' + data.fields.dataNascimento.substring(1, 10)
+                    : data.fields.dataNascimento.substring(0, 10),
+
                 unidadeID: loggedUnity.unidadeID
             },
             cargosFuncoes: data.cargosFuncoes.map(cargoFuncao => ({

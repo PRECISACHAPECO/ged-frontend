@@ -94,6 +94,7 @@ const FormNewFornecedor = ({
                     handleModalClose={() => setOpenModalNew(false)}
                     newChange={newChange}
                     handleConfirmNew={handleConfirmNew}
+                    outsideID={true}
                 />
             )
         } else if (name == 'produtos') {
@@ -105,6 +106,7 @@ const FormNewFornecedor = ({
                     handleModalClose={() => setOpenModalNew(false)}
                     newChange={newChange}
                     handleConfirmNew={handleConfirmNew}
+                    outsideID={true}
                 />
             )
         }
