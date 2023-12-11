@@ -573,9 +573,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     const onSubmit = async (values, param = false) => {
-        console.log('🚀 ~ param:', param)
+        console.log('🚀 ~ values:', values)
+
         startLoading()
-        console.log('função ativada inicio')
         if (param.conclusion === true) {
             values['status'] = user && user.papelID == 1 ? param.status : 40 //? Seta o status somente se for fábrica
             values['obsConclusao'] = param.obsConclusao
