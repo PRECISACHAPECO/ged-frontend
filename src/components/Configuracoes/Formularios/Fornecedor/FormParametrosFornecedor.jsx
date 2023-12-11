@@ -646,7 +646,12 @@ const FormParametrosFornecedor = ({ id }) => {
                 openModal={openModalSelectedItem}
                 setOpenModal={setOpenModalSelectedItem}
             >
-                <FormItem id={idInfoItem} btnClose handleModalClose={() => setOpenModalSelectedItem(false)} />
+                <FormItem
+                    id={idInfoItem}
+                    outsideID={id}
+                    btnClose
+                    handleModalClose={() => setOpenModalSelectedItem(false)}
+                />
             </DialogNewCreate>
         </>
     )

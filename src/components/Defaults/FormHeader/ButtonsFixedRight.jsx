@@ -67,6 +67,26 @@ const ButtonsFixedRight = ({
                     </Button>
                 </Link>
             )}
+
+            {/* Conclusão de formulário (salva arquivo .pdf do formulário) */}
+            {btnSend && (
+                <BlobProvider document={<DocumentPdf />}>
+                    {({ blob, url, loading, error }) => (
+                        <Button
+                            onClick={() => handleSend(blob)}
+                            type='button'
+                            variant='contained'
+                            size='medium'
+                            color='primary'
+                            disabled={disabled || disabledSend}
+                            sx={{ display: 'flex', gap: 2 }}
+                        >
+                            <Icon icon={iconConclusion ?? 'carbon:send-filled'} />
+                            <span className='hidden sm:block'>{titleConclusion}</span>
+                        </Button>
+                    )}
+                </BlobProvider>
+            )}
             {/* Salvar */}
             {btnSave &&
                 (routes.find(route => route.rota === url && route.editar) ||
@@ -96,25 +116,6 @@ const ButtonsFixedRight = ({
                     <Icon icon='grommet-icons:form-next-link' />
                     <span className='hidden sm:block'>Avançar</span>
                 </Button>
-            )}
-            {/* Conclusão de formulário (salva arquivo .pdf do formulário) */}
-            {btnSend && (
-                <BlobProvider document={<DocumentPdf />}>
-                    {({ blob, url, loading, error }) => (
-                        <Button
-                            onClick={() => handleSend(blob)}
-                            type='button'
-                            variant='contained'
-                            size='medium'
-                            color='primary'
-                            disabled={disabled || disabledSend}
-                            sx={{ display: 'flex', gap: 2 }}
-                        >
-                            <Icon icon={iconConclusion ?? 'carbon:send-filled'} />
-                            <span className='hidden sm:block'>{titleConclusion}</span>
-                        </Button>
-                    )}
-                </BlobProvider>
             )}
         </div>
     )
