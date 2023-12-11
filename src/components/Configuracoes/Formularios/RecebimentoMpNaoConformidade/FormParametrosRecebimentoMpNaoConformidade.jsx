@@ -22,7 +22,7 @@ import FormItem from 'src/components/Cadastros/Item/FormItem'
 import HelpText from 'src/components/Defaults/HelpText'
 import DialogDelete from 'src/components/Defaults/Dialogs/DialogDelete'
 
-const FormParametrosRecebimentoMp = ({ id }) => {
+const FormParametrosRecebimentoMpNaoConformidade = ({ id }) => {
     console.log('🚀 ~ id:', id)
 
     const { setId } = useContext(RouteContext)
@@ -101,22 +101,26 @@ const FormParametrosRecebimentoMp = ({ id }) => {
         try {
             if (type === 'new') {
                 //? New
-                await api.put(`/configuracoes/formularios/recebimento-mp/insertData`, data).then(response => {
-                    toast.success(toastMessage.successUpdate)
-                    router.push(`/configuracoes/formularios/recebimento-mp/`)
-                    setTimeout(() => {
-                        setId(response.data.id)
-                    }, 1000)
-                })
+                await api
+                    .put(`/configuracoes/formularios/recebimentomp-naoconformidade/insertData`, data)
+                    .then(response => {
+                        toast.success(toastMessage.successUpdate)
+                        router.push(`/configuracoes/formularios/recebimentomp-naoconformidade/`)
+                        setTimeout(() => {
+                            setId(response.data.id)
+                        }, 1000)
+                    })
             } else {
                 //? Edit
-                await api.put(`/configuracoes/formularios/recebimento-mp/updateData`, data).then(response => {
-                    toast.success(toastMessage.successUpdate)
-                    setSavingForm(!savingForm)
-                    if (openModalNew) {
-                        setOutsideLink(true)
-                    }
-                })
+                await api
+                    .put(`/configuracoes/formularios/recebimentomp-naoconformidade/updateData`, data)
+                    .then(response => {
+                        toast.success(toastMessage.successUpdate)
+                        setSavingForm(!savingForm)
+                        if (openModalNew) {
+                            setOutsideLink(true)
+                        }
+                    })
             }
         } catch (error) {
             console.log(error)
@@ -193,7 +197,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
 
         // Inserir no array de blocos removidos
         let newRemovedBlocks = [...arrRemovedBlocks]
-        newRemovedBlocks.push(block.dados.parRecebimentoMpModeloBlocoID)
+        newRemovedBlocks.push(block.dados.parRecebimentoMpNaoConformidadeModeloBlocoID)
         setArrRemovedBlocks(newRemovedBlocks)
 
         // Remove bloco
@@ -221,7 +225,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
             },
             itens: [
                 {
-                    parFormularioID: 2,
+                    parFormularioID: 3,
                     new: true,
                     ordem: '1',
                     nome: '',
@@ -236,12 +240,13 @@ const FormParametrosRecebimentoMp = ({ id }) => {
 
     const getProfissionaisModelo = async model => {
         const response = await api.post(`/cadastros/profissional/getProfissionaisAssinatura`, {
-            formularioID: 2, // recebimento MP
+            formularioID: 3, // nao conformidade do recebimento MP
             modeloID: id
         })
         const updatedModel = { ...model }
         updatedModel.profissionaisPreenchem = response.data.preenche
         updatedModel.profissionaisAprovam = response.data.aprova
+        console.log('🚀 ~ updatedModel:', updatedModel)
         reset({
             ...getValues(),
             model: updatedModel
@@ -261,7 +266,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                     // AA
                 })
             } else {
-                api.post(`/configuracoes/formularios/recebimento-mp/getData/${id}`, {
+                api.post(`/configuracoes/formularios/recebimentomp-naoconformidade/getData/${id}`, {
                     unidadeID: loggedUnity.unidadeID
                 }).then(response => {
                     console.log('🚀 ~ getData: ', response.data)
@@ -321,7 +326,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                     title='Excluir Formulário'
                     description='Tem certeza que deseja exluir o formulario?'
                     params={{
-                        route: `/configuracoes/formularios/recebimento-mp/delete/${id}`,
+                        route: `/configuracoes/formularios/recebimentomp-naoconformidade/delete/${id}`,
                         messageSucceded: 'Formulário excluído com sucesso!',
                         MessageError: 'Dado possui pendência!'
                     }}
@@ -392,7 +397,7 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                             title='Profissionais que preenchem'
                                             name={`model.profissionaisPreenchem`}
                                             options={profissionais ?? []}
-                                            value={model?.profissionaisPreenchem ?? []}
+                                            value={model.profissionaisPreenchem ?? []}
                                             register={register}
                                             setValue={setValue}
                                             control={control}
@@ -406,35 +411,13 @@ const FormParametrosRecebimentoMp = ({ id }) => {
                                             title='Profissionais que aprovam'
                                             name={`model.profissionaisAprovam`}
                                             options={profissionais ?? []}
-                                            value={model?.profissionaisAprovam ?? []}
+                                            value={model.profissionaisAprovam ?? []}
                                             register={register}
                                             setValue={setValue}
                                             control={control}
                                         />
                                     </>
                                 )}
-
-                                {/* <Grid item xs={12}>
-                                    <JoditEditor
-                                        ref={editor}
-                                        value={textCabecalho}
-                                        // name={`model.cabecalho`}
-                                        // register={register}
-                                        config={{
-                                            height: 300,
-                                            readonly: false // all options from https://xdsoft.net/jodit/doc/
-                                        }}
-                                        tabIndex={1} // tabIndex of textarea
-                                        onChange={newContent => {
-                                            console.log('🚀 ~ newContent:', newContent)
-                                            setTextCabecalho(newContent)
-                                        }}
-                                        onBlur={newContent => {
-                                            console.log('🚀 ~ newContent:', newContent)
-                                            setTextCabecalho(newContent)
-                                        }}
-                                    />
-                                </Grid> */}
                             </Grid>
                         </CardContent>
                     </Card>
@@ -641,4 +624,4 @@ const FormParametrosRecebimentoMp = ({ id }) => {
     )
 }
 
-export default FormParametrosRecebimentoMp
+export default FormParametrosRecebimentoMpNaoConformidade
