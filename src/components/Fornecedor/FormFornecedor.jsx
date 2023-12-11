@@ -884,6 +884,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         color={'primary'}
                         label={(unidade?.quemPreenche == 1 ? 'Fábrica' : 'Fornecedor') + ' preenche'}
                     />
+                    <CustomChip size='small' skin='light' label={`Modelo ${unidade?.modelo}`} />
                 </div>
 
                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>

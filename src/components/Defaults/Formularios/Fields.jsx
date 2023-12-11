@@ -24,12 +24,9 @@ const Fields = ({
 }) => {
     const [dateStatus, setDateStatus] = useState({})
     const [watchRegistroEstabelecimento, setWatchRegistroEstabelecimento] = useState(null)
-    const { loggedUnity, user } = useContext(AuthContext)
     const router = Router
-    const staticUrl = backRoute(router.pathname)
 
     const dataLocalStorage = localStorage.getItem('loggedUnity')
-    const formatDataLocalStorage = JSON.parse(dataLocalStorage)
 
     const setDateFormat = (type, name, value, numDays) => {
         const newDate = new Date(value)
@@ -81,6 +78,7 @@ const Fields = ({
         // <Grid container spacing={4}>
         fields &&
         fields.map((field, index) => {
+            setValue(`fields[${index}].${field.nomeColuna}`, field?.[field.nomeColuna])
             return (
                 <>
                     {/* Autocomplete (int) */}
@@ -132,7 +130,9 @@ const Fields = ({
                                 md={4}
                                 title={field.nomeCampo}
                                 name={`fields[${index}].${field.nomeColuna}`}
-                                value={field?.[field.nomeColuna]}
+                                value={getMaskForField ?? field?.[fieldNomeColuna]}
+                                control={control}
+                                errors={errors?.fields?.[index]?.[fieldNomeColuna]}
                                 type={field.nomeColuna}
                                 getAddressByCep={getAddressByCep}
                                 mask={getMaskForField(field.nomeColuna)}
@@ -141,9 +141,6 @@ const Fields = ({
                                         ? true
                                         : false
                                 }
-                                control={control}
-                                // errors field[index] nomeColuna
-                                errors={errors?.fields?.[index]?.[field.nomeColuna]}
                             />
                         )}
                 </>
