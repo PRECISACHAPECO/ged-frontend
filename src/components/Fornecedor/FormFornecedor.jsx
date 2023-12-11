@@ -962,7 +962,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     </Card>
 
                     {/* Produtos (se parâmetro habilitado na unidade) */}
-                    {unidade && unidade?.obrigatorioProdutoFornecedor && produtos && produtos.length > 0 && (
+                    {produtos && produtos.length > 0 && (
                         <Card>
                             <CardContent>
                                 {/* Listagem dos produtos selecionados pra esse fornecedor */}
