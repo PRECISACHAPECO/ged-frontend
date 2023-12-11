@@ -15,7 +15,6 @@ const TableFilterCheck = ({ rows, columns, buttonsHeader, selectedRows, setSelec
         data
     } = useContext(ParametersContext)
 
-    const { setId } = useContext(RouteContext)
 
     // ** States
     setData(rows)
