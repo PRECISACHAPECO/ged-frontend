@@ -36,6 +36,15 @@ const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, getValues, regi
         setChange(!change)
     }
 
+    const handleChangeStatus = (index, event) => {
+        console.log('🚀 ~ event:', index, event)
+
+        const naoConformidades = getValues('naoConformidade.itens')
+        naoConformidades[index].status = event
+        console.log('🚀 ~ naoConformidades:', naoConformidades)
+        setValue('naoConformidade.itens', naoConformidades)
+    }
+
     return (
         <>
             <div className='flex flex-col gap-2'>
@@ -99,6 +108,7 @@ const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, getValues, regi
                                     register={register}
                                     control={control}
                                     setValue={setValue}
+                                    handleChangeStatus={handleChangeStatus}
                                 />
                             </CardContent>
                         </Card>

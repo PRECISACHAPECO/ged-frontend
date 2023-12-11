@@ -7,7 +7,7 @@ import DateField from 'src/components/Form/DateField'
 import useDateFormat from 'src/hooks/useDateFormat'
 import RadioGroup from '@mui/material/RadioGroup'
 
-const FieldsFabricaConclusion = ({ index, value, register, control, setValue }) => {
+const FieldsFabricaConclusion = ({ index, value, register, control, setValue, handleChangeStatus }) => {
     const { setDateFormat, dateStatus } = useDateFormat()
 
     const optionsConclusion = [
@@ -41,7 +41,7 @@ const FieldsFabricaConclusion = ({ index, value, register, control, setValue }) 
                         row
                         name={`naoConformidade.itens[${index}].status`}
                         defaultValue={value?.status}
-                        onChange={null}
+                        onChange={e => handleChangeStatus(index, e.target.value)}
                         sx={{ mt: 0 }}
                     >
                         <div className='flex items-center gap-4'>
