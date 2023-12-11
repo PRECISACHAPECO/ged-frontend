@@ -214,6 +214,4 @@ function getCurrentDate() {
     return formattedDate
 }
 
-
-
 export { configColumns, formType, backRoute, statusDefault, toastMessage, dateConfig, dateOptions, getCurrentTime, getCurrentDate }

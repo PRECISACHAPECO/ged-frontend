@@ -7,16 +7,11 @@ import FieldsFabricaConclusion from './FieldsFabricaConclusion'
 import { useContext, useEffect, useState } from 'react'
 import { add } from 'date-fns'
 import { SettingsContext } from 'src/@core/context/settingsContext'
+import { getCurrentTime } from 'src/configs/defaultConfigs'
 
-const RecebimentoMpNaoConformidade = ({
-    recebimentoMpID,
-    values,
-    produtos,
-    getValues,
-    register,
-    control,
-    setValue
-}) => {
+const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, getValues, register, control, setValue }) => {
+    console.log('🚀 ~ RecebimentoMpNaoConformidade => values: ', values)
+
     const { settings } = useContext(SettingsContext)
     const [change, setChange] = useState(false)
 
@@ -25,19 +20,19 @@ const RecebimentoMpNaoConformidade = ({
     }
 
     const addNaoConformidade = () => {
-        const naoConformidades = getValues('naoConformidades')
+        const naoConformidades = getValues('naoConformidade.itens')
         naoConformidades.push({
             profissionalPreenchimento: null,
             produto: null,
             profissionalConclusao: null,
             data: new Date(),
-            hora: new Date(),
+            hora: getCurrentTime(),
             dataFornecedor: new Date(),
-            horaFornecedor: new Date(),
+            horaFornecedor: getCurrentTime(),
             dataConclusao: new Date(),
-            horaConclusao: new Date()
+            horaConclusao: getCurrentTime()
         })
-        setValue('naoConformidades', naoConformidades)
+        setValue('naoConformidade.itens', naoConformidades)
         setChange(!change)
     }
 
@@ -63,52 +58,50 @@ const RecebimentoMpNaoConformidade = ({
                     </CardContent>
                 </Card>
 
-                {getValues('naoConformidades') &&
-                    getValues('naoConformidades').map((value, index) => (
-                        <>
-                            <Card>
-                                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                    <Typography variant='subtitle1' color='error' sx={{ fontWeight: 700 }}>
-                                        <div className='flex items-center gap-1'>
-                                            <Icon icon='typcn:warning' color='#FF4D49' />
-                                            <p>Não Conformidade {index + 1}</p>
-                                        </div>
-                                    </Typography>
+                {getValues('naoConformidade.itens') &&
+                    getValues('naoConformidade.itens').map((value, index) => (
+                        <Card key={index}>
+                            <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <Typography variant='subtitle1' color='error' sx={{ fontWeight: 700 }}>
+                                    <div className='flex items-center gap-1'>
+                                        <Icon icon='typcn:warning' color='#FF4D49' />
+                                        <p>Não Conformidade {index + 1}</p>
+                                    </div>
+                                </Typography>
 
-                                    <FieldsFabrica
-                                        key={index}
-                                        index={index}
-                                        value={value}
-                                        produtos={produtos}
-                                        handlePreenchimentoFornecedor={handlePreenchimentoFornecedor}
-                                        getValues={getValues}
-                                        register={register}
-                                        control={control}
-                                        setValue={setValue}
-                                    />
+                                <FieldsFabrica
+                                    key={index}
+                                    index={index}
+                                    value={value}
+                                    handlePreenchimentoFornecedor={handlePreenchimentoFornecedor}
+                                    getValues={getValues}
+                                    produtos={values.produtos}
+                                    register={register}
+                                    control={control}
+                                    setValue={setValue}
+                                />
 
-                                    {/* Bloco preenchimento fornecedor */}
-                                    <FieldsFornecedor
-                                        key={index}
-                                        index={index}
-                                        value={value}
-                                        register={register}
-                                        control={control}
-                                        setValue={setValue}
-                                    />
+                                {/* Bloco preenchimento fornecedor */}
+                                <FieldsFornecedor
+                                    key={index}
+                                    index={index}
+                                    value={value}
+                                    register={register}
+                                    control={control}
+                                    setValue={setValue}
+                                />
 
-                                    {/* Bloco conclusão da fábrica */}
-                                    <FieldsFabricaConclusion
-                                        key={index}
-                                        index={index}
-                                        value={value}
-                                        register={register}
-                                        control={control}
-                                        setValue={setValue}
-                                    />
-                                </CardContent>
-                            </Card>
-                        </>
+                                {/* Bloco conclusão da fábrica */}
+                                <FieldsFabricaConclusion
+                                    key={index}
+                                    index={index}
+                                    value={value}
+                                    register={register}
+                                    control={control}
+                                    setValue={setValue}
+                                />
+                            </CardContent>
+                        </Card>
                     ))}
 
                 {/* Botão inserir nova não conformidade */}

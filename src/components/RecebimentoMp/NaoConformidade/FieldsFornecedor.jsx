@@ -29,7 +29,7 @@ const FieldsFornecedor = ({ index, value, register, control, setValue }) => {
                             multiline
                             rows={4}
                             title='Observações do Fornecedor'
-                            name={`naoConformidades[${index}].obsFornecedor`}
+                            name={`naoConformidade.itens[${index}].obsFornecedor`}
                             control={control}
                             errors={null}
                         />
@@ -38,7 +38,7 @@ const FieldsFornecedor = ({ index, value, register, control, setValue }) => {
                             xs={12}
                             md={3}
                             title='Data'
-                            name={`naoConformidades[${index}].dataFornecedor`}
+                            name={`naoConformidade.itens[${index}].dataFornecedor`}
                             type='date'
                             value={value?.dataFornecedor}
                             register={register}
@@ -54,7 +54,7 @@ const FieldsFornecedor = ({ index, value, register, control, setValue }) => {
                             xs={12}
                             md={3}
                             title='Hora'
-                            name={`naoConformidades[${index}].horaFornecedor`}
+                            name={`naoConformidade.itens[${index}].horaFornecedor`}
                             type='time'
                             register={register}
                             control={control}
@@ -65,7 +65,7 @@ const FieldsFornecedor = ({ index, value, register, control, setValue }) => {
                             xs={12}
                             md={6}
                             title='Profissional preenchimento'
-                            name={`naoConformidades[${index}].usuarioFornecedor`}
+                            name={`naoConformidade.itens[${index}].usuarioFornecedor`}
                             type='string'
                             options={[]}
                             register={register}

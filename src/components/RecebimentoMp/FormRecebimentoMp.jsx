@@ -10,9 +10,11 @@ import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
 //* Custom components
 import Input from 'src/components/Form/Input'
 import AnexoModeView from 'src/components/Anexos/ModeView'
+import CustomChip from 'src/@core/components/mui/chip'
 import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
 import { backRoute, toastMessage, statusDefault } from 'src/configs/defaultConfigs'
+import { Avatar } from '@mui/material'
 import { api } from 'src/configs/api'
 import FormHeader from 'src/components/Defaults/FormHeader'
 import { RouteContext } from 'src/context/RouteContext'
@@ -41,9 +43,8 @@ const FormRecebimentoMp = ({ id }) => {
     const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
     const [loadingFileItem, setLoadingFileItem] = useState(false) //? loading de carregamento do arquivo
     const [savingForm, setSavingForm] = useState(false)
-    const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(false) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
-    const [naoConformidades, setNaoConformidades] = useState([])
+    const [naoConformidade, setNaoConformidade] = useState(null)
     const [canApprove, setCanApprove] = useState(true) //? Se true, pode aprovar o formulário
     const [fornecedor, setFornecedor] = useState(null)
     const [unidade, setUnidade] = useState(null)
@@ -261,7 +262,7 @@ const FormRecebimentoMp = ({ id }) => {
                     setLink(response.data.link)
                     setMovimentacao(response.data.ultimaMovimentacao)
                     verifyIfCanAproveForm(response.data.blocos) //? Verifica se há alguma resposta que bloqueie o formulário, se sim, o mesmo não pode ser aprovado
-                    setNaoConformidades(response.data.naoConformidades) //! Seta não conformidades
+                    setNaoConformidade(response.data.naoConformidade) //! Seta não conformidades
 
                     //* Insere os dados no formulário
                     reset(response.data)
@@ -294,93 +295,99 @@ const FormRecebimentoMp = ({ id }) => {
         }
     }
 
-    const checkErrors = () => {
+    const checkErrors = validateForm => {
+        console.log('checkErrors => validateForm: ', validateForm, errors)
+
         clearErrors()
         let hasErrors = false
         let arrErrors = []
 
-        //? Header
-        field?.forEach((field, index) => {
-            const fieldName = field.tabela ? `fields[${index}].${field.tabela}` : `fields[${index}].${field.nomeColuna}`
-            const fieldValue = getValues(fieldName)
-            if (field.obrigatorio === 1 && !fieldValue) {
-                setError(fieldName, {
-                    type: 'manual',
-                    message: 'Campo obrigatório'
-                })
-                arrErrors.push(field?.nomeCampo)
-                hasErrors = true
-            }
-        })
-
-        //? Produtos
-        if (produtos && produtos.length > 0) {
-            produtos.forEach((produto, indexProduto) => {
-                produto.produtoAnexosDescricao &&
-                    produto.produtoAnexosDescricao.forEach((anexo, indexAnexo) => {
-                        if (anexo.obrigatorio === 1 && anexo.anexos.length == 0) {
-                            setError(`produtos[${indexProduto}].produtoAnexosDescricao[${indexAnexo}].anexos`, {
-                                type: 'manual',
-                                message: 'Campo obrigatório'
-                            })
-                            arrErrors.push(`Anexo: ${produto?.nome} / ${anexo?.nome}`)
-                            hasErrors = true
-                        }
-                    })
-            })
-        }
-
-        //? Blocos
-        blocos.forEach((block, indexBlock) => {
-            block.itens.forEach((item, indexItem) => {
-                const fieldValue = getValues(`blocos[${indexBlock}].itens[${indexItem}].resposta`)
-                //? Valida resposta do item
-                if (item?.obrigatorio === 1 && !fieldValue) {
-                    setError(`blocos[${indexBlock}].itens[${indexItem}].resposta`, {
+        if (validateForm) {
+            //? Header
+            field?.forEach((field, index) => {
+                const fieldName = field.tabela
+                    ? `fields[${index}].${field.tabela}`
+                    : `fields[${index}].${field.nomeColuna}`
+                const fieldValue = getValues(fieldName)
+                if (field.obrigatorio === 1 && !fieldValue) {
+                    setError(fieldName, {
                         type: 'manual',
-                        message: 'Campo obrigatário'
+                        message: 'Campo obrigatório'
                     })
-                    arrErrors.push(item?.nome)
+                    arrErrors.push(field?.nomeCampo)
                     hasErrors = true
                 }
-
-                //? Valida anexos do item
-                if (
-                    item.respostaConfig &&
-                    item.respostaConfig.anexo == 1 &&
-                    item.respostaConfig.anexosSolicitados.length > 0
-                ) {
-                    item.respostaConfig.anexosSolicitados.forEach((anexo, indexAnexo) => {
-                        if (anexo.obrigatorio == 1 && anexo.anexos && anexo.anexos.length == 0) {
-                            setError(
-                                `blocos[${indexBlock}].itens[${indexItem}].respostaConfig.anexosSolicitados[${indexAnexo}].anexos`,
-                                {
-                                    type: 'manual',
-                                    message: 'Campo obrigatário'
-                                }
-                            )
-                            arrErrors.push(`Anexo: ${item?.nome} / ${anexo?.nome}`)
-                            hasErrors = true
-                        }
-                    })
-                }
             })
-        })
 
-        //? Grupos de anexo
-        if (grupoAnexo && grupoAnexo.length > 0) {
-            grupoAnexo.forEach((grupo, indexGrupo) => {
-                grupo.itens.forEach((item, indexItem) => {
-                    if (item.obrigatorio === 1 && item.anexos.length == 0) {
-                        setError(`grupoAnexo[${indexGrupo}].itens[${indexItem}].anexos`, {
+            //? Produtos
+            if (produtos && produtos.length > 0) {
+                produtos.forEach((produto, indexProduto) => {
+                    produto.produtoAnexosDescricao &&
+                        produto.produtoAnexosDescricao.forEach((anexo, indexAnexo) => {
+                            if (anexo.obrigatorio === 1 && anexo.anexos.length == 0) {
+                                setError(`produtos[${indexProduto}].produtoAnexosDescricao[${indexAnexo}].anexos`, {
+                                    type: 'manual',
+                                    message: 'Campo obrigatório'
+                                })
+                                arrErrors.push(`Anexo: ${produto?.nome} / ${anexo?.nome}`)
+                                hasErrors = true
+                            }
+                        })
+                })
+            }
+
+            //? Blocos
+            blocos.forEach((block, indexBlock) => {
+                block.itens.forEach((item, indexItem) => {
+                    const fieldValue = getValues(`blocos[${indexBlock}].itens[${indexItem}].resposta`)
+                    //? Valida resposta do item
+                    if (item?.obrigatorio === 1 && !fieldValue) {
+                        setError(`blocos[${indexBlock}].itens[${indexItem}].resposta`, {
                             type: 'manual',
                             message: 'Campo obrigatário'
                         })
-                        arrErrors.push(`Anexo: ${grupo?.nome} / ${item?.nome}`)
+                        arrErrors.push(item?.nome)
                         hasErrors = true
+                    }
+
+                    //? Valida anexos do item
+                    if (
+                        item.respostaConfig &&
+                        item.respostaConfig.anexo == 1 &&
+                        item.respostaConfig.anexosSolicitados.length > 0
+                    ) {
+                        item.respostaConfig.anexosSolicitados.forEach((anexo, indexAnexo) => {
+                            if (anexo.obrigatorio == 1 && anexo.anexos && anexo.anexos.length == 0) {
+                                setError(
+                                    `blocos[${indexBlock}].itens[${indexItem}].respostaConfig.anexosSolicitados[${indexAnexo}].anexos`,
+                                    {
+                                        type: 'manual',
+                                        message: 'Campo obrigatário'
+                                    }
+                                )
+                                arrErrors.push(`Anexo: ${item?.nome} / ${anexo?.nome}`)
+                                hasErrors = true
+                            }
+                        })
                     }
                 })
             })
+
+            //? Grupos de anexo
+            if (grupoAnexo && grupoAnexo.length > 0) {
+                grupoAnexo.forEach((grupo, indexGrupo) => {
+                    grupo.itens.forEach((item, indexItem) => {
+                        if (item.obrigatorio === 1 && item.anexos.length == 0) {
+                            setError(`grupoAnexo[${indexGrupo}].itens[${indexItem}].anexos`, {
+                                type: 'manual',
+                                message: 'Campo obrigatário'
+                            })
+                            arrErrors.push(`Anexo: ${grupo?.nome} / ${item?.nome}`)
+                            hasErrors = true
+                        }
+                    })
+                })
+            }
         }
 
         setListErrors({
@@ -421,10 +428,10 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const handleSendForm = blob => {
+        console.log('abre o modal')
         setBlobSaveReport(blob)
-        checkErrors()
+        checkErrors(true)
         setOpenModal(true)
-        setValidateForm(true)
     }
 
     const verifyIfCanAproveForm = blocos => {
@@ -732,7 +739,7 @@ const FormRecebimentoMp = ({ id }) => {
     }, [id, savingForm])
 
     useEffect(() => {
-        checkErrors()
+        checkErrors(false)
     }, [])
 
     //? Seta informações do relatório no localstorage através do contexto (pra gravar arquivo .pdf na conclusão do formulário)
@@ -772,6 +779,19 @@ const FormRecebimentoMp = ({ id }) => {
                     status={status}
                 />
 
+                {/* Div superior com tags e status */}
+                <div className='flex gap-2 mb-2'>
+                    {status && (
+                        <CustomChip
+                            size='small'
+                            skin='light'
+                            color={status.color}
+                            label={status.title}
+                            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+                        />
+                    )}
+                </div>
+
                 <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
                     {/* Cabeçalho do modelo */}
                     {info && info.cabecalhoModelo != '' && (
@@ -783,51 +803,95 @@ const FormRecebimentoMp = ({ id }) => {
                     )}
 
                     {/* Card Header */}
-                    <Card>
-                        {/* Modal que deleta formulario */}
-                        <DialogDelete
-                            title='Excluir Formulário'
-                            description='Tem certeza que deseja exluir o formulario?'
-                            params={{
-                                route: `formularios/recebimento-mp/delete/${id}`,
-                                messageSucceded: 'Formulário excluído com sucesso!',
-                                MessageError: 'Dado possui pendência!'
-                            }}
-                            open={openModalDeleted}
-                            handleClose={() => setOpenModalDeleted(false)}
-                        />
-                        {/* Header */}
-                        <CardContent>
-                            {unidade && (
-                                <Box display='flex' flexDirection='column' sx={{ gap: 1 }}>
-                                    {/* <Typography variant='caption' sx={{ pb: 4 }}>
-                                        {`Aberto por ${fieldsHeader.abertoPor.profissional.nome} em ${fieldsHeader.abertoPor.dataInicio} ${fieldsHeader.abertoPor.horaInicio} `}
-                                    </Typography> */}
-
-                                    <HeaderFields
-                                        modeloID={unidade.parRecebimentoMpModeloID}
-                                        values={fieldsHeader}
-                                        fornecedor={fornecedor}
-                                        setFornecedor={setFornecedor}
-                                        fields={field}
-                                        getValues={getValues}
-                                        disabled={!canEdit.status}
-                                        register={register}
-                                        errors={errors}
-                                        setValue={setValue}
-                                        control={control}
-                                        getAddressByCep={getAddressByCep}
-                                    />
-                                </Box>
-                            )}
-                        </CardContent>
-                    </Card>
+                    <Grid container alignItems='stretch' spacing={4}>
+                        {/* Bloco esquerda (cabeçalho) */}
+                        <Grid item xs={12} md={9}>
+                            <Card style={{ height: '100%' }}>
+                                {/* Modal que deleta formulario */}
+                                <DialogDelete
+                                    title='Excluir Formulário'
+                                    description='Tem certeza que deseja exluir o formulario?'
+                                    params={{
+                                        route: `formularios/recebimento-mp/delete/${id}`,
+                                        messageSucceded: 'Formulário excluído com sucesso!',
+                                        MessageError: 'Dado possui pendência!'
+                                    }}
+                                    open={openModalDeleted}
+                                    handleClose={() => setOpenModalDeleted(false)}
+                                />
+                                {/* Header */}
+                                <CardContent>
+                                    {unidade && (
+                                        <HeaderFields
+                                            modeloID={unidade.parRecebimentoMpModeloID}
+                                            values={fieldsHeader}
+                                            fornecedor={fornecedor}
+                                            setFornecedor={setFornecedor}
+                                            fields={field}
+                                            getValues={getValues}
+                                            disabled={!canEdit.status}
+                                            register={register}
+                                            errors={errors}
+                                            setValue={setValue}
+                                            control={control}
+                                            getAddressByCep={getAddressByCep}
+                                        />
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        {/* Bloco direita (informações do fornecedor) */}
+                        <Grid item xs={12} md={3}>
+                            <Card style={{ height: '100%' }}>
+                                <CardContent sx={{ textAlign: 'center' }}>
+                                    <div className='flex flex-col items-center gap-1'>
+                                        {/* Informações do fornecedor */}
+                                        {fornecedor?.nome_ ? (
+                                            <>
+                                                <div className='flex justify-center'>
+                                                    <Avatar
+                                                        variant='rounded'
+                                                        sx={{ width: 70, height: 70 }}
+                                                        className={`p-1 ${
+                                                            settings.mode === 'dark' ? '!bg-[#e0e0e0]' : '!bg-[#f5f5f5]'
+                                                        }`}
+                                                    >
+                                                        <img
+                                                            src={fornecedor?.foto ?? '/imageDefault/factory.svg'}
+                                                            alt='Imagem da logo da fábrica'
+                                                        />
+                                                    </Avatar>
+                                                </div>
+                                                <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
+                                                    {fornecedor?.nome_}
+                                                </Typography>
+                                                <Typography variant='subtitle2' sx={{ fontWeight: 600 }}>
+                                                    {fornecedor?.cnpj_}
+                                                </Typography>
+                                                {fornecedor?.telefone && (
+                                                    <Typography variant='subtitle2' sx={{ fontWeight: 600 }}>
+                                                        {fornecedor?.telefone ?? '--'}
+                                                    </Typography>
+                                                )}
+                                                {fornecedor?.cidade && (
+                                                    <Typography variant='subtitle2' sx={{ fontWeight: 600 }}>
+                                                        {fornecedor?.cidade ?? '--'}
+                                                    </Typography>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <Typography variant='subtitle1'>-- Selecione um fornecedor --</Typography>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    </Grid>
 
                     {/* Produtos */}
                     <Card>
                         <CardContent>
                             {/* Listagem dos produtos selecionados pra esse fornecedor */}
-
                             <RecebimentoMpProdutos
                                 key={savingForm}
                                 recebimentoMpID={id}
@@ -837,6 +901,7 @@ const FormRecebimentoMp = ({ id }) => {
                                 register={register}
                                 control={control}
                                 errors={errors}
+                                disabled={!canEdit.status}
                             />
                         </CardContent>
                     </Card>
@@ -932,8 +997,7 @@ const FormRecebimentoMp = ({ id }) => {
                     {info.naoConformidade && (
                         <RecebimentoMpNaoConformidade
                             recebimentoMpID={id}
-                            values={naoConformidades}
-                            produtos={produtos}
+                            values={naoConformidade}
                             getValues={getValues}
                             register={register}
                             control={control}
@@ -979,7 +1043,7 @@ const FormRecebimentoMp = ({ id }) => {
                     <DialogFormConclusion
                         openModal={openModal}
                         handleClose={() => {
-                            setOpenModal(false), setValidateForm(false)
+                            setOpenModal(false), checkErrors(false)
                         }}
                         title='Concluir Formulário'
                         text={`Deseja realmente concluir este formulário?`}

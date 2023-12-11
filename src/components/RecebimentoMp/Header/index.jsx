@@ -185,23 +185,6 @@ const HeaderFields = ({
                 control={control}
                 errors={errors?.fieldsHeader?.['fornecedor']}
             />
-            {/* Informações do fornecedor */}
-            <Grid item xs={12} md={4}>
-                {fornecedor && fornecedor.id > 0 && (
-                    <div
-                        onClick={handleGoToSupplier}
-                        className={`${
-                            mode == 'dark' ? 'bg-[#18181a]' : 'bg-[#EEEEF1]'
-                        } flex flex-col gap-2 p-4 rounded-xl cursor-pointer relative`}
-                    >
-                        <Icon icon='uil:external-link-alt' className='absolute top-4 right-4 text-xl' />
-                        <p className='text-xs'>Dados do Fornecedor</p>
-                        <p>Nome: {fornecedor.nome}</p>
-                        <p>Telefone: {fornecedor.telefone}</p>
-                        <p>Cidade: {fornecedor.cidade}</p>
-                    </div>
-                )}
-            </Grid>
         </Grid>
     )
 }
