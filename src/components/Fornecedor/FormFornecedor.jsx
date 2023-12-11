@@ -573,9 +573,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     const onSubmit = async (values, param = false) => {
-        console.log('🚀 ~ param:', param)
+        console.log('🚀 ~ values:', values)
+
         startLoading()
-        console.log('função ativada inicio')
         if (param.conclusion === true) {
             values['status'] = user && user.papelID == 1 ? param.status : 40 //? Seta o status somente se for fábrica
             values['obsConclusao'] = param.obsConclusao
@@ -947,7 +947,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     </Card>
 
                     {/* Produtos (se parâmetro habilitado na unidade) */}
-                    {unidade && unidade?.obrigatorioProdutoFornecedor && produtos && produtos.length > 0 && (
+                    {produtos && produtos.length > 0 && (
                         <Card>
                             <CardContent>
                                 {/* Listagem dos produtos selecionados pra esse fornecedor */}

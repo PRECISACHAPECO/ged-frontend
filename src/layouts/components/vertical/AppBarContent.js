@@ -96,7 +96,7 @@ const AppBarContent = props => {
                                         textTransform: 'none',
                                         pointerEvents: 'none'
                                     }}>
-                                    {loggedUnity?.nomeFantasia}
+                                    {`${loggedUnity?.nomeFantasia} - ${user?.nome}`}
                                 </Button>
                             )
                         }
