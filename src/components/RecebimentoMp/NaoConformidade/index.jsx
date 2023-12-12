@@ -9,7 +9,7 @@ import { add } from 'date-fns'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import { getCurrentTime } from 'src/configs/defaultConfigs'
 
-const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, getValues, register, control, setValue }) => {
+const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, info, getValues, register, control, setValue }) => {
     console.log('🚀 ~ RecebimentoMpNaoConformidade => values: ', values)
 
     const { settings } = useContext(SettingsContext)
@@ -84,6 +84,7 @@ const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, getValues, regi
                                     value={value}
                                     handlePreenchimentoFornecedor={handlePreenchimentoFornecedor}
                                     getValues={getValues}
+                                    info={info}
                                     produtos={values.produtos}
                                     register={register}
                                     control={control}
@@ -95,6 +96,7 @@ const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, getValues, regi
                                     key={index}
                                     index={index}
                                     value={value}
+                                    info={info}
                                     register={register}
                                     control={control}
                                     setValue={setValue}
@@ -105,6 +107,7 @@ const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, getValues, regi
                                     key={index}
                                     index={index}
                                     value={value}
+                                    info={info}
                                     register={register}
                                     control={control}
                                     setValue={setValue}
@@ -115,19 +118,21 @@ const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, getValues, regi
                     ))}
 
                 {/* Botão inserir nova não conformidade */}
-                <Grid container spacing={4}>
-                    <Grid item xs={12}>
-                        <Button
-                            variant='outlined'
-                            color='primary'
-                            onClick={addNaoConformidade}
-                            startIcon={<Icon icon='material-symbols:add-circle-outline-rounded' />}
-                            sx={{ mt: 2 }}
-                        >
-                            Inserir nova não conformidade
-                        </Button>
+                {!info.concluido && (
+                    <Grid container spacing={4}>
+                        <Grid item xs={12}>
+                            <Button
+                                variant='outlined'
+                                color='primary'
+                                onClick={addNaoConformidade}
+                                startIcon={<Icon icon='material-symbols:add-circle-outline-rounded' />}
+                                sx={{ mt: 2 }}
+                            >
+                                Inserir nova não conformidade
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
+                )}
             </div>
         </>
     )

@@ -503,8 +503,10 @@ const FormRecebimentoMp = ({ id }) => {
     const onSubmit = async (values, param = false) => {
         startLoading()
         if (param.conclusion === true) {
-            values['info']['status'] = param.status
+            values['info']['status'] = param.status ?? info.status
             values['obsConclusao'] = param.obsConclusao
+            //* Se aprovar ou concluir com não conformidade, conclui o formulário!
+            values['concluido'] = param.status == 70 || info.naoConformidade ? true : false
         }
 
         const data = {
@@ -760,8 +762,8 @@ const FormRecebimentoMp = ({ id }) => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FormHeader
                     btnCancel
-                    btnSave={info.status < 40 || (info.status < 70 && info.naoConformidade)}
-                    btnSend={info.status >= 30}
+                    btnSave={!info.concluido}
+                    btnSend={info.status >= 30 && !info.concluido}
                     btnPrint={type == 'edit' ? true : false}
                     btnDelete={info.status < 40 ? true : false}
                     onclickDelete={() => setOpenModalDeleted(true)}
@@ -998,6 +1000,7 @@ const FormRecebimentoMp = ({ id }) => {
                         <RecebimentoMpNaoConformidade
                             recebimentoMpID={id}
                             values={naoConformidade}
+                            info={info}
                             getValues={getValues}
                             register={register}
                             control={control}
@@ -1030,12 +1033,12 @@ const FormRecebimentoMp = ({ id }) => {
                             parFormularioID={2} // Recebimento MP
                             formStatus={info.status}
                             hasFormPending={hasFormPending}
-                            canChangeStatus={!hasFormPending && info.status > 30}
+                            canChangeStatus={false}
                             openModal={openModalStatus}
                             handleClose={() => setOpenModalStatus(false)}
                             btnCancel
                             btnConfirm
-                            handleSubmit={changeFormStatus}
+                            handleSubmit={false}
                         />
                     )}
 

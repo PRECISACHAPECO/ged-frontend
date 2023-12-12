@@ -7,7 +7,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { useContext } from 'react'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 
-const FieldsFornecedor = ({ index, value, register, control, setValue }) => {
+const FieldsFornecedor = ({ index, value, info, register, control, setValue }) => {
     const { settings } = useContext(SettingsContext)
     const { setDateFormat, dateStatus } = useDateFormat()
 
@@ -30,6 +30,7 @@ const FieldsFornecedor = ({ index, value, register, control, setValue }) => {
                             rows={4}
                             title='Observações do Fornecedor'
                             name={`naoConformidade.itens[${index}].obsFornecedor`}
+                            disabled={info.concluido}
                             control={control}
                             errors={null}
                         />
@@ -42,6 +43,7 @@ const FieldsFornecedor = ({ index, value, register, control, setValue }) => {
                             type='date'
                             value={value?.dataFornecedor}
                             register={register}
+                            disabled={info.concluido}
                             control={control}
                             setDateFormat={setDateFormat}
                             typeValidation='dataPassado'
@@ -55,6 +57,7 @@ const FieldsFornecedor = ({ index, value, register, control, setValue }) => {
                             md={3}
                             title='Hora'
                             name={`naoConformidade.itens[${index}].horaFornecedor`}
+                            disabled={info.concluido}
                             type='time'
                             register={register}
                             control={control}
@@ -66,6 +69,7 @@ const FieldsFornecedor = ({ index, value, register, control, setValue }) => {
                             md={6}
                             title='Profissional preenchimento'
                             name={`naoConformidade.itens[${index}].usuarioFornecedor`}
+                            disabled={info.concluido}
                             type='string'
                             options={[]}
                             register={register}

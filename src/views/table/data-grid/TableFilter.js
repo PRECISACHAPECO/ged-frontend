@@ -42,7 +42,8 @@ const TableFilter = ({ rows, columns, buttonsHeader, modaLog }) => {
     // Adiciona opacidades as linhas que estão com status inativo
     const getRowClassName = (params) => {
         const status = params.row.status;
-        if (status === 'Inativo') {
+        const concluido = params.row.concluido;
+        if (status === 'Inativo' || concluido == 1) {
             return 'inativo-row';
         }
         return '';

@@ -10,6 +10,7 @@ import { useState } from 'react'
 const FieldsFabrica = ({
     index,
     value,
+    info,
     produtos,
     handlePreenchimentoFornecedor,
     getValues,
@@ -30,6 +31,7 @@ const FieldsFabrica = ({
                 title='Fornecedor preenche?'
                 name={`naoConformidade.itens[${index}].fornecedorPreenche`}
                 value={value.fornecedorPreenche}
+                disabled={info.concluido}
                 register={register}
                 helpText='Se marcado, o fornecedor deve preencher o plano de ação com seu acesso ao sistema.'
             />
@@ -42,6 +44,7 @@ const FieldsFabrica = ({
                     name={`naoConformidade.itens[${index}].data`}
                     type='date'
                     value={value?.data}
+                    disabled={info.concluido}
                     register={register}
                     control={control}
                     setDateFormat={setDateFormat}
@@ -56,6 +59,7 @@ const FieldsFabrica = ({
                     md={3}
                     title='Hora'
                     name={`naoConformidade.itens[${index}].hora`}
+                    disabled={info.concluido}
                     type='time'
                     register={register}
                     control={control}
@@ -67,6 +71,7 @@ const FieldsFabrica = ({
                     md={6}
                     title='Profissional preenchimento'
                     name={`naoConformidade.itens[${index}].profissionalPreenchimento`}
+                    disabled={info.concluido}
                     type='string'
                     options={[]}
                     register={register}
@@ -76,7 +81,7 @@ const FieldsFabrica = ({
                 />
 
                 <Grid item xs={12} md={3}>
-                    <ButtonGroup color='primary' fullWidth className='mt-1'>
+                    <ButtonGroup color='primary' fullWidth className='mt-1' disabled={info.concluido}>
                         <Button onClick={() => setNcType(1)} variant={ncType === 1 ? 'contained' : 'outlined'}>
                             <div className='flex items-center gap-2 px-1'>
                                 <Icon icon='ph:plant' />
@@ -99,7 +104,7 @@ const FieldsFabrica = ({
                     title='Produto'
                     name={`naoConformidade.itens[${index}].produto`}
                     type='string'
-                    disabled={ncType != 1}
+                    disabled={ncType != 1 || info.concluido}
                     options={produtos ?? []}
                     register={register}
                     setValue={setValue}
@@ -114,6 +119,7 @@ const FieldsFabrica = ({
                     rows={4}
                     title='Descrição da não conformidade'
                     value={value?.descricao}
+                    disabled={info.concluido}
                     name={`naoConformidade.itens[${index}].descricao`}
                     control={control}
                     errors={null}
@@ -126,6 +132,7 @@ const FieldsFabrica = ({
                     rows={4}
                     title='Ações solicitadas'
                     name={`naoConformidade.itens[${index}].acoesSolicitadas`}
+                    disabled={info.concluido}
                     control={control}
                     errors={null}
                 />
