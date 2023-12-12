@@ -16,9 +16,11 @@ const FieldsFabrica = ({
     getValues,
     register,
     control,
-    setValue
+    setValue,
+    errors
 }) => {
-    console.log('🚀 ~ FieldsFabrica ~ produtos:', produtos)
+    console.log('🚀 ~ FieldsFabrica:', value)
+
     const { setDateFormat, dateStatus } = useDateFormat()
     const [ncType, setNcType] = useState(1)
 
@@ -73,7 +75,7 @@ const FieldsFabrica = ({
                     name={`naoConformidade.itens[${index}].profissionalPreenchimento`}
                     disabled={info.concluido}
                     type='string'
-                    options={[]}
+                    options={value.profissionalPreenchimento.options ?? []}
                     register={register}
                     setValue={setValue}
                     control={control}
@@ -112,30 +114,26 @@ const FieldsFabrica = ({
                     errors={null}
                 />
 
-                <Input
-                    xs={12}
-                    md={12}
-                    multiline
-                    rows={4}
-                    title='Descrição da não conformidade'
-                    value={value?.descricao}
-                    disabled={info.concluido}
-                    name={`naoConformidade.itens[${index}].descricao`}
-                    control={control}
-                    errors={null}
-                />
-
-                <Input
-                    xs={12}
-                    md={12}
-                    multiline
-                    rows={4}
-                    title='Ações solicitadas'
-                    name={`naoConformidade.itens[${index}].acoesSolicitadas`}
-                    disabled={info.concluido}
-                    control={control}
-                    errors={null}
-                />
+                {/* Fields dinamicos */}
+                {value.dynamicFields &&
+                    value.dynamicFields.length > 0 &&
+                    value.dynamicFields.map((item, indexField) => (
+                        <Input
+                            xs={12}
+                            md={12}
+                            key={indexField}
+                            multiline
+                            rows={4}
+                            title={item.nomeCampo}
+                            value={item.valor}
+                            disabled={info.concluido}
+                            name={`naoConformidade.itens[${index}].dynamicFields[${indexField}].value`}
+                            required={item.obrigatorio == 1 ? true : false}
+                            register={register}
+                            control={control}
+                            // errors={errors?.naoConformidade?.itens[index]?.item?.nomeColuna}
+                        />
+                    ))}
             </Grid>
         </>
     )

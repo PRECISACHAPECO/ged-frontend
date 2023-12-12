@@ -7,7 +7,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { useContext } from 'react'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 
-const FieldsFornecedor = ({ index, value, info, register, control, setValue }) => {
+const FieldsFornecedor = ({ index, value, info, register, control, setValue, errors }) => {
     const { settings } = useContext(SettingsContext)
     const { setDateFormat, dateStatus } = useDateFormat()
 

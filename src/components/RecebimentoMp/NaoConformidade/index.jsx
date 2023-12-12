@@ -9,7 +9,16 @@ import { add } from 'date-fns'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import { getCurrentTime } from 'src/configs/defaultConfigs'
 
-const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, info, getValues, register, control, setValue }) => {
+const RecebimentoMpNaoConformidade = ({
+    recebimentoMpID,
+    values,
+    info,
+    getValues,
+    register,
+    control,
+    setValue,
+    errors
+}) => {
     console.log('🚀 ~ RecebimentoMpNaoConformidade => values: ', values)
 
     const { settings } = useContext(SettingsContext)
@@ -89,6 +98,7 @@ const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, info, getValues
                                     register={register}
                                     control={control}
                                     setValue={setValue}
+                                    errors={errors}
                                 />
 
                                 {/* Bloco preenchimento fornecedor */}
@@ -100,6 +110,7 @@ const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, info, getValues
                                     register={register}
                                     control={control}
                                     setValue={setValue}
+                                    errors={errors}
                                 />
 
                                 {/* Bloco conclusão da fábrica */}
@@ -112,6 +123,7 @@ const RecebimentoMpNaoConformidade = ({ recebimentoMpID, values, info, getValues
                                     control={control}
                                     setValue={setValue}
                                     handleChangeStatus={handleChangeStatus}
+                                    errors={errors}
                                 />
                             </CardContent>
                         </Card>

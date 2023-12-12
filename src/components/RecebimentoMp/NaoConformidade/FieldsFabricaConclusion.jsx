@@ -7,7 +7,7 @@ import DateField from 'src/components/Form/DateField'
 import useDateFormat from 'src/hooks/useDateFormat'
 import RadioGroup from '@mui/material/RadioGroup'
 
-const FieldsFabricaConclusion = ({ index, value, info, register, control, setValue, handleChangeStatus }) => {
+const FieldsFabricaConclusion = ({ index, value, info, register, control, setValue, handleChangeStatus, errors }) => {
     const { setDateFormat, dateStatus } = useDateFormat()
 
     const optionsConclusion = [
@@ -111,7 +111,7 @@ const FieldsFabricaConclusion = ({ index, value, info, register, control, setVal
                     name={`naoConformidade.itens[${index}].profissionalConclusao`}
                     disabled={info.concluido}
                     type='string'
-                    options={[]}
+                    options={value.profissionalConclusao.options ?? []}
                     register={register}
                     setValue={setValue}
                     control={control}
