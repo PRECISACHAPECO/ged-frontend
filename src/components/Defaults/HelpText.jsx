@@ -1,6 +1,5 @@
 import { Tooltip } from '@mui/material'
 import Icon from 'src/@core/components/icon'
-import { makeStyles } from '@material-ui/core/styles'
 
 const HelpText = ({ text, position }) => {
     return (
