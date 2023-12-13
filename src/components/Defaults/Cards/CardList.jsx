@@ -33,11 +33,17 @@ const CardList = ({ xs, md, icon, title, color, subtitle, action, handleClick })
                         </Typography>
                         <div className='flex items-center gap-1 text-[#4a8b57] '>
                             <Icon
-                                icon={action == 'new' ? 'icon-park-solid:add-one' : 'grommet-icons:form-next-link'}
+                                icon={
+                                    action == 'new'
+                                        ? 'icon-park-solid:add-one'
+                                        : action == 'edit'
+                                        ? 'grommet-icons:form-next-link'
+                                        : 'tabler:select'
+                                }
                                 width={16}
                             />
                             <Typography variant='body2' color='primary'>
-                                {action == 'new' ? 'Criar novo' : 'Acessar'}
+                                {action == 'new' ? 'Criar novo' : action == 'edit' ? 'Acessar' : 'Selecionar'}
                             </Typography>
                         </div>
                     </Box>

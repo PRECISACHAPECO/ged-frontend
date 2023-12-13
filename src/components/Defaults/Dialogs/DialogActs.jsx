@@ -50,9 +50,11 @@ const DialogActs = ({
             >
                 <form>
                     <DialogTitle id='form-dialog-title'>{title}</DialogTitle>
-                    <DialogContent>
-                        <Alert severity='info'>{description}</Alert>
-                    </DialogContent>
+                    {description && (
+                        <DialogContent>
+                            <Alert severity='info'>{description}</Alert>
+                        </DialogContent>
+                    )}
 
                     {/* Passa children com props */}
                     <DialogContent>
