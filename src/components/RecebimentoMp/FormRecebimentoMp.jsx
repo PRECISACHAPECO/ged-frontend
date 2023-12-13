@@ -506,7 +506,8 @@ const FormRecebimentoMp = ({ id }) => {
             values['info']['status'] = param.status ?? info.status
             values['obsConclusao'] = param.obsConclusao
             //* Se aprovar ou concluir com não conformidade, conclui o formulário!
-            values['concluido'] = param.status == 70 || info.naoConformidade ? true : false
+            values['concluido'] =
+                param.status == 70 || (info.naoConformidade && param.status > 50 && param.status < 70) ? true : false
         }
 
         const data = {
