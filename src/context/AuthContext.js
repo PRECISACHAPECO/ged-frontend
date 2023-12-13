@@ -204,7 +204,7 @@ const AuthProvider = ({ children }) => {
             params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
             // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
             const previousRoute = router.asPath
-            const redirectURL = previousRoute.includes('/registro/') ? '/meus-dados' : '/formularios/fornecedor/';
+            // const redirectURL = previousRoute.includes('/registro/') ? '/meus-dados' : '/formularios/fornecedor/';
             router.replace(redirectURL)
             if (params.getFornecedorID) {
                 setId(params.getFornecedorID)
@@ -340,6 +340,7 @@ const AuthProvider = ({ children }) => {
     //     }
     // }, []);
 
+    // Após logar vai direto para formulário de fornecedor
     useEffect(() => {
         const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
         const GET = router.query.f
@@ -348,6 +349,15 @@ const AuthProvider = ({ children }) => {
             router.replace(rota)
         }
     }, [router.query.f])
+    // Após logar vai direto para formulário de  recebim3ento
+    // useEffect(() => {
+    //     const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+    //     const GET = router.query.f
+    //     if (GET && !storedToken) {
+    //         const rota = `/login?r=${router.query.r}`
+    //         router.replace(rota)
+    //     }
+    // }, [router.query.r])
 
 
     const values = {
