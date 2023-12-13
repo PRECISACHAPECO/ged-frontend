@@ -64,6 +64,7 @@ const Fornecedor = () => {
             const response = await api.post(`/formularios/fornecedor/makeFornecedor`, {
                 usuarioID: user.usuarioID,
                 papelID: user.papelID,
+                profissionalID: user.profissionalID,
                 unidadeID: loggedUnity.unidadeID,
                 values: values.fields,
                 habilitaQuemPreencheFormFornecedor: values.habilitaQuemPreencheFormFornecedor
