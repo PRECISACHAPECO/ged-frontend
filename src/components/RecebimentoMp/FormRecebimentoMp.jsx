@@ -447,6 +447,7 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const conclusionForm = async values => {
+        console.log('🚀 ~ conclusionForm:', values)
         sendPdfToServer(id, blobSaveReport, 'recebimento-mp')
         values['conclusion'] = true
         await handleSubmit(onSubmit)(values)
@@ -501,15 +502,14 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const onSubmit = async (values, param = false) => {
-        startLoading()
         if (param.conclusion === true) {
+            values['concluiForm'] = true
             values['info']['status'] = param.status ?? info.status
             values['obsConclusao'] = param.obsConclusao
-            //* Se aprovar ou concluir com não conformidade, conclui o formulário!
-            values['concluido'] =
-                param.status == 70 || (info.naoConformidade && param.status >= 50 && param.status < 70) ? true : false
         }
+        // return
 
+        startLoading()
         const data = {
             form: values,
             auth: {
