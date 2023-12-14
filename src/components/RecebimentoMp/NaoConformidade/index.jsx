@@ -219,7 +219,7 @@ const RecebimentoMpNaoConformidade = ({
                     ))}
 
                 {/* Botão inserir nova não conformidade */}
-                {!info.concluido && (
+                {!info.concluido && user.papelID == 1 && (
                     <Grid container spacing={4}>
                         <Grid item xs={12}>
                             <Button

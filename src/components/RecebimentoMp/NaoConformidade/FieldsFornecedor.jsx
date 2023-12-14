@@ -7,7 +7,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 import { useContext } from 'react'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 
-const FieldsFornecedor = ({ index, value, info, register, control, setValue, errors }) => {
+const FieldsFornecedor = ({ index, value, info, papelID, register, control, setValue, errors }) => {
     const { settings } = useContext(SettingsContext)
     const { setDateFormat, dateStatus } = useDateFormat()
 
@@ -30,7 +30,7 @@ const FieldsFornecedor = ({ index, value, info, register, control, setValue, err
                             rows={4}
                             title='Observações do Fornecedor'
                             name={`naoConformidade.itens[${index}].obsFornecedor`}
-                            disabled={info.concluido}
+                            disabled={info.concluido || papelID != 2}
                             control={control}
                             errors={null}
                         />
@@ -43,7 +43,7 @@ const FieldsFornecedor = ({ index, value, info, register, control, setValue, err
                             type='date'
                             value={value?.dataFornecedor}
                             register={register}
-                            disabled={info.concluido}
+                            disabled={info.concluido || papelID != 2}
                             control={control}
                             setDateFormat={setDateFormat}
                             typeValidation='dataPassado'
@@ -57,7 +57,7 @@ const FieldsFornecedor = ({ index, value, info, register, control, setValue, err
                             md={3}
                             title='Hora'
                             name={`naoConformidade.itens[${index}].horaFornecedor`}
-                            disabled={info.concluido}
+                            disabled={info.concluido || papelID != 2}
                             type='time'
                             register={register}
                             control={control}
@@ -69,7 +69,7 @@ const FieldsFornecedor = ({ index, value, info, register, control, setValue, err
                             md={6}
                             title='Profissional preenchimento'
                             name={`naoConformidade.itens[${index}].usuarioFornecedor`}
-                            disabled={info.concluido}
+                            disabled={info.concluido || papelID != 2}
                             type='string'
                             options={[]}
                             register={register}

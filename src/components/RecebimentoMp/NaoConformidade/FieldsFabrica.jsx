@@ -11,6 +11,7 @@ const FieldsFabrica = ({
     index,
     value,
     info,
+    papelID,
     produtos,
     handlePreenchimentoFornecedor,
     getValues,
@@ -26,17 +27,19 @@ const FieldsFabrica = ({
 
     return (
         <>
-            <CheckLabel
-                xs={12}
-                md={4}
-                onClick={handlePreenchimentoFornecedor}
-                title='Fornecedor preenche?'
-                name={`naoConformidade.itens[${index}].fornecedorPreenche`}
-                value={value.fornecedorPreenche}
-                disabled={info.concluido}
-                register={register}
-                helpText='Se marcado, o fornecedor deve preencher o plano de ação com seu acesso ao sistema.'
-            />
+            {papelID == 1 && (
+                <CheckLabel
+                    xs={12}
+                    md={4}
+                    onClick={handlePreenchimentoFornecedor}
+                    title='Fornecedor preenche?'
+                    name={`naoConformidade.itens[${index}].fornecedorPreenche`}
+                    value={value.fornecedorPreenche}
+                    disabled={info.concluido}
+                    register={register}
+                    helpText='Se marcado, o fornecedor deve preencher o plano de ação com seu acesso ao sistema.'
+                />
+            )}
 
             <Grid container spacing={4}>
                 <DateField
@@ -46,7 +49,7 @@ const FieldsFabrica = ({
                     name={`naoConformidade.itens[${index}].data`}
                     type='date'
                     value={value?.data}
-                    disabled={info.concluido}
+                    disabled={info.concluido || papelID != 1}
                     register={register}
                     control={control}
                     setDateFormat={setDateFormat}
@@ -61,7 +64,7 @@ const FieldsFabrica = ({
                     md={3}
                     title='Hora'
                     name={`naoConformidade.itens[${index}].hora`}
-                    disabled={info.concluido}
+                    disabled={info.concluido || papelID != 1}
                     type='time'
                     register={register}
                     control={control}
@@ -73,7 +76,7 @@ const FieldsFabrica = ({
                     md={6}
                     title='Profissional preenchimento'
                     name={`naoConformidade.itens[${index}].profissionalPreenchimento`}
-                    disabled={info.concluido}
+                    disabled={info.concluido || papelID != 1}
                     type='string'
                     options={value.profissionaisOptions.preenchimento ?? []}
                     register={register}
@@ -83,7 +86,7 @@ const FieldsFabrica = ({
                 />
 
                 <Grid item xs={12} md={3}>
-                    <ButtonGroup color='primary' fullWidth className='mt-1' disabled={info.concluido}>
+                    <ButtonGroup color='primary' fullWidth className='mt-1' disabled={info.concluido || papelID != 1}>
                         <Button onClick={() => setNcType(1)} variant={ncType === 1 ? 'contained' : 'outlined'}>
                             <div className='flex items-center gap-2 px-1'>
                                 <Icon icon='ph:plant' />
@@ -106,7 +109,7 @@ const FieldsFabrica = ({
                     title='Produto'
                     name={`naoConformidade.itens[${index}].produto`}
                     type='string'
-                    disabled={ncType != 1 || info.concluido}
+                    disabled={ncType != 1 || info.concluido || papelID != 1}
                     options={produtos ?? []}
                     register={register}
                     setValue={setValue}
@@ -126,7 +129,7 @@ const FieldsFabrica = ({
                             rows={4}
                             title={item.nomeCampo}
                             value={item.valor}
-                            disabled={info.concluido}
+                            disabled={info.concluido || papelID != 1}
                             name={`naoConformidade.itens[${index}].dynamicFields[${indexField}].value`}
                             required={item.obrigatorio == 1 ? true : false}
                             register={register}

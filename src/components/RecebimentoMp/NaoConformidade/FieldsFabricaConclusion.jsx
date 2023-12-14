@@ -7,7 +7,17 @@ import DateField from 'src/components/Form/DateField'
 import useDateFormat from 'src/hooks/useDateFormat'
 import RadioGroup from '@mui/material/RadioGroup'
 
-const FieldsFabricaConclusion = ({ index, value, info, register, control, setValue, handleChangeStatus, errors }) => {
+const FieldsFabricaConclusion = ({
+    index,
+    value,
+    info,
+    papelID,
+    register,
+    control,
+    setValue,
+    handleChangeStatus,
+    errors
+}) => {
     const { setDateFormat, dateStatus } = useDateFormat()
 
     const optionsConclusion = [
@@ -31,7 +41,7 @@ const FieldsFabricaConclusion = ({ index, value, info, register, control, setVal
                     rows={4}
                     title='Conclusão'
                     name={`naoConformidade.itens[${index}].conclusao`}
-                    disabled={info.concluido}
+                    disabled={info.concluido || papelID != 1}
                     control={control}
                     errors={null}
                 />
@@ -56,7 +66,7 @@ const FieldsFabricaConclusion = ({ index, value, info, register, control, setVal
                                         value={item.id}
                                         label={item.nome}
                                         control={<Radio disabled={false} error={false} sx={{ pr: 2 }} />}
-                                        disabled={info.concluido}
+                                        disabled={info.concluido || papelID != 1}
                                         fullWidth
                                         sx={{
                                             '& .MuiFormControlLabel-label': {
@@ -82,7 +92,7 @@ const FieldsFabricaConclusion = ({ index, value, info, register, control, setVal
                     name={`naoConformidade.itens[${index}].dataConclusao`}
                     type='date'
                     value={value?.dataConclusao}
-                    disabled={info.concluido}
+                    disabled={info.concluido || papelID != 1}
                     register={register}
                     control={control}
                     setDateFormat={setDateFormat}
@@ -97,7 +107,7 @@ const FieldsFabricaConclusion = ({ index, value, info, register, control, setVal
                     md={3}
                     title='Hora'
                     name={`naoConformidade.itens[${index}].horaConclusao`}
-                    disabled={info.concluido}
+                    disabled={info.concluido || papelID != 1}
                     type='time'
                     register={register}
                     control={control}
@@ -109,7 +119,7 @@ const FieldsFabricaConclusion = ({ index, value, info, register, control, setVal
                     md={6}
                     title='Profissional preenchimento'
                     name={`naoConformidade.itens[${index}].profissionalConclusao`}
-                    disabled={info.concluido}
+                    disabled={info.concluido || papelID != 1}
                     type='string'
                     options={value.profissionaisOptions.conclusao ?? []}
                     register={register}
