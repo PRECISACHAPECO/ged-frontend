@@ -22,20 +22,20 @@ const index = () => {
                 >
                     <Text style={{ width: '100%', textAlign: 'center', fontSize: 12 }}>RECEBIMENTO MP</Text>
                 </View>
-                <View style={{ marginTop: 20 }}>
+                <View style={{ marginTop: 10 }}>
                     <Text style={{ fontSize: 10 }}>
                         A empresa <Text>{data?.unidade}</Text> possui como norma de BPF a avaliação de seus fornecedores
                         quanto as matérias primas e ingredientes por estes fornecidos.
                     </Text>
                 </View>
                 Fornecedor
-                <View style={{ marginTop: 20 }}>
+                <View style={{ marginTop: 10 }}>
                     <Text style={{ fontSize: 10 }}>
                         Fornecedor: <Text style={{ fontWeight: 'bold', fontSize: 10 }}>{fornecedor}</Text>
                     </Text>
                 </View>
                 {/* Campos dinâmicos do header */}
-                <View style={{ marginTop: 20 }}>
+                <View style={{ marginTop: 10 }}>
                     <View style={styles.containerFields}>
                         {data.header?.map((field, index) => (
                             <>
@@ -49,7 +49,7 @@ const index = () => {
                     </View>
                 </View>
                 {/* Produtos*/}
-                <View style={[{ marginTop: 30 }]} key={index}>
+                <View style={[{ marginTop: 10 }]} key={index}>
                     <View style={styles.table}>
                         <View style={styles.tableTitle}>
                             <Text style={[styles.tableTitlecolumn, { width: '40%' }]}>Produto</Text>
@@ -94,7 +94,7 @@ const index = () => {
                 </View>
                 {/* Tabela contendo os itens por bloco */}
                 {data.blocks?.map((block, index) => (
-                    <View style={[block, { marginTop: 30 }]} key={index}>
+                    <View style={[block, { marginTop: 10 }]} key={index}>
                         <View style={styles.table}>
                             <View style={styles.tableTitle}>
                                 <Text style={[styles.tableTitlecolumn, { width: '60%' }]}>{block.nome}</Text>
@@ -131,7 +131,7 @@ const index = () => {
                 ))}
                 {/* Não conformidades */}
                 {data.naoConformidades?.map((row, index) => (
-                    <View style={[{ marginTop: 30 }]} key={index}>
+                    <View style={[{ marginTop: 10 }]} key={index}>
                         <View style={styles.tableRed}>
                             <View style={styles.tableTitleRed}>
                                 <Text style={[styles.tableTitlecolumn, { width: '100%' }]}>
