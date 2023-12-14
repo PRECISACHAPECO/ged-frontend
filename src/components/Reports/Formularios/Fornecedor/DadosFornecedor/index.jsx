@@ -53,8 +53,8 @@ const index = () => {
                         {data.header?.map((field, index) => (
                             <>
                                 <View style={[styles.fields, { width: '33%' }]}>
-                                    <Text style={styles.fieldTitle}>{field.name ?? 'NI'}</Text>
-                                    <Text style={styles.fieldValue}>{field.value ?? 'NI'}</Text>
+                                    <Text style={styles.fieldTitle}>{field.name ?? ''}</Text>
+                                    <Text style={styles.fieldValue}>{field.value ?? ''}</Text>
                                 </View>
                                 {(index + 1) % 3 === 0 && <View style={styles.separator} />}
                             </>
