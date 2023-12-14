@@ -59,8 +59,8 @@ export const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         gap: '2px',
-        paddingBottom: 5,
-        paddingTop: 5
+        paddingBottom: 4,
+        paddingTop: 4
     },
     fieldTitle: {
         fontSize: 8,
@@ -74,7 +74,8 @@ export const styles = StyleSheet.create({
     separator: {
         height: '1px',
         width: '100%',
-        borderBottom: '1px solid #ddd'
+        borderBottom: '1px solid #ddd',
+        clear: 'both'
     },
 
     // Table
@@ -90,6 +91,20 @@ export const styles = StyleSheet.create({
         borderBottomLeftRadius: 3,
         borderBottomRightRadius: 3
     },
+    tableRed: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        borderRight: '1px solid #ff625d',
+        borderTop: '1px solid #ff625d',
+        borderLeft: '1px solid #ff625d',
+        borderBottom: '1px solid #ff625d',
+        borderTopLeftRadius: 3,
+        borderTopRightRadius: 3,
+        borderBottomLeftRadius: 3,
+        borderBottomRightRadius: 3
+    },
+
     tableTitle: {
         display: 'flex',
         flexDirection: 'row',
@@ -99,6 +114,16 @@ export const styles = StyleSheet.create({
         borderTopLeftRadius: 2,
         borderTopRightRadius: 2,
         borderLeft: '1px solid #ddd'
+    },
+    tableTitleRed: {
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        fontSize: 8,
+        backgroundColor: '#f8e2e2',
+        borderTopLeftRadius: 2,
+        borderTopRightRadius: 2,
+        borderLeft: '1px solid #f8e2e2'
     },
     tableTitlecolumn: {
         padding: 8
@@ -112,6 +137,12 @@ export const styles = StyleSheet.create({
         padding: 8,
         borderLeft: '1px solid #ddd',
         borderTop: '1px solid #ddd'
+    },
+    tableContentRed: {
+        paddingHorizontal: 8,
+        paddingVertical: 0,
+        borderLeft: '1px solid #f8e2e2',
+        borderTop: '1px solid #f8e2e2'
     },
     tableContentcolumn: {
         fontSize: 9
