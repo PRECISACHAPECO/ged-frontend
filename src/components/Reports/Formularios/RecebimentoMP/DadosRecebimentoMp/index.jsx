@@ -5,6 +5,7 @@ import getData from 'src/components/Reports/Layout/getData'
 
 const index = () => {
     const data = getData()
+    console.log('🚀 ~ data report:', data.naoConformidades)
 
     const fornecedor = data?.header?.filter(row => row.name === 'Fornecedor')[0].value
 
@@ -47,13 +48,55 @@ const index = () => {
                         ))}
                     </View>
                 </View>
+                {/* Produtos*/}
+                <View style={[{ marginTop: 30 }]} key={index}>
+                    <View style={styles.table}>
+                        <View style={styles.tableTitle}>
+                            <Text style={[styles.tableTitlecolumn, { width: '40%' }]}>Produto</Text>
+                            <Text
+                                style={[
+                                    styles.tableTitlecolumn,
+                                    {
+                                        width: '20%',
+                                        borderLeft: '1px solid #ddd'
+                                    }
+                                ]}
+                            >
+                                Quantidade
+                            </Text>
+                            <Text style={[styles.tableTitlecolumn, { width: '20%', borderLeft: '1px solid #ddd' }]}>
+                                NF
+                            </Text>
+                            <Text style={[styles.tableTitlecolumn, { width: '20%', borderLeft: '1px solid #ddd' }]}>
+                                Lote
+                            </Text>
+                        </View>
+                        {data.produtos &&
+                            data.produtos.map((row, index) => (
+                                <View style={styles.tableContainer}>
+                                    <View style={[styles.tableContent, { width: '40%' }]}>
+                                        <Text style={styles.tableContentcolumn}>{row.produto}</Text>
+                                    </View>
+                                    <View style={[styles.tableContent, { width: '20%' }]}>
+                                        <Text style={styles.tableContentcolumn}>
+                                            {`${row.quantidade} ${row.unidadeMedida}` ?? ''}
+                                        </Text>
+                                    </View>
+                                    <View style={[styles.tableContent, { width: '20%' }]}>
+                                        <Text style={styles.tableContentcolumn}>{row.nf ?? ''}</Text>
+                                    </View>
+                                    <View style={[styles.tableContent, { width: '20%' }]}>
+                                        <Text style={styles.tableContentcolumn}>{row.lote ?? ''}</Text>
+                                    </View>
+                                </View>
+                            ))}
+                    </View>
+                </View>
                 {/* Tabela contendo os itens por bloco */}
                 {data.blocks?.map((block, index) => (
                     <View style={[block, { marginTop: 30 }]} key={index}>
-                        {/* <Text style={[styles.blockTitle, { paddingTop: 20 }]}>{block.nome}</Text> */}
                         <View style={styles.table}>
                             <View style={styles.tableTitle}>
-                                {/* <Text style={[styles.tableTitlecolumn, { width: '60%' }]}>Item</Text> */}
                                 <Text style={[styles.tableTitlecolumn, { width: '60%' }]}>{block.nome}</Text>
                                 <Text
                                     style={[
@@ -86,8 +129,97 @@ const index = () => {
                         </View>
                     </View>
                 ))}
-                {/* Produtos*/}
-                <Text style={[styles.blockTitle, { marginTop: 30 }]}>Produtos</Text>
+                {/* Não conformidades */}
+                {data.naoConformidades?.map((row, index) => (
+                    <View style={[{ marginTop: 30 }]} key={index}>
+                        <View style={styles.tableRed}>
+                            <View style={styles.tableTitleRed}>
+                                <Text style={[styles.tableTitlecolumn, { width: '100%' }]}>
+                                    Não conformidade 1 (Transporte)
+                                </Text>
+                            </View>
+
+                            <View style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+                                <View
+                                    style={[
+                                        styles.tableContentRed,
+                                        { width: '100%', display: 'flex', flexDirection: 'row' }
+                                    ]}
+                                >
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                </View>
+                                <View
+                                    style={[
+                                        styles.tableContentRed,
+                                        { width: '100%', display: 'flex', flexDirection: 'row' }
+                                    ]}
+                                >
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                </View>
+                                <View
+                                    style={[
+                                        styles.tableContentRed,
+                                        { width: '100%', display: 'flex', flexDirection: 'row' }
+                                    ]}
+                                >
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                </View>
+                                <View
+                                    style={[
+                                        styles.tableContentRed,
+                                        { width: '100%', display: 'flex', flexDirection: 'row' }
+                                    ]}
+                                >
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                    <View style={[styles.fields, { width: '33%' }]}>
+                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                ))}
             </View>
         )
     )
