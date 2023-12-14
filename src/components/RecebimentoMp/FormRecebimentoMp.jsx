@@ -194,7 +194,7 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const goToFormConfig = () => {
-        setId(unidade.parRecebimentoMpModeloID) //? ID do modelo do formulário
+        setId(unidade.modelo.id) //? ID do modelo do formulário
         router.push(`/configuracoes/formularios/recebimento-mp/`)
     }
 
@@ -271,7 +271,7 @@ const FormRecebimentoMp = ({ id }) => {
                     setStatus(objStatus)
 
                     setCanEdit({
-                        status: response.data.info.status < 40 ? true : false,
+                        status: user.papelID == 1 && response.data.info.status < 40 ? true : false,
                         message:
                             response.data.info.status > 40
                                 ? 'Esse formulário já foi concluído, não é mais possível alterar as informações!'
@@ -447,6 +447,7 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const conclusionForm = async values => {
+        console.log('🚀 ~ conclusionForm:', values)
         sendPdfToServer(id, blobSaveReport, 'recebimento-mp')
         values['conclusion'] = true
         await handleSubmit(onSubmit)(values)
@@ -501,13 +502,10 @@ const FormRecebimentoMp = ({ id }) => {
     }
 
     const onSubmit = async (values, param = false) => {
-        startLoading()
         if (param.conclusion === true) {
+            values['concluiForm'] = true
             values['info']['status'] = param.status ?? info.status
             values['obsConclusao'] = param.obsConclusao
-            //* Se aprovar ou concluir com não conformidade, conclui o formulário!
-            values['concluido'] =
-                param.status == 70 || (info.naoConformidade && param.status >= 50 && param.status < 70) ? true : false
         }
 
         const data = {
@@ -519,9 +517,11 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-        console.log('🚀 ~ onSubmit: ', data)
-        // return
 
+        console.log('🚀 ~ onSubmit: ', data)
+        return
+
+        startLoading()
         try {
             if (type == 'edit') {
                 setSavingForm(true)
@@ -764,7 +764,7 @@ const FormRecebimentoMp = ({ id }) => {
                 <FormHeader
                     btnCancel
                     btnSave={!info.concluido}
-                    btnSend={info.status >= 30 && !info.concluido}
+                    btnSend={user.papelID == 1 && info.status >= 30 && !info.concluido}
                     btnPrint={type == 'edit' ? true : false}
                     btnDelete={info.status < 40 ? true : false}
                     onclickDelete={() => setOpenModalDeleted(true)}
@@ -776,7 +776,7 @@ const FormRecebimentoMp = ({ id }) => {
                     titleConclusion={'Concluir Formulário'}
                     title='Recebimento de MP'
                     componentSaveReport={<DadosRecebimentoMp />}
-                    btnStatus={type == 'edit' ? true : false}
+                    btnStatus={user.papelID == 1 && type == 'edit' ? true : false}
                     handleBtnStatus={() => setOpenModalStatus(true)}
                     type={type}
                     status={status}
@@ -790,6 +790,14 @@ const FormRecebimentoMp = ({ id }) => {
                             skin='light'
                             color={status.color}
                             label={status.title}
+                            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+                        />
+                    )}
+                    {unidade && unidade.modelo.nome && (
+                        <CustomChip
+                            size='small'
+                            skin='light'
+                            label={unidade.modelo.nome}
                             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
                         />
                     )}
@@ -826,7 +834,7 @@ const FormRecebimentoMp = ({ id }) => {
                                 <CardContent>
                                     {unidade && (
                                         <HeaderFields
-                                            modeloID={unidade.parRecebimentoMpModeloID}
+                                            modeloID={unidade.modelo.id}
                                             values={fieldsHeader}
                                             fornecedor={fornecedor}
                                             setFornecedor={setFornecedor}
@@ -979,7 +987,7 @@ const FormRecebimentoMp = ({ id }) => {
                     {/* Rodapé inserir assinatura, data e hora */}
                     {unidade && fieldsFooter && !fieldsFooter.concluded && (
                         <RecebimentoMpFooterFields
-                            modeloID={unidade.parRecebimentoMpModeloID}
+                            modeloID={unidade.modelo.id}
                             values={fieldsFooter}
                             register={register}
                             disabled={false}
@@ -990,7 +998,7 @@ const FormRecebimentoMp = ({ id }) => {
                     )}
 
                     {/* Rodapé com informações de conclusão */}
-                    {fieldsFooter && fieldsFooter.concluded && (
+                    {fieldsFooter && fieldsFooter.concluded && fieldsFooter.conclusion?.profissional && (
                         <Typography variant='caption'>
                             {`Concluído por ${fieldsFooter.conclusion.profissional.nome} em ${fieldsFooter.conclusion.dataFim} ${fieldsFooter.conclusion.horaFim}.`}
                         </Typography>

@@ -7,7 +7,6 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 const UseBgColor = () => {
     // ** Hooks
     const theme = useTheme()
-    console.log("🚀 ~ theme wwaaaaaaaaa:", theme)
 
     return {
         primaryFilled: {
