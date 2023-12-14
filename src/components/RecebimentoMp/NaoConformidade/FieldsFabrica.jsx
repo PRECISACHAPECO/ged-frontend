@@ -23,7 +23,13 @@ const FieldsFabrica = ({
     console.log('🚀 ~ FieldsFabrica:', value)
 
     const { setDateFormat, dateStatus } = useDateFormat()
-    const [ncType, setNcType] = useState(1)
+    const [ncType, setNcType] = useState(value.tipo ?? 1)
+
+    const setType = type => {
+        console.log('🚀 ~ type:', type)
+        setNcType(type)
+        setValue(`naoConformidade.itens[${index}].tipo`, type)
+    }
 
     return (
         <>
@@ -87,13 +93,13 @@ const FieldsFabrica = ({
 
                 <Grid item xs={12} md={3}>
                     <ButtonGroup color='primary' fullWidth className='mt-1' disabled={info.concluido || papelID != 1}>
-                        <Button onClick={() => setNcType(1)} variant={ncType === 1 ? 'contained' : 'outlined'}>
+                        <Button onClick={() => setType(1)} variant={ncType === 1 ? 'contained' : 'outlined'}>
                             <div className='flex items-center gap-2 px-1'>
                                 <Icon icon='ph:plant' />
                                 <p className='capitalize'>Produto</p>
                             </div>
                         </Button>
-                        <Button onClick={() => setNcType(2)} variant={ncType === 2 ? 'contained' : 'outlined'}>
+                        <Button onClick={() => setType(2)} variant={ncType === 2 ? 'contained' : 'outlined'}>
                             <div className='flex items-center gap-2 py-[2px] px-1'>
                                 <Icon icon='mdi:truck-fast-outline' />
                                 <p className='capitalize'>Transporte</p>
