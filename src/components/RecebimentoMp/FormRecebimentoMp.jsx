@@ -793,7 +793,7 @@ const FormRecebimentoMp = ({ id }) => {
                             sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
                         />
                     )}
-                    {unidade && unidade.modelo.nome && (
+                    {unidade && unidade.modelo && (
                         <CustomChip
                             size='small'
                             skin='light'
