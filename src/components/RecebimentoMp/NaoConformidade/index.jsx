@@ -12,6 +12,7 @@ import { getCurrentTime } from 'src/configs/defaultConfigs'
 import toast from 'react-hot-toast'
 import DialogActs from 'src/components/Defaults/Dialogs/DialogActs'
 import CardList from 'src/components/Defaults/Cards/CardList'
+import CustomChip from 'src/@core/components/mui/chip'
 
 const RecebimentoMpNaoConformidade = ({
     recebimentoMpID,
@@ -58,9 +59,14 @@ const RecebimentoMpNaoConformidade = ({
     }
 
     const addNaoConformidade = model => {
+        console.log('🚀 ~ model:', model)
         const naoConformidades = getValues('naoConformidade.itens')
         naoConformidades.push({
             parRecebimentoMpNaoConformidadeModeloID: model.parRecebimentoMpNaoConformidadeModeloID, //? id do modelo de NC
+            modelo: {
+                id: model.parRecebimentoMpNaoConformidadeModeloID,
+                nome: model.nome
+            },
             profissionalPreenchimento: null,
             produto: null,
             profissionalConclusao: null,
@@ -71,18 +77,17 @@ const RecebimentoMpNaoConformidade = ({
             dataConclusao: new Date(),
             horaConclusao: getCurrentTime(),
             profissionaisOptions: {
-                preenchimento: [],
-                conclusao: []
+                preenchimento: model.profissionaisOptions.preenchimento ?? [],
+                conclusao: model.profissionaisOptions.conclusao ?? []
             },
             dynamicFields: model.dynamicFields
         })
         setValue('naoConformidade.itens', naoConformidades)
         setChange(!change)
+        toast.success('Não conformidade inserida. Preencha os campos...')
     }
 
     const handleChangeStatus = (index, event) => {
-        console.log('🚀 ~ event:', index, event)
-
         const naoConformidades = getValues('naoConformidade.itens')
         naoConformidades[index].status = event
         console.log('🚀 ~ naoConformidades:', naoConformidades)
@@ -153,13 +158,21 @@ const RecebimentoMpNaoConformidade = ({
                     getValues('naoConformidade.itens').map((value, index) => (
                         <Card key={index}>
                             <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                <Typography variant='subtitle1' color='error' sx={{ fontWeight: 700 }}>
-                                    <div className='flex items-center gap-1'>
-                                        <Icon icon='typcn:warning' color='#FF4D49' />
-                                        <p>Não Conformidade {index + 1}</p>
-                                    </div>
-                                </Typography>
-
+                                <div className='flex items-center gap-2'>
+                                    <Typography variant='subtitle1' color='error' sx={{ fontWeight: 700 }}>
+                                        <div className='flex items-center gap-1'>
+                                            <Icon icon='typcn:warning' color='#FF4D49' />
+                                            <p>Não Conformidade {index + 1}</p>
+                                        </div>
+                                    </Typography>
+                                    <CustomChip
+                                        size='small'
+                                        skin='light'
+                                        label={value.modelo.nome}
+                                        color='error'
+                                        sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+                                    />
+                                </div>
                                 <FieldsFabrica
                                     key={index}
                                     index={index}
@@ -167,6 +180,7 @@ const RecebimentoMpNaoConformidade = ({
                                     handlePreenchimentoFornecedor={handlePreenchimentoFornecedor}
                                     getValues={getValues}
                                     info={info}
+                                    papelID={user.papelID}
                                     produtos={values.produtos}
                                     register={register}
                                     control={control}
@@ -180,6 +194,7 @@ const RecebimentoMpNaoConformidade = ({
                                     index={index}
                                     value={value}
                                     info={info}
+                                    papelID={user.papelID}
                                     register={register}
                                     control={control}
                                     setValue={setValue}
@@ -192,6 +207,7 @@ const RecebimentoMpNaoConformidade = ({
                                     index={index}
                                     value={value}
                                     info={info}
+                                    papelID={user.papelID}
                                     register={register}
                                     control={control}
                                     setValue={setValue}
