@@ -225,7 +225,7 @@ const HeaderFields = ({
                                 {/* Fornecedor */}
                                 <Select
                                     xs={12}
-                                    md={4}
+                                    md={12}
                                     title='Fornecedor'
                                     name={`fieldsHeader.fornecedor`}
                                     type='string'
