@@ -46,7 +46,6 @@ const FormRecebimentoMp = ({ id }) => {
     const [hasFormPending, setHasFormPending] = useState(false) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
     const [naoConformidade, setNaoConformidade] = useState(null)
     const [canApprove, setCanApprove] = useState(true) //? Se true, pode aprovar o formulário
-    const [fornecedor, setFornecedor] = useState(null)
     const [unidade, setUnidade] = useState(null)
     const [produtos, setProdutos] = useState([])
     const [grupoAnexo, setGrupoAnexo] = useState([])
@@ -251,7 +250,7 @@ const FormRecebimentoMp = ({ id }) => {
                     console.log('getData: ', response.data)
 
                     setFieldsHeader(response.data.fieldsHeader)
-                    setFornecedor(response.data.fieldsHeader.fornecedor)
+                    // setFornecedor(response.data.fieldsHeader.fornecedor)
                     setFieldsFooter(response.data.fieldsFooter)
                     setField(response.data.fields)
                     setProdutos(response.data.produtos)
@@ -813,109 +812,21 @@ const FormRecebimentoMp = ({ id }) => {
                         </Card>
                     )}
 
-                    {/* Card Header */}
-                    <Grid container alignItems='stretch' spacing={4}>
-                        {/* Bloco esquerda (cabeçalho) */}
-                        <Grid item xs={12} md={9}>
-                            <Card style={{ height: '100%' }}>
-                                {/* Modal que deleta formulario */}
-                                <DialogDelete
-                                    title='Excluir Formulário'
-                                    description='Tem certeza que deseja exluir o formulario?'
-                                    params={{
-                                        route: `formularios/recebimento-mp/delete/${id}`,
-                                        messageSucceded: 'Formulário excluído com sucesso!',
-                                        MessageError: 'Dado possui pendência!'
-                                    }}
-                                    open={openModalDeleted}
-                                    handleClose={() => setOpenModalDeleted(false)}
-                                />
-                                {/* Header */}
-                                <CardContent>
-                                    {unidade && (
-                                        <HeaderFields
-                                            modeloID={unidade.modelo.id}
-                                            values={fieldsHeader}
-                                            fornecedor={fornecedor}
-                                            setFornecedor={setFornecedor}
-                                            fields={field}
-                                            getValues={getValues}
-                                            disabled={!canEdit.status}
-                                            register={register}
-                                            errors={errors}
-                                            setValue={setValue}
-                                            control={control}
-                                            getAddressByCep={getAddressByCep}
-                                        />
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        {/* Bloco direita (informações do fornecedor) */}
-                        <Grid item xs={12} md={3}>
-                            <Card style={{ height: '100%' }}>
-                                <CardContent sx={{ textAlign: 'center' }}>
-                                    <div className='flex flex-col items-center gap-1'>
-                                        {/* Informações do fornecedor */}
-                                        {fornecedor?.nome_ ? (
-                                            <>
-                                                <div className='flex justify-center'>
-                                                    <Avatar
-                                                        variant='rounded'
-                                                        sx={{ width: 70, height: 70 }}
-                                                        className={`p-1 ${
-                                                            settings.mode === 'dark' ? '!bg-[#e0e0e0]' : '!bg-[#f5f5f5]'
-                                                        }`}
-                                                    >
-                                                        <img
-                                                            src={fornecedor?.foto ?? '/imageDefault/factory.svg'}
-                                                            alt='Imagem da logo da fábrica'
-                                                        />
-                                                    </Avatar>
-                                                </div>
-                                                <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
-                                                    {fornecedor?.nome_}
-                                                </Typography>
-                                                <Typography variant='subtitle2' sx={{ fontWeight: 600 }}>
-                                                    {fornecedor?.cnpj_}
-                                                </Typography>
-                                                {fornecedor?.telefone && (
-                                                    <Typography variant='subtitle2' sx={{ fontWeight: 600 }}>
-                                                        {fornecedor?.telefone ?? '--'}
-                                                    </Typography>
-                                                )}
-                                                {fornecedor?.cidade && (
-                                                    <Typography variant='subtitle2' sx={{ fontWeight: 600 }}>
-                                                        {fornecedor?.cidade ?? '--'}
-                                                    </Typography>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <Typography variant='subtitle1'>-- Selecione um fornecedor --</Typography>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    </Grid>
-
-                    {/* Produtos */}
-                    <Card>
-                        <CardContent>
-                            {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                            <RecebimentoMpProdutos
-                                key={savingForm}
-                                recebimentoMpID={id}
-                                fornecedorID={getValues('fieldsHeader.fornecedor.id')}
-                                getValues={getValues}
-                                setValue={setValue}
-                                register={register}
-                                control={control}
-                                errors={errors}
-                                disabled={!canEdit.status}
-                            />
-                        </CardContent>
-                    </Card>
+                    {unidade && (
+                        <HeaderFields
+                            recebimentoMpID={id}
+                            modelo={unidade.modelo}
+                            values={fieldsHeader}
+                            fields={field}
+                            getValues={getValues}
+                            disabled={!canEdit.status}
+                            register={register}
+                            errors={errors}
+                            setValue={setValue}
+                            control={control}
+                            getAddressByCep={getAddressByCep}
+                        />
+                    )}
 
                     {/* Blocos */}
                     {blocos &&
@@ -1071,6 +982,19 @@ const FormRecebimentoMp = ({ id }) => {
                         conclusionForm={conclusionForm}
                         listErrors={listErrors}
                         canApprove={canApprove}
+                    />
+
+                    {/* Modal que deleta formulario */}
+                    <DialogDelete
+                        title='Excluir Formulário'
+                        description='Tem certeza que deseja exluir o formulario?'
+                        params={{
+                            route: `formularios/recebimento-mp/delete/${id}`,
+                            messageSucceded: 'Formulário excluído com sucesso!',
+                            MessageError: 'Dado possui pendência!'
+                        }}
+                        open={openModalDeleted}
+                        handleClose={() => setOpenModalDeleted(false)}
                     />
                 </Box>
             </form>

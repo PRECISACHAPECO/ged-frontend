@@ -4,7 +4,6 @@ import DateField from 'src/components/Form/DateField'
 import Select from 'src/components/Form/Select'
 
 const FieldsProdutos = ({ value, index, apresentacoes, setValue, register, control, errors, disabled }) => {
-    console.log('🚀 ~ value:', value)
     return (
         <>
             {/* Quantidade */}
