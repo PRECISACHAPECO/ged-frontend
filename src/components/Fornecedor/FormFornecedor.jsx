@@ -826,7 +826,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     btnDelete={info.status < 40 ? true : false}
                     onclickDelete={() => setOpenModalDeleted(true)}
                     btnSave={canEdit.status}
-                    btnSend={(canEdit.status || user.papelID == 1) && info.status < 40}
+                    btnSend={(canEdit.status || user.papelID == 1) && info.status <= 40}
                     btnPrint={type == 'edit' ? true : false}
                     actionsData={actionsData}
                     actions

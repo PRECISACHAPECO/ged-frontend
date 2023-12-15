@@ -13,17 +13,29 @@ const FormContext = createContext(defaultValues);
 const FormProvider = ({ children }) => {
     const { user, loggedUnity } = useContext(AuthContext)
 
+    // const setReportParameters = (parameters) => {
+    //     localStorage.setItem('report', JSON.stringify(parameters));
+    // }
     const setReportParameters = (parameters) => {
-        // const values = {
-        //     id: parameters.id,
-        //     nameComponent: parameters.nameComponent, //? Mesmo nome do componente
-        //     route: parameters.route, //? Rota do backend
-        //     unidadeID: parameters.unidadeID,
-        //     papelID: parameters.papelID,
-        //     usuarioID: parameters.usuarioID,
-        // }
-        localStorage.setItem('report', JSON.stringify(parameters));
-    }
+        const seen = new WeakSet();
+
+        const replacer = (key, value) => {
+            if (typeof value === 'object' && value !== null) {
+                if (seen.has(value)) {
+                    return undefined; // Evita referências circulares
+                }
+                seen.add(value);
+            }
+            return value;
+        };
+
+        try {
+            const jsonString = JSON.stringify(parameters, replacer);
+            localStorage.setItem('report', jsonString);
+        } catch (error) {
+            console.error('Erro ao converter para JSON:', error);
+        }
+    };
 
 
     const sendPdfToServer = async (id, fileBlob, type) => {
