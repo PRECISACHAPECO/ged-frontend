@@ -29,7 +29,8 @@ const DefaultPalette = (mode, skin) => {
             bodyBg: mode === 'light' ? '#35553b' : '#303033',
             trackBg: mode === 'light' ? '#35553b' : '#303033',
             tooltipBg: mode === 'light' ? '#262732' : '#303033',
-            tableHeaderBg: mode === 'light' ? '#F5F5F7' : '#303033'
+            tableHeaderBg: mode === 'light' ? '#F5F5F7' : '#303033',
+            disabledBg: mode === 'light' ? '#F7F7F9' : '#303033',
         },
         mode: mode,
         common: {
@@ -72,6 +73,12 @@ const DefaultPalette = (mode, skin) => {
             dark: '#64C623',
             contrastText: whiteColor
         },
+        rocket: {
+            light: '#6a48b9',
+            main: '#6a48b9',
+            dark: '#6a48b9',
+            contrastText: whiteColor
+        },
         grey: {
             50: '#FAFAFA',
             100: '#F5F5F5',
@@ -89,9 +96,10 @@ const DefaultPalette = (mode, skin) => {
             A700: '#616161'
         },
         text: {
-            primary: `rgba(${mainColor}, 0.87)`,
+            primary: `rgba(${mainColor}, 0.95)`,
             secondary: `rgba(${mainColor}, 0.6)`,
-            disabled: `rgba(${mainColor}, 0.38)`
+            disabled: `rgba(${mainColor}, 0.95)`,
+            opacity: `rgba(${mainColor}, 0.4)`
         },
         divider: `rgba(${mainColor}, 0.12)`,
         background: {

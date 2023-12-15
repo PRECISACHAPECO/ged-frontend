@@ -224,14 +224,17 @@ const AutocompleteComponent = ({ hidden, settings }) => {
         return (
             <Box
                 ref={wrapper}
-                onClick={() => !openDialog && setOpenDialog(true)}
+                onClick={() => {
+                    !openDialog && setOpenDialog(true)
+                    setId(null)
+                }}
                 sx={{ display: 'flex', cursor: 'pointer', alignItems: 'center' }}
             >
                 <IconButton color='inherit' sx={!hidden && layout === 'vertical' ? { mr: 1, ml: -2.75 } : {}}>
                     <Icon icon='mdi:magnify' />
                 </IconButton>
                 {!hidden && layout === 'vertical' ? (
-                    <Typography sx={{ userSelect: 'none', color: 'text.disabled' }}>Pesquisar (Ctrl+/)</Typography>
+                    <Typography sx={{ userSelect: 'none', color: 'text.opacity' }}>Pesquisar (Ctrl+/)</Typography>
                 ) : null}
                 {openDialog && (
                     <Dialog fullWidth open={openDialog} fullScreen={fullScreenDialog} onClose={() => setOpenDialog(false)}>

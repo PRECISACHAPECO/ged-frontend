@@ -20,7 +20,6 @@ const QuickSearchToolbar = (props) => {
     const router = Router
     const { setId } = useContext(RouteContext)
 
-    const matches = useMediaQuery('(min-width:640px)');
 
     return (
         <Box
@@ -81,7 +80,7 @@ const QuickSearchToolbar = (props) => {
                     }}
                 />
                 <div className='hidden sm:block '>
-                    <GridToolbarFilterButton className="!h-full" />
+                    <GridToolbarFilterButton className="!h-full !z-50" />
                 </div>
             </Box>
 

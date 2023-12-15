@@ -16,6 +16,7 @@ import { AuthContext } from 'src/context/AuthContext'
 import { useContext } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
+import useLoad from 'src/hooks/useLoad'
 
 const FormTransportador = ({ id }) => {
     const [open, setOpen] = useState(false)
@@ -25,7 +26,8 @@ const FormTransportador = ({ id }) => {
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, user } = useContext(AuthContext)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -37,16 +39,16 @@ const FormTransportador = ({ id }) => {
     } = useForm()
 
     //? Envia dados para a api
-    const onSubmit = async values => {
-        const newValues = {
-            fields: {
-                ...values.fields,
-                unidadeID: loggedUnity.unidadeID
-            }
+    const onSubmit = async data => {
+        startLoading()
+        const values = {
+            ...data,
+            usuarioID: user.usuarioID,
+            unidadeID: loggedUnity.unidadeID
         }
         try {
             if (type === 'new') {
-                await api.post(`${backRoute(staticUrl)}/new/insertData`, newValues).then(response => {
+                await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
                     router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
                     setId(response.data)
                     toast.success(toastMessage.successNew)
@@ -61,13 +63,15 @@ const FormTransportador = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 
     //? Função que deleta os dados
     const handleClickDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/${id}`)
+            await api.delete(`${staticUrl}/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)
@@ -119,17 +123,17 @@ const FormTransportador = ({ id }) => {
         <>
             {!data && <Loading />}
             {data && (
-                <Card>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <FormHeader
-                            btnCancel
-                            btnSave
-                            btnNew
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
-                            type={type}
-                        />
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <FormHeader
+                        btnCancel
+                        btnSave
+                        btnNew
+                        handleSubmit={() => handleSubmit(onSubmit)}
+                        btnDelete={type === 'edit' ? true : false}
+                        onclickDelete={() => setOpen(true)}
+                        type={type}
+                    />
+                    <Card>
                         <CardContent>
                             <Grid container spacing={5}>
                                 <Input
@@ -152,8 +156,8 @@ const FormTransportador = ({ id }) => {
                                 />
                             </Grid>
                         </CardContent>
-                    </form>
-                </Card>
+                    </Card>
+                </form>
             )}
             <DialogForm
                 text='Tem certeza que deseja excluir?'

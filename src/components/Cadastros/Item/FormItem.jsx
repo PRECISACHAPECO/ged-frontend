@@ -16,9 +16,18 @@ import Select from 'src/components/Form/Select'
 import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 import ListOptions from './ListOptions'
+import useLoad from 'src/hooks/useLoad'
 
-const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, outsideID, handleConfirmNew }) => {
-    console.log('🚀 ~ FormItem:', id)
+const FormItem = ({
+    id,
+    btnClose,
+    handleModalClose,
+    setNewChange,
+    newChange,
+    outsideID,
+    handleConfirmNew,
+    manualUrl
+}) => {
     const [open, setOpen] = useState(false)
     const [change, setChange] = useState(false)
     const [data, setData] = useState(null)
@@ -27,7 +36,9 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, user } = useContext(AuthContext)
+    console.log('🚀 ~ user:', user)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -45,11 +56,12 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
 
     //? Envia dados para a api
     const onSubmit = async data => {
+        startLoading()
         const values = {
             ...data,
+            usuarioID: user.usuarioID,
             unidadeID: loggedUnity.unidadeID
         }
-        console.log('onSubmit: ', values)
 
         try {
             if (type === 'new') {
@@ -75,13 +87,15 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 
     //? Deleta os dados
     const handleClickDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/${id}`)
+            await api.delete(`${staticUrl}/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)
@@ -100,8 +114,6 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
         try {
             const route = type === 'new' ? 'cadastros/item/new/getData' : `cadastros/item/getData/${id}`
             await api.post(route).then(response => {
-                console.log('🚀 ~ getData: ', response.data)
-
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
             })
@@ -133,7 +145,6 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
                 alternativa: value
             })
             if (response.data) {
-                console.log('🚀 ~ response.data:', response.data)
                 setChange(!change)
                 setValue('fields.opcoes', response.data)
                 setData({ ...data, fields: { ...data.fields, opcoes: response.data } })
@@ -144,12 +155,10 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
     }
 
     const handleRemoveAnexo = (value, index, indexAnexo) => {
-        console.log('🚀 ~ data, index, indexAnexo:', value, index, indexAnexo)
         let copyAnexos = [...getValues(`fields.opcoes`)]
 
         // remover anexo do array
         copyAnexos[index].anexos.splice(indexAnexo, 1)
-        console.log('🚀 ~ copyAnexos:', copyAnexos)
 
         // remover anexo do banco
         const newData = {
@@ -159,7 +168,6 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
                 opcoes: copyAnexos
             }
         }
-        console.log('🚀 ~ newData:', newData)
         setData(newData)
         setValue(`fields.opcoes`, copyAnexos)
         setChange(!change)
@@ -186,19 +194,21 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
             {!data && <Loading />}
             {data && (
                 <>
-                    <Card>
-                        <form onSubmit={handleSubmit(onSubmit)} id='formItem'>
-                            <FormHeader
-                                btnCancel
-                                btnNew
-                                btnSave
-                                btnClose={btnClose}
-                                handleModalClose={handleModalClose}
-                                handleSubmit={() => handleSubmit(onSubmit)}
-                                btnDelete={type === 'edit' ? true : false}
-                                onclickDelete={() => setOpen(true)}
-                                type={type}
-                            />
+                    <form onSubmit={handleSubmit(onSubmit)} id='formItem'>
+                        <FormHeader
+                            btnCancel
+                            btnNew
+                            btnSave
+                            manualUrl={manualUrl}
+                            btnClose={btnClose}
+                            handleModalClose={handleModalClose}
+                            handleSubmit={() => handleSubmit(onSubmit)}
+                            btnDelete={type === 'edit' ? true : false}
+                            onclickDelete={() => setOpen(true)}
+                            type={type}
+                            outsideID={outsideID}
+                        />
+                        <Card>
                             <CardContent>
                                 <Grid container spacing={5}>
                                     <Select
@@ -259,8 +269,8 @@ const FormItem = ({ id, btnClose, handleModalClose, setNewChange, newChange, out
                                     <Divider />
                                 </Grid>
                             </CardContent>
-                        </form>
-                    </Card>
+                        </Card>
+                    </form>
 
                     <ListOptions
                         key={change}

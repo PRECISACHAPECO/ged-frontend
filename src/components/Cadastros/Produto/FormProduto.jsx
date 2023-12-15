@@ -17,8 +17,9 @@ import Check from 'src/components/Form/Check'
 import { AuthContext } from 'src/context/AuthContext'
 import Icon from 'src/@core/components/icon'
 import AnexosList from './AnexosList'
+import useLoad from 'src/hooks/useLoad'
 
-const FormProduto = ({ id }) => {
+const FormProduto = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange, manualUrl, outsideID }) => {
     const [open, setOpen] = useState(false)
     const [data, setData] = useState(null)
     const router = Router
@@ -26,9 +27,10 @@ const FormProduto = ({ id }) => {
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, user } = useContext(AuthContext)
     const [removedItems, setRemovedItems] = useState([])
     const [change, setChange] = useState(false)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -43,17 +45,25 @@ const FormProduto = ({ id }) => {
 
     // Envia dados para a API
     const onSubmit = async data => {
+        startLoading()
         const values = {
             ...data,
             unidadeID: loggedUnity.unidadeID,
+            usuarioID: user.usuarioID,
             removedItems
         }
         console.log(values)
+        // return
+
         try {
             if (type === 'new') {
-                await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
-                    router.push(`${backRoute(staticUrl)}`) // backRoute para remover 'novo' da rota
-                    setId(response.data)
+                await api.post(`cadastros/produto/new/insertData`, values).then(response => {
+                    if (handleConfirmNew) {
+                        handleConfirmNew(response.data, 'produtos')
+                    } else {
+                        router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                        setId(response.data.id)
+                    }
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
@@ -66,13 +76,15 @@ const FormProduto = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 
     // Deleta os dados
     const handleClickDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/${id}`)
+            await api.delete(`${staticUrl}/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)
@@ -89,10 +101,9 @@ const FormProduto = ({ id }) => {
     // Dados iniciais ao carregar a página
     const getData = async () => {
         try {
-            const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
+            const route = type === 'new' ? `cadastros/produto/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route).then(response => {
-                console.log('🚀 ~ response:', response.data)
-                // setAnexos(response.data.anexos)
+                console.log('🚀 ~ getData:', response.data)
                 setData(response.data)
                 reset(response.data)
             })
@@ -139,21 +150,29 @@ const FormProduto = ({ id }) => {
         }
     }, [id])
 
+    useEffect(() => {
+        if (newChange) handleSubmit(onSubmit)()
+    }, [newChange])
+
     return (
         <>
             {!data && <Loading />}
             {data && (
                 <form onSubmit={handleSubmit(onSubmit)} className='space-y-3'>
+                    <FormHeader
+                        btnCancel
+                        btnNew={handleConfirmNew ? false : true}
+                        btnSave
+                        btnClose={btnClose}
+                        manualUrl={manualUrl}
+                        handleModalClose={handleModalClose}
+                        handleSubmit={() => handleSubmit(onSubmit)}
+                        btnDelete={type === 'edit' ? true : false}
+                        onclickDelete={() => setOpen(true)}
+                        type={type}
+                        outsideID={outsideID}
+                    />
                     <Card>
-                        <FormHeader
-                            btnCancel
-                            btnNew
-                            btnSave
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
-                            type={type}
-                        />
                         <CardContent>
                             <Grid container spacing={5}>
                                 <Input
@@ -199,6 +218,7 @@ const FormProduto = ({ id }) => {
                                     key={change}
                                     getValues={getValues}
                                     removeAnexo={removeAnexo}
+                                    setValue={setValue}
                                     control={control}
                                     register={register}
                                     errors={errors}

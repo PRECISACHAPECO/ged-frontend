@@ -1,52 +1,57 @@
+import React, { useState } from 'react'
 import Fab from '@mui/material/Fab'
 import Icon from 'src/@core/components/icon'
-import { useState, useEffect } from 'react'
-import LayoutReport from 'src/components/Reports/Layout'
+import { PDFDownloadLink, Document, Page } from '@react-pdf/renderer'
 
-// Componentes dos relatórios
-import Fornecedor from '../../Reports/Formularios/Fornecedor'
-import { PDFDownloadLink } from '@react-pdf/renderer'
+// reports defaults
+import Footer from './Footer'
+import Header from './Header'
+import ReportComponents from './reportComponents'
+import DialogSignatureReport from 'src/components/Defaults/Dialogs/DialogSignatureReport'
+import { useEffect } from 'react'
 
-const ButtonsFloating = () => {
-    const [data, setData] = useState(null)
+const MyDoc = ({ nameComponent }) => {
+    const data = ReportComponents()
+    const ReportComponent = data[nameComponent]
 
+    return (
+        <Document>
+            <Page
+                size='A4'
+                style={{
+                    paddingHorizontal: 25
+                }}
+            >
+                <Header />
+                {ReportComponent && <ReportComponent />}
+                <Footer />
+            </Page>
+        </Document>
+    )
+}
+
+const ButtonsFloating = ({ nameComponent }) => {
+    const [openModalSignatureReport, setOpenModalSignatureReport] = useState(false)
+    const reportJSON = localStorage.getItem('report')
+    const report = JSON.parse(reportJSON)
     const signature = () => {
-        console.log('Assinatura eletronica')
-    }
-
-    const print = () => {
-        window.print()
+        setOpenModalSignatureReport(true)
     }
 
     const closePage = () => {
         window.close()
     }
 
-    const savePdf = () => {
-        console.log('entrou akiii')
-        return (
-            <PDFDownloadLink
-                document={
-                    // <LayoutReport>
-                    <Fornecedor />
-                    // </LayoutReport>
-                }
-                fileName='somename.pdf'
-            >
-                {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
-            </PDFDownloadLink>
-        )
-    }
-
     const dataButtons = [
         {
             id: 1,
-            title: 'Imprimir',
+            title: 'Fechar',
             color: 'primary',
             size: 'large',
-            variant: 'contained',
-            icon: 'material-symbols:print',
-            function: print
+            variant: 'outlined',
+            disable: false,
+            icon: 'ooui:close',
+            function: closePage
         },
         {
             id: 2,
@@ -54,45 +59,48 @@ const ButtonsFloating = () => {
             color: 'primary',
             size: 'large',
             variant: 'outlined',
+            disable: report.status < 40 ? true : false,
             icon: 'fluent:signature-24-filled',
             function: signature
-        },
-        {
-            id: 3,
-            title: 'Salvar PDF',
-            color: 'primary',
-            size: 'large',
-            variant: 'outlined',
-            icon: 'basil:download-solid',
-            function: savePdf
-        },
-        {
-            id: 4,
-            title: 'Fechar',
-            color: 'primary',
-            size: 'large',
-            variant: 'outlined',
-            icon: 'ooui:close',
-            function: closePage
         }
     ]
 
-    useEffect(() => {
-        const reportParameters = JSON.parse(localStorage.getItem('reportParameters'))
-        setData(reportParameters)
-        localStorage.removeItem('reportParameters')
-    }, [])
-
     return (
-        <div className='fixed bottom-10 right-8 flex flex-col-reverse gap-2 no-print '>
+        <div className='fixed bottom-10 right-8 flex flex-col gap-2'>
             {dataButtons &&
                 dataButtons.map(item => (
-                    <div key={item.id} style={{ textAlign: 'center' }} onClick={item.function}>
-                        <Fab color={item.color} size={item.size} variant={item.variant}>
-                            <Icon icon={item.icon} />
+                    <div key={item.id} onClick={!item.disable ? item.function : null}>
+                        <Fab
+                            color={item.color}
+                            size={item.size}
+                            variant={item.variant}
+                            className={item.disable ? 'hover:opacity-20 opacity-20' : ''}
+                        >
+                            <Icon icon={item.icon} className={item.disable ? 'cursor-default' : ''} />
                         </Fab>
                     </div>
                 ))}
+            <div>
+                <PDFDownloadLink
+                    document={<MyDoc nameComponent={nameComponent} />}
+                    fileName={nameComponent}
+                    targetDirectory='C:/Users/Jonatan/Desktop/teste'
+                >
+                    {({ blob, url, loading, error }) => (
+                        <div style={{ textAlign: 'center' }}>
+                            <Fab color='primary' size='large' variant='outlined'>
+                                <Icon icon='basil:download-solid' />
+                            </Fab>
+                        </div>
+                    )}
+                </PDFDownloadLink>
+            </div>
+            {/* Modal para assinatura do relatório */}
+            <DialogSignatureReport
+                open={openModalSignatureReport}
+                handleClose={() => setOpenModalSignatureReport(false)}
+                title={'Assinatura do relatório'}
+            />
         </div>
     )
 }

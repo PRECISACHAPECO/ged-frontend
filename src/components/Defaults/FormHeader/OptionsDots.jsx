@@ -1,17 +1,19 @@
-import { Button, IconButton, Menu, MenuItem } from '@mui/material'
+import { Button, Menu, MenuItem } from '@mui/material'
 import Icon from 'src/@core/components/icon'
-import LayoutReport from 'src/components/Reports/Layout'
 import DialogActs from '../Dialogs/DialogActs'
-import { useContext, useState } from 'react'
-import { ParametersContext } from 'src/context/ParametersContext'
+import { useState } from 'react'
+import { useContext } from 'react'
+import { AuthContext } from 'src/context/AuthContext'
+import { useFormContext } from 'src/context/FormContext'
 
 const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) => {
     const [openModal, setOpenModal] = useState(false)
     const [item, setItem] = useState(null)
+    const { setReportParameters } = useFormContext()
 
     // Ao clicar em um item e ele for do tipo report
     const handleClickReport = item => {
-        localStorage.setItem('report', JSON.stringify(item))
+        setReportParameters(item)
     }
 
     return (
@@ -54,6 +56,8 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 {actionsData?.map(item => {
+                    // console.log('🚀 ~ item:', item)
+                    // setParamsReport(item)
                     return (
                         <MenuItem
                             key={item.id}
@@ -72,7 +76,7 @@ const OptionsDots = ({ anchorEl, open, handleClose, handleClick, actionsData }) 
                             )}
 
                             {item.type == 'report' ? (
-                                <a href='/relatorio' target='_blank' rel='noopener noreferrer'>
+                                <a href={`/relatorio`} target='_blank'>
                                     {item.name}
                                 </a>
                             ) : (

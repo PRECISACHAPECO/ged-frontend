@@ -40,17 +40,12 @@ import { Alert } from '@mui/material'
 
 const EsqueceuSenha = () => {
     // ** Hook
-    const theme = useTheme()
     const [type, setType] = useState()
     const [getData, setGetData] = useState()
     const [campo, setCampo] = useState()
     const router = Router
 
     const emailToShow = getData?.email?.replace(/^(.{3}).*@/, '$1****@')
-
-    useEffect(() => {
-        setType(router.query.type)
-    }, [])
 
     const {
         handleSubmit,
@@ -90,6 +85,10 @@ const EsqueceuSenha = () => {
             }
         })
     }
+
+    useEffect(() => {
+        setType(router.query.type)
+    }, [router.query])
 
     return (
         <Box className='content-center'>

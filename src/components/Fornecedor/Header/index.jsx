@@ -3,26 +3,18 @@ import { useEffect, useState } from 'react'
 import Fields from 'src/components/Defaults/Formularios/Fields'
 import Input from 'src/components/Form/Input'
 import DateField from 'src/components/Form/DateField'
-import Select from 'src/components/Form/Select'
-import { dateConfig } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
+import useDateFormat from 'src/hooks/useDateFormat'
+import { getCurrentDate, getCurrentTime } from 'src/configs/defaultConfigs'
 
 const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, setValue, control, getAddressByCep }) => {
-    const [dateStatus, setDateStatus] = useState({})
+    console.log('🚀 ~ values:', values)
     const [profissionaisPreenche, setProfissionaisPreenche] = useState([])
-
-    const setDateFormat = (type, name, value, numDays) => {
-        const newDate = new Date(value)
-        const status = dateConfig(type, newDate, numDays)
-        setDateStatus(prevState => ({
-            ...prevState,
-            [name]: status
-        }))
-    }
+    const { setDateFormat, dateStatus } = useDateFormat()
 
     const getProfissionais = async () => {
         const response = await api.post(`/cadastros/profissional/getProfissionaisAssinatura`, {
-            formularioID: 1, // fornecedor
+            formularioID: 1,
             modeloID: modeloID
         })
         setProfissionaisPreenche(response.data.preenche)
@@ -30,18 +22,56 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
 
     useEffect(() => {
         getProfissionais()
-    }, [])
+        if (values && !values.data) {
+            setValue('fieldsHeader.data', getCurrentDate())
+        }
+        if (values && !values.hora) {
+            setValue('fieldsHeader.hora', getCurrentTime())
+        }
+    }, [values])
 
     return (
         <Grid container spacing={4}>
+            <Input
+                xs={12}
+                md={2}
+                title='Data da abertura'
+                name={`fieldsHeader.abertoPor.dataInicio`}
+                value={values.abertoPor.dataInicio}
+                disabled={true}
+                register={register}
+                control={control}
+            />
+            <Input
+                xs={12}
+                md={2}
+                title='Hora da abertura'
+                name={`fieldsHeader.abertoPor.horaInicio`}
+                value={values.abertoPor.dataInicio}
+                type='time'
+                disabled={true}
+                register={register}
+                control={control}
+            />
+            <Input
+                xs={12}
+                md={8}
+                title='Aberto por'
+                name={`fieldsHeader.abertoPor.profissional.nome`}
+                value={values.abertoPor.profissional.nome}
+                disabled={true}
+                register={register}
+                control={control}
+            />
+
             {/* Data de abertura */}
             <DateField
                 xs={12}
                 md={2}
                 title='Data da avaliação'
-                name={`fieldsHeader.dataAvaliacao`}
+                name={`fieldsHeader.data`}
                 type='date'
-                value={values?.dataAvaliacao}
+                value={values?.data ?? getCurrentDate()}
                 disabled={disabled}
                 register={register}
                 control={control}
@@ -49,7 +79,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 typeValidation='dataPassado'
                 daysValidation={365}
                 dateStatus={dateStatus}
-                errors={errors?.fieldsHeader?.['dataAvaliacao']}
+                errors={errors?.fieldsHeader?.['data']}
             />
 
             {/* Hora de Abertura */}
@@ -57,16 +87,17 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 xs={12}
                 md={2}
                 title='Hora da avaliação'
-                name={`fieldsHeader.horaAvaliacao`}
+                name={`fieldsHeader.hora`}
+                value={values?.data ?? getCurrentTime()}
                 type='time'
                 disabled={disabled}
                 register={register}
                 control={control}
-                errors={errors?.fieldsHeader?.['horaAvaliacao']}
+                errors={errors?.fieldsHeader?.['hora']}
             />
 
             {/* Profissional responsável */}
-            <Select
+            {/* <Select
                 xs={12}
                 md={4}
                 title='Profissional preenchimento'
@@ -79,7 +110,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 setValue={setValue}
                 control={control}
                 errors={errors?.fieldsHeader?.['profissionalPreenche']}
-            />
+            /> */}
 
             {/* CNPJ */}
             <Input
@@ -89,7 +120,7 @@ const HeaderFields = ({ modeloID, values, fields, disabled, register, errors, se
                 name={`fieldsHeader.cnpj`}
                 type='string'
                 mask='cnpj'
-                disabled={disabled}
+                disabled={true}
                 register={register}
                 control={control}
                 errors={errors?.fieldsHeader?.['cnpj']}

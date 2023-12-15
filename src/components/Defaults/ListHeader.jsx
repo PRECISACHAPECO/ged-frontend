@@ -9,18 +9,56 @@ import { backRoute } from 'src/configs/defaultConfigs'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import useLoad from 'src/hooks/useLoad'
 
-const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, handleSave, hasListChange, openModal }) => {
+const ListHeader = ({
+    btnNew,
+    btnPrint,
+    btnSave,
+    btnBack,
+    type,
+    partialRoute,
+    handleSave,
+    hasListChange,
+    openModal
+}) => {
     const router = Router
     const { setId } = useContext(RouteContext)
     const { routes } = useContext(AuthContext)
+    const { isLoading } = useLoad()
+
+    const currentUrl =
+        type === 'new' && partialRoute
+            ? backRoute(backRoute(router.pathname))
+            : type === 'new' || partialRoute
+            ? backRoute(router.pathname)
+            : router.pathname
 
     return (
         <>
             <div className='flex items-center justify-between my-2 w-full'>
-                <div></div>
+                {/* Div Esquerda */}
+                <div>
+                    {btnBack && (
+                        <Button
+                            onClick={() => {
+                                setId(null)
+                                if (type == 'new') {
+                                    router.push(currentUrl)
+                                }
+                            }}
+                            type='button'
+                            variant='outlined'
+                            color='primary'
+                            size='medium'
+                        >
+                            <Icon icon='grommet-icons:form-previous-link' />
+                        </Button>
+                    )}
+                </div>
+
                 {/* Div Direira */}
-                <div className='flex items-center gap-4 '>
+                <div className='flex items-center gap-4 right-0 '>
                     <div>
                         {btnPrint && (
                             <Button
@@ -62,10 +100,10 @@ const ListHeader = ({ btnNew, btnPrint, btnSave, btnBack, handleSave, hasListCha
                         {btnSave && (
                             <Button
                                 onClick={handleSave}
-                                disabled={!hasListChange}
+                                disabled={!hasListChange || isLoading}
                                 type='button'
                                 variant='outlined'
-                                color='primary'
+                                color={isLoading ? 'secondary' : 'primary'}
                                 size='medium'
                                 sx={{ display: 'flex', gap: 2 }}
                             >

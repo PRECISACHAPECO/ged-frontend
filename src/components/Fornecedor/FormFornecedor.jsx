@@ -6,11 +6,12 @@ import { useForm } from 'react-hook-form'
 import Fields from 'src/components/Defaults/Formularios/Fields'
 import Block from 'src/components/Defaults/Formularios/Block'
 import DialogFormStatus from '../Defaults/Dialogs/DialogFormStatus'
+import CustomChip from 'src/@core/components/mui/chip'
 
 //* Custom components
 import Input from 'src/components/Form/Input'
 import AnexoModeView from 'src/components/Anexos/ModeView'
-import { Alert, Box, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
+import { Alert, Box, Button, Card, CardContent, FormControl, Grid, Typography } from '@mui/material'
 import Router from 'next/router'
 import { backRoute, toastMessage, statusDefault } from 'src/configs/defaultConfigs'
 import { api } from 'src/configs/api'
@@ -28,13 +29,16 @@ import FormFornecedorProdutos from './FormFornecedorProdutos'
 import DateField from 'src/components/Form/DateField'
 import HeaderFields from './Header'
 import FooterFields from './Footer'
+import useLoad from 'src/hooks/useLoad'
+import DialogDelete from '../Defaults/Dialogs/DialogDelete'
+import DadosFornecedor from 'src/components/Reports/Formularios/Fornecedor/DadosFornecedor'
+import { useFormContext } from 'src/context/FormContext'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
-    const [isLoading, setLoading] = useState(false)
-    const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
-    const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
-    const [loadingFileItem, setLoadingFileItem] = useState(false) //? loading de carregamento do arquivo
+    // const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
+    // const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
+    // const [loadingFileItem, setLoadingFileItem] = useState(false) //? loading de carregamento do arquivo
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
@@ -57,12 +61,18 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [listErrors, setListErrors] = useState({ status: false, errors: [] })
     const { settings } = useContext(SettingsContext)
     const { setId } = useContext(RouteContext)
+    const [dataCopiedMyData, setDataCopiedMyData] = useState([])
+    const [openModalDeleted, setOpenModalDeleted] = useState(false)
+    const [blobSaveReport, setBlobSaveReport] = useState(null) // Salva o blob do relatório que sera salvo no back
+    const { setReportParameters, sendPdfToServer } = useFormContext()
+    const { isLoading, startLoading, stopLoading } = useLoad()
 
     const [canEdit, setCanEdit] = useState({
         status: false,
         message: 'Você não tem permissões',
         messageType: 'info'
     })
+    console.log('🚀 ~ canEdit:', canEdit)
 
     //! Se perder Id, copia do localstorage
     const router = Router
@@ -131,7 +141,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 email: values.email,
                 alerta: values.alerta
             }
-            console.log('🚀 ~ data dat notificação:', data)
             createNewNotification(data)
 
             //* Envia e-mail
@@ -193,7 +202,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         id: 1,
         name: 'Gerar novo formulário',
         description: 'Gerar um novo formulário de preenchimento para este fornecedor.',
-        component: <NewFornecedor cnpj={unidade?.fornecedor?.cnpj} />,
+        component: <NewFornecedor cnpj={fieldsHeader?.cnpj} />,
         route: null,
         type: null,
         modal: true,
@@ -233,19 +242,21 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         identification: null
     }
     const objRelatorio = {
-        id: 4,
+        id: id,
         name: 'Formulário do fornecedor',
+        nameComponent: 'DadosFornecedor',
         type: 'report',
-        papelID: user.papelID,
-        fornecedorID: id,
         unidadeID: loggedUnity.unidadeID,
+        papelID: user.papelID,
+        usuarioID: user.usuarioID,
+        status: info.status,
+        route: 'fornecedor/dadosFornecedor',
         icon: 'fluent:print-24-regular'
     }
     const objFormConfig = {
         id: 5,
         name: 'Configurações do formulário',
         description: 'Alterar as configurações do modelo de formulário.',
-        // component: <NewFornecedor />,
         route: null,
         type: null,
         action: goToFormConfig,
@@ -272,40 +283,14 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
-    // const getNewData = () => {
-    //     try {
-    //         setLoading(true)
-    //         api.post(`${backRoute(staticUrl)}/new/getData`, { unidadeID: loggedUnity.unidadeID }).then(response => {
-    //             console.log('getNewData: ', response.data)
-
-    //             setField(response.data.fields)
-    //             setBlocos(response.data.blocos)
-    //             setInfo(response.data.info)
-
-    //             //* Insere os dados no formulário
-    //             reset(response.data)
-
-    //             setCanEdit({
-    //                 status: true,
-    //                 message:
-    //                     'Esse formulário já foi concluído! Para alterá-lo é necessário atualizar seu Status para "Em preenchimento" através do botão "Status"!',
-    //                 messageType: 'info'
-    //             })
-
-    //             setLoading(false)
-    //         })
-    //     } catch (error) {
-    //         console.log('🚀 ~ error:', error)
-    //     }
-    // }
+    console.log('canmEDIT', canEdit)
 
     const getData = () => {
-        setLoading(true)
+        startLoading()
         try {
             api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID })
                 .then(response => {
                     console.log('getData: ', response.data)
-                    setLoading(false)
 
                     setFieldsHeader(response.data.fieldsHeader)
                     setFieldsFooter(response.data.fieldsFooter)
@@ -322,11 +307,48 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     //* Insere os dados no formulário
                     reset(response.data)
 
+                    //? Copia os dados do fornecedor no contexto loggedUnity se o campo estiver vazio
+                    const dataOld = []
+                    for (let i = 0; i < response.data.fields.length; i++) {
+                        const nomeColuna = response.data.fields[i].nomeColuna
+                        const nomeCampo = response.data.fields[i].nomeCampo
+
+                        for (let propriedade in loggedUnity) {
+                            if (nomeColuna == 'telefone') {
+                                const telefoneColuna = loggedUnity.telefone1 ?? loggedUnity.telefone2
+                                setValue(`fields[${i}].${nomeColuna}`, telefoneColuna ?? '')
+                            }
+                            if (
+                                propriedade === nomeColuna &&
+                                !getValues(`fields[${i}].${nomeColuna}`, loggedUnity[propriedade])
+                            ) {
+                                setValue(`fields[${i}].${nomeColuna}`, loggedUnity[propriedade])
+
+                                if (loggedUnity[propriedade] !== null && loggedUnity[propriedade] !== '') {
+                                    dataOld.push({
+                                        name: nomeCampo,
+                                        value: loggedUnity[propriedade]
+                                    })
+                                }
+                            }
+                        }
+                    }
+                    setDataCopiedMyData(dataOld)
+
                     let objStatus = statusDefault[response?.data?.info?.status]
                     setStatus(objStatus)
 
+                    console.log(
+                        '🚀 ~ response.data.unidade:',
+                        user.papelID,
+                        response.data.unidade.quemPreenche,
+                        info.status
+                    )
                     setCanEdit({
-                        status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
+                        status:
+                            user.papelID == response.data.unidade.quemPreenche && response.data.info.status < 40
+                                ? true
+                                : false,
                         message:
                             user.papelID == 2 && response.data.info.status >= 40
                                 ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
@@ -342,11 +364,11 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 })
                 .catch(error => {
                     console.log('🚀 ~ error:', error)
-                    setLoading(false)
                 })
         } catch (error) {
             console.log('🚀 ~ error:', error)
-            setLoading(false)
+        } finally {
+            stopLoading()
         }
     }
 
@@ -388,8 +410,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         //? Blocos
         blocos.forEach((block, indexBlock) => {
             block.itens.forEach((item, indexItem) => {
-                console.log('🚀 ~ checkErrors -> item: ', item)
-
                 const fieldValue = getValues(`blocos[${indexBlock}].itens[${indexItem}].resposta`)
                 //? Valida resposta do item
                 if (item?.obrigatorio === 1 && !fieldValue) {
@@ -429,7 +449,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             grupoAnexo.forEach((grupo, indexGrupo) => {
                 grupo.itens.forEach((item, indexItem) => {
                     if (item.obrigatorio === 1 && item.anexos.length == 0) {
-                        console.log('gera erro grupo')
                         setError(`grupoAnexo[${indexGrupo}].itens[${indexItem}].anexos`, {
                             type: 'manual',
                             message: 'Campo obrigatário'
@@ -478,7 +497,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
-    const handleSendForm = () => {
+    const handleSendForm = blob => {
+        setBlobSaveReport(blob)
         checkErrors()
         setOpenModal(true)
         setValidateForm(true)
@@ -497,6 +517,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     const conclusionForm = async values => {
+        sendPdfToServer(id, blobSaveReport, 'fornecedor')
         values['conclusion'] = true
         await handleSubmit(onSubmit)(values)
     }
@@ -550,6 +571,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     const onSubmit = async (values, param = false) => {
+        console.log('🚀 ~ values:', values)
+
+        startLoading()
         if (param.conclusion === true) {
             values['status'] = user && user.papelID == 1 ? param.status : 40 //? Seta o status somente se for fábrica
             values['obsConclusao'] = param.obsConclusao
@@ -563,9 +587,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-        console.log('🚀 ~ onSubmit: ', data)
-        // return
 
+        // return
         try {
             if (type == 'edit') {
                 setSavingForm(true)
@@ -595,12 +618,15 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            stopLoading()
+            console.log('função ativada fim finally')
         }
     }
 
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
     const handleFileSelectProduct = async (event, item) => {
-        setLoadingFileProduct(true)
+        startLoading()
         const selectedFile = event.target.files
 
         if (selectedFile && selectedFile.length > 0) {
@@ -613,46 +639,24 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append(`unidadeID`, loggedUnity.unidadeID)
             formData.append(`produtoAnexoID`, item.produtoAnexoID ?? null)
 
-            await api
-                .post(`${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}`, formData)
-                .then(response => {
-                    setLoadingFileProduct(false)
+            try {
+                const response = await api.post(
+                    `${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}`,
+                    formData
+                )
 
-                    //* Submete formulário pra atualizar configurações dos produtos
-                    const values = getValues()
-                    onSubmit(values)
-
-                    // toast.success('Anexo adicionado com sucesso!')
-
-                    // //? Atualiza produtos
-                    // const updatedProdutos = produtos.map(produto => {
-                    //     if (produto.produtoID == item.produtoID) {
-                    //         return {
-                    //             ...produto,
-                    //             produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
-                    //                 if (row.produtoAnexoID == item.produtoAnexoID) {
-                    //                     return {
-                    //                         ...row,
-                    //                         anexos: [...row.anexos, ...response.data]
-                    //                     }
-                    //                 }
-                    //                 return row
-                    //             })
-                    //         }
-                    //     }
-                    //     return produto
-                    // })
-                    // setProdutos(updatedProdutos)
-                })
-                .catch(error => {
-                    setLoadingFileProduct(false)
-                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
-                })
+                //* Submete formulário pra atualizar configurações dos produtos
+                const values = getValues()
+                onSubmit(values)
+            } catch (error) {
+                toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+            } finally {
+                stopLoading()
+            }
         }
     }
 
     const handleFileSelectGroup = async (event, item) => {
-        setLoadingFileGroup(true)
         const selectedFile = event.target.files
 
         if (selectedFile && selectedFile.length > 0) {
@@ -664,24 +668,24 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append(`unidadeID`, loggedUnity.unidadeID)
             formData.append(`grupoAnexoItemID`, item.grupoAnexoItemID ?? null)
 
-            await api
-                .post(`${staticUrl}/saveAnexo/${id}/grupo-anexo/${user.usuarioID}/${unidade.unidadeID}`, formData)
-                .then(response => {
-                    setLoadingFileGroup(false)
-
-                    //* Submete formulário pra atualizar configurações dos grupos
-                    const values = getValues()
-                    onSubmit(values)
-                })
-                .catch(error => {
-                    setLoadingFileGroup(false)
-                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
-                })
+            try {
+                startLoading()
+                const response = await api.post(
+                    `${staticUrl}/saveAnexo/${id}/grupo-anexo/${user.usuarioID}/${unidade.unidadeID}`,
+                    formData
+                )
+                //* Submete formulário pra atualizar configurações dos grupos
+                const values = getValues()
+                onSubmit(values)
+            } catch (error) {
+                toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+            } finally {
+                stopLoading()
+            }
         }
     }
 
     const handleFileSelectItem = async (event, item) => {
-        setLoadingFileItem(true)
         const selectedFile = event.target.files
 
         if (selectedFile && selectedFile.length > 0) {
@@ -694,25 +698,25 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append(`parFornecedorModeloBlocoID`, item.parFornecedorModeloBlocoID ?? null)
             formData.append(`itemOpcaoAnexoID`, item.itemOpcaoAnexoID ?? null)
 
-            await api
-                .post(`${staticUrl}/saveAnexo/${id}/item/${user.usuarioID}/${unidade.unidadeID}`, formData)
-                .then(response => {
-                    setLoadingFileItem(false)
-
-                    //* Submete formulário pra atualizar configurações dos itens
-                    const values = getValues()
-                    onSubmit(values)
-                })
-                .catch(error => {
-                    setLoadingFileItem(false)
-                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!!!!')
-                })
+            try {
+                startLoading()
+                const response = await api.post(
+                    `${staticUrl}/saveAnexo/${id}/item/${user.usuarioID}/${unidade.unidadeID}`,
+                    formData
+                )
+                //* Submete formulário pra atualizar configurações dos itens
+                const values = getValues()
+                onSubmit(values)
+            } catch (error) {
+                toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+            } finally {
+                stopLoading()
+            }
         }
     }
 
     //? Função que atualiza os anexos solicitados no item, quando altera a resposta
     const setItemResposta = async value => {
-        console.log('🚀 ~ setItemResposta ~ value:', value)
         // envia pro backend verificar as configurações dessa resposta (se possui anexos, se bloqueia formulário e se possui obs)
         try {
             const response = await api.post('/cadastros/item/getItemConfigs', {
@@ -726,7 +730,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     ...bloco,
                     itens: bloco.itens.map(row => {
                         if (row.itemID == value.itemID) {
-                            console.log('setItemResposta IGUAL: ', row)
                             return {
                                 ...row,
                                 respostaConfig: {
@@ -738,7 +741,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     })
                 }
             })
-            console.log('🚀 ~ updatedBlocos:', updatedBlocos)
 
             setBlocos(updatedBlocos)
         } catch (error) {
@@ -802,27 +804,88 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         checkErrors()
     }, [])
 
+    //? Seta informações do relatório no localstorage através do contexto (pra gravar arquivo .pdf na conclusão do formulário)
+    useEffect(() => {
+        setReportParameters({
+            id: id,
+            nameComponent: 'DadosFornecedor',
+            route: 'fornecedor/dadosFornecedor',
+            unidadeID: loggedUnity.unidadeID,
+            papelID: user.papelID,
+            canEdit,
+            usuarioID: user.usuarioID
+        })
+    }, [])
+    console.log('🚀 ~ info.status:', info.status)
+    console.log('user', user.papelID)
+    console.log('canEdit.status', canEdit.status)
+    console.log('peding', hasFormPending)
+
     return (
         <>
             <Loading show={isLoading} />
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
-                    {/* Mensagem */}
-                    {canEdit.message && <Alert severity='warning'>{canEdit.message}</Alert>}
+                <FormHeader
+                    btnCancel
+                    btnDelete={info.status < 40 ? true : false}
+                    onclickDelete={() => setOpenModalDeleted(true)}
+                    btnSave={canEdit.status}
+                    // btnSend={(canEdit.status || user.papelID == 1) && info.status < 40}
+                    btnSend={
+                        (user.papelID == 1 && info.status <= 40) || (user.papelID == 2 && info.status < 40)
+                            ? true
+                            : false
+                    }
+                    btnPrint={type == 'edit' ? true : false}
+                    actionsData={actionsData}
+                    actions
+                    handleSubmit={() => handleSubmit(onSubmit)}
+                    handleSend={handleSendForm}
+                    componentSaveReport={<DadosFornecedor />}
+                    iconConclusion={'mdi:check-bold'}
+                    titleConclusion={'Concluir Formulário'}
+                    title='Fornecedor'
+                    btnStatus={type == 'edit' ? true : false}
+                    handleBtnStatus={() => setOpenModalStatus(true)}
+                    type={type}
+                    status={status}
+                />
+                {/* Div superior com tags e status */}
+                <div className='flex gap-2 mb-2'>
+                    {status && (
+                        <CustomChip
+                            size='small'
+                            skin='light'
+                            color={status.color}
+                            label={status.title}
+                            sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
+                        />
+                    )}
+                    <CustomChip
+                        size='small'
+                        skin='light'
+                        color={'primary'}
+                        label={(unidade?.quemPreenche == 1 ? 'Fábrica' : 'Fornecedor') + ' preenche'}
+                    />
+                    <CustomChip size='small' skin='light' label={`Modelo ${unidade?.modelo}`} />
+                </div>
 
-                    {/* Última movimentação do formulário */}
-                    {movimentacao && (
-                        <Alert severity='info'>
-                            {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
-                            {movimentacao.observacao && (
-                                <p>
-                                    <br />
-                                    Mensagem: "{movimentacao.observacao}"
-                                </p>
-                            )}
+                <Box display='flex' flexDirection='column' sx={{ gap: 4 }}>
+                    {/* Foi copiado pelo menos uma informação de meus dados */}
+                    {dataCopiedMyData && dataCopiedMyData.length > 0 && (
+                        <Alert severity='info' sx={{ mb: 2 }}>
+                            <h1>
+                                Os seguintes campos foram copiados de <strong>Meus Dados</strong>:
+                            </h1>
+                            <div className='pt-2'>
+                                {dataCopiedMyData.map(row => (
+                                    <div className='flex opacity-80'>
+                                        <p>{`- ${row.name} (${row.value})`}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </Alert>
                     )}
-
                     {/* Cabeçalho do modelo */}
                     {info && info.cabecalhoModelo != '' && (
                         <Card>
@@ -836,25 +899,17 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
                     {/* Card Header */}
                     <Card>
-                        <FormHeader
-                            btnCancel
-                            btnSave={user.papelID == 2 && info.status < 40}
-                            btnSend={
-                                (user.papelID == 1 && type == 'edit' && info.status >= 40) ||
-                                (user.papelID == 2 && info.status < 40)
-                            }
-                            btnPrint={type == 'edit' ? true : false}
-                            actionsData={actionsData}
-                            actions
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            handleSend={handleSendForm}
-                            iconConclusion={'mdi:check-bold'}
-                            titleConclusion={'Concluir Formulário'}
-                            title='Fornecedor'
-                            btnStatus={type == 'edit' ? true : false}
-                            handleBtnStatus={() => setOpenModalStatus(true)}
-                            type={type}
-                            status={status}
+                        {/* Modal que deleta formulario */}
+                        <DialogDelete
+                            title='Excluir Formulário'
+                            description='Tem certeza que deseja exluir o formulario?'
+                            params={{
+                                route: `formularios/fornecedor/delete/${id}`,
+                                messageSucceded: 'Formulário excluído com sucesso!',
+                                MessageError: 'Dado possui pendência!'
+                            }}
+                            open={openModalDeleted}
+                            handleClose={() => setOpenModalDeleted(false)}
                         />
 
                         {/* Header */}
@@ -864,7 +919,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                     modeloID={unidade.parFornecedorModeloID}
                                     values={fieldsHeader}
                                     fields={field}
-                                    disabled={!canEdit.status}
+                                    disabled={!canEdit.status || hasFormPending}
                                     register={register}
                                     errors={errors}
                                     setValue={setValue}
@@ -876,17 +931,16 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     </Card>
 
                     {/* Produtos (se parâmetro habilitado na unidade) */}
-                    {unidade && unidade?.obrigatorioProdutoFornecedor && produtos && produtos.length > 0 && (
+                    {produtos && produtos.length > 0 && (
                         <Card>
                             <CardContent>
                                 {/* Listagem dos produtos selecionados pra esse fornecedor */}
                                 <FormFornecedorProdutos
-                                    key={loadingFileProduct}
+                                    key={isLoading}
                                     values={produtos}
                                     handleFileSelect={handleFileSelectProduct}
                                     handleRemove={handleRemoveAnexoProduct}
-                                    loadingFile={loadingFileProduct}
-                                    disabled={!canEdit.status}
+                                    disabled={!canEdit.status || hasFormPending}
                                     errors={errors?.produtos}
                                 />
                             </CardContent>
@@ -901,6 +955,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 index={index}
                                 blockKey={`parFornecedorModeloBlocoID`}
                                 handleFileSelect={handleFileSelectItem}
+                                changeAllOptions={null}
                                 setItemResposta={setItemResposta}
                                 handleRemoveAnexoItem={handleRemoveAnexoItem}
                                 setBlocos={setBlocos}
@@ -909,7 +964,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 register={register}
                                 setValue={setValue}
                                 errors={errors?.blocos}
-                                disabled={!canEdit.status}
+                                disabled={!canEdit.status || hasFormPending}
                             />
                         ))}
 
@@ -920,7 +975,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 key={indexGrupo}
                                 values={{
                                     grupo: grupo,
-                                    loadingFile: loadingFileGroup,
                                     indexGrupo: indexGrupo,
                                     handleFileSelect: handleFileSelectGroup,
                                     handleRemove: handleRemoveAnexoGroup,
@@ -948,7 +1002,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                                     multiline
                                                     rows={4}
                                                     value={info.obs}
-                                                    disabled={!canEdit.status}
+                                                    disabled={!canEdit.status || hasFormPending}
                                                     control={control}
                                                 />
                                             </FormControl>
@@ -959,18 +1013,11 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         </>
                     )}
 
-                    {/* Rodapé com data, hora e assinatura */}
-                    {unidade && (
-                        <FooterFields
-                            modeloID={unidade.parFornecedorModeloID}
-                            values={fieldsFooter}
-                            fields={field}
-                            disabled={!canEdit.status}
-                            register={register}
-                            errors={errors}
-                            setValue={setValue}
-                            control={control}
-                        />
+                    {/* Rodapé com informações de conclusão */}
+                    {fieldsFooter && fieldsFooter.concluded && (
+                        <Typography variant='caption'>
+                            {`Concluído por ${fieldsFooter.profissionalAprova.nome} em ${fieldsFooter.dataFim} ${fieldsFooter.horaFim}.`}
+                        </Typography>
                     )}
 
                     {/* Dialog pra alterar status do formulário (se formulário estiver concluído e fábrica queira reabrir pro preenchimento do fornecedor) */}
@@ -982,7 +1029,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             parFormularioID={1} // Fornecedor
                             formStatus={info.status}
                             hasFormPending={hasFormPending}
-                            canChangeStatus={user.papelID == 1 && !hasFormPending && info.status > 30}
+                            canChangeStatus={!hasFormPending && unidade.quemPreenche == 2 && info.status >= 40}
                             openModal={openModalStatus}
                             handleClose={() => setOpenModalStatus(false)}
                             btnCancel
@@ -1009,8 +1056,24 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         btnConfirmColor='primary'
                         conclusionForm={conclusionForm}
                         listErrors={listErrors}
-                        canApprove={canApprove}
+                        canApprove={true}
                     />
+
+                    {/* Mensagem */}
+                    {canEdit.message && <Alert severity='warning'>{canEdit.message}</Alert>}
+
+                    {/* Última movimentação do formulário */}
+                    {movimentacao && (
+                        <Alert severity='info'>
+                            {`Última movimentação: Profissional ${movimentacao.nome} do(a) ${movimentacao.nomeFantasia} movimentou o formulário de ${movimentacao.statusAnterior} para ${movimentacao.statusAtual} em ${movimentacao.dataHora}.`}
+                            {movimentacao.observacao && (
+                                <p>
+                                    <br />
+                                    Mensagem: "{movimentacao.observacao}"
+                                </p>
+                            )}
+                        </Alert>
+                    )}
                 </Box>
             </form>
         </>

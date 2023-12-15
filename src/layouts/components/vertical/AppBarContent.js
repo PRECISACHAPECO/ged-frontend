@@ -20,10 +20,10 @@ import { useRouter } from 'next/router'
 import Autocomplete from 'src/layouts/components/vertical/Autocomplete'
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
+import FormHeader from 'src/components/Defaults/FormHeader'
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
 import { Button, Snackbar, Typography } from '@mui/material'
 import DialogSelectUnit from 'src/components/Defaults/Dialogs/DialogSelectUnit'
-import BreadcrumbsBasic from 'src/components/BreadcrumbsBasic'
 
 const AppBarContent = props => {
     // ** Props
@@ -60,7 +60,8 @@ const AppBarContent = props => {
 
     return (
         <>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className='no-print'>
+            {/* App Bar Content */}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className='w-full mx-4 py-1 '>
                 <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
                     {hidden && !settings.navHidden ? (
                         <IconButton color='inherit' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
@@ -77,7 +78,6 @@ const AppBarContent = props => {
                     {/* todo migalhas de pão */}
                     {/* <BreadcrumbsBasic /> */}
                 </Box>
-
                 <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
                     <div className='hidden sm:block'>
                         {
@@ -96,7 +96,7 @@ const AppBarContent = props => {
                                         textTransform: 'none',
                                         pointerEvents: 'none'
                                     }}>
-                                    {loggedUnity?.nomeFantasia}
+                                    {`${loggedUnity?.nomeFantasia} - ${user?.nome}`}
                                 </Button>
                             )
                         }
@@ -112,7 +112,6 @@ const AppBarContent = props => {
 
                 </Box>
             </Box >
-
 
             <DialogSelectUnit
                 openModal={openModal}

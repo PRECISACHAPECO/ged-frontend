@@ -14,6 +14,8 @@ import { RouteContext } from 'src/context/RouteContext'
 import { useContext } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
+import useLoad from 'src/hooks/useLoad'
+import { AuthContext } from 'src/context/AuthContext'
 
 const FormSistemaQualidade = ({ id }) => {
     const [open, setOpen] = useState(false)
@@ -23,6 +25,8 @@ const FormSistemaQualidade = ({ id }) => {
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
     const { setId } = useContext(RouteContext)
+    const { user, loggedUnity } = useContext(AuthContext)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -34,7 +38,13 @@ const FormSistemaQualidade = ({ id }) => {
     } = useForm()
 
     //? Envia dados para a api
-    const onSubmit = async values => {
+    const onSubmit = async data => {
+        const values = {
+            ...data,
+            usuarioID: user.usuarioID,
+            unidadeID: loggedUnity.unidadeID
+        }
+        startLoading()
         try {
             if (type === 'new') {
                 await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
@@ -52,13 +62,15 @@ const FormSistemaQualidade = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 
     //? Função que deleta os dados
     const handleClickDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/${id}`)
+            await api.delete(`${staticUrl}/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)
@@ -110,17 +122,17 @@ const FormSistemaQualidade = ({ id }) => {
         <>
             {!data && <Loading />}
             {data && (
-                <Card>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <FormHeader
-                            btnCancel
-                            btnSave
-                            btnNew
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
-                            type={type}
-                        />
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <FormHeader
+                        btnCancel
+                        btnSave
+                        btnNew
+                        handleSubmit={() => handleSubmit(onSubmit)}
+                        btnDelete={type === 'edit' ? true : false}
+                        onclickDelete={() => setOpen(true)}
+                        type={type}
+                    />
+                    <Card>
                         <CardContent>
                             <Grid container spacing={5}>
                                 <Input
@@ -143,8 +155,8 @@ const FormSistemaQualidade = ({ id }) => {
                                 />
                             </Grid>
                         </CardContent>
-                    </form>
-                </Card>
+                    </Card>
+                </form>
             )}
             <DialogForm
                 text='Tem certeza que deseja excluir?'

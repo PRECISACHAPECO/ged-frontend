@@ -48,8 +48,13 @@ const ParametersProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        setSearchText('');
-    }, [title])
+        if (router.query.s) {
+            setSearchText(router.query.s);
+            handleSearch(router.query.s)
+        } else {
+            setSearchText('');
+        }
+    }, [title, router])
 
     const values = {
         title,

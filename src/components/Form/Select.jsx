@@ -24,12 +24,7 @@ const Select = ({
     helpText,
     helpTextPosition
 }) => {
-    // Adicione a opção "--novo--" no início do array de opções
-    let optionsWithNovo = options ? [...options] : []
-
-    if (createNew) {
-        optionsWithNovo = [{ nome: '-- Novo --' }, ...options]
-    }
+    let optionsWithNovo = createNew ? [{ nome: '-- Novo --' }, ...(options ?? [])] : options
 
     return (
         <Grid item xs={xs} md={md} sx={{ my: 1 }} className={className}>
@@ -52,14 +47,13 @@ const Select = ({
                                 }
                                 value={
                                     multiple && field.value && field.value.length > 0
-                                        ? field.value.map(item => options.find(option => option.nome === item.nome))
+                                        ? field.value.map(item => options.find(option => option.id === item.id))
                                         : field.value ?? { nome: '' }
                                 }
                                 disabled={disabled}
                                 onChange={(e, newValue) => {
-                                    if (newValue && newValue.nome === '-- Novo --') {
+                                    if (newValue && e.target.innerText == '-- Novo --') {
                                         createNew()
-                                        setValue(name, multiple ? [] : { nome: '' })
                                     } else {
                                         onChange && onChange(newValue)
                                         setValue(name, newValue)

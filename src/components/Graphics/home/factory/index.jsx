@@ -25,11 +25,13 @@ const Factory = () => {
     const [dataFornecedor, setDataFornecedor] = useState(null)
     const [dataRecebimentoNC, setDataRecebimentoNC] = useState(null)
     const [limpeza, setLimpeza] = useState(null)
+    const [fotoBinaria, setFotoBinaria] = useState([])
 
     const getData = async () => {
         try {
             const response = await api.get(`dashboard/fabrica/getData/${loggedUnity.unidadeID}`)
             setDataFornecedor(response.data.fornecedorPorStatus)
+            console.log('🚀 ~ response:', response)
             setDataRecebimentoNC(response.data.totalRecebimentoNC)
             setLimpeza(response.data.limpeza)
         } catch (err) {
@@ -37,13 +39,70 @@ const Factory = () => {
         }
     }
 
+    const getFoto = async () => {
+        try {
+            console.log('busca foto....')
+            await api.post(`login/testeFoto/`).then(response => {
+                console.log('fotos:', response.data)
+                setFotoBinaria(response.data)
+            })
+            // setFotoBinaria(response.data.foto64)
+            // console.log('foto:', response.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const sendFoto = async event => {
+        try {
+            const selectedFiles = event.target.files
+            console.log('🚀 ~ selectedFiles:', selectedFiles.length)
+
+            const formData = new FormData()
+            for (let i = 0; i < selectedFiles.length; i++) {
+                formData.append('files[]', selectedFiles[i])
+                console.log('🚀 ~ selectedFiles[i]:', selectedFiles[i])
+            }
+
+            console.log('🚀 ~ enviando foto pro backend: ', formData)
+            const response = await api.post(`login/enviaFoto/`, formData)
+            getFoto()
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     useEffect(() => {
         getData()
+        getFoto()
     }, [])
 
     return (
         dataFornecedor && (
             <ApexChartWrapper>
+                {/* {fotoBinaria &&
+                    fotoBinaria.map(foto => {
+                        return foto.tipo === 'image/jpeg' ? (
+                            <a href={foto.url} target='_blank' className='bg-blue-600 p-4 rounded-md text-white '>
+                                <img src={foto.url} alt='Imagem' />
+                            </a>
+                        ) : (
+                            <p>
+                                <a href={foto.url} target='_blank' className='bg-green-600 p-4 rounded-md text-white '>
+                                    Abrir documento
+                                </a>
+                            </p>
+                        )
+                    })} */}
+
+                {/* <input
+                    type='file'
+                    multiple
+                    onChange={e => {
+                        sendFoto(e)
+                    }}
+                /> */}
+
                 <Grid container spacing={6} className='match-height'>
                     {/* Por estatus em blocos separadosç */}
                     {dataFornecedor.map(row => (

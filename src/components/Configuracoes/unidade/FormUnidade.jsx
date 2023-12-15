@@ -34,9 +34,10 @@ import CheckLabel from 'src/components/Form/CheckLabel'
 import { validationCNPJ } from 'src/configs/validations'
 import HelpText from 'src/components/Defaults/HelpText'
 import NewPassword from './NewPassword'
+import DialogDelete from 'src/components/Defaults/Dialogs/DialogDelete'
 
 const FormUnidade = ({ id }) => {
-    const { user, loggedUnity } = useContext(AuthContext)
+    const { user, setUser, loggedUnity, setLoggedUnity } = useContext(AuthContext)
     const { setId } = useContext(RouteContext)
     id = user.papelID === 1 ? id : loggedUnity.unidadeID
 
@@ -47,6 +48,7 @@ const FormUnidade = ({ id }) => {
     const [saving, setSaving] = useState(false)
     const [fileCurrent, setFileCurrent] = useState()
     const [photoProfile, setPhotoProfile] = useState(null)
+    const [openModalDeleted, setOpenModalDeleted] = useState(false)
     //* Componente é chamado na tela da unidade e Meus dados do fornecedor
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
@@ -91,7 +93,6 @@ const FormUnidade = ({ id }) => {
 
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async datas => {
-        console.log('🚀 ~ datas:', datas)
         // Verifica se o CNPJ é válido se ele for envalido retorna erro e retorna
         const cnpjValidation = validationCNPJ(datas.fields.cnpj)
         if (!cnpjValidation) {
@@ -104,10 +105,11 @@ const FormUnidade = ({ id }) => {
 
         const data = {
             ...datas,
-            usuarioID: loggedUnity.usuarioID,
+            usuarioID: user.usuarioID,
+            unidadeID: loggedUnity.unidadeID,
             fields: {
-                dataCadastro: formatDate(datas.dataCadastro, 'YYYY-MM-DD'),
-                ...datas.fields
+                ...datas.fields,
+                dataCadastro: new Date().toISOString().substring(0, 10)
             }
         }
 
@@ -127,42 +129,41 @@ const FormUnidade = ({ id }) => {
                 setShowNewPassword(false)
                 getData()
             }
+
+            //? Se for fornecedor, atualiza os dados do usuário logado
+            if (user.papelID === 2) {
+                setLoggedUnity({
+                    ...loggedUnity,
+                    nomeFantasia: datas.fields.nomeFantasia,
+                    complemento: datas.fields.complemento,
+                    razaoSocial: datas.fields.razaoSocial,
+                    responsavel: datas.fields.responsavel,
+                    email: datas.fields.email,
+                    telefone1: datas.fields.telefone1,
+                    telefone2: datas.fields.telefone2,
+                    cep: datas.fields.cep,
+                    logradouro: datas.fields.logradouro,
+                    numero: datas.fields.numero,
+                    complemento: datas.fields.complemento,
+                    bairro: datas.fields.bairro,
+                    cidade: datas.fields.cidade,
+                    uf: datas.fields.uf
+                })
+            }
         } catch (error) {
             if (error.response && error.response.status === 409) {
                 toast.error(toastMessage.errorRepeated)
             } else {
                 console.log(error)
             }
-        }
-
-        //? Se for fornecedor, atualiza os dados do usuário logado
-        if (user.papelID == 2) {
-            // Atualiza os dados do usuário logado no contexto
-            for (const key in loggedUnity) {
-                if (key in data) {
-                    loggedUnity[key] = data[key]
-                }
-            }
-            // Atualiza os dados do usuário logado no localStorage
-            localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
+        } finally {
+            atualizaLocalStorage()
         }
     }
 
-    // Função que deleta os dados
-    const handleClickDelete = async () => {
-        try {
-            await api.delete(`${staticUrl}/${id}`)
-            setId(null)
-            setOpen(false)
-            toast.success(toastMessage.successDelete)
-        } catch (error) {
-            if (error.response && error.response.status === 409) {
-                toast.error(toastMessage.pendingDelete)
-                setOpen(false)
-            } else {
-                console.log(error)
-            }
-        }
+    const atualizaLocalStorage = async () => {
+        localStorage.removeItem('loggedUnity')
+        localStorage.setItem('loggedUnity', JSON.stringify(loggedUnity))
     }
 
     //? Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
@@ -171,6 +172,7 @@ const FormUnidade = ({ id }) => {
             try {
                 const response = await api.get(`${staticUrl}/${id}`)
                 reset(response.data)
+                console.log('🚀 ~ response:', response.data)
                 setData(response.data)
                 setFileCurrent(response.data.fields.cabecalhoRelatorioTitle)
                 setPhotoProfile(response.data?.fields?.cabecalhoRelatorio)
@@ -215,10 +217,17 @@ const FormUnidade = ({ id }) => {
             }
 
             await api
-                .post(`${staticUrl}/updateData/report/${id}/${user.usuarioID}`, formData)
+                .post(`${staticUrl}/updateData/report/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`, formData)
                 .then(response => {
                     setPhotoProfile(response.data)
                     toast.success('Foto atualizada com sucesso!')
+
+                    //? Atualiza localstorage
+                    const userData = JSON.parse(localStorage.getItem('userData'))
+                    userData.imagem = response.data
+                    localStorage.setItem('userData', JSON.stringify(userData))
+                    //? Atualiza contexto
+                    setUser(userData)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
@@ -229,7 +238,7 @@ const FormUnidade = ({ id }) => {
     // Remove a imagen
     const handleDeleteImage = async () => {
         try {
-            await api.delete(`${staticUrl}/fileReport/${id}`)
+            await api.delete(`${staticUrl}/fileReport/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setPhotoProfile(null)
             toast.success('Foto removida com sucesso!')
         } catch (error) {
@@ -243,15 +252,26 @@ const FormUnidade = ({ id }) => {
             {!data && <Loading />}
             {data && (
                 <>
-                    <Card>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <FormHeader
-                                btnCancel={user.papelID === 1 ? true : false}
-                                btnSave
-                                handleSubmit={() => handleSubmit(onSubmit)}
-                                btnDelete={type === 'edit' && user.papelID === 1 ? true : false}
-                                onclickDelete={() => setOpen(true)}
-                                type={type}
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <FormHeader
+                            btnCancel={user.papelID === 1 ? true : false}
+                            btnSave
+                            handleSubmit={() => handleSubmit(onSubmit)}
+                            btnDelete={type === 'edit' && user.papelID === 1 ? true : false}
+                            onclickDelete={() => setOpenModalDeleted(true)}
+                            type={type}
+                        />
+                        <Card>
+                            <DialogDelete
+                                title='Excluir Unidade'
+                                description='Tem certeza que deseja exluir a unidade?'
+                                params={{
+                                    route: `configuracoes/unidade/${id}`,
+                                    messageSucceded: 'Unidade excluída com sucesso!',
+                                    MessageError: 'Dado possui pendência!'
+                                }}
+                                open={openModalDeleted}
+                                handleClose={() => setOpenModalDeleted(false)}
                             />
                             <CardContent>
                                 <Grid container spacing={4}>
@@ -498,8 +518,8 @@ const FormUnidade = ({ id }) => {
                                     </Grid>
                                 </Grid>
                             </CardContent>
-                        </form>
-                    </Card>
+                        </Card>
+                    </form>
 
                     {/* Parâmetros da unidade */}
                     {type == 'edit' && user.papelID == 1 && (
@@ -553,6 +573,18 @@ const FormUnidade = ({ id }) => {
                                                 helpText='Com esta opção marcada, será obrigatório selecionar um ou mais produtos no formulário de qualificação do fornecedor.'
                                             />
                                         </Grid>
+
+                                        <Grid container spacing={4}>
+                                            <Grid item xs={12} md={12}>
+                                                <CheckLabel
+                                                    title='Habilita quem preenche o formulário de qualificação do fornecedor (Fábrica ou Fornecedor)'
+                                                    name={`fields.habilitaQuemPreencheFormFornecedor`}
+                                                    value={data.fields.habilitaQuemPreencheFormFornecedor}
+                                                    register={register}
+                                                    helpText='Com esta opção marcada, será definido quem preenche o formulário de qualificação do fornecedor na criação de um novo formulário, caso contrário somente o fornecedor poderá preencher.'
+                                                />
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </CardContent>
@@ -566,15 +598,6 @@ const FormUnidade = ({ id }) => {
                     )}
                 </>
             )}
-            <DialogForm
-                title='Excluir dado'
-                text='Tem certeza que deseja excluir?'
-                openModal={open}
-                handleClose={() => setOpen(false)}
-                handleSubmit={handleClickDelete}
-                btnCancel
-                btnConfirm
-            />
         </>
     )
 }

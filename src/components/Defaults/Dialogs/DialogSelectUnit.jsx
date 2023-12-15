@@ -9,8 +9,6 @@ import {
     DialogContentText
 } from '@mui/material'
 import Autocomplete from '@mui/material/Autocomplete'
-import { useEffect, useState } from 'react'
-import Icon from 'src/@core/components/icon'
 
 const DialogSelectUnit = ({ handleClose, openModal, handleSubmit, unidades, setSelectedUnit }) => {
     return (

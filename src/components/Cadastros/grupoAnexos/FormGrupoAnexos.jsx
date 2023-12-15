@@ -13,6 +13,7 @@ import Loading from 'src/components/Loading'
 import FormHeader from '../../Defaults/FormHeader'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { toastMessage } from 'src/configs/defaultConfigs'
+import useLoad from 'src/hooks/useLoad'
 
 //* Custom components
 import Select from 'src/components/Form/Select'
@@ -20,7 +21,7 @@ import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import GrupoAnexoList from './GrupoAnexoList.jsx'
 
-const FormGrupoAnexos = ({ id }) => {
+const FormGrupoAnexos = ({ id, btnClose, handleConfirmNew, handleModalClose, newChange, manualUrl, outsideID }) => {
     const { setId } = useContext(RouteContext)
     const router = Router
     const [data, setData] = useState(null)
@@ -28,10 +29,11 @@ const FormGrupoAnexos = ({ id }) => {
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
     const { title } = useContext(ParametersContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, user } = useContext(AuthContext)
     const [savingForm, setSavingForm] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
     const [change, setChange] = useState(false)
+    const { startLoading, stopLoading } = useLoad()
 
     const {
         trigger,
@@ -46,7 +48,7 @@ const FormGrupoAnexos = ({ id }) => {
 
     const getData = async () => {
         try {
-            const route = type === 'new' ? `${backRoute(staticUrl)}/new/getData` : `${staticUrl}/getData/${id}`
+            const route = type === 'new' ? `cadastros/grupo-anexos/new/getData` : `${staticUrl}/getData/${id}`
             await api.post(route, { unidadeID: loggedUnity.unidadeID }).then(response => {
                 setData(response.data)
                 reset(response.data) //* Insere os dados no formulário
@@ -85,16 +87,26 @@ const FormGrupoAnexos = ({ id }) => {
         setChange(!change)
     }
 
-    const onSubmit = async values => {
+    const onSubmit = async data => {
+        const values = {
+            ...data,
+            usuarioID: user.usuarioID,
+            unidadeID: loggedUnity.unidadeID
+        }
+        startLoading()
         //* Valores auxiliares
         values['removedItems'] = removedItems
         values['unidade'] = loggedUnity.unidadeID
 
         try {
             if (type === 'new') {
-                await api.post(`${backRoute(staticUrl)}/new/insertData`, values).then(response => {
-                    router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
-                    setId(response.data)
+                await api.post(`cadastros/grupo-anexos/new/insertData`, values).then(response => {
+                    if (handleConfirmNew) {
+                        handleConfirmNew(response.data, 'gruposAnexo')
+                    } else {
+                        router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                        setId(response.data.id)
+                    }
                     toast.success(toastMessage.successNew)
                 })
             } else if (type === 'edit') {
@@ -109,16 +121,19 @@ const FormGrupoAnexos = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 
     //! Função que deleta os dados
     const handleDelete = async () => {
         try {
-            await api.delete(`${staticUrl}/deleteData/${id}`)
+            await api.delete(`${staticUrl}/deleteData/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
             setId(null)
             setOpen(false)
             toast.success(toastMessage.successDelete)
+            console.log('entrou')
         } catch (error) {
             if (error.response && error.response.status === 409) {
                 toast.error(toastMessage.pendingDelete)
@@ -140,23 +155,32 @@ const FormGrupoAnexos = ({ id }) => {
         }
     }, [id])
 
+    useEffect(() => {
+        if (newChange) handleSubmit(onSubmit)()
+    }, [newChange])
+
     return (
         <>
             {!data && <Loading />}
             {data && (
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Card>
-                        {/* Botões cabeçalho */}
-                        <FormHeader
-                            btnCancel
-                            btnSave
-                            btnNew
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpenDelete(true)}
-                            type={type}
-                        />
+                    {/* Botões cabeçalho */}
+                    <FormHeader
+                        btnCancel
+                        btnNew={handleConfirmNew ? false : true}
+                        btnSave
+                        manualUrl={manualUrl}
+                        btnClose={btnClose}
+                        handleModalClose={handleModalClose}
+                        handleSubmit={() => handleSubmit(onSubmit)}
+                        btnDelete={type === 'edit' ? true : false}
+                        onclickDelete={() => setOpenDelete(true)}
+                        type={type}
+                        outsideID={outsideID}
+                    />
 
-                        {/* Formulário */}
+                    {/* Formulário */}
+                    <Card>
                         {data && (
                             <CardContent>
                                 <Grid container spacing={4}>

@@ -2,27 +2,39 @@ import React from 'react'
 import DateField from 'src/components/Form/DateField'
 import Input from 'src/components/Form/Input'
 import Remove from 'src/components/Form/Remove'
+import useDateFormat from 'src/hooks/useDateFormat'
 
-const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => {
+const CargoFuncao = ({ data, getValues, control, register, name, errors, removeItem }) => {
+    const { setDateFormat, dateStatus } = useDateFormat()
+
     return getValues('cargosFuncoes').map((item, index) => {
+        console.log('🚀 ~ item:', item[index])
         return (
             <>
                 <DateField
                     xs={12}
                     md={2}
-                    required
                     title='Data'
-                    value={item.data}
-                    name={`cargosFuncoes[${index}].data`}
+                    type='date'
+                    required
+                    name={`cargosFuncoes.${[index]}.data`}
+                    // disabled={disabled}
+                    register={register}
                     control={control}
+                    setDateFormat={setDateFormat}
+                    value={item.data}
+                    typeValidation='dataPassado'
+                    daysValidation={9999999999999999999}
+                    dateStatus={dateStatus}
                     errors={errors?.cargosFuncoes?.[index]?.data}
                 />
+
                 <Input
                     xs={12}
                     md={4}
                     required
                     title='Formação / Cargo'
-                    name={`cargosFuncoes.[${index}].formacaoCargo`}
+                    name={`cargosFuncoes.${[index]}.formacaoCargo`}
                     control={control}
                     errors={errors?.cargosFuncoes?.[index]?.formacaoCargo}
                 />
@@ -30,7 +42,7 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     xs={12}
                     md={3}
                     title='Conselho'
-                    name={`cargosFuncoes.[${index}].conselho`}
+                    name={`cargosFuncoes.${[index]}.conselho`}
                     control={control}
                     errors={errors?.cargosFuncoes?.[index]?.conselho}
                 />
@@ -38,11 +50,17 @@ const CargoFuncao = ({ data, getValues, control, name, errors, removeItem }) => 
                     xs={12}
                     md={2}
                     title='Data Inativação'
+                    name={`cargosFuncoes.${[index]}.dataInativacao`}
+                    type='date'
                     value={item.dataInativacao}
-                    name={`cargosFuncoes[${index}].dataInativacao`}
                     control={control}
+                    setDateFormat={setDateFormat}
+                    typeValidation='dataPassado'
+                    daysValidation={9999999999999999999}
+                    dateStatus={dateStatus}
                     errors={errors?.cargosFuncoes?.[index]?.dataInativacao}
                 />
+
                 <Remove
                     xs={4}
                     md={1}

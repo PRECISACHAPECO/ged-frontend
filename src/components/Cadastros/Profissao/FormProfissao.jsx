@@ -14,6 +14,7 @@ import { formType } from 'src/configs/defaultConfigs'
 import FormHeader from '../../Defaults/FormHeader'
 import { backRoute } from 'src/configs/defaultConfigs'
 import { toastMessage } from 'src/configs/defaultConfigs'
+import useLoad from 'src/hooks/useLoad'
 
 const FormProfissao = () => {
     const [open, setOpen] = useState(false)
@@ -23,6 +24,7 @@ const FormProfissao = () => {
     const staticUrl = backRoute(router.pathname) // Url sem ID
     const inputRef = useRef(null)
     const { title } = useContext(ParametersContext)
+    const { startLoading, stopLoading } = useLoad()
 
     const schema = yup.object().shape({
         nome: yup.string().required('Campo obrigatório')
@@ -41,6 +43,7 @@ const FormProfissao = () => {
 
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async data => {
+        startLoading()
         try {
             if (type === 'new') {
                 await api.post(`${staticUrl}/novo`, data)
@@ -58,6 +61,8 @@ const FormProfissao = () => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 

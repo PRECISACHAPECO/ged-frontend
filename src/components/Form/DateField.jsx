@@ -5,7 +5,7 @@ const DateField = ({
     xs,
     md,
     title,
-    isRequired,
+    required,
     disabled,
     type,
     value,
@@ -31,6 +31,7 @@ const DateField = ({
                 <Controller
                     name={name}
                     control={control}
+                    rules={{ required: required }}
                     render={({ field }) => (
                         <TextField
                             type={type ?? 'date'}
@@ -38,6 +39,7 @@ const DateField = ({
                             label={title}
                             disabled={disabled ? true : false}
                             defaultValue={value ? formatDate(value) : ''}
+                            error={errors}
                             onChange={e => {
                                 field.onChange(e) // Manually update the field value
                                 if (typeValidation) setDateFormat(typeValidation, type, e.target.value, daysValidation)

@@ -45,11 +45,14 @@ const UserDropdown = props => {
     // Controla troca de unidade
     const { saveSettings, settings } = useSettings()
     const mode = settings.mode
-    const [openModal, setOpenModal] = useState(false);
-    const [open, setOpen] = useState(false)
     const [unity, setSelectedUnit] = useState(null);
     const { notifications } = useContext(NotificationContext)
     const handleCloseModalSelectUnits = () => setOpenModal(false);
+    // mostrar opções da lista
+    const [open, setOpen] = useState(false)
+    // modal troca de unidade
+    const [openModal, setOpenModal] = useState(false);
+    // modal nova senha
     const [openModalNewPassword, setOpenModalNewPassword] = useState(false)
 
 
@@ -88,8 +91,9 @@ const UserDropdown = props => {
         if (url) {
             router.push(url)
         }
-        setAnchorEl(null)
-        console.log("passou akii")
+        if (!openModalNewPassword) {
+            setAnchorEl(null)
+        }
     }
 
     const styles = {
@@ -131,7 +135,7 @@ const UserDropdown = props => {
                             <Avatar
                                 alt={user.nome}
                                 onClick={handleDropdownOpen}
-                                sx={{ width: 40, height: 40 }}
+                                sx={{ width: 30, height: 30 }}
                                 src={user.imagem}
                             />
                         </Badge>
@@ -169,7 +173,6 @@ const UserDropdown = props => {
                             </Box>
                             <Divider sx={{ mt: '0 !important' }} />
 
-
                             <MenuItem>
                                 <div
                                     className='block sm:hidden -ml-2'
@@ -182,23 +185,20 @@ const UserDropdown = props => {
                                 </div>
                             </MenuItem>
 
-
-
                             <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose()}>
                                 <Box sx={styles}
                                     onClick={() => {
                                         handleDropdownClose(user.papelID === 1 ? `/cadastros/profissional` : `/meus-dados`)
-                                        setId(user.papelID === 1 ? user.usuarioID : null)
+                                        setId(user.papelID === 1 ? user.profissionalID : null)
                                     }}>
 
                                     <Icon icon='mdi:account-outline' />
                                     Meus Dados
                                 </Box>
                             </MenuItem>
+
                             {/* Alterar senha */}
-
                             <div className=''>
-
                                 <MenuItem sx={{ p: 0 }} >
                                     <Box sx={styles}
                                         onClick={() => {
@@ -211,7 +211,6 @@ const UserDropdown = props => {
                                 </MenuItem>
                             </div>
 
-
                             {/* Modal trocar senha */}
                             <DialogNewPasswordProfessional
                                 openModal={openModalNewPassword}
@@ -219,7 +218,6 @@ const UserDropdown = props => {
                                 setOpenModalNewPassword={setOpenModalNewPassword}
                                 handleDropdownClose={handleDropdownClose}
                             />
-
 
                             {/* troca de unidade quando mobile */}
                             {user.papelID === 1 && (

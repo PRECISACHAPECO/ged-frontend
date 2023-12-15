@@ -1,21 +1,49 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Input from 'src/components/Form/Input'
 import Check from 'src/components/Form/Check'
 import Remove from 'src/components/Form/Remove'
+import Select from 'src/components/Form/Select'
 import { Divider } from '@mui/material'
+import { api } from 'src/configs/api'
 
-const AnexosList = ({ getValues, removeAnexo, control, register, errors, type }) => {
+const AnexosList = ({ getValues, removeAnexo, setValue, control, register, errors, type }) => {
+    const [formularios, setFormularios] = useState([])
+
+    const getFormularios = async () => {
+        const response = await api.post(`/cadastros/produto/getFormularios`)
+        console.log('--> ', response.data)
+        setFormularios(response.data)
+    }
+
+    useEffect(() => {
+        getFormularios()
+    }, [])
+
     return (
         getValues('anexos') &&
         getValues('anexos').map((item, index) => (
             <Fragment key={index}>
                 <Input
-                    md={9}
+                    md={6}
                     title='Nome'
                     name={`anexos[${index}].nome`}
                     required
                     control={control}
                     errors={errors?.anexos?.[index]?.nome}
+                />
+                <Select
+                    xs={12}
+                    md={3}
+                    title='Formulário'
+                    name={`anexos[${index}].formulario`}
+                    value={item.formulario}
+                    required={true}
+                    options={formularios ?? []}
+                    register={register}
+                    setValue={setValue}
+                    control={control}
+                    errors={errors?.anexos?.[index]?.formulario}
+                    helpText='Formulário em que será solicitado esse anexo para este produto'
                 />
                 <Check
                     xs={1}

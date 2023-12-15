@@ -7,10 +7,21 @@ import { api } from 'src/configs/api'
 import FormNewFornecedor from './FormNewFornecedor'
 import { cnpjMask } from 'src/configs/masks'
 
-const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getValues }) => {
+const NewFornecedor = ({
+    cnpj,
+    control,
+    setValue,
+    register,
+    errors,
+    reset,
+    getValues,
+    isNotFactory,
+    setIsNotFactory
+}) => {
     const [change, setChange] = useState(false)
     const { loggedUnity } = useContext(AuthContext)
     const [fields, setFields] = useState(null)
+    const [params, setParams] = useState(null)
     const [validationCnpj, setValidationCnpj] = useState(null)
 
     const handleCnpj = cnpj => {
@@ -92,36 +103,30 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
 
         //* Requisição a API
         const result = await api.get(`https://api-publica.speedio.com.br/buscarcnpj?cnpj=${cnpjNumber}`)
-
-        // const result = {
-        //     data: {
-        //         'NOME FANTASIA': 'RDA DESENVOLVIMENTO WEB',
-        //         'RAZAO SOCIAL': 'ROBERTO DELAVI DE ARAUJO 02116471010',
-        //         CNPJ: '41153569000174',
-        //         STATUS: 'ATIVA',
-        //         'CNAE PRINCIPAL DESCRICAO': 'Outras atividades de telecomunicações não especificadas anteriormente',
-        //         'CNAE PRINCIPAL CODIGO': '6190699',
-        //         CEP: '89812600',
-        //         'DATA ABERTURA': '09/03/2021',
-        //         DDD: '49',
-        //         TELEFONE: '33160672',
-        //         EMAIL: 'roberto.delavy@gmail.com',
-        //         'TIPO LOGRADOURO': 'RUA',
-        //         LOGRADOURO: 'EUCLIDES PRADE',
-        //         NUMERO: '465 E',
-        //         COMPLEMENTO: 'COND BOULEVARD DAS ACACIAS;BLOCO A;APT 406',
-        //         BAIRRO: 'SANTA MARIA',
-        //         MUNICIPIO: 'Chapecó',
-        //         UF: 'SC'
-        //     }
-        // }
-
         return result
+    }
+
+    // Verifica quem preenche o formulario / fabrica ou fornecedor / Se resultado igual a 1 mostra opções
+    // Parametros gerais do modal
+    const getParams = async () => {
+        const data = {
+            unidadeID: loggedUnity.unidadeID
+        }
+        try {
+            const response = await api.post('/formularios/fornecedor/paramsNewFornecedor', data)
+            setParams(response.data)
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     useEffect(() => {
         setChange(!change)
         if (cnpj && cnpj.length > 0) handleCnpj(cnpj)
+    }, [])
+
+    useEffect(() => {
+        getParams()
     }, [])
 
     return (
@@ -135,6 +140,7 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
                                 key={change}
                                 setFields={setFields}
                                 fields={fields ?? null}
+                                params={params}
                                 control={control}
                                 errors={errors}
                                 reset={reset}
@@ -143,6 +149,8 @@ const NewFornecedor = ({ cnpj, control, setValue, register, errors, reset, getVa
                                 register={register}
                                 handleCnpj={handleCnpj}
                                 validCnpj={validationCnpj}
+                                isNotFactory={isNotFactory}
+                                setIsNotFactory={setIsNotFactory}
                             />
                         </Box>
                     </Grid>

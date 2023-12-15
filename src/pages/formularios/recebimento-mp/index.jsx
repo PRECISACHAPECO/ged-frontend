@@ -23,51 +23,99 @@ const RecebimentoMP = () => {
     const { id } = useContext(RouteContext)
 
     const getList = async () => {
-        await api.get(`${currentLink}/getList/${loggedUnity.unidadeID}`).then(response => {
-            setResult(response.data)
-            setTitle({
-                title: 'Recebimento de MP',
-                subtitle: {
-                    id: id,
-                    count: response.data.length,
-                    new: false
-                }
+        await api
+            .get(`${currentLink}/getList/${loggedUnity.unidadeID}/${user.papelID}/${user.usuarioID}`)
+            .then(response => {
+                setResult(response.data)
+                setTitle({
+                    title: 'Recebimento de MP',
+                    subtitle: {
+                        id: id,
+                        count: response.data.length,
+                        new: false
+                    }
+                })
             })
-        })
     }
 
     useEffect(() => {
         getList()
     }, [id])
 
-    const arrColumns = [
-        {
-            headerName: 'ID',
-            field: 'id',
-            size: 0.1
-        },
-        {
-            headerName: 'Data',
-            field: 'data',
-            size: 0.1,
-            type: 'date'
-        },
-        {
-            headerName: 'Profissional',
-            field: 'profissional',
-            size: 0.2
-        },
-        {
-            headerName: 'Modelo',
-            field: 'modelo',
-            size: 0.2
-        },
-        {
-            headerName: 'Status',
-            field: 'status',
-            size: 0.2
-        }
-    ]
+    const arrColumns =
+        user.papelID == 2
+            ? [
+                  {
+                      headerName: 'ID',
+                      field: 'id',
+                      size: 0.1
+                  },
+                  {
+                      headerName: 'Data',
+                      field: 'data',
+                      size: 0.1,
+                      type: 'date'
+                  },
+                  {
+                      headerName: 'Fábrica',
+                      field: 'fabrica',
+                      size: 0.2
+                  },
+                  {
+                      headerName: 'Profissional',
+                      field: 'profissional',
+                      size: 0.2
+                  },
+                  {
+                      headerName: 'Modelo',
+                      field: 'modelo',
+                      size: 0.2
+                  },
+                  {
+                      headerName: 'Status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
+                      size: 0.2
+                  }
+              ]
+            : [
+                  {
+                      headerName: 'ID',
+                      field: 'id',
+                      size: 0.1
+                  },
+                  {
+                      headerName: 'Data',
+                      field: 'data',
+                      size: 0.1,
+                      type: 'date'
+                  },
+                  {
+                      headerName: 'Fornecedor',
+                      field: 'fornecedor',
+                      size: 0.2
+                  },
+                  {
+                      headerName: 'Profissional',
+                      field: 'profissional',
+                      size: 0.2
+                  },
+                  {
+                      headerName: 'Modelo',
+                      field: 'modelo',
+                      size: 0.2
+                  },
+                  {
+                      headerName: 'Status',
+                      field: {
+                          name: 'status',
+                          cor: 'cor'
+                      },
+                      size: 0.2
+                  }
+              ]
 
     const columns = configColumns(currentLink, arrColumns)
 

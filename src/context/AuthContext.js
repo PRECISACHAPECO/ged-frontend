@@ -23,7 +23,10 @@ const defaultProvider = {
     setLoading: () => Boolean,
     login: () => Promise.resolve(),
     logout: () => Promise.resolve(),
-    register: () => Promise.resolve()
+    register: () => Promise.resolve(),
+    loggedUnity: null,
+    setLoggedUnity: () => Promise.resolve(),
+
 }
 
 const AuthContext = createContext(defaultProvider)
@@ -50,6 +53,7 @@ const AuthProvider = ({ children }) => {
         status: false,
         version: null,
     })
+    const [paramsReport, setParamsReport] = useState({})
 
     const router = useRouter();
     const staticUrl = backRoute(router.pathname) // Url sem ID
@@ -118,7 +122,6 @@ const AuthProvider = ({ children }) => {
         initAuth()
     }, [])
 
-
     //* Login da fabrica (CPF)
     const handleLogin = (params, errorCallback) => {
         window.localStorage.removeItem('unreadNotifications')
@@ -139,11 +142,28 @@ const AuthProvider = ({ children }) => {
 
                 // Verifica se usuário tem apenas uma unidade vinculada
                 if (response.data.unidades.length == 1) {
+                    console.log("tem mais de uma unidade login normal")
                     setLoggedUnity(response.data.unidades[0])
                     localStorage.setItem('loggedUnity', JSON.stringify(response.data.unidades[0]))
                     getMenu(response.data.unidades[0].papelID)
                     // Recebe usuário e unidade e seta rotas de acordo com o perfil
                     getRoutes(response.data.userData.usuarioID, response.data.unidades[0].unidadeID, response.data.userData.admin, response.data.unidades[0].papelID)
+                } else {
+                    const { nomeFantasia, cnpj, unidadeID, ...userDataWithoutFields } = response.data.userData;
+                    const formatData = {
+                        unidadeID: params.selectedUnit,
+                        userData: userDataWithoutFields
+                    }
+                    const saveDataLogMultiUnit = async () => {
+                        try {
+                            const response = await api.post('/login/saveDataLogMultiUnit', formatData)
+                            console.log("🚀 ~ response:", response)
+                        } catch (err) {
+                            console.log(err)
+                        }
+                    }
+                    saveDataLogMultiUnit()
+
                 }
 
                 setRouteBackend('/login')
@@ -170,7 +190,6 @@ const AuthProvider = ({ children }) => {
                 ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
                 : null
             const returnUrl = router.query.returnUr
-            console.log("🚀 ~ returnUrl: OQQ EESS IOSSSOO", returnUrl)
             setUser({ ...response.data.userData })
 
             setRouteBackend('/login-fornecedor')
@@ -182,13 +201,18 @@ const AuthProvider = ({ children }) => {
             getRoutes(response.data.userData.usuarioID, response.data.unidades[0].unidadeID, response.data.userData.admin, response.data.unidades[0].papelID)
 
             params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
-            // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-            const previousRoute = router.asPath
-            const redirectURL = previousRoute.includes('/registro/') ? '/meus-dados' : '/formularios/fornecedor/';
-            router.replace(redirectURL)
-            if (params.getFornecedorID) {
-                setId(params.getFornecedorID)
+
+            // Se parametro na rota direciona direto para o formulario
+            if (router.query.f) {
+                setId(router.query.f)
+                router.push("/formularios/fornecedor/")
+            } else if (router.query.r) {
+                setId(router.query.r)
+                router.push("/formularios/recebimento-mp/")
+            } else {
+                router.push('/')
             }
+
         }).catch(err => {
             if (err?.response?.status === 400) {
                 toast.error('CNPJ ou senha inválidos!')
@@ -255,60 +279,60 @@ const AuthProvider = ({ children }) => {
     }
 
     //* Quando o usuario mudar de rota atualizar o currentRoute
-    useEffect(() => {
-        setCurrentRoute(router.pathname)
-        if (currentRoute) {
-            //  Se a rota atual for dinamica, remove o id da rota
-            removeDynamicRouteId()
-            const permission = routes.find(rota => rota.rota === currentRoute)
-            if (!permission?.rota && currentRoute !== '/' && currentRoute !== '/login' && currentRoute !== '/login-fornecedor' && currentRoute !== '/esqueceu-sua-senha?type=login' && currentRoute !== '/esqueceu-sua-senha?type=fornecedor' && currentRoute !== '/redefinir-senha' && currentRoute !== '/fornecedor' && currentRoute !== '/registro' && currentRoute !== '/home' && currentRoute !== '/401' && currentRoute !== '/relatorio') {
-                router.push('/401')
-            }
-        }
-    }, [currentRoute])
+    // useEffect(() => {
+    //     setCurrentRoute(router.pathname)
+    //     if (currentRoute) {
+    //         //  Se a rota atual for dinamica, remove o id da rota
+    //         removeDynamicRouteId()
+    //         const permission = routes.find(rota => rota.rota === currentRoute)
+    //         if (!permission?.rota && currentRoute !== '/' && currentRoute !== '/login' && currentRoute !== '/login-fornecedor' && currentRoute !== currentRoute !== '/redefinir-senha' && currentRoute !== '/fornecedor' && currentRoute !== '/registro' && currentRoute !== '/home' && currentRoute !== '/401' && currentRoute !== '/relatorio') {
+    //             router.push('/401')
+    //         }
+    //     }
+    // }, [currentRoute])
 
 
     //! Quando carregar o sistema, faz uma requisicao ao github para saber a versão atual do sistema
-    async function getLatestVersion() {
-        await axios.get("https://api.github.com/repos/PRECISACHAPECO/ged-frontend/releases")
-            .then((response) => {
-                localStorage.setItem('latestVersion', response.data[0].tag_name)
-                setLatestVersionState(response.data[0].tag_name)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
+    // async function getLatestVersion() {
+    //     await axios.get("https://api.github.com/repos/PRECISACHAPECO/ged-frontend/releases")
+    //         .then((response) => {
+    //             localStorage.setItem('latestVersion', response.data[0].tag_name)
+    //             setLatestVersionState(response.data[0].tag_name)
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+    // }
 
-    // //*? faz um get ao github para saber a versão atual do sistema
-    useEffect(() => {
-        getLatestVersion();
-    }, [])
+    // // //*? faz um get ao github para saber a versão atual do sistema
+    // useEffect(() => {
+    //     getLatestVersion();
+    // }, [])
 
     //! Verifica se a versão atual é diferente da versão do localStorage, se for, abre o modal de atualização
-    useEffect(() => {
-        function getLatestTag() {
-            axios.get("https://api.github.com/repos/PRECISACHAPECO/ged-frontend/releases")
-                .then((response) => {
-                    if (response.data[0].tag_name !== localStorage.getItem('latestVersion')) {
-                        setNewVersionAvailable({
-                            status: true,
-                            version: response.data[0].tag_name,
-                        })
-                        setOpenModalUpdate(true)
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-        const interval = setInterval(() => {
-            getLatestTag();
-        }, 10000);
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
+    // useEffect(() => {
+    //     function getLatestTag() {
+    //         axios.get("https://api.github.com/repos/PRECISACHAPECO/ged-frontend/releases")
+    //             .then((response) => {
+    //                 if (response.data[0].tag_name !== localStorage.getItem('latestVersion')) {
+    //                     setNewVersionAvailable({
+    //                         status: true,
+    //                         version: response.data[0].tag_name,
+    //                     })
+    //                     setOpenModalUpdate(true)
+    //                 }
+    //             })
+    //             .catch((error) => {
+    //                 console.log(error);
+    //             });
+    //     }
+    //     const interval = setInterval(() => {
+    //         getLatestTag();
+    //     }, 10000);
+    //     return () => {
+    //         clearInterval(interval);
+    //     };
+    // }, []);
 
     //! se rota atual for igual a /fornecedor, limpar o localstorage e dar reload na pagina, faça o reaload apenas uma vez
     // useEffect(() => {
@@ -320,14 +344,19 @@ const AuthProvider = ({ children }) => {
     //     }
     // }, []);
 
+    // Manter parametros na rota
     useEffect(() => {
         const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
-        const GET = router.query.f
-        if (GET && !storedToken) {
-            const rota = `/fornecedor?f=${router.query.f}`
+        const paramns = router.query.f ?? router.query.r
+        const route = router.query.f ? 'fornecedor?f=' : 'fornecedor?r='
+
+        if (paramns && !storedToken) {
+            const rota = `/${route}${paramns}`
             router.replace(rota)
         }
-    }, [router.query.f])
+    }, [router.query.f, router.query.r])
+
+    // http://localhost:3001/fornecedor?r=25
 
 
     const values = {
@@ -355,6 +384,8 @@ const AuthProvider = ({ children }) => {
         setNewVersionAvailable,
         setOpenModalUpdate,
         openModalUpdate,
+        paramsReport, setParamsReport
+
     }
 
     return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

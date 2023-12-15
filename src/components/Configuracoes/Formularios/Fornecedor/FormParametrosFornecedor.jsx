@@ -20,11 +20,13 @@ import Blocos from './Blocos'
 import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
 import FormItem from 'src/components/Cadastros/Item/FormItem'
 import HelpText from 'src/components/Defaults/HelpText'
+import DialogDelete from 'src/components/Defaults/Dialogs/DialogDelete'
 // import { IndeterminateCheckBoxOutlined } from '@mui/icons-material'
 
 // import JoditEditor from 'jodit-react'
 
 const FormParametrosFornecedor = ({ id }) => {
+    console.log('🚀 ~ id:', id)
     //* Editor de texto
     // const editor = useRef(null)
     // const config = useMemo(
@@ -36,7 +38,7 @@ const FormParametrosFornecedor = ({ id }) => {
     // )
 
     const { setId } = useContext(RouteContext)
-    const { loggedUnity } = useContext(AuthContext)
+    const { loggedUnity, user } = useContext(AuthContext)
     const [model, setModel] = useState()
     const [headers, setHeaders] = useState()
     const [allOptions, setAllOptions] = useState(null)
@@ -53,11 +55,14 @@ const FormParametrosFornecedor = ({ id }) => {
     const [openModalSelectedItem, setOpenModalSelectedItem] = useState(false) //? Abre modal para exibir item selecionado
     const [idInfoItem, setIdInfoItem] = useState(null)
     const [newChange, setNewChange] = useState(false)
+    const [indexNewBloco, setIndexNewBloco] = useState(null)
     const [indexNewItem, setIndexNewItem] = useState(null)
+    const [openModalDeleted, setOpenModalDeleted] = useState(false)
 
-    const createNew = index => {
+    const createNew = (indexBloco, indexItem) => {
         setOpenModalNew(true)
-        setIndexNewItem(index)
+        setIndexNewBloco(indexBloco)
+        setIndexNewItem(indexItem)
     }
 
     const viewItem = item => {
@@ -67,12 +72,9 @@ const FormParametrosFornecedor = ({ id }) => {
         }
     }
 
-    const handleConfirmNew = id => {
+    const handleConfirmNew = data => {
         setOpenModalNew(false)
-        getData()
-        setTimeout(() => {
-            addItem(indexNewItem)
-        }, 1000)
+        setValue(`blocks.[${indexNewBloco}].itens.[${indexNewItem}].item`, data)
     }
 
     const router = Router
@@ -96,6 +98,7 @@ const FormParametrosFornecedor = ({ id }) => {
         const data = {
             id: id ?? null,
             unidadeID: loggedUnity.unidadeID,
+            usuarioID: user.usuarioID,
             model: values.model,
             header: values.header ?? null,
             blocks: values.blocks ?? [],
@@ -103,7 +106,6 @@ const FormParametrosFornecedor = ({ id }) => {
             arrRemovedItems: arrRemovedItems ?? [],
             orientacoes: values.orientations ?? null
         }
-        console.log('🚀 ~ onSubmit:', data)
 
         setHeaders(null) //? Pra exibir loading
 
@@ -149,7 +151,6 @@ const FormParametrosFornecedor = ({ id }) => {
 
     const addItem = index => {
         const newBlock = [...blocks]
-
         newBlock[index].itens.push({
             ordem: newBlock[index].itens?.length + 1,
             obs: 1,
@@ -259,6 +260,7 @@ const FormParametrosFornecedor = ({ id }) => {
     }
 
     const getData = () => {
+        console.log('buscar dados no backend....')
         try {
             if (type === 'new') {
                 setModel({
@@ -266,6 +268,8 @@ const FormParametrosFornecedor = ({ id }) => {
                     ciclo: '',
                     cabecalho: '',
                     status: 1
+
+                    // AA
                 })
             } else {
                 api.post(`/configuracoes/formularios/fornecedor/getData/${id}`, {
@@ -306,7 +310,7 @@ const FormParametrosFornecedor = ({ id }) => {
 
     const handleSave = async data => {
         setNewChange(true)
-        // getData()
+        getData()
         setOpenModalNew(false)
     }
 
@@ -314,16 +318,30 @@ const FormParametrosFornecedor = ({ id }) => {
         <>
             <Loading show={!model} />
             <form onSubmit={handleSubmit(onSubmit)}>
+                <FormHeader
+                    partialRoute
+                    btnCancel
+                    btnSave
+                    handleSubmit={() => handleSubmit(onSubmit)}
+                    type={type}
+                    btnDelete
+                    onclickDelete={() => setOpenModalDeleted(true)}
+                />
+                {/* Modal que deleta formulario */}
+                <DialogDelete
+                    title='Excluir Formulário'
+                    description='Tem certeza que deseja exluir o formulario?'
+                    params={{
+                        route: `/configuracoes/formularios/fornecedor/delete/${id}`,
+                        messageSucceded: 'Formulário excluído com sucesso!',
+                        MessageError: 'Dado possui pendência!'
+                    }}
+                    open={openModalDeleted}
+                    handleClose={() => setOpenModalDeleted(false)}
+                />
                 {/* Modelo */}
                 {model && (
                     <Card>
-                        <FormHeader
-                            partialRoute
-                            btnCancel
-                            btnSave
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            type={type}
-                        />
                         <CardContent>
                             <Grid container spacing={4}>
                                 <Input
@@ -611,12 +629,13 @@ const FormParametrosFornecedor = ({ id }) => {
                 handleSave={handleSave}
             >
                 <FormItem
-                    setNewChange={setNewChange}
                     btnClose
                     handleModalClose={() => setOpenModalNew(false)}
+                    setNewChange={setNewChange}
                     newChange={newChange}
                     outsideID={id}
                     handleConfirmNew={handleConfirmNew}
+                    manualUrl='/cadastros/item'
                 />
             </DialogNewCreate>
 
@@ -627,7 +646,12 @@ const FormParametrosFornecedor = ({ id }) => {
                 openModal={openModalSelectedItem}
                 setOpenModal={setOpenModalSelectedItem}
             >
-                <FormItem id={idInfoItem} btnClose handleModalClose={() => setOpenModalSelectedItem(false)} />
+                <FormItem
+                    id={idInfoItem}
+                    outsideID={id}
+                    btnClose
+                    handleModalClose={() => setOpenModalSelectedItem(false)}
+                />
             </DialogNewCreate>
         </>
     )

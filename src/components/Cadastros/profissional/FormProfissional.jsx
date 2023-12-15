@@ -14,23 +14,32 @@ import { AuthContext } from 'src/context/AuthContext'
 import CargoFuncao from './CargoFuncao'
 import Fields from './Fields'
 import Permissions from './Permissions'
+import DialogForm from 'src/components/Defaults/Dialogs/Dialog'
+import { ParametersContext } from 'src/context/ParametersContext'
+import useLoad from 'src/hooks/useLoad'
+import Select from 'src/components/Form/Select'
 
 const FormProfissional = ({ id }) => {
     const fileInputRef = useRef(null)
+    const [open, setOpen] = useState(false)
     const { setId } = useContext(RouteContext)
-    const { user, loggedUnity } = useContext(AuthContext)
+    const { user, setUser, loggedUnity, routes } = useContext(AuthContext)
+    const { title } = useContext(ParametersContext)
     const [data, setData] = useState(null)
     const [change, setChange] = useState(false)
     const [removedItems, setRemovedItems] = useState([]) //? Itens removidos do formulário
+    const [changePermissions, setChangePermissions] = useState(false)
     const [photoProfile, setPhotoProfile] = useState(null)
     const { settings } = useContext(SettingsContext)
     const mode = settings.mode
+    const { startLoading, stopLoading } = useLoad()
 
     // Estado que é prencchindo com o valor da função verifyCPF, que verifica se o cpf digitado já esta vinculado a um usuario existente
     const [userExistVerifyCPF, setUserExistVerifyCPF] = useState(false)
     const [userNewVerifyCPF, setUserNewVerifyCPF] = useState(false)
     // Se usuarioID vindo no getData for maior que 0  adiciona true
     const [userExistDefault, setUserExistDefault] = useState(false)
+    console.log('🚀 ~ userExistDefault:', userExistDefault)
 
     const router = Router
     const type = id && id > 0 ? 'edit' : 'new'
@@ -57,12 +66,24 @@ const FormProfissional = ({ id }) => {
 
     // Função que atualiza os dados ou cria novo dependendo do tipo da rota
     const onSubmit = async data => {
+        startLoading()
         const values = {
             ...data,
+            usualioLogado: user.usuarioID,
+            unidadeID: loggedUnity.unidadeID,
             fields: {
                 ...data.fields,
+                dataNascimento: data.fields.dataNascimento.startsWith('0')
+                    ? '1' + data.fields.dataNascimento.substring(1, 10)
+                    : data.fields.dataNascimento.substring(0, 10),
+
                 unidadeID: loggedUnity.unidadeID
             },
+            cargosFuncoes: data.cargosFuncoes.map(cargoFuncao => ({
+                ...cargoFuncao,
+                data: cargoFuncao.data.substring(0, 10),
+                dataInativacao: cargoFuncao.dataInativacao ? cargoFuncao.dataInativacao.substring(0, 10) : null // Substring para pegar os primeiros 10 caracteres
+            })),
             removedItems
         }
         console.log('🚀 ~ values:', values)
@@ -85,6 +106,8 @@ const FormProfissional = ({ id }) => {
             } else {
                 console.log(error)
             }
+        } finally {
+            stopLoading()
         }
     }
 
@@ -97,12 +120,30 @@ const FormProfissional = ({ id }) => {
 
         try {
             const response = await api.post(route)
+            console.log('🚀 ~ getData:', response.data)
             reset(response.data)
-            console.log('🚀 ~ response.data:', response.data)
             setPhotoProfile(response.data.imagem)
             setData(response.data)
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    // Deleta os dados
+    const handleClickDelete = async () => {
+        try {
+            // await api.delete(`${staticUrl}/${id}`)
+            await api.delete(`${staticUrl}/${id}/${user.usuarioID}/${loggedUnity.unidadeID}`)
+            setId(null)
+            setOpen(false)
+            toast.success(toastMessage.successDelete)
+        } catch (error) {
+            if (error.response && error.response.status === 409) {
+                toast.error(toastMessage.pendingDelete)
+                setOpen(false)
+            } else {
+                console.log(error)
+            }
         }
     }
 
@@ -162,6 +203,13 @@ const FormProfissional = ({ id }) => {
                 .then(response => {
                     setPhotoProfile(response.data)
                     toast.success('Foto atualizada com sucesso!')
+
+                    //? Atualiza localstorage
+                    const userData = JSON.parse(localStorage.getItem('userData'))
+                    userData.imagem = response.data
+                    localStorage.setItem('userData', JSON.stringify(userData))
+                    //? Atualiza contexto
+                    setUser(userData)
                 })
                 .catch(error => {
                     toast.error(error.response?.data?.message ?? 'Erro ao atualizar foto de perfil, tente novamente!')
@@ -171,7 +219,7 @@ const FormProfissional = ({ id }) => {
 
     const handleDeleteImage = async () => {
         try {
-            await api.delete(`${staticUrl}/photo-profile/${id}/${loggedUnity.unidadeID}`)
+            await api.delete(`${staticUrl}/photo-profile/${id}/${loggedUnity.unidadeID}/${user.usuarioID}`)
             setPhotoProfile(null)
             toast.success('Foto removida com sucesso!')
         } catch (error) {
@@ -182,6 +230,44 @@ const FormProfissional = ({ id }) => {
 
     const handleFileClick = () => {
         fileInputRef.current.click()
+    }
+
+    //? Se copiar permissões de outro profissional, seta edit como true em todos os campos
+    const setPermissionsEdit = values => {
+        const menuEdit = values.map(menuGroup => ({
+            ...menuGroup,
+            menu: menuGroup.menu.map(menu => ({
+                ...menu,
+                edit: menu.rota ? true : false
+            }))
+        }))
+
+        return menuEdit
+    }
+
+    // Copia dados do profissional selecionado
+    const copyPermissions = async values => {
+        const value = {
+            usuarioID: values.usuarioID,
+            unidadeID: loggedUnity.unidadeID,
+            papelID: 1
+        }
+
+        try {
+            const response = await api.post(`${staticUrl}/copyPermissions/`, value)
+            //? Ao copiar permissões de outro profissional, seta edit como true em todos os campos pra atualizar no backend
+            const permissionsEdit = setPermissionsEdit(response.data)
+            //
+            setValue('menu', permissionsEdit)
+            setData({
+                ...data,
+                menu: permissionsEdit
+            })
+            setChangePermissions(!changePermissions)
+            toast.success('Permissões copiadas com sucesso!')
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     // Função que traz os dados quando carrega a página e atualiza quando as dependências mudam
@@ -199,17 +285,18 @@ const FormProfissional = ({ id }) => {
     return (
         data && (
             <form onSubmit={handleSubmit(onSubmit)}>
+                <FormHeader
+                    btnCancel
+                    btnSave
+                    btnNew
+                    handleSubmit={() => handleSubmit(onSubmit)}
+                    btnDelete={type === 'edit' ? true : false}
+                    onclickDelete={() => setOpen(true)}
+                    type={type}
+                />
+
                 <div className='space-y-4'>
                     <Card>
-                        <FormHeader
-                            btnCancel
-                            btnSave
-                            btnNew
-                            handleSubmit={() => handleSubmit(onSubmit)}
-                            btnDelete={type === 'edit' ? true : false}
-                            onclickDelete={() => setOpen(true)}
-                            type={type}
-                        />
                         <CardContent>
                             <Grid container spacing={5}>
                                 {/* Imagem */}
@@ -310,56 +397,90 @@ const FormProfissional = ({ id }) => {
                                             resetFields={resetFields}
                                             routeVeryfyCNP={routeVeryfyCNP}
                                             userExistDefault={userExistDefault}
+                                            type={type}
                                         />
                                     </Grid>
                                 </Grid>
                             </Grid>
                         </CardContent>
                     </Card>
-                    <Card>
-                        <CardHeader title='Cargos / Funções' />
-                        <CardContent>
-                            <Grid container spacing={5}>
-                                {/* Cargo / Função do profissonal */}
-                                {data && (
-                                    <CargoFuncao
-                                        getValues={getValues}
-                                        control={control}
-                                        errors={errors}
-                                        removeItem={removeItem}
-                                        key={change}
-                                    />
-                                )}
-                                <Button
-                                    variant='outlined'
-                                    color='primary'
-                                    sx={{ mt: 4, ml: 4 }}
-                                    startIcon={<Icon icon='material-symbols:add-circle-outline-rounded' />}
-                                    onClick={() => {
-                                        addItem()
-                                    }}
-                                >
-                                    Inserir item
-                                </Button>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-
-                    {/* userExistVerifyCPF */}
-
-                    {(userExistDefault || userNewVerifyCPF) && (
+                    {
+                        // routes.find(route => route.rota === staticUrl && route.ler) &&
+                        // (userNewVerifyCPF || userExistDefault) &&
                         <Card>
-                            <CardHeader title='Permissões' />
+                            <CardHeader title='Cargos / Funções' />
                             <CardContent>
-                                <Permissions
-                                    menu={data.menu}
-                                    control={control}
-                                    register={register}
-                                    setValue={setValue}
-                                />
+                                <Grid container spacing={5}>
+                                    {/* Cargo / Função do profissonal */}
+                                    {data && (
+                                        <CargoFuncao
+                                            getValues={getValues}
+                                            control={control}
+                                            register={register}
+                                            errors={errors}
+                                            removeItem={removeItem}
+                                            key={change}
+                                        />
+                                    )}
+                                    <Button
+                                        variant='outlined'
+                                        color='primary'
+                                        sx={{ mt: 4, ml: 4 }}
+                                        startIcon={<Icon icon='material-symbols:add-circle-outline-rounded' />}
+                                        onClick={() => {
+                                            addItem()
+                                        }}
+                                    >
+                                        Inserir item
+                                    </Button>
+                                </Grid>
                             </CardContent>
                         </Card>
-                    )}
+                    }
+
+                    {/* userExistVerifyCPF */}
+                    {/* routes.find(route => route.rota === staticUrl && route.editar) */}
+
+                    {routes.find(route => route.rota === staticUrl && route.ler) &&
+                        (userNewVerifyCPF || userExistDefault) && (
+                            <Card>
+                                <CardHeader title='Permissões' />
+                                <CardContent>
+                                    <Grid container spacing={4} className='my-3'>
+                                        <Select
+                                            xs={12}
+                                            md={12}
+                                            title='Copiar permissões do profissional'
+                                            name='professional'
+                                            value={null}
+                                            options={data?.professionals}
+                                            onChange={copyPermissions}
+                                            register={register}
+                                            setValue={setValue}
+                                            control={control}
+                                        />
+                                    </Grid>
+                                    <Permissions
+                                        key={changePermissions}
+                                        menu={data.menu}
+                                        control={control}
+                                        register={register}
+                                        setValue={setValue}
+                                        getValues={getValues}
+                                    />
+                                </CardContent>
+                            </Card>
+                        )}
+
+                    <DialogForm
+                        text='Tem certeza que deseja excluir?'
+                        title={'Excluir ' + title.title}
+                        openModal={open}
+                        handleClose={() => setOpen(false)}
+                        handleSubmit={handleClickDelete}
+                        btnCancel
+                        btnConfirm
+                    />
                 </div>
             </form>
         )

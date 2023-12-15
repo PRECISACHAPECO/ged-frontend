@@ -20,7 +20,7 @@ const ButtonsFixedLeft = ({
 }) => {
     return (
         <div className='flex gap-2'>
-            {btnCancel && !btnClose && (
+            {btnCancel && !btnClose && routes.find(route => route.rota === currentUrl && route.ler) && (
                 <Button
                     onClick={() => {
                         setId(null)
@@ -33,7 +33,7 @@ const ButtonsFixedLeft = ({
                     color='primary'
                     size='medium'
                 >
-                    <Icon icon='material-symbols:arrow-back-rounded' />
+                    <Icon icon='grommet-icons:form-previous-link' />
                 </Button>
             )}
 
@@ -76,18 +76,6 @@ const ButtonsFixedLeft = ({
                     <Icon icon='fluent:status-12-filled' />
                     <span className='hidden sm:block'>Status</span>
                 </Button>
-            )}
-
-            {status && (
-                <Box display='flex' alignItems='center' justifyContent='flex-end'>
-                    <CustomChip
-                        size='small'
-                        skin='light'
-                        color={status.color}
-                        label={status.title}
-                        sx={{ '& .MuiChip-label': { textTransform: 'capitalize' } }}
-                    />
-                </Box>
             )}
         </div>
     )

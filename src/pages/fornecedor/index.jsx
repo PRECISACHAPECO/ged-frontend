@@ -152,12 +152,12 @@ const FornecedorPage = ({ units }) => {
     })
 
     // id que vem da rota, para quem acessa com o link do email
-    const getFornecedorID = router.query.f
+    const id = router.query.f ?? router.query.r
 
     const onSubmit = data => {
         const { cnpj, password } = data
         setId(null)
-        auth.loginFornecedor({ cnpj, password, rememberMe, getFornecedorID }, error => {
+        auth.loginFornecedor({ cnpj, password, rememberMe }, error => {
             setError('cnpj', {
                 type: 'manual',
                 message: 'CNPJ e/ou senha inválidos!'

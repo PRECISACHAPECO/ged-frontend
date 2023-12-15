@@ -3,10 +3,16 @@ import { api } from 'src/configs/api'
 import { AuthContext } from 'src/context/AuthContext'
 import Input from 'src/components/Form/Input'
 import Select from 'src/components/Form/Select'
-import { Box, Typography } from '@mui/material'
+import { Box, Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
+import DialogNewCreate from 'src/components/Defaults/Dialogs/DialogNewCreate'
+import FormGrupoAnexos from 'src/components/Cadastros/grupoAnexos/FormGrupoAnexos'
+import FormProduto from 'src/components/Cadastros/Produto/FormProduto'
+import ToggleButtonLabel from 'src/components/Form/ToggleButtonLabel'
 
 const FormNewFornecedor = ({
     fields,
+    params,
+    habilitaQuemPreencheFormFornecedor,
     setFields,
     handleCnpj,
     validCnpj,
@@ -15,12 +21,18 @@ const FormNewFornecedor = ({
     errors,
     setValue,
     register,
-    reset
+    reset,
+    isNotFactory,
+    setIsNotFactory
 }) => {
     const { loggedUnity } = useContext(AuthContext)
     const [models, setModels] = useState([])
     const [products, setProducts] = useState([])
     const [gruposAnexo, setGruposAnexo] = useState([])
+    const [newChange, setNewChange] = useState(false)
+    const [openModalNew, setOpenModalNew] = useState(false)
+    const [titleModal, setTitleModal] = useState('')
+    const [componetSelect, setComponetSelect] = useState(null)
 
     const getModels = async () => {
         const result = await api.post(`/formularios/fornecedor/getModels`, { unidadeID: loggedUnity.unidadeID })
@@ -54,11 +66,73 @@ const FormNewFornecedor = ({
         getGruposAnexo()
     }, [])
 
+    const handleConfirmNew = async (data, name) => {
+        setOpenModalNew(false)
+        if (name == 'gruposAnexo') {
+            setGruposAnexo(prevGrupoAnexo => [...prevGrupoAnexo, data])
+            const prevGruposAnexo = [...getValues('fields.gruposAnexo')]
+            prevGruposAnexo.push(data)
+            setValue('fields.gruposAnexo', prevGruposAnexo)
+        } else if (name == 'produtos') {
+            setProducts(prevProduto => [...prevProduto, data])
+            const prevProdutos = [...getValues('fields.produtos')]
+            prevProdutos.push(data)
+            setValue('fields.produtos', prevProdutos)
+        }
+
+        setNewChange(!newChange)
+    }
+
+    const createNew = async name => {
+        setOpenModalNew(true)
+        if (name == 'gruposAnexo') {
+            setTitleModal('Novo grupo de anexos')
+            setComponetSelect(
+                <FormGrupoAnexos
+                    manualUrl='/cadastros/grupo-anexos'
+                    btnClose
+                    handleModalClose={() => setOpenModalNew(false)}
+                    newChange={newChange}
+                    handleConfirmNew={handleConfirmNew}
+                    outsideID={true}
+                />
+            )
+        } else if (name == 'produtos') {
+            setTitleModal('Novo produto')
+            setComponetSelect(
+                <FormProduto
+                    manualUrl='/cadastros/produto'
+                    btnClose
+                    handleModalClose={() => setOpenModalNew(false)}
+                    newChange={newChange}
+                    handleConfirmNew={handleConfirmNew}
+                    outsideID={true}
+                />
+            )
+        }
+    }
+
+    const handleSave = async data => {
+        setOpenModalNew(false)
+    }
+
     return (
         models &&
         products && (
             <>
                 <Box>
+                    {params?.habilitaQuemPreencheFormFornecedor && (
+                        <div className='mb-6'>
+                            <ToggleButtonLabel
+                                xs={12}
+                                md={6}
+                                register={register}
+                                name='habilitaQuemPreencheFormFornecedor'
+                                setValue={setValue}
+                                setIsNotFactory={setIsNotFactory}
+                            />
+                        </div>
+                    )}
                     <Input
                         xs={12}
                         md={12}
@@ -100,18 +174,20 @@ const FormNewFornecedor = ({
                     control={control}
                     errors={errors?.fields?.nomeFantasia}
                 />
-                <Input
-                    xs={12}
-                    md={12}
-                    type='email'
-                    title='E-mail'
-                    name='fields.email'
-                    value={fields?.email}
-                    disabled={!validCnpj}
-                    required
-                    control={control}
-                    errors={errors?.fields?.email}
-                />
+                {isNotFactory && (
+                    <Input
+                        xs={12}
+                        md={12}
+                        type='email'
+                        title='E-mail'
+                        name='fields.email'
+                        value={fields?.email}
+                        disabled={!validCnpj}
+                        required
+                        control={control}
+                        errors={errors?.fields?.email}
+                    />
+                )}
                 <Select
                     xs={12}
                     md={12}
@@ -131,6 +207,9 @@ const FormNewFornecedor = ({
                     md={12}
                     title='Grupos de Anexo'
                     multiple
+                    createNew={() => {
+                        createNew('gruposAnexo')
+                    }}
                     name={`fields.gruposAnexo`}
                     value={fields?.gruposAnexo ?? []}
                     disabled={!validCnpj}
@@ -148,13 +227,25 @@ const FormNewFornecedor = ({
                     value={fields?.produtos ?? []}
                     disabled={!validCnpj}
                     multiple
-                    required
+                    createNew={() => createNew('produtos')}
+                    required={params?.obrigatorioProdutoFornecedor}
                     options={products ?? []}
                     register={register}
                     setValue={setValue}
                     control={control}
                     errors={errors?.fields?.produtos}
                 />
+
+                {/* Modal para criação de novo grupo de anexo ou  */}
+                <DialogNewCreate
+                    title={titleModal}
+                    size='md'
+                    openModal={openModalNew}
+                    setOpenModal={setOpenModalNew}
+                    handleSave={handleSave}
+                >
+                    {componetSelect}
+                </DialogNewCreate>
             </>
         )
     )

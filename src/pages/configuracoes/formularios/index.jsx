@@ -10,6 +10,8 @@ import { useRouter } from 'next/router'
 
 // ** Configs
 import { configColumns } from 'src/configs/defaultConfigs'
+import { Grid } from '@mui/material'
+import CardList from 'src/components/Defaults/Cards/CardList'
 
 const ListParametrosFormularios = () => {
     const [result, setResult] = useState(null)
@@ -55,6 +57,10 @@ const ListParametrosFormularios = () => {
         setId(null)
     }
 
+    const goToForm = id => {
+        setId(id)
+    }
+
     return (
         <>
             {/* Exibe loading enquanto não existe result */}
@@ -67,13 +73,28 @@ const ListParametrosFormularios = () => {
                 ) : id == 2 ? (
                     handleRoute('recebimento-mp')
                 ) : id == 3 ? (
-                    <h3>Em desenvolvimento...</h3>
+                    handleRoute('recebimentomp-naoconformidade')
                 ) : id == 4 ? (
                     handleRoute('limpeza')
                 ) : null
             ) : (
                 //? Lista tabela de resultados da listagem
-                <Table result={result} columns={columns} />
+                <Grid container spacing={4}>
+                    {result &&
+                        result.map((value, index) => (
+                            <CardList
+                                key={index}
+                                xs={12}
+                                md={3}
+                                color={'!bg-[#f9eb8d]'}
+                                icon='bi:folder'
+                                title={value?.nome}
+                                subtitle={`Contém os modelos do formulário`}
+                                action='edit'
+                                handleClick={() => goToForm(value.id)}
+                            />
+                        ))}
+                </Grid>
             )}
         </>
     )

@@ -192,6 +192,26 @@ const dateOptions = (type, date, numDays) => {
     }
 };
 
+// Hora atual
+const getCurrentTime = () => {
+    const currentDate = new Date()
+    const hours = currentDate.getHours().toString().padStart(2, '0')
+    const minutes = currentDate.getMinutes().toString().padStart(2, '0')
+    return `${hours}:${minutes}`
+}
 
+// Data atual
+function getCurrentDate() {
+    const currentDate = new Date()
+    currentDate.setDate(currentDate.getDate() + 1)
 
-export { configColumns, formType, backRoute, statusDefault, toastMessage, dateConfig, dateOptions }
+    const year = currentDate.getFullYear()
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0')
+    const day = String(currentDate.getDate()).padStart(2, '0')
+
+    const formattedDate = `${year}-${month}-${day}`
+
+    return formattedDate
+}
+
+export { configColumns, formType, backRoute, statusDefault, toastMessage, dateConfig, dateOptions, getCurrentTime, getCurrentDate }

@@ -41,8 +41,10 @@ const DialogFormConclusion = ({
     listErrors,
     canApprove
 }) => {
+    console.log('🚀 ~ info:', info)
     const { user, loggedUnity } = useContext(AuthContext)
     const [result, setResult] = useState({})
+    console.log('🚀 ~ result:', result)
 
     return (
         <>
@@ -60,7 +62,8 @@ const DialogFormConclusion = ({
 
                 <DialogContent>
                     <DialogContentText sx={{ mb: 3 }}>
-                        {canChange ? (
+                        {/* Formulário Pendente */}
+                        {info.status <= 40 && (
                             <>
                                 {text}
                                 {listErrors && listErrors.status && (
@@ -89,38 +92,44 @@ const DialogFormConclusion = ({
                                     </Alert>
                                 )}
 
-                                <Result
-                                    title={user.papelID == 1 ? 'Resultado do Processo' : 'Observação'}
-                                    name={'status'}
-                                    value={result}
-                                    register={register}
-                                    setValue={setValue}
-                                    setResult={setResult}
-                                    papelID={user.papelID}
-                                    options={[
-                                        {
-                                            value: 70,
-                                            color: 'success',
-                                            label: 'Aprovado',
-                                            disabled: canApprove ? false : true
-                                        },
-                                        {
-                                            value: 60,
-                                            color: 'warning',
-                                            label: 'Aprovado Parcial'
-                                        },
-                                        {
-                                            value: 50,
-                                            color: 'error',
-                                            label: 'Reprovado'
-                                        }
-                                    ]}
-                                />
+                                {user.papelID == 1 && (
+                                    <Result
+                                        title={user.papelID == 1 ? 'Resultado do Processo' : 'Observação'}
+                                        name={'status'}
+                                        value={result}
+                                        register={register}
+                                        setValue={setValue}
+                                        setResult={setResult}
+                                        papelID={user.papelID}
+                                        options={[
+                                            {
+                                                value: 70,
+                                                color: 'success',
+                                                label: 'Aprovado',
+                                                disabled: canApprove ? false : true
+                                            },
+                                            {
+                                                value: 60,
+                                                color: 'warning',
+                                                label: 'Aprovado Parcial'
+                                            },
+                                            {
+                                                value: 50,
+                                                color: 'error',
+                                                label: 'Reprovado'
+                                            }
+                                        ]}
+                                    />
+                                )}
                             </>
-                        ) : (
-                            <Alert severity='warning' sx={{ mb: 0 }}>
-                                O Status não pode mais ser alterado pois já está sendo utilizado em outro formulário!
-                            </Alert>
+                        )}
+
+                        {/* Formulário Concluído e com não conformidade */}
+                        {info.status >= 40 && info.naoConformidade && (
+                            <Typography variant='body1' sx={{ mt: 2 }}>
+                                Concluir não conformidades do formulário? Após concluir, o mesmo não poderá mais ser
+                                alterado!
+                            </Typography>
                         )}
                     </DialogContentText>
                 </DialogContent>
@@ -133,7 +142,10 @@ const DialogFormConclusion = ({
                     {btnConfirm && canChange && (
                         <Button
                             variant='contained'
-                            disabled={(listErrors && listErrors.status) || (user.papelID == 1 && !result.status)}
+                            disabled={
+                                info.status < 40 &&
+                                ((listErrors && listErrors.status) || (user.papelID == 1 && !result.status))
+                            }
                             color='primary'
                             onClick={() => {
                                 handleClose(), conclusionForm(result)
