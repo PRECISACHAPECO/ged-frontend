@@ -10,6 +10,7 @@ import FieldsProdutos from './FieldsProdutos'
 
 const RecebimentoMpProdutos = ({
     recebimentoMpID,
+    produtos,
     fornecedorID,
     getValues,
     setValue,
@@ -18,26 +19,28 @@ const RecebimentoMpProdutos = ({
     errors,
     disabled
 }) => {
-    const [produtos, setProdutos] = useState([])
+    console.log('🚀 ~ RecebimentoMpProdutos produtos:', produtos)
+    // const [produtos, setProdutos] = useState([])
     const [apresentacoes, setApresentacoes] = useState([])
     const [change, handleChange] = useState(false)
 
-    const getProdutosFornecedor = async () => {
-        try {
-            if (fornecedorID && fornecedorID > 0) {
-                const response = await api.post(`/cadastros/produto/getProdutosFornecedor`, {
-                    recebimentoMpID: recebimentoMpID,
-                    fornecedorID: fornecedorID
-                })
-                setProdutos(response.data)
-                setValue('produtos', response.data)
-            } else {
-                setProdutos([])
-            }
-        } catch (error) {
-            console.log('🚀 ~ error:', error)
-        }
-    }
+    // const getProdutosFornecedor = async () => {
+    //     console.log('🚀 ~ getProdutosFornecedor.....')
+    //     try {
+    //         if (fornecedorID && fornecedorID > 0) {
+    //             const response = await api.post(`/cadastros/produto/getProdutosFornecedor`, {
+    //                 recebimentoMpID: recebimentoMpID,
+    //                 fornecedorID: fornecedorID
+    //             })
+    //             setProdutos(response.data)
+    //             setValue('produtos', response.data)
+    //         } else {
+    //             setProdutos([])
+    //         }
+    //     } catch (error) {
+    //         console.log('🚀 ~ error:', error)
+    //     }
+    // }
 
     const getApresentacoes = async () => {
         try {
@@ -53,13 +56,13 @@ const RecebimentoMpProdutos = ({
         setValue(`produtos[${index}].checked`, !getValues(`produtos[${index}].checked`))
         const copyProducts = [...produtos]
         copyProducts[index].checked = !copyProducts[index].checked
-        setProdutos(copyProducts)
+        // setProdutos(copyProducts)
     }
 
     useEffect(() => {
-        getProdutosFornecedor()
+        // getProdutosFornecedor() //! descontinuado
         getApresentacoes()
-    }, [fornecedorID])
+    }, [])
 
     return (
         <>
@@ -67,20 +70,11 @@ const RecebimentoMpProdutos = ({
                 Produtos aprovados do fornecedor
             </Typography>
 
-            {!fornecedorID && (
+            {produtos && produtos.length == 0 && (
                 <Typography color='warning' variant='subtitle1' className='italic'>
                     <Box display='flex' alignItems='center' sx={{ gap: 1 }}>
                         <Icon icon='typcn:warning' color='#FFC107' />
                         <p>Nenhum fornecedor selecionado!</p>
-                    </Box>
-                </Typography>
-            )}
-
-            {fornecedorID && !produtos.length && (
-                <Typography color='warning' variant='subtitle1' className='italic'>
-                    <Box display='flex' alignItems='center' sx={{ gap: 1 }}>
-                        <Icon icon='typcn:warning' color='#FFC107' />
-                        <p>Nenhum produto aprovado para o fornecedor selecionado!</p>
                     </Box>
                 </Typography>
             )}
@@ -103,7 +97,7 @@ const RecebimentoMpProdutos = ({
                                 <CheckLabel
                                     title={produto.nome}
                                     name={`produtos[${index}].checked`}
-                                    value={produtos[index].checked}
+                                    value={produto.checked}
                                     onClick={() => handleCheck(index)}
                                     register={register}
                                     disabled={disabled}
@@ -136,7 +130,7 @@ const RecebimentoMpProdutos = ({
                                 </Box>
                             </Grid>
 
-                            {produtos && produtos[index].checked && (
+                            {produto && produto.checked == true && (
                                 <FieldsProdutos
                                     key={index}
                                     value={produto}
