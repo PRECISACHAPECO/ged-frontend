@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography } from '@mui/material'
+import { Card, CardContent, Grid } from '@mui/material'
 import { useEffect, useState, useContext } from 'react'
 import { AuthContext } from 'src/context/AuthContext'
 import Fields from 'src/components/Defaults/Formularios/Fields'
@@ -10,7 +10,6 @@ import { api } from 'src/configs/api'
 import { SettingsContext } from 'src/@core/context/settingsContext'
 import Router from 'next/router'
 import { RouteContext } from 'src/context/RouteContext'
-import Icon from 'src/@core/components/icon'
 import HeaderInfo from './Info'
 import RecebimentoMpProdutos from '../Produtos'
 
@@ -18,6 +17,7 @@ const HeaderFields = ({
     recebimentoMpID,
     modelo,
     values,
+    produtosRecebimento,
     fields,
     disabled,
     register,
@@ -31,9 +31,9 @@ const HeaderFields = ({
     const [dateStatus, setDateStatus] = useState({})
     const [profissionaisPreenchimento, setProfissionaisPreenchimento] = useState([])
     const [fornecedoresAprovados, setFornecedoresAprovados] = useState([])
-
     const [fornecedor, setFornecedor] = useState(null)
     const [produtos, setProdutos] = useState([])
+    const [change, setChange] = useState(false)
 
     const { settings } = useContext(SettingsContext)
     const mode = settings.mode
@@ -81,6 +81,8 @@ const HeaderFields = ({
     }
 
     const selectFornecedor = (e, fornecedoresAprovados, clearChecks) => {
+        setChange(!change)
+
         if (!e) {
             setFornecedor(null)
             setProdutos([])
@@ -90,16 +92,27 @@ const HeaderFields = ({
         fornecedoresAprovados &&
             fornecedoresAprovados.forEach(fornecedor => {
                 if (fornecedor.id === e.id) {
-                    setFornecedor(fornecedor)
+                    if (!clearChecks) {
+                        //? Carregou a página, marca os produtos que estão no recebimento e no fornecedor
+                        produtosRecebimento &&
+                            produtosRecebimento.length > 0 &&
+                            produtosRecebimento.map(produtoRecebimento => {
+                                fornecedor.produtos.forEach(produto => {
+                                    if (produto.produtoID === produtoRecebimento.produto.id) {
+                                        produto.checked_ = true
+                                    }
+                                })
+                            })
+                    }
+
                     if (clearChecks) {
-                        //? Limpa os checks dos produtos ao trocar o fornecedor
-                        console.log('limpa checks...')
+                        //? Trocou o fornecedor
                         fornecedor.produtos.forEach(produto => {
-                            produto.checked = false
+                            produto.checked_ = false
                         })
                     }
+                    setFornecedor(fornecedor)
                     setProdutos(fornecedor.produtos)
-                    console.log('🚀 ~ fornecedor:', fornecedor.produtos)
                 }
             })
     }
@@ -240,11 +253,10 @@ const HeaderFields = ({
             <Card>
                 <CardContent>
                     {/* Listagem dos produtos selecionados pra esse fornecedor */}
-                    {/* key com fornecedor e produtos */}
                     <RecebimentoMpProdutos
-                        key={fornecedor}
+                        key={change}
                         produtos={produtos}
-                        fornecedorID={1}
+                        setProdutos={setProdutos}
                         getValues={getValues}
                         setValue={setValue}
                         register={register}

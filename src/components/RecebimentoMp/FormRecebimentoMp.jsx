@@ -820,6 +820,7 @@ const FormRecebimentoMp = ({ id }) => {
                             recebimentoMpID={id}
                             modelo={unidade.modelo}
                             values={fieldsHeader}
+                            produtosRecebimento={produtos}
                             fields={field}
                             getValues={getValues}
                             disabled={!canEdit.status}

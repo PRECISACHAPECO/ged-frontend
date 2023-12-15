@@ -15,8 +15,10 @@ const CheckLabel = ({
     helpText,
     helpTextPosition
 }) => {
+    console.log('🚀 ~ CheckLabel:', value)
+
     return (
-        <Grid item xs={xs} md={md}>
+        <Grid item xs={xs ?? '12'} md={md ?? '12'}>
             <Box display='flex' alignItems='center' justifyContent='start' sx={{ gap: 0 }}>
                 <>
                     <FormControlLabel
