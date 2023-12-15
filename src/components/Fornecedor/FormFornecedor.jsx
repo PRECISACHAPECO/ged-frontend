@@ -282,6 +282,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         }
     }
 
+    console.log('canmEDIT', canEdit)
+
     const getData = () => {
         startLoading()
         try {
@@ -335,8 +337,9 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     let objStatus = statusDefault[response?.data?.info?.status]
                     setStatus(objStatus)
 
+                    console.log('🚀 ~ response.data.unidade:', response.data.unidade)
                     setCanEdit({
-                        status: user.papelID == response.data.unidade.quemPreenche ? true : false,
+                        status: user.papelID == response.data.unidade.quemPreenche && info.status < 40 ? true : false,
                         message:
                             user.papelID == 2 && response.data.info.status >= 40
                                 ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
@@ -812,10 +815,13 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             route: 'fornecedor/dadosFornecedor',
             unidadeID: loggedUnity.unidadeID,
             papelID: user.papelID,
+            canEdit,
             usuarioID: user.usuarioID
         })
     }, [])
     console.log('🚀 ~ info.status:', info.status)
+    console.log('user', user.papelID)
+    console.log('canEdit.status', canEdit.status)
 
     return (
         <>
@@ -826,7 +832,12 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     btnDelete={info.status < 40 ? true : false}
                     onclickDelete={() => setOpenModalDeleted(true)}
                     btnSave={canEdit.status}
-                    btnSend={(canEdit.status || user.papelID == 1) && info.status <= 40}
+                    // btnSend={(canEdit.status || user.papelID == 1) && info.status < 40}
+                    btnSend={
+                        (user.papelID == 1 && info.status <= 40) || (user.papelID == 2 && info.status < 40)
+                            ? true
+                            : false
+                    }
                     btnPrint={type == 'edit' ? true : false}
                     actionsData={actionsData}
                     actions

@@ -293,46 +293,46 @@ const AuthProvider = ({ children }) => {
 
 
     //! Quando carregar o sistema, faz uma requisicao ao github para saber a versão atual do sistema
-    async function getLatestVersion() {
-        await axios.get("https://api.github.com/repos/PRECISACHAPECO/ged-frontend/releases")
-            .then((response) => {
-                localStorage.setItem('latestVersion', response.data[0].tag_name)
-                setLatestVersionState(response.data[0].tag_name)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
+    // async function getLatestVersion() {
+    //     await axios.get("https://api.github.com/repos/PRECISACHAPECO/ged-frontend/releases")
+    //         .then((response) => {
+    //             localStorage.setItem('latestVersion', response.data[0].tag_name)
+    //             setLatestVersionState(response.data[0].tag_name)
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+    // }
 
-    // //*? faz um get ao github para saber a versão atual do sistema
-    useEffect(() => {
-        getLatestVersion();
-    }, [])
+    // // //*? faz um get ao github para saber a versão atual do sistema
+    // useEffect(() => {
+    //     getLatestVersion();
+    // }, [])
 
     //! Verifica se a versão atual é diferente da versão do localStorage, se for, abre o modal de atualização
-    useEffect(() => {
-        function getLatestTag() {
-            axios.get("https://api.github.com/repos/PRECISACHAPECO/ged-frontend/releases")
-                .then((response) => {
-                    if (response.data[0].tag_name !== localStorage.getItem('latestVersion')) {
-                        setNewVersionAvailable({
-                            status: true,
-                            version: response.data[0].tag_name,
-                        })
-                        setOpenModalUpdate(true)
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-        const interval = setInterval(() => {
-            getLatestTag();
-        }, 10000);
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
+    // useEffect(() => {
+    //     function getLatestTag() {
+    //         axios.get("https://api.github.com/repos/PRECISACHAPECO/ged-frontend/releases")
+    //             .then((response) => {
+    //                 if (response.data[0].tag_name !== localStorage.getItem('latestVersion')) {
+    //                     setNewVersionAvailable({
+    //                         status: true,
+    //                         version: response.data[0].tag_name,
+    //                     })
+    //                     setOpenModalUpdate(true)
+    //                 }
+    //             })
+    //             .catch((error) => {
+    //                 console.log(error);
+    //             });
+    //     }
+    //     const interval = setInterval(() => {
+    //         getLatestTag();
+    //     }, 10000);
+    //     return () => {
+    //         clearInterval(interval);
+    //     };
+    // }, []);
 
     //! se rota atual for igual a /fornecedor, limpar o localstorage e dar reload na pagina, faça o reaload apenas uma vez
     // useEffect(() => {
