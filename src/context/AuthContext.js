@@ -190,7 +190,6 @@ const AuthProvider = ({ children }) => {
                 ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
                 : null
             const returnUrl = router.query.returnUr
-            console.log("🚀 ~ returnUrl: OQQ EESS IOSSSOO", returnUrl)
             setUser({ ...response.data.userData })
 
             setRouteBackend('/login-fornecedor')
@@ -202,13 +201,18 @@ const AuthProvider = ({ children }) => {
             getRoutes(response.data.userData.usuarioID, response.data.unidades[0].unidadeID, response.data.userData.admin, response.data.unidades[0].papelID)
 
             params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
-            // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-            const previousRoute = router.asPath
-            // const redirectURL = previousRoute.includes('/registro/') ? '/meus-dados' : '/formularios/fornecedor/';
-            router.replace(redirectURL)
-            if (params.getFornecedorID) {
-                setId(params.getFornecedorID)
+
+            // Se parametro na rota direciona direto para o formulario
+            if (router.query.f) {
+                setId(router.query.f)
+                router.push("/formularios/fornecedor/")
+            } else if (router.query.r) {
+                setId(router.query.r)
+                router.push("/formularios/recebimento-mp/")
+            } else {
+                router.push('/')
             }
+
         }).catch(err => {
             if (err?.response?.status === 400) {
                 toast.error('CNPJ ou senha inválidos!')
@@ -340,24 +344,19 @@ const AuthProvider = ({ children }) => {
     //     }
     // }, []);
 
-    // Após logar vai direto para formulário de fornecedor
+    // Manter parametros na rota
     useEffect(() => {
         const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
-        const GET = router.query.f
-        if (GET && !storedToken) {
-            const rota = `/fornecedor?f=${router.query.f}`
+        const paramns = router.query.f ?? router.query.r
+        const route = router.query.f ? 'fornecedor?f=' : 'fornecedor?r='
+
+        if (paramns && !storedToken) {
+            const rota = `/${route}${paramns}`
             router.replace(rota)
         }
-    }, [router.query.f])
-    // Após logar vai direto para formulário de  recebim3ento
-    // useEffect(() => {
-    //     const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
-    //     const GET = router.query.f
-    //     if (GET && !storedToken) {
-    //         const rota = `/login?r=${router.query.r}`
-    //         router.replace(rota)
-    //     }
-    // }, [router.query.r])
+    }, [router.query.f, router.query.r])
+
+    // http://localhost:3001/fornecedor?r=25
 
 
     const values = {

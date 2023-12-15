@@ -135,7 +135,7 @@ const index = () => {
                         <View style={styles.tableRed}>
                             <View style={styles.tableTitleRed}>
                                 <Text style={[styles.tableTitlecolumn, { width: '100%' }]}>
-                                    Não conformidade 1 (Transporte)
+                                    Não conformidade {index + 1} ({row.tipo == 1 ? 'Transporte' : 'Produto'})
                                 </Text>
                             </View>
 
@@ -147,35 +147,20 @@ const index = () => {
                                     ]}
                                 >
                                     <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                        <Text style={styles.fieldTitle}>Data de abertura</Text>
+                                        <Text style={styles.fieldValue}>
+                                            {row.dataFornecedor + ' ' + row.horaFornecedor ?? ''}
+                                        </Text>
                                     </View>
                                     <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                        <Text style={styles.fieldTitle}>Data conclusão</Text>
+                                        <Text style={styles.fieldValue}>
+                                            {row.dataConclusao + ' ' + row.horaConclusao ?? ''}
+                                        </Text>
                                     </View>
                                     <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
-                                    </View>
-                                </View>
-                                <View
-                                    style={[
-                                        styles.tableContentRed,
-                                        { width: '100%', display: 'flex', flexDirection: 'row' }
-                                    ]}
-                                >
-                                    <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
-                                    </View>
-                                    <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
-                                    </View>
-                                    <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                        <Text style={styles.fieldTitle}>Profissional preenchimento</Text>
+                                        <Text style={styles.fieldValue}>{row.profissionalNomePreenchimento ?? ''}</Text>
                                     </View>
                                 </View>
                                 <View
@@ -185,16 +170,16 @@ const index = () => {
                                     ]}
                                 >
                                     <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                        <Text style={styles.fieldTitle}>Produto</Text>
+                                        <Text style={styles.fieldValue}>{row.produtoNome ?? ''}</Text>
                                     </View>
                                     <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                        <Text style={styles.fieldTitle}>Observação</Text>
+                                        <Text style={styles.fieldValue}>{row.obsFornecedor ?? ''}</Text>
                                     </View>
                                     <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                        <Text style={styles.fieldTitle}>Profissional preenchimento</Text>
+                                        <Text style={styles.fieldValue}>{row.profissionalNomePreenchimento ?? ''}</Text>
                                     </View>
                                 </View>
                                 <View
@@ -204,15 +189,11 @@ const index = () => {
                                     ]}
                                 >
                                     <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
+                                        <Text style={styles.fieldTitle}>Conclusão</Text>
+                                        <Text style={styles.fieldValue}>{row.conclusao ?? ''}</Text>
                                     </View>
                                     <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
-                                        <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
-                                    </View>
-                                    <View style={[styles.fields, { width: '33%' }]}>
-                                        <Text style={styles.fieldTitle}>Data</Text>
+                                        <Text style={styles.fieldTitle}>Avaliação final</Text>
                                         <Text style={styles.fieldValue}>{row.data ?? ''}</Text>
                                     </View>
                                 </View>

@@ -517,7 +517,7 @@ const FormRecebimentoMp = ({ id }) => {
             }
         }
 
-        console.log('🚀 ~ onSubmit: ', data)
+        console.log('🚀 ~ onSubmit do getDataaaaaaaaaaa: ', data)
         // return
 
         startLoading()
@@ -526,6 +526,7 @@ const FormRecebimentoMp = ({ id }) => {
                 setSavingForm(true)
                 await api.post(`${staticUrl}/updateData/${id}`, data).then(response => {
                     toast.success(toastMessage.successUpdate)
+                    console.log('🚀 ~ response edit email:', response)
                     setSavingForm(false)
                     let idNãoConformidade = null
 
@@ -535,6 +536,8 @@ const FormRecebimentoMp = ({ id }) => {
             } else if (type == 'new') {
                 await api.post(`${backRoute(staticUrl)}/insertData`, data).then(response => {
                     router.push(`${backRoute(staticUrl)}`) //? backRoute pra remover 'novo' da rota
+                    console.log('🚀 ~ response new email:', response)
+
                     setId(response.data)
                     toast.success(toastMessage.successNew)
                 })
@@ -542,7 +545,7 @@ const FormRecebimentoMp = ({ id }) => {
                 toast.error(toastMessage.error)
             }
         } catch (error) {
-            console.log(error)
+            console.log('errro da função update/email', error)
         } finally {
             stopLoading()
         }
