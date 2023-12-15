@@ -92,8 +92,6 @@ const FormRecebimentoMp = ({ id }) => {
         formState: { errors }
     } = useForm()
 
-    console.log('errors: ', errors)
-
     //* Reabre o formulário pro fornecedor alterar novamente se ainda nao estiver vinculado com recebimento
     // const changeFormStatus = async (status, observacao) => {
     //     const data = {
@@ -516,10 +514,7 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-
-        console.log('🚀 ~ onSubmit do getDataaaaaaaaaaa: ', data)
-        // return
-
+        console.log('🚀 ~ data:', data)
         startLoading()
         try {
             if (type == 'edit') {
@@ -529,7 +524,6 @@ const FormRecebimentoMp = ({ id }) => {
                     console.log('🚀 ~ response edit email:', response)
                     setSavingForm(false)
                     let idNãoConformidade = null
-
                     //? Trata notificações
                     manageNotifications(values.status, values.naoConformidade, idNãoConformidade)
                 })

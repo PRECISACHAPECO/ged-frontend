@@ -36,10 +36,9 @@ import { useFormContext } from 'src/context/FormContext'
 
 const FormFornecedor = ({ id, makeFornecedor }) => {
     const { menu, user, loggedUnity } = useContext(AuthContext)
-    const [isLoading, setLoading] = useState(false)
-    const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
-    const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
-    const [loadingFileItem, setLoadingFileItem] = useState(false) //? loading de carregamento do arquivo
+    // const [loadingFileGroup, setLoadingFileGroup] = useState(false) //? loading de carregamento do arquivo
+    // const [loadingFileProduct, setLoadingFileProduct] = useState(false) //? loading de carregamento do arquivo
+    // const [loadingFileItem, setLoadingFileItem] = useState(false) //? loading de carregamento do arquivo
     const [savingForm, setSavingForm] = useState(false)
     const [validateForm, setValidateForm] = useState(false) //? Se true, valida campos obrigatórios
     const [hasFormPending, setHasFormPending] = useState(true) //? Tem pendencia no formulário (já vinculado em formulário de recebimento, não altera mais o status)
@@ -66,6 +65,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const [openModalDeleted, setOpenModalDeleted] = useState(false)
     const [blobSaveReport, setBlobSaveReport] = useState(null) // Salva o blob do relatório que sera salvo no back
     const { setReportParameters, sendPdfToServer } = useFormContext()
+    const { isLoading, startLoading, stopLoading } = useLoad()
 
     const [canEdit, setCanEdit] = useState({
         status: false,
@@ -78,7 +78,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     const type = id && id > 0 ? 'edit' : 'new'
     const staticUrl = router.pathname
     console.log('🚀 ~ staticUrl:', staticUrl)
-    const { startLoading, stopLoading } = useLoad()
 
     const {
         reset,
@@ -284,12 +283,11 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     }
 
     const getData = () => {
-        setLoading(true)
+        startLoading()
         try {
             api.post(`${staticUrl}/getData/${id}`, { type: type, unidadeID: loggedUnity.unidadeID })
                 .then(response => {
                     console.log('getData: ', response.data)
-                    setLoading(false)
 
                     setFieldsHeader(response.data.fieldsHeader)
                     setFieldsFooter(response.data.fieldsFooter)
@@ -366,11 +364,11 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                 })
                 .catch(error => {
                     console.log('🚀 ~ error:', error)
-                    setLoading(false)
                 })
         } catch (error) {
             console.log('🚀 ~ error:', error)
-            setLoading(false)
+        } finally {
+            stopLoading()
         }
     }
 
@@ -618,12 +616,8 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             } else {
                 toast.error(toastMessage.error)
             }
-            // stopLoading()
-            // console.log('função ativada fim try')
         } catch (error) {
             console.log(error)
-            // stopLoading()
-            // console.log('função ativada fim cath')
         } finally {
             stopLoading()
             console.log('função ativada fim finally')
@@ -632,7 +626,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
 
     // Quando selecionar um arquivo, o arquivo é adicionado ao array de anexos
     const handleFileSelectProduct = async (event, item) => {
-        setLoadingFileProduct(true)
+        startLoading()
         const selectedFile = event.target.files
 
         if (selectedFile && selectedFile.length > 0) {
@@ -645,46 +639,24 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append(`unidadeID`, loggedUnity.unidadeID)
             formData.append(`produtoAnexoID`, item.produtoAnexoID ?? null)
 
-            await api
-                .post(`${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}`, formData)
-                .then(response => {
-                    setLoadingFileProduct(false)
+            try {
+                const response = await api.post(
+                    `${staticUrl}/saveAnexo/${id}/produto/${user.usuarioID}/${unidade.unidadeID}`,
+                    formData
+                )
 
-                    //* Submete formulário pra atualizar configurações dos produtos
-                    const values = getValues()
-                    onSubmit(values)
-
-                    // toast.success('Anexo adicionado com sucesso!')
-
-                    // //? Atualiza produtos
-                    // const updatedProdutos = produtos.map(produto => {
-                    //     if (produto.produtoID == item.produtoID) {
-                    //         return {
-                    //             ...produto,
-                    //             produtoAnexosDescricao: produto.produtoAnexosDescricao.map(row => {
-                    //                 if (row.produtoAnexoID == item.produtoAnexoID) {
-                    //                     return {
-                    //                         ...row,
-                    //                         anexos: [...row.anexos, ...response.data]
-                    //                     }
-                    //                 }
-                    //                 return row
-                    //             })
-                    //         }
-                    //     }
-                    //     return produto
-                    // })
-                    // setProdutos(updatedProdutos)
-                })
-                .catch(error => {
-                    setLoadingFileProduct(false)
-                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
-                })
+                //* Submete formulário pra atualizar configurações dos produtos
+                const values = getValues()
+                onSubmit(values)
+            } catch (error) {
+                toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+            } finally {
+                stopLoading()
+            }
         }
     }
 
     const handleFileSelectGroup = async (event, item) => {
-        setLoadingFileGroup(true)
         const selectedFile = event.target.files
 
         if (selectedFile && selectedFile.length > 0) {
@@ -696,24 +668,24 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append(`unidadeID`, loggedUnity.unidadeID)
             formData.append(`grupoAnexoItemID`, item.grupoAnexoItemID ?? null)
 
-            await api
-                .post(`${staticUrl}/saveAnexo/${id}/grupo-anexo/${user.usuarioID}/${unidade.unidadeID}`, formData)
-                .then(response => {
-                    setLoadingFileGroup(false)
-
-                    //* Submete formulário pra atualizar configurações dos grupos
-                    const values = getValues()
-                    onSubmit(values)
-                })
-                .catch(error => {
-                    setLoadingFileGroup(false)
-                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
-                })
+            try {
+                startLoading()
+                const response = await api.post(
+                    `${staticUrl}/saveAnexo/${id}/grupo-anexo/${user.usuarioID}/${unidade.unidadeID}`,
+                    formData
+                )
+                //* Submete formulário pra atualizar configurações dos grupos
+                const values = getValues()
+                onSubmit(values)
+            } catch (error) {
+                toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+            } finally {
+                stopLoading()
+            }
         }
     }
 
     const handleFileSelectItem = async (event, item) => {
-        setLoadingFileItem(true)
         const selectedFile = event.target.files
 
         if (selectedFile && selectedFile.length > 0) {
@@ -726,19 +698,20 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             formData.append(`parFornecedorModeloBlocoID`, item.parFornecedorModeloBlocoID ?? null)
             formData.append(`itemOpcaoAnexoID`, item.itemOpcaoAnexoID ?? null)
 
-            await api
-                .post(`${staticUrl}/saveAnexo/${id}/item/${user.usuarioID}/${unidade.unidadeID}`, formData)
-                .then(response => {
-                    setLoadingFileItem(false)
-
-                    //* Submete formulário pra atualizar configurações dos itens
-                    const values = getValues()
-                    onSubmit(values)
-                })
-                .catch(error => {
-                    setLoadingFileItem(false)
-                    toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!!!!')
-                })
+            try {
+                startLoading()
+                const response = await api.post(
+                    `${staticUrl}/saveAnexo/${id}/item/${user.usuarioID}/${unidade.unidadeID}`,
+                    formData
+                )
+                //* Submete formulário pra atualizar configurações dos itens
+                const values = getValues()
+                onSubmit(values)
+            } catch (error) {
+                toast.error(error.response?.data?.message ?? 'Erro ao atualizar anexo, tente novamente!')
+            } finally {
+                stopLoading()
+            }
         }
     }
 
@@ -842,6 +815,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
             usuarioID: user.usuarioID
         })
     }, [])
+    console.log('🚀 ~ info.status:', info.status)
 
     return (
         <>
@@ -852,7 +826,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     btnDelete={info.status < 40 ? true : false}
                     onclickDelete={() => setOpenModalDeleted(true)}
                     btnSave={canEdit.status}
-                    btnSend={canEdit.status || (user.papelID == 1 && info.status >= 40)}
+                    btnSend={(canEdit.status || user.papelID == 1) && info.status <= 40}
                     btnPrint={type == 'edit' ? true : false}
                     actionsData={actionsData}
                     actions
@@ -953,11 +927,10 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                             <CardContent>
                                 {/* Listagem dos produtos selecionados pra esse fornecedor */}
                                 <FormFornecedorProdutos
-                                    key={loadingFileProduct}
+                                    key={isLoading}
                                     values={produtos}
                                     handleFileSelect={handleFileSelectProduct}
                                     handleRemove={handleRemoveAnexoProduct}
-                                    loadingFile={loadingFileProduct}
                                     disabled={!canEdit.status || hasFormPending}
                                     errors={errors?.produtos}
                                 />
@@ -993,7 +966,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 key={indexGrupo}
                                 values={{
                                     grupo: grupo,
-                                    loadingFile: loadingFileGroup,
                                     indexGrupo: indexGrupo,
                                     handleFileSelect: handleFileSelectGroup,
                                     handleRemove: handleRemoveAnexoGroup,

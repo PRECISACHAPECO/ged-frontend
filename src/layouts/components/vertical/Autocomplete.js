@@ -224,7 +224,10 @@ const AutocompleteComponent = ({ hidden, settings }) => {
         return (
             <Box
                 ref={wrapper}
-                onClick={() => !openDialog && setOpenDialog(true)}
+                onClick={() => {
+                    !openDialog && setOpenDialog(true)
+                    setId(null)
+                }}
                 sx={{ display: 'flex', cursor: 'pointer', alignItems: 'center' }}
             >
                 <IconButton color='inherit' sx={!hidden && layout === 'vertical' ? { mr: 1, ml: -2.75 } : {}}>

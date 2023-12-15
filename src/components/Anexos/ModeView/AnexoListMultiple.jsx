@@ -17,7 +17,6 @@ const AnexoList = ({
     handleFileSelect,
     handleRemove,
     folder,
-    loadingFile,
     error,
     disabled,
     modeTheme,
