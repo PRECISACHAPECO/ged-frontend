@@ -63,7 +63,7 @@ const DialogFormConclusion = ({
                 <DialogContent>
                     <DialogContentText sx={{ mb: 3 }}>
                         {/* Formulário Pendente */}
-                        {info.status < 40 && (
+                        {info.status <= 40 && (
                             <>
                                 {text}
                                 {listErrors && listErrors.status && (

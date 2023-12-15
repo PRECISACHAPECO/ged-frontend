@@ -72,6 +72,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
         message: 'Você não tem permissões',
         messageType: 'info'
     })
+    console.log('🚀 ~ canEdit:', canEdit)
 
     //! Se perder Id, copia do localstorage
     const router = Router
@@ -337,9 +338,17 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                     let objStatus = statusDefault[response?.data?.info?.status]
                     setStatus(objStatus)
 
-                    console.log('🚀 ~ response.data.unidade:', response.data.unidade)
+                    console.log(
+                        '🚀 ~ response.data.unidade:',
+                        user.papelID,
+                        response.data.unidade.quemPreenche,
+                        info.status
+                    )
                     setCanEdit({
-                        status: user.papelID == response.data.unidade.quemPreenche && info.status < 40 ? true : false,
+                        status:
+                            user.papelID == response.data.unidade.quemPreenche && response.data.info.status < 40
+                                ? true
+                                : false,
                         message:
                             user.papelID == 2 && response.data.info.status >= 40
                                 ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
@@ -350,18 +359,6 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                                 : null,
                         messageType: user.papelID == 2 ? 'warning' : 'info'
                     })
-                    // setCanEdit({
-                    //     status: user.papelID == 2 && response.data.info.status < 40 ? true : false,
-                    //     message:
-                    //         user.papelID == 2 && response.data.info.status >= 40
-                    //             ? 'Esse formulário já foi concluído e enviado pra fábrica, não é mais possível alterar as informações!'
-                    //             : user.papelID == 1 && response.data.info.status < 40
-                    //             ? 'Somente o fornecedor pode alterar as informações deste formulário!'
-                    //             : user.papelID == 1 && response.data.info.status == 40
-                    //             ? 'Este formulário está aguardando aprovação'
-                    //             : null,
-                    //     messageType: user.papelID == 2 ? 'warning' : 'info'
-                    // })
 
                     verifyFormPending()
                 })
@@ -822,6 +819,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
     console.log('🚀 ~ info.status:', info.status)
     console.log('user', user.papelID)
     console.log('canEdit.status', canEdit.status)
+    console.log('peding', hasFormPending)
 
     return (
         <>
@@ -1058,7 +1056,7 @@ const FormFornecedor = ({ id, makeFornecedor }) => {
                         btnConfirmColor='primary'
                         conclusionForm={conclusionForm}
                         listErrors={listErrors}
-                        canApprove={canApprove}
+                        canApprove={true}
                     />
 
                     {/* Mensagem */}
