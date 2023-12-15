@@ -92,8 +92,6 @@ const FormRecebimentoMp = ({ id }) => {
         formState: { errors }
     } = useForm()
 
-    console.log('errors: ', errors)
-
     //* Reabre o formulário pro fornecedor alterar novamente se ainda nao estiver vinculado com recebimento
     // const changeFormStatus = async (status, observacao) => {
     //     const data = {
@@ -516,9 +514,6 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
-
-        console.log('🚀 ~ onSubmit do getDataaaaaaaaaaa: ', data)
-        // return
 
         startLoading()
         try {
