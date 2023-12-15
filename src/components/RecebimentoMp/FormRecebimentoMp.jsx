@@ -514,6 +514,7 @@ const FormRecebimentoMp = ({ id }) => {
                 unidadeID: loggedUnity.unidadeID
             }
         }
+        console.log('🚀 ~ data:', data)
 
         startLoading()
         try {
