@@ -24,12 +24,7 @@ const Select = ({
     helpText,
     helpTextPosition
 }) => {
-    // Adicione a opção "--novo--" no início do array de opções
-    let optionsWithNovo = options ? [...options] : []
-
-    if (createNew) {
-        optionsWithNovo = [{ nome: '-- Novo --' }, ...options]
-    }
+    let optionsWithNovo = createNew ? [{ nome: '-- Novo --' }, ...(options ?? [])] : options
 
     return (
         <Grid item xs={xs} md={md} sx={{ my: 1 }} className={className}>
