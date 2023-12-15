@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography, Divider } from '@mui/material'
+import { Box, Button, Grid, Typography, Divider, Checkbox, FormControlLabel } from '@mui/material'
 import { api } from 'src/configs/api'
 import Input from 'src/components/Form/Input'
 import CheckLabel from 'src/components/Form/CheckLabel'
@@ -8,39 +8,8 @@ import Icon from 'src/@core/components/icon'
 import { useEffect, useState } from 'react'
 import FieldsProdutos from './FieldsProdutos'
 
-const RecebimentoMpProdutos = ({
-    recebimentoMpID,
-    produtos,
-    fornecedorID,
-    getValues,
-    setValue,
-    register,
-    control,
-    errors,
-    disabled
-}) => {
-    console.log('🚀 ~ RecebimentoMpProdutos produtos:', produtos)
-    // const [produtos, setProdutos] = useState([])
+const RecebimentoMpProdutos = ({ produtos, setProdutos, getValues, setValue, register, control, errors, disabled }) => {
     const [apresentacoes, setApresentacoes] = useState([])
-    const [change, handleChange] = useState(false)
-
-    // const getProdutosFornecedor = async () => {
-    //     console.log('🚀 ~ getProdutosFornecedor.....')
-    //     try {
-    //         if (fornecedorID && fornecedorID > 0) {
-    //             const response = await api.post(`/cadastros/produto/getProdutosFornecedor`, {
-    //                 recebimentoMpID: recebimentoMpID,
-    //                 fornecedorID: fornecedorID
-    //             })
-    //             setProdutos(response.data)
-    //             setValue('produtos', response.data)
-    //         } else {
-    //             setProdutos([])
-    //         }
-    //     } catch (error) {
-    //         console.log('🚀 ~ error:', error)
-    //     }
-    // }
 
     const getApresentacoes = async () => {
         try {
@@ -51,16 +20,15 @@ const RecebimentoMpProdutos = ({
         }
     }
 
-    const handleCheck = index => {
-        handleChange(!change)
-        setValue(`produtos[${index}].checked`, !getValues(`produtos[${index}].checked`))
+    const handleCheck = (e, index) => {
+        const { checked } = e.target
+        setValue(`produtos[${index}].checked_`, checked)
         const copyProducts = [...produtos]
-        copyProducts[index].checked = !copyProducts[index].checked
-        // setProdutos(copyProducts)
+        copyProducts[index].checked_ = checked
+        setProdutos(copyProducts)
     }
 
     useEffect(() => {
-        // getProdutosFornecedor() //! descontinuado
         getApresentacoes()
     }, [])
 
@@ -83,7 +51,7 @@ const RecebimentoMpProdutos = ({
             {produtos &&
                 produtos.length > 0 &&
                 produtos.map((produto, index) => (
-                    <>
+                    <div key={index}>
                         <input
                             type='hidden'
                             value={produto.produtoID}
@@ -94,13 +62,24 @@ const RecebimentoMpProdutos = ({
                         <Grid container spacing={4} sx={{ pb: 2 }}>
                             {/* Checkbox com produto */}
                             <Grid item xs={12} md={4}>
-                                <CheckLabel
-                                    title={produto.nome}
-                                    name={`produtos[${index}].checked`}
-                                    value={produto.checked}
-                                    onClick={() => handleCheck(index)}
-                                    register={register}
-                                    disabled={disabled}
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            onClick={e => handleCheck(e, index)}
+                                            defaultChecked={produto.checked_}
+                                            disabled={disabled}
+                                        />
+                                    }
+                                    label={produto.nome}
+                                    size='small'
+                                    sx={{
+                                        marginRight: '4px', // Define a margem como 0 para reduzir o espaçamento
+                                        '&:hover': {
+                                            '& .MuiFormControlLabel-label': {
+                                                color: 'primary.main'
+                                            }
+                                        }
+                                    }}
                                 />
                             </Grid>
 
@@ -130,7 +109,7 @@ const RecebimentoMpProdutos = ({
                                 </Box>
                             </Grid>
 
-                            {produto && produto.checked == true && (
+                            {produto && produto.checked_ && (
                                 <FieldsProdutos
                                     key={index}
                                     value={produto}
@@ -146,7 +125,7 @@ const RecebimentoMpProdutos = ({
                         </Grid>
 
                         {index < produtos.length - 1 && <Divider />}
-                    </>
+                    </div>
                 ))}
         </>
     )
