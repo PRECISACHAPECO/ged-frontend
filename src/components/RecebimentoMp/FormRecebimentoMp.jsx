@@ -515,7 +515,6 @@ const FormRecebimentoMp = ({ id }) => {
             }
         }
         console.log('🚀 ~ data:', data)
-
         startLoading()
         try {
             if (type == 'edit') {
@@ -525,7 +524,6 @@ const FormRecebimentoMp = ({ id }) => {
                     console.log('🚀 ~ response edit email:', response)
                     setSavingForm(false)
                     let idNãoConformidade = null
-
                     //? Trata notificações
                     manageNotifications(values.status, values.naoConformidade, idNãoConformidade)
                 })
